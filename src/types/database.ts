@@ -1,6 +1,6 @@
-export type UserRole = 'Customer' | 'ShopOwner' | 'Admin';
-export type ComponentType = 'Form' | 'Base' | 'Shape' | 'Polish' | 'Design';
-export type BookingStatus = 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Cancelled';
+export type UserRole = 0 | 1 | 2; // 0: Customer, 1: Shop Owner, 2: Admin
+export type ComponentType = 0 | 1 | 2 | 3 | 4; // 0: Form, 1: Base, 2: Shape, 3: Polish, 4: Design
+export type BookingStatus = 0 | 1 | 2 | 3 | 4; // 0: Pending, 1: Approved, 2: Rejected, 3: Completed, 4: Cancelled
 
 export interface Profile {
   id: string;

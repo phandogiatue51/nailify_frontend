@@ -220,11 +220,11 @@ export const BookingAPI = {
       body: dto,
     }),
 
-  updateStatus: (id: string, status: BookingStatus) =>
-    apiRequest(`/Booking/update-status/${id}`, {
-      method: "PUT",
-      body: status,
-    }),
+  // updateStatus: (id: string, status: BookingStatus) =>
+  //   apiRequest(`/Booking/update-status/${id}`, {
+  //     method: "PUT",
+  //     body: status,
+  //   }),
 };
 
 export default apiRequest;

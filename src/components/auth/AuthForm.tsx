@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserRole } from "@/types/database";
 import {
   Card,
   CardContent,
@@ -30,16 +31,17 @@ const signupSchema = z
     email: z.string().email("Please enter a valid email"),
     phone: z.string().optional(),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-    userType: z.enum(["Customer", "ShopOwner"]),
+    confirmPassword: z.string()
+      .min(6, "Confirm Password must be at least 6 characters"),
+    role: z.enum(['0', '1']), // Keep as string in form
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
 
-type LoginFormData = z.infer<typeof loginSchema>;
 type SignupFormData = z.infer<typeof signupSchema>;
+type LoginFormData = z.infer<typeof loginSchema>;
 
 const AuthForm = () => {
   const navigate = useNavigate();
@@ -53,7 +55,7 @@ const AuthForm = () => {
   const signupForm = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      userType: "Customer",
+      role: "0",
     },
   });
 
@@ -74,8 +76,8 @@ const AuthForm = () => {
         email: data.email,
         password: data.password,
         fullName: data.fullName,
-        phone: data.phone,
-        role: data.userType,
+        phone: data.phone || "",
+        role: parseInt(data.role) as 0 | 1, // Convert here
       });
       navigate("/auth");
     } catch (error: any) {
@@ -83,6 +85,7 @@ const AuthForm = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-pink-50 via-background to-purple-50">
@@ -227,31 +230,26 @@ const AuthForm = () => {
                       </p>
                     )}
                   </div>
+
                   <div className="space-y-3">
                     <Label>I am a...</Label>
                     <RadioGroup
-                      defaultValue="Customer"
-                      onValueChange={(value) =>
-                        signupForm.setValue(
-                          "userType",
-                          value as "Customer" | "ShopOwner",
-                        )
-                      }
-                      className="grid grid-cols-2 gap-4"
+                      defaultValue="0"
+                      onValueChange={(value: string) => {
+                        signupForm.setValue("role", value as '0' | '1');
+                      }}
                     >
-                      <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-accent">
-                        <RadioGroupItem value="Customer" id="Customer" />
-                        <Label htmlFor="Customer" className="cursor-pointer">
-                          Customer
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-accent">
-                        <RadioGroupItem value="ShopOwner" id="ShopOwner" />
-                        <Label htmlFor="ShopOwner" className="cursor-pointer">
-                          Shop Owner
-                        </Label>
-                      </div>
+                      <RadioGroupItem value="0" id="Customer" />
+                      <Label htmlFor="Customer">Customer</Label>
+                      <RadioGroupItem value="1" id="ShopOwner" />
+                      <Label htmlFor="ShopOwner">Shop Owner</Label>
                     </RadioGroup>
+
+                    {signupForm.formState.errors.role && (
+                      <p className="text-sm text-destructive">
+                        {signupForm.formState.errors.role.message}
+                      </p>
+                    )}
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isLoading}>

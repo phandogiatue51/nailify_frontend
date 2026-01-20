@@ -23,11 +23,11 @@ import {
 } from "@/components/ui/dialog";
 
 const COMPONENT_TYPES: { value: ComponentType; label: string }[] = [
-  { value: "Form", label: "Forms" },
-  { value: "Base", label: "Bases" },
-  { value: "Shape", label: "Shapes" },
-  { value: "Polish", label: "Polish" },
-  { value: "Design", label: "Designs" },
+  { value: 0, label: "Forms" },
+  { value: 1, label: "Bases" },
+  { value: 2, label: "Shapes" },
+  { value: 3, label: "Polish" },
+  { value: 4, label: "Designs" },
 ];
 
 const MyShopPage = () => {
@@ -54,7 +54,7 @@ const MyShopPage = () => {
   const [showCollectionForm, setShowCollectionForm] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [editingCollection, setEditingCollection] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<ComponentType>("Form");
+  const [selectedType, setSelectedType] = useState<ComponentType>(0);
 
   if (loading || shopLoading) {
     return (
@@ -68,7 +68,7 @@ const MyShopPage = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (user?.role !== "ShopOwner") {
+  if (user?.role !== 1) {
     return <Navigate to="/" replace />;
   }
 

@@ -121,7 +121,7 @@ const ProfilePage = () => {
                   {profile?.fullName || "User"}
                 </h2>
                 <p className="text-md text-muted-foreground">
-                  <RoleBadge role={profile?.role ?? "Customer"} />
+                  <RoleBadge role={profile.role} />
                 </p>
               </div>
             </div>

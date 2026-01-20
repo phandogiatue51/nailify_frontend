@@ -19,14 +19,7 @@ import {
 } from "date-fns";
 import { BookingStatus } from "@/types/database";
 import { cn } from "@/lib/utils";
-
-const STATUS_COLORS: Record<BookingStatus, string> = {
-  Pending: "bg-orange-100 text-orange-800 border-orange-200",
-  Approved: "bg-green-100 text-green-800 border-green-200",
-  Rejected: "bg-red-100 text-red-800 border-red-200",
-  Completed: "bg-blue-100 text-blue-800 border-blue-200",
-  Cancelled: "bg-gray-100 text-gray-800 border-gray-200",
-};
+import { BookingStatusBadge } from "@/components/badge/BookingStatusBadge";
 
 const SchedulePage = () => {
   const { user, loading } = useAuthContext();
@@ -51,7 +44,7 @@ const SchedulePage = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (user?.role !== "ShopOwner") {
+  if (user?.role !== 1) {
     return <Navigate to="/" replace />;
   }
 
@@ -78,15 +71,15 @@ const SchedulePage = () => {
     bookings?.map((b) => parseISO(b.booking_date)) || [];
 
   const handleApprove = async (bookingId: string) => {
-    await updateBookingStatus.mutateAsync({ bookingId, status: "Approved" });
+    await updateBookingStatus.mutateAsync({ bookingId, status: 1 });
   };
 
   const handleReject = async (bookingId: string) => {
-    await updateBookingStatus.mutateAsync({ bookingId, status: "Rejected" });
+    await updateBookingStatus.mutateAsync({ bookingId, status: 2 });
   };
 
   const handleComplete = async (bookingId: string) => {
-    await updateBookingStatus.mutateAsync({ bookingId, status: "Completed" });
+    await updateBookingStatus.mutateAsync({ bookingId, status: 3 });
   };
 
   const renderBookingCard = (booking: any) => (
@@ -97,14 +90,9 @@ const SchedulePage = () => {
             <Clock className="w-4 h-4 text-muted-foreground" />
             <span className="font-semibold">{booking.booking_time}</span>
           </div>
-          <Badge
-            className={cn(
-              "border",
-              STATUS_COLORS[booking.status as BookingStatus],
-            )}
-          >
-            {booking.status}
-          </Badge>
+          <p className="text-md text-muted-foreground">
+            <BookingStatusBadge status={booking.status} />
+          </p>
         </div>
 
         <div className="flex items-center gap-2 mb-2">

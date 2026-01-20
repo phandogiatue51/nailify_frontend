@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
+import { ComponentBadge } from "@/components/badge/ComponentBadge";
 import {
   Dialog,
   DialogContent,
@@ -36,14 +37,6 @@ import CollectionCard from "@/components/shop/CollectionCard";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
-const COMPONENT_TYPES: { value: ComponentType; label: string }[] = [
-  { value: "Form", label: "Forms" },
-  { value: "Base", label: "Bases" },
-  { value: "Shape", label: "Shapes" },
-  { value: "Polish", label: "Polish" },
-  { value: "Design", label: "Designs" },
-];
-
 const ShopDetailPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const navigate = useNavigate();
@@ -63,7 +56,7 @@ const ShopDetailPage = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [showCustomerForm, setShowCustomerForm] = useState(false);
-
+  const COMPONENT_TYPES = [{ value: 0, label: "Forms" }, { value: 1, label: "Bases" }, { value: 2, label: "Shapes" }, { value: 3, label: "Polish" }, { value: 4, label: "Designs" },];
   if (loading || shopLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">

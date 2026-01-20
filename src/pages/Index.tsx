@@ -21,7 +21,7 @@ const Index = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (user?.role === "ShopOwner") {
+  if (user?.role === 1) {
     return <Navigate to="/dashboard" replace />;
   }
 

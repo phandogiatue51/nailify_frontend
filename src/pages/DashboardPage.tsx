@@ -22,7 +22,7 @@ const DashboardPage = () => {
     );
   }
 
-  if (user?.role !== "ShopOwner") {
+  if (user?.role !== 1) {
     return <Navigate to="/" replace />;
   }
 

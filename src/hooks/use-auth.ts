@@ -8,7 +8,7 @@ import { useToast } from "./use-toast";
 interface DecodedJWT {
   userId: string;
   email: string;
-  role: "Customer" | "ShopOwner" | "Admin";
+  role: 0 | 1 | 2; // 0: Customer, 1: ShopOwner, 2: Admin
   fullName?: string;
   exp: number;
 }
@@ -21,29 +21,29 @@ const decodeJWT = (token: string): DecodedJWT | null => {
     const roleClaim =
       decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
-    let roleString: "Customer" | "ShopOwner" | "Admin";
+    let role: 0 | 1 | 2;
 
-    if (roleClaim === "Customer") {
-      roleString = "Customer";
-    } else if (roleClaim === "ShopOwner") {
-      roleString = "ShopOwner";
-    } else if (roleClaim === "Admin") {
-      roleString = "Admin";
+    if (roleClaim === "Customer" || roleClaim === "0" || roleClaim === 0) {
+      role = 0;
+    } else if (roleClaim === "ShopOwner" || roleClaim === "1" || roleClaim === 1) {
+      role = 1;
+    } else if (roleClaim === "Admin" || roleClaim === "2" || roleClaim === 2) {
+      role = 2;
     } else {
       console.warn("Unknown role claim:", roleClaim);
-      roleString = "Customer";
+      role = 0;
     }
 
     return {
       userId:
         decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/nameidentifier"
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/nameidentifier"
         ],
       email:
         decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress"
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress"
         ],
-      role: roleString,
+      role: role,
       fullName:
         decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/name"],
       exp: decoded.exp,
@@ -109,7 +109,8 @@ export function useAuth() {
         toast({ description: "Login successful!", duration: 3000 });
 
         setTimeout(() => {
-          if (decoded.role === "ShopOwner") {
+          // Check role as number now
+          if (decoded.role === 1) { // ShopOwner = 1
             navigate("/dashboard");
           } else {
             navigate("/");
@@ -138,7 +139,7 @@ export function useAuth() {
     password: string;
     fullName: string;
     phone?: string;
-    role: "Customer" | "ShopOwner";
+    role: 0 | 1; // Updated to numbers
   }) => {
     if (!isMounted.current) return;
 
@@ -212,8 +213,8 @@ export function useAuth() {
   }, []);
 
   const hasRole = useCallback(
-    (role: string | string[]) => {
-      if (!user?.role) return false;
+    (role: number | number[]) => { // Updated to accept numbers
+      if (user?.role === undefined) return false;
       if (Array.isArray(role)) return role.includes(user.role);
       return user.role === role;
     },
