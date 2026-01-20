@@ -1,12 +1,12 @@
-import { useAuth } from '../hooks/use-auth';
-import { Navigate } from 'react-router-dom';
-import MobileLayout from '@/components/layout/MobileLayout';
-import { useAllShops } from '@/hooks/useShop';
-import ShopCard from '@/components/shop/ShopCard';
-import { Loader2, Sparkles } from 'lucide-react';
+import { useAuthContext } from "@/components/auth/AuthProvider";
+import { Navigate } from "react-router-dom";
+import MobileLayout from "@/components/layout/MobileLayout";
+import { useAllShops } from "@/hooks/useShop";
+import ShopCard from "@/components/shop/ShopCard";
+import { Loader2, Sparkles } from "lucide-react";
 
 const Index = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading } = useAuthContext();
   const { data: shops, isLoading: shopsLoading } = useAllShops();
 
   if (loading) {
@@ -21,7 +21,7 @@ const Index = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (profile?.role === 'ShopOwner') {
+  if (profile?.role === "ShopOwner") {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -34,7 +34,7 @@ const Index = () => {
             <h1 className="text-2xl font-bold">Nailify</h1>
           </div>
           <p className="text-muted-foreground">
-            Hi {profile?.fullName?.split(' ')[0]}! Find your perfect nail salon.
+            Hi {profile?.fullName?.split(" ")[0]}! Find your perfect nail salon.
           </p>
         </div>
 

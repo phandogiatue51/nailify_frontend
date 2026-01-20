@@ -1,16 +1,22 @@
-import { Booking, BookingItem, ServiceItem, Shop, Profile } from '@/types/database';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Calendar, Clock, MapPin } from 'lucide-react';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import {
+  Booking,
+  BookingItem,
+  ServiceItem,
+  Shop,
+  Profile,
+} from "@/types/database";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar, Clock, MapPin } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface BookingCardProps {
-  booking: Booking & { 
-    shop?: Shop; 
+  booking: Booking & {
+    shop?: Shop;
     customer?: Profile;
-    items?: (BookingItem & { service_item?: ServiceItem })[] 
+    items?: (BookingItem & { service_item?: ServiceItem })[];
   };
   isShopOwner?: boolean;
   onApprove?: (bookingId: string) => void;
@@ -19,11 +25,11 @@ interface BookingCardProps {
 }
 
 const statusColors: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  approved: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-800',
-  completed: 'bg-blue-100 text-blue-800',
-  cancelled: 'bg-gray-100 text-gray-800',
+  Pending: "bg-yellow-100 text-yellow-800",
+  Approved: "bg-green-100 text-green-800",
+  Rejected: "bg-red-100 text-red-800",
+  Completed: "bg-blue-100 text-blue-800",
+  Cancelled: "bg-gray-100 text-gray-800",
 };
 
 const BookingCard: React.FC<BookingCardProps> = ({
@@ -33,21 +39,21 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onReject,
   onCancel,
 }) => {
-  const formattedDate = format(new Date(booking.booking_date), 'MMM d, yyyy');
-  const formattedTime = booking.booking_time.slice(0, 5);
+  const formattedDate = format(new Date(booking.bookingDate), "MMM d, yyyy");
+  const formattedTime = booking.bookingTime.slice(0, 5);
 
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <div>
           {isShopOwner && booking.customer && (
-            <p className="font-semibold">{booking.customer.full_name}</p>
+            <p className="font-semibold">{booking.customer.fullName}</p>
           )}
           {!isShopOwner && booking.shop && (
             <p className="font-semibold">{booking.shop.name}</p>
           )}
         </div>
-        <Badge className={cn('capitalize', statusColors[booking.status])}>
+        <Badge className={cn("capitalize", statusColors[booking.status])}>
           {booking.status}
         </Badge>
       </CardHeader>
@@ -76,7 +82,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
             <div className="flex flex-wrap gap-1">
               {booking.items.map((item) => (
                 <Badge key={item.id} variant="secondary" className="text-xs">
-                  {item.service_item?.name}
+                  {item.serviceItem?.name}
                 </Badge>
               ))}
             </div>
@@ -84,35 +90,34 @@ const BookingCard: React.FC<BookingCardProps> = ({
         )}
 
         {booking.notes && (
-          <p className="text-sm text-muted-foreground italic">"{booking.notes}"</p>
+          <p className="text-sm text-muted-foreground italic">
+            "{booking.notes}"
+          </p>
         )}
 
         <div className="flex items-center justify-between pt-2 border-t">
           <p className="font-bold text-lg text-primary">
-            ${Number(booking.total_price).toFixed(2)}
+            ${Number(booking.totalPrice).toFixed(2)}
           </p>
 
-          {booking.status === 'pending' && (
+          {booking.status === "Pending" && (
             <div className="flex gap-2">
               {isShopOwner ? (
                 <>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     onClick={() => onReject?.(booking.id)}
                   >
                     Reject
                   </Button>
-                  <Button 
-                    size="sm"
-                    onClick={() => onApprove?.(booking.id)}
-                  >
+                  <Button size="sm" onClick={() => onApprove?.(booking.id)}>
                     Approve
                   </Button>
                 </>
               ) : (
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   variant="destructive"
                   onClick={() => onCancel?.(booking.id)}
                 >

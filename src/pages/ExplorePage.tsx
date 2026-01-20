@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/use-auth";
+import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAllShops } from "@/hooks/useShop";
@@ -9,7 +9,7 @@ import ShopCard from "@/components/shop/ShopCard";
 import { Card, CardContent } from "@/components/ui/card";
 
 const ExplorePage = () => {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuthContext();
   const { data: shops, isLoading: shopsLoading } = useAllShops();
   const [searchQuery, setSearchQuery] = useState("");
 

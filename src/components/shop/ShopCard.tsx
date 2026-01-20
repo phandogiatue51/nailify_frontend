@@ -1,7 +1,7 @@
-import { Shop } from '@/types/database';
-import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Phone } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Shop } from "@/types/database";
+import { Card, CardContent } from "@/components/ui/card";
+import { MapPin, Phone } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ShopCardProps {
   shop: Shop;
@@ -11,24 +11,24 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
   const navigate = useNavigate();
 
   return (
-    <Card 
+    <Card
       className="overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.98]"
       onClick={() => navigate(`/shop/${shop.id}`)}
     >
       <div className="relative aspect-video bg-muted">
-        {shop.cover_url ? (
-          <img 
-            src={shop.cover_url} 
+        {shop.coverUrl ? (
+          <img
+            src={shop.coverUrl}
             alt={shop.name}
             className="w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-pink-200 to-purple-200" />
         )}
-        {shop.logo_url && (
+        {shop.logoUrl && (
           <div className="absolute -bottom-6 left-4 w-14 h-14 rounded-xl border-4 border-background overflow-hidden bg-background">
-            <img 
-              src={shop.logo_url} 
+            <img
+              src={shop.logoUrl}
               alt={`${shop.name} logo`}
               className="w-full h-full object-cover"
             />

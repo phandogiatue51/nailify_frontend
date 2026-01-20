@@ -33,9 +33,9 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
       }}
     >
       <div className="relative aspect-[4/3] bg-muted">
-        {collection.image_url ? (
+        {collection.imageUrl ? (
           <img
-            src={collection.image_url}
+            src={collection.imageUrl}
             alt={collection.name}
             className="w-full h-full object-cover"
           />
@@ -43,9 +43,9 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
           <div className="w-full h-full grid grid-cols-2 gap-0.5 p-0.5">
             {collection.items.slice(0, 4).map((item, index) => (
               <div key={item.id} className="bg-muted-foreground/10">
-                {item.image_url ? (
+                {item.imageUrl ? (
                   <img
-                    src={item.image_url}
+                    src={item.imageUrl}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
@@ -72,7 +72,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
           </p>
         )}
         <p className="text-primary font-bold text-lg mt-2">
-          ${(collection.total_price || 0).toFixed(2)}
+          ${(collection.totalPrice || 0).toFixed(2)}
         </p>
         {showActions && (
           <div className="flex gap-2 mt-2">

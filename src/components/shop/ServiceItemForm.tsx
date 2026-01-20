@@ -8,7 +8,7 @@ import { ComponentType, ServiceItem } from "@/types/database";
 
 interface ServiceItemFormProps {
   componentType: ComponentType;
-  shopId?: string; // Add shopId prop
+  shopId?: string;
   initialData?: Partial<ServiceItem>;
   onSubmit: (formData: FormData) => Promise<void>;
   isLoading?: boolean;
@@ -22,7 +22,9 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
   isLoading,
 }) => {
   const [name, setName] = useState(initialData?.name || "");
-  const [description, setDescription] = useState(initialData?.description || "");
+  const [description, setDescription] = useState(
+    initialData?.description || "",
+  );
   const [price, setPrice] = useState(initialData?.price?.toString() || "");
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || "");
@@ -45,17 +47,17 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
     setUploading(true);
 
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('description', description || '');
-    formData.append('price', price);
-    formData.append('componentType', componentType);
+    formData.append("name", name);
+    formData.append("description", description || "");
+    formData.append("price", price);
+    formData.append("componentType", componentType);
 
     if (shopId) {
-      formData.append('shopId', shopId);
+      formData.append("shopId", shopId);
     }
 
     if (file) {
-      formData.append('image', file);
+      formData.append("image", file);
     }
 
     try {

@@ -1,26 +1,26 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, Calendar, User, Store } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useAuth } from '@/contexts/AuthContext';
+import { Link, useLocation } from "react-router-dom";
+import { Home, Search, Calendar, User, Store } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "../../hooks/use-auth";
 
 const BottomNav = () => {
   const location = useLocation();
   const { profile } = useAuth();
-  
-  const isShopOwner = profile?.user_type === 'shop_owner';
+
+  const isShopOwner = profile?.role === "ShopOwner";
 
   const customerNavItems = [
-    { href: '/', icon: Home, label: 'Home' },
-    { href: '/explore', icon: Search, label: 'Explore' },
-    { href: '/bookings', icon: Calendar, label: 'Bookings' },
-    { href: '/profile', icon: User, label: 'Profile' },
+    { href: "/", icon: Home, label: "Home" },
+    { href: "/explore", icon: Search, label: "Explore" },
+    { href: "/bookings", icon: Calendar, label: "Bookings" },
+    { href: "/profile", icon: User, label: "Profile" },
   ];
 
   const ownerNavItems = [
-    { href: '/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/my-shop', icon: Store, label: 'My Shop' },
-    { href: '/schedule', icon: Calendar, label: 'Schedule' },
-    { href: '/profile', icon: User, label: 'Profile' },
+    { href: "/dashboard", icon: Home, label: "Dashboard" },
+    { href: "/my-shop", icon: Store, label: "My Shop" },
+    { href: "/schedule", icon: Calendar, label: "Schedule" },
+    { href: "/profile", icon: User, label: "Profile" },
   ];
 
   const navItems = isShopOwner ? ownerNavItems : customerNavItems;
@@ -35,10 +35,10 @@ const BottomNav = () => {
               key={href}
               to={href}
               className={cn(
-                'flex flex-col items-center justify-center gap-1 px-3 py-2 min-w-[64px] transition-colors',
-                isActive 
-                  ? 'text-primary' 
-                  : 'text-muted-foreground hover:text-foreground'
+                "flex flex-col items-center justify-center gap-1 px-3 py-2 min-w-[64px] transition-colors",
+                isActive
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               <Icon className="h-5 w-5" />

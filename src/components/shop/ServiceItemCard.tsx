@@ -1,8 +1,8 @@
-import { ServiceItem } from '@/types/database';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
+import { ServiceItem } from "@/types/database";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 interface ServiceItemCardProps {
   item: ServiceItem;
@@ -14,11 +14,11 @@ interface ServiceItemCardProps {
 }
 
 const componentTypeColors: Record<string, string> = {
-  form: 'bg-blue-100 text-blue-800',
-  base: 'bg-green-100 text-green-800',
-  shape: 'bg-purple-100 text-purple-800',
-  polish: 'bg-pink-100 text-pink-800',
-  design: 'bg-orange-100 text-orange-800',
+  Form: "bg-blue-100 text-blue-800",
+  Base: "bg-green-100 text-green-800",
+  Shape: "bg-purple-100 text-purple-800",
+  Polish: "bg-pink-100 text-pink-800",
+  Design: "bg-orange-100 text-orange-800",
 };
 
 const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
@@ -30,18 +30,18 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
   onDelete,
 }) => {
   return (
-    <Card 
+    <Card
       className={cn(
-        'overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md',
-        selected && 'ring-2 ring-primary ring-offset-2',
-        onSelect && 'active:scale-[0.98]'
+        "overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md",
+        selected && "ring-2 ring-primary ring-offset-2",
+        onSelect && "active:scale-[0.98]",
       )}
       onClick={() => onSelect?.(item)}
     >
       <div className="relative aspect-square bg-muted">
-        {item.image_url ? (
-          <img 
-            src={item.image_url} 
+        {item.imageUrl ? (
+          <img
+            src={item.imageUrl}
             alt={item.name}
             className="w-full h-full object-cover"
           />
@@ -55,28 +55,36 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
             <Check className="w-4 h-4 text-primary-foreground" />
           </div>
         )}
-        <Badge 
+        <Badge
           className={cn(
-            'absolute top-2 left-2 text-xs capitalize',
-            componentTypeColors[item.component_type]
+            "absolute top-2 left-2 text-xs capitalize",
+            componentTypeColors[item.componentType],
           )}
         >
-          {item.component_type}
+          {item.componentType}
         </Badge>
       </div>
       <CardContent className="p-3">
         <h3 className="font-medium text-sm truncate">{item.name}</h3>
-        <p className="text-primary font-semibold mt-1">${Number(item.price).toFixed(2)}</p>
+        <p className="text-primary font-semibold mt-1">
+          ${Number(item.price).toFixed(2)}
+        </p>
         {showActions && (
           <div className="flex gap-2 mt-2">
-            <button 
-              onClick={(e) => { e.stopPropagation(); onEdit?.(item); }}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit?.(item);
+              }}
               className="text-xs text-muted-foreground hover:text-foreground"
             >
               Edit
             </button>
-            <button 
-              onClick={(e) => { e.stopPropagation(); onDelete?.(item); }}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.(item);
+              }}
               className="text-xs text-destructive hover:text-destructive/80"
             >
               Delete

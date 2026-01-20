@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/use-auth";
+import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useShop } from "@/hooks/useShop";
@@ -31,7 +31,7 @@ const COMPONENT_TYPES: { value: ComponentType; label: string }[] = [
 ];
 
 const MyShopPage = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading } = useAuthContext();
   const { myShop, shopLoading, createShop, updateShop } = useShop();
   const {
     serviceItems,
@@ -268,7 +268,7 @@ const MyShopPage = () => {
               onSubmit={async (formData) => {
                 await updateShop.mutateAsync({
                   id: myShop.id,
-                  formData
+                  formData,
                 });
               }}
               isLoading={updateShop.isPending}

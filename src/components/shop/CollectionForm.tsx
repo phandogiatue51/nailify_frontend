@@ -1,40 +1,34 @@
-import { useState } from "react";
+import { useState, useRef, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useImageUpload } from "@/hooks/useImageUpload";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import { Collection, ComponentType, ServiceItem } from "@/types/database";
 import { Badge } from "@/components/ui/badge";
 
 interface CollectionFormProps {
   serviceItems: ServiceItem[];
   initialData?: Partial<Collection>;
-  onSubmit: (data: {
-    name: string;
-    description: string | null;
-    image_url: string | null;
-    itemIds: string[];
-  }) => Promise<void>;
+  onSubmit: (formData: FormData) => Promise<void>; // Changed to FormData
   isLoading?: boolean;
 }
 
 const typeLabels: Record<ComponentType, string> = {
-  form: "Form",
-  base: "Base",
-  shape: "Shape",
-  polish: "Polish",
-  design: "Design",
+  Form: "Form",
+  Base: "Base",
+  Shape: "Shape",
+  Polish: "Polish",
+  Design: "Design",
 };
 
 const typeColors: Record<ComponentType, string> = {
-  form: "bg-blue-100 text-blue-800",
-  base: "bg-green-100 text-green-800",
-  shape: "bg-purple-100 text-purple-800",
-  polish: "bg-pink-100 text-pink-800",
-  design: "bg-orange-100 text-orange-800",
+  Form: "bg-blue-100 text-blue-800",
+  Base: "bg-green-100 text-green-800",
+  Shape: "bg-purple-100 text-purple-800",
+  Polish: "bg-pink-100 text-pink-800",
+  Design: "bg-orange-100 text-orange-800",
 };
 
 const CollectionForm: React.FC<CollectionFormProps> = ({
@@ -47,18 +41,29 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
   const [description, setDescription] = useState(
     initialData?.description || "",
   );
-  const [imageUrl, setImageUrl] = useState(initialData?.image_url || "");
   const [selectedItems, setSelectedItems] = useState<string[]>(
     initialData?.items?.map((i) => i.id) || [],
   );
 
-  const { uploadImage, uploading } = useImageUpload();
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState(initialData?.imageUrl || "");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = await uploadImage(file);
-      if (url) setImageUrl(url);
+      setImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -72,21 +77,43 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit({
-      name,
-      description: description || null,
-      image_url: imageUrl || null,
-      itemIds: selectedItems,
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description || "");
+
+    // Add image file if exists
+    if (imageFile) {
+      formData.append("imageFile", imageFile);
+    }
+
+    // Add selected item IDs
+    selectedItems.forEach((itemId, index) => {
+      formData.append(`itemIds[${index}]`, itemId);
     });
+
+    try {
+      await onSubmit(formData);
+
+      // Reset image file after successful submission
+      if (imageFile) {
+        setImageFile(null);
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+    } finally {
+      setUploading(false);
+    }
   };
 
   // Group items by type
   const groupedItems = serviceItems.reduce(
     (acc, item) => {
-      if (!acc[item.component_type]) {
-        acc[item.component_type] = [];
+      if (!acc[item.componentType]) {
+        acc[item.componentType] = [];
       }
-      acc[item.component_type].push(item);
+      acc[item.componentType].push(item);
       return acc;
     },
     {} as Record<ComponentType, ServiceItem[]>,
@@ -122,25 +149,41 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
 
       <div className="space-y-2">
         <Label>Cover Image</Label>
-        <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
-          {imageUrl ? (
-            <img
-              src={imageUrl}
-              alt={name}
-              className="w-full h-full object-cover"
+        <div className="relative">
+          <div className="relative aspect-video bg-muted rounded-lg overflow-hidden group">
+            {imagePreview ? (
+              <>
+                <img
+                  src={imagePreview}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                <Upload className="w-8 h-8 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">Click to upload</p>
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              disabled={uploading}
             />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Upload className="w-6 h-6 text-muted-foreground" />
-            </div>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="absolute inset-0 opacity-0 cursor-pointer"
-            disabled={uploading}
-          />
+          </div>
+          <p className="text-xs text-muted-foreground text-center mt-1">
+            {imagePreview ? "Click image to change" : "Optional cover image"}
+          </p>
         </div>
       </div>
 
@@ -170,9 +213,9 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
                     onCheckedChange={() => toggleItem(item.id)}
                   />
                   <div className="flex-1 flex items-center gap-2">
-                    {item.image_url && (
+                    {item.imageUrl && (
                       <img
-                        src={item.image_url}
+                        src={item.imageUrl}
                         alt={item.name}
                         className="w-10 h-10 rounded object-cover"
                       />
@@ -184,10 +227,10 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
                       </p>
                     </div>
                     <Badge
-                      className={typeColors[item.component_type]}
+                      className={typeColors[item.componentType]}
                       variant="secondary"
                     >
-                      {item.component_type}
+                      {item.componentType}
                     </Badge>
                   </div>
                 </label>
@@ -208,7 +251,9 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
         className="w-full"
         disabled={isLoading || uploading || !name}
       >
-        {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+        {isLoading || uploading ? (
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        ) : null}
         {initialData ? "Update Collection" : "Create Collection"}
       </Button>
     </form>

@@ -1,6 +1,9 @@
-// "https://localhost:7144/api"
+//https://localhost:7144/api
+//https://nailify.onrender.com/api
 
-const API_BASE_URL = "https://localhost:7144/api";
+import { BookingStatus } from "@/types/database";
+
+const API_BASE_URL = "https://nailify.onrender.com/api";
 
 interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;
@@ -10,7 +13,7 @@ interface ApiRequestOptions extends RequestInit {
 
 const fetchWithTimeout = async (
   url: string,
-  options: RequestInit & { timeout?: number } = {}
+  options: RequestInit & { timeout?: number } = {},
 ): Promise<Response> => {
   const { timeout = 30000, ...fetchOptions } = options;
 
@@ -32,7 +35,7 @@ const fetchWithTimeout = async (
 
 const apiRequest = async <T = any>(
   endpoint: string,
-  options: ApiRequestOptions = {}
+  options: ApiRequestOptions = {},
 ): Promise<T> => {
   const url = `${API_BASE_URL}${endpoint}`;
 
@@ -126,14 +129,14 @@ export const profileAPI = {
 
   getById: (id: any) => apiRequest(`/Profile/${id}`),
 
-  updateProfile: (id: any, userData: any) =>
-    apiRequest(`/Profile/${id}`, {
+  updateProfile: (userData: any) =>
+    apiRequest(`/Profile/`, {
       method: "PUT",
       body: userData,
     }),
 
-  changePassword: (id: any, passwordData: any) =>
-    apiRequest(`/Profile/change-password/${id}`, {
+  changePassword: (passwordData: any) =>
+    apiRequest(`/Profile/change-password/`, {
       method: "PUT",
       body: passwordData,
     }),
@@ -198,6 +201,29 @@ export const serviceItemAPI = {
     apiRequest(`/ServiceItem/${id}`, {
       method: "PUT",
       body: formData,
+    }),
+};
+
+export const BookingAPI = {
+  getAll: () => apiRequest("/Booking"),
+
+  getById: (id: string) => apiRequest(`/Booking/${id}`),
+
+  getByShop: (shopId: string) => apiRequest(`/Booking/shop/${shopId}`),
+
+  getByCustomer: (customerId: string) =>
+    apiRequest(`/Booking/customer/${customerId}`),
+
+  createBooking: (dto: any) =>
+    apiRequest("/Booking", {
+      method: "POST",
+      body: dto,
+    }),
+
+  updateStatus: (id: string, status: BookingStatus) =>
+    apiRequest(`/Booking/update-status/${id}`, {
+      method: "PUT",
+      body: status,
     }),
 };
 

@@ -8,7 +8,7 @@ import { Shop } from "@/types/database";
 
 interface ShopFormProps {
   initialData?: Partial<Shop>;
-  onSubmit: (formData: FormData) => Promise<void>; // Changed to FormData
+  onSubmit: (formData: FormData) => Promise<void>;
   isLoading?: boolean;
 }
 
@@ -18,7 +18,9 @@ const ShopForm: React.FC<ShopFormProps> = ({
   isLoading,
 }) => {
   const [name, setName] = useState(initialData?.name || "");
-  const [description, setDescription] = useState(initialData?.description || "");
+  const [description, setDescription] = useState(
+    initialData?.description || "",
+  );
   const [address, setAddress] = useState(initialData?.address || "");
   const [phone, setPhone] = useState(initialData?.phone || "");
 
@@ -70,19 +72,19 @@ const ShopForm: React.FC<ShopFormProps> = ({
     setUploading(true);
 
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('description', description || '');
-    formData.append('address', address || '');
-    formData.append('phone', phone || '');
+    formData.append("name", name);
+    formData.append("description", description || "");
+    formData.append("address", address || "");
+    formData.append("phone", phone || "");
 
     // Only append logo if a new file was selected
     if (logoFile) {
-      formData.append('logoFile', logoFile);
+      formData.append("logoFile", logoFile);
     }
 
-    // Only append cover if a new file was selected  
+    // Only append cover if a new file was selected
     if (coverFile) {
-      formData.append('coverFile', coverFile);
+      formData.append("coverFile", coverFile);
     }
 
     try {
@@ -231,7 +233,7 @@ const ShopForm: React.FC<ShopFormProps> = ({
         className="w-full"
         disabled={isLoading || uploading || !name}
       >
-        {(isLoading || uploading) ? (
+        {isLoading || uploading ? (
           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
         ) : null}
         {initialData ? "Update Shop" : "Create Shop"}

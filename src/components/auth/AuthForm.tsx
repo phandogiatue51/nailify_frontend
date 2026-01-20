@@ -31,7 +31,7 @@ const signupSchema = z
     phone: z.string().optional(),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),
-    userType: z.enum(["Customer", "ShopOwner"]), // PascalCase
+    userType: z.enum(["Customer", "ShopOwner"]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -43,7 +43,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 const AuthForm = () => {
   const navigate = useNavigate();
-  const { login, signup } = useAuthContext(); // ✅ Add this!
+  const { login, signup } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
 
   const loginForm = useForm<LoginFormData>({
@@ -53,7 +53,7 @@ const AuthForm = () => {
   const signupForm = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      userType: "Customer", // PascalCase
+      userType: "Customer",
     },
   });
 
@@ -62,7 +62,6 @@ const AuthForm = () => {
     try {
       await login(data.email, data.password);
     } catch (error: any) {
-      // Error handled in hook
     } finally {
       setIsLoading(false);
     }
@@ -76,11 +75,10 @@ const AuthForm = () => {
         password: data.password,
         fullName: data.fullName,
         phone: data.phone,
-        role: data.userType, // Already PascalCase
+        role: data.userType,
       });
-      navigate("/login");
+      navigate("/auth");
     } catch (error: any) {
-      // Error handled in hook
     } finally {
       setIsLoading(false);
     }
