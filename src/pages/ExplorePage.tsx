@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../hooks/use-auth";
 import { Navigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useAllShops } from "@/hooks/useShop";

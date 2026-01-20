@@ -1,4 +1,4 @@
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '../hooks/use-auth';
 import { Navigate } from 'react-router-dom';
 import MobileLayout from '@/components/layout/MobileLayout';
 import { useAllShops } from '@/hooks/useShop';
@@ -21,8 +21,7 @@ const Index = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Redirect shop owners to dashboard
-  if (profile?.user_type === 'shop_owner') {
+  if (profile?.role === 'ShopOwner') {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -35,7 +34,7 @@ const Index = () => {
             <h1 className="text-2xl font-bold">Nailify</h1>
           </div>
           <p className="text-muted-foreground">
-            Hi {profile?.full_name?.split(' ')[0]}! Find your perfect nail salon.
+            Hi {profile?.fullName?.split(' ')[0]}! Find your perfect nail salon.
           </p>
         </div>
 

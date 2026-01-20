@@ -1,4 +1,4 @@
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '../hooks/use-auth';
 import AuthForm from '@/components/auth/AuthForm';
 import MobileLayout from '@/components/layout/MobileLayout';
 import { useNavigate } from 'react-router-dom';

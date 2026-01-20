@@ -1,20 +1,14 @@
-import { useState } from "react";
+import { useState, useRef, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useImageUpload } from "@/hooks/useImageUpload";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import { Shop } from "@/types/database";
 
 interface ShopFormProps {
   initialData?: Partial<Shop>;
-  onSubmit: (
-    data: Omit<
-      Shop,
-      "id" | "owner_id" | "created_at" | "updated_at" | "is_active"
-    >,
-  ) => Promise<void>;
+  onSubmit: (formData: FormData) => Promise<void>; // Changed to FormData
   isLoading?: boolean;
 }
 
@@ -24,42 +18,88 @@ const ShopForm: React.FC<ShopFormProps> = ({
   isLoading,
 }) => {
   const [name, setName] = useState(initialData?.name || "");
-  const [description, setDescription] = useState(
-    initialData?.description || "",
-  );
+  const [description, setDescription] = useState(initialData?.description || "");
   const [address, setAddress] = useState(initialData?.address || "");
   const [phone, setPhone] = useState(initialData?.phone || "");
-  const [logoUrl, setLogoUrl] = useState(initialData?.logo_url || "");
-  const [coverUrl, setCoverUrl] = useState(initialData?.cover_url || "");
 
-  const { uploadImage, uploading } = useImageUpload();
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState(initialData?.logoUrl || "");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState(initialData?.coverUrl || "");
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [uploading, setUploading] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const handleLogoChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = await uploadImage(file);
-      if (url) setLogoUrl(url);
+      setLogoFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setLogoPreview(previewUrl);
     }
   };
 
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = await uploadImage(file);
-      if (url) setCoverUrl(url);
+      setCoverFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setCoverPreview(previewUrl);
+    }
+  };
+
+  const removeLogo = () => {
+    setLogoFile(null);
+    setLogoPreview("");
+    if (logoInputRef.current) {
+      logoInputRef.current.value = "";
+    }
+  };
+
+  const removeCover = () => {
+    setCoverFile(null);
+    setCoverPreview("");
+    if (coverInputRef.current) {
+      coverInputRef.current.value = "";
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit({
-      name,
-      description: description || null,
-      address: address || null,
-      phone: phone || null,
-      logo_url: logoUrl || null,
-      cover_url: coverUrl || null,
-    });
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description || '');
+    formData.append('address', address || '');
+    formData.append('phone', phone || '');
+
+    // Only append logo if a new file was selected
+    if (logoFile) {
+      formData.append('logoFile', logoFile);
+    }
+
+    // Only append cover if a new file was selected  
+    if (coverFile) {
+      formData.append('coverFile', coverFile);
+    }
+
+    try {
+      await onSubmit(formData);
+
+      // Reset files after successful submission
+      if (logoFile) {
+        setLogoFile(null);
+      }
+      if (coverFile) {
+        setCoverFile(null);
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -109,49 +149,79 @@ const ShopForm: React.FC<ShopFormProps> = ({
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Logo</Label>
-          <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
-            {logoUrl ? (
-              <img
-                src={logoUrl}
-                alt="Logo"
-                className="w-full h-full object-cover"
+          <div className="relative">
+            <div className="relative aspect-square bg-muted rounded-lg overflow-hidden group">
+              {logoPreview ? (
+                <>
+                  <img
+                    src={logoPreview}
+                    alt="Logo"
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeLogo}
+                    className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Upload className="w-8 h-8 text-muted-foreground" />
+                </div>
+              )}
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleLogoChange}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                disabled={uploading}
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Upload className="w-6 h-6 text-muted-foreground" />
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleLogoUpload}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              disabled={uploading}
-            />
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              {logoPreview ? "Click to change" : "Click to upload"}
+            </p>
           </div>
         </div>
 
         <div className="space-y-2">
           <Label>Cover Image</Label>
-          <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
-            {coverUrl ? (
-              <img
-                src={coverUrl}
-                alt="Cover"
-                className="w-full h-full object-cover"
+          <div className="relative">
+            <div className="relative aspect-square bg-muted rounded-lg overflow-hidden group">
+              {coverPreview ? (
+                <>
+                  <img
+                    src={coverPreview}
+                    alt="Cover"
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeCover}
+                    className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Upload className="w-8 h-8 text-muted-foreground" />
+                </div>
+              )}
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleCoverChange}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                disabled={uploading}
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Upload className="w-6 h-6 text-muted-foreground" />
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleCoverUpload}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              disabled={uploading}
-            />
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              {coverPreview ? "Click to change" : "Click to upload"}
+            </p>
           </div>
         </div>
       </div>
@@ -161,7 +231,9 @@ const ShopForm: React.FC<ShopFormProps> = ({
         className="w-full"
         disabled={isLoading || uploading || !name}
       >
-        {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+        {(isLoading || uploading) ? (
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        ) : null}
         {initialData ? "Update Shop" : "Create Shop"}
       </Button>
     </form>

@@ -1,78 +1,80 @@
-export type UserRole = 'customer' | 'shop_owner';
-export type ComponentType = 'form' | 'base' | 'shape' | 'polish' | 'design';
-export type BookingStatus = 'pending' | 'approved' | 'rejected' | 'completed' | 'cancelled';
+export type UserRole = 'Customer' | 'ShopOwner' | 'Admin';
+export type ComponentType = 'Form' | 'Base' | 'Shape' | 'Polish' | 'Design';
+export type BookingStatus = 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Cancelled';
 
 export interface Profile {
   id: string;
-  full_name: string;
+  fullName: string;
   email: string;
   phone: string | null;
-  avatar_url: string | null;
-  user_type: UserRole;
-  created_at: string;
-  updated_at: string;
+  avatarUrl: string | null;
+  role: UserRole;
+  createdAt: string;
+  updatedAt: string;
+  isActive: boolean;
 }
 
 export interface Shop {
   id: string;
-  owner_id: string;
+  ownerId: string;
   name: string;
   description: string | null;
   address: string | null;
   phone: string | null;
-  logo_url: string | null;
-  cover_url: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  logoUrl: string | null;
+  coverUrl: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ServiceItem {
   id: string;
-  shop_id: string;
-  component_type: ComponentType;
+  shopId: string;
+  componentType: ComponentType;
   name: string;
   description: string | null;
   price: number;
-  image_url: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  imageUrl: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Collection {
   id: string;
-  shop_id: string;
+  shopId: string;
   name: string;
   description: string | null;
-  image_url: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  imageUrl: string | null;
+  isActive: boolean;
+  estimatedDuration: number;
+  createdAt: string;
+  updatedAt: string;
   items?: ServiceItem[];
-  total_price?: number;
+  totalPrice?: number;
 }
 
 export interface CollectionItem {
   id: string;
-  collection_id: string;
-  service_item_id: string;
-  created_at: string;
-  service_item?: ServiceItem;
+  collectionId: string;
+  serviceItemId: string;
+  createdAt: string;
+  serviceItem?: ServiceItem;
 }
 
 export interface Booking {
   id: string;
-  shop_id: string;
-  customer_id: string;
-  collection_id: string | null;
-  booking_date: string;
-  booking_time: string;
+  shopId: string;
+  customerId: string;
+  collectionId: string | null;
+  bookingDate: string;
+  bookingTime: string;
   status: BookingStatus;
-  total_price: number;
+  totalPrice: number;
   notes: string | null;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   shop?: Shop;
   customer?: Profile;
   items?: BookingItem[];
@@ -80,9 +82,9 @@ export interface Booking {
 
 export interface BookingItem {
   id: string;
-  booking_id: string;
-  service_item_id: string;
+  bookingId: string;
+  serviceItemId: string;
   price: number;
-  created_at: string;
-  service_item?: ServiceItem;
+  createdAt: string;
+  serviceItem?: ServiceItem;
 }

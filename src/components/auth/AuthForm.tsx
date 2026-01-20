@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthContext } from "../auth/AuthProvider";
 import { toast } from "sonner";
 import { Loader2, Sparkles } from "lucide-react";
 
@@ -31,7 +31,7 @@ const signupSchema = z
     phone: z.string().optional(),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),
-    userType: z.enum(["customer", "shop_owner"]),
+    userType: z.enum(["Customer", "ShopOwner"]), // PascalCase
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -43,7 +43,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 const AuthForm = () => {
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const { login, signup } = useAuthContext(); // ✅ Add this!
   const [isLoading, setIsLoading] = useState(false);
 
   const loginForm = useForm<LoginFormData>({
@@ -53,45 +53,36 @@ const AuthForm = () => {
   const signupForm = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      userType: "customer",
+      userType: "Customer", // PascalCase
     },
   });
 
   const handleLogin = async (data: LoginFormData) => {
     setIsLoading(true);
-    const { error } = await signIn(data.email, data.password);
-    setIsLoading(false);
-
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Welcome back!");
-      navigate("/");
+    try {
+      await login(data.email, data.password);
+    } catch (error: any) {
+      // Error handled in hook
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSignup = async (data: SignupFormData) => {
     setIsLoading(true);
-    const { error } = await signUp(
-      data.email,
-      data.password,
-      data.fullName,
-      data.phone || "",
-      data.userType,
-    );
-    setIsLoading(false);
-
-    if (error) {
-      if (error.message.includes("already registered")) {
-        toast.error(
-          "This email is already registered. Please sign in instead.",
-        );
-      } else {
-        toast.error(error.message);
-      }
-    } else {
-      toast.success("Account created! Welcome to Nailify.");
+    try {
+      await signup({
+        email: data.email,
+        password: data.password,
+        fullName: data.fullName,
+        phone: data.phone,
+        role: data.userType, // Already PascalCase
+      });
       navigate("/login");
+    } catch (error: any) {
+      // Error handled in hook
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -238,28 +229,27 @@ const AuthForm = () => {
                       </p>
                     )}
                   </div>
-
                   <div className="space-y-3">
                     <Label>I am a...</Label>
                     <RadioGroup
-                      defaultValue="customer"
+                      defaultValue="Customer"
                       onValueChange={(value) =>
                         signupForm.setValue(
                           "userType",
-                          value as "customer" | "shop_owner",
+                          value as "Customer" | "ShopOwner",
                         )
                       }
                       className="grid grid-cols-2 gap-4"
                     >
                       <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-accent">
-                        <RadioGroupItem value="customer" id="customer" />
-                        <Label htmlFor="customer" className="cursor-pointer">
+                        <RadioGroupItem value="Customer" id="Customer" />
+                        <Label htmlFor="Customer" className="cursor-pointer">
                           Customer
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-accent">
-                        <RadioGroupItem value="shop_owner" id="shop_owner" />
-                        <Label htmlFor="shop_owner" className="cursor-pointer">
+                        <RadioGroupItem value="ShopOwner" id="ShopOwner" />
+                        <Label htmlFor="ShopOwner" className="cursor-pointer">
                           Shop Owner
                         </Label>
                       </div>

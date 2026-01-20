@@ -1,60 +1,25 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { collectionAPI } from "@/services/api";
 import { Collection, CollectionItem, ServiceItem } from "@/types/database";
 
 export const useCollections = (shopId: string | undefined) => {
   const queryClient = useQueryClient();
 
-  const { data: collections, isLoading } = useQuery({
+  const { data: collections = [], isLoading } = useQuery({
     queryKey: ["collections", shopId],
     queryFn: async () => {
       if (!shopId) return [];
-
-      // Fetch collections
-      const { data: collectionsData, error: collectionsError } = await supabase
-        .from("collections")
-        .select("*")
-        .eq("shop_id", shopId)
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
-
-      if (collectionsError) throw collectionsError;
-
-      // Fetch collection items with service items for each collection
-      const collectionsWithItems = await Promise.all(
-        (collectionsData as Collection[]).map(async (collection) => {
-          const { data: itemsData, error: itemsError } = await supabase
-            .from("collection_items")
-            .select(
-              `
-              *,
-              service_item:service_items(*)
-            `,
-            )
-            .eq("collection_id", collection.id);
-
-          if (itemsError) throw itemsError;
-
-          const items = (
-            itemsData as (CollectionItem & { service_item: ServiceItem })[]
-          )
-            .map((item) => item.service_item)
-            .filter(Boolean);
-
-          const totalPrice = items.reduce(
-            (sum, item) => sum + Number(item.price),
-            0,
-          );
-
-          return {
-            ...collection,
-            items,
-            total_price: totalPrice,
-          };
-        }),
-      );
-
-      return collectionsWithItems;
+      try {
+        // Fetch collections for the shop
+        return await collectionAPI.getByShop(shopId);
+      } catch (error: any) {
+        console.error('Error fetching collections:', error);
+        // Return empty array for 404 (no collections yet)
+        if (error.message?.includes('404') || error.message?.includes('not found')) {
+          return [];
+        }
+        throw error;
+      }
     },
     enabled: !!shopId,
   });
@@ -72,36 +37,33 @@ export const useCollections = (shopId: string | undefined) => {
         | "is_active"
         | "items"
         | "total_price"
+        | "shop_id"
       >;
       itemIds: string[];
     }) => {
-      // Create collection
-      const { data: newCollection, error: collectionError } = await supabase
-        .from("collections")
-        .insert(collection)
-        .select()
-        .single();
+      if (!shopId) throw new Error('Shop ID is required');
 
-      if (collectionError) throw collectionError;
+      const formData = new FormData();
 
-      // Add items to collection
+      formData.append('name', collection.name);
+      formData.append('description', collection.description || '');
+      formData.append('shopId', shopId);
+      formData.append('estimatedDuration', String(collection.estimatedDuration));
+      // Add items as JSON array
       if (itemIds.length > 0) {
-        const { error: itemsError } = await supabase
-          .from("collection_items")
-          .insert(
-            itemIds.map((serviceItemId) => ({
-              collection_id: newCollection.id,
-              service_item_id: serviceItemId,
-            })),
-          );
-
-        if (itemsError) throw itemsError;
+        formData.append('serviceItemIds', JSON.stringify(itemIds));
       }
 
-      return newCollection as Collection;
+      return await collectionAPI.createShop(formData);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Invalidate collections for this shop
       queryClient.invalidateQueries({ queryKey: ["collections", shopId] });
+      return data;
+    },
+    onError: (error: any) => {
+      console.error('Error creating collection:', error);
+      throw error;
     },
   });
 
@@ -115,59 +77,65 @@ export const useCollections = (shopId: string | undefined) => {
       collection: Partial<Collection>;
       itemIds?: string[];
     }) => {
-      // Update collection
-      const { data: updatedCollection, error: collectionError } = await supabase
-        .from("collections")
-        .update(collection)
-        .eq("id", id)
-        .select()
-        .single();
+      // Create FormData for the update
+      const formData = new FormData();
 
-      if (collectionError) throw collectionError;
+      // Add collection fields
+      if (collection.name) formData.append('name', collection.name);
+      if (collection.description !== undefined) formData.append('description', collection.description);
 
-      // Update items if provided
+      // Add items if provided
       if (itemIds !== undefined) {
-        // Delete existing items
-        await supabase
-          .from("collection_items")
-          .delete()
-          .eq("collection_id", id);
-
-        // Add new items
-        if (itemIds.length > 0) {
-          const { error: itemsError } = await supabase
-            .from("collection_items")
-            .insert(
-              itemIds.map((serviceItemId) => ({
-                collection_id: id,
-                service_item_id: serviceItemId,
-              })),
-            );
-
-          if (itemsError) throw itemsError;
-        }
+        formData.append('serviceItemIds', JSON.stringify(itemIds));
       }
 
-      return updatedCollection as Collection;
+      return await collectionAPI.updateShop(id, formData);
     },
-    onSuccess: () => {
+    onSuccess: (updatedCollection) => {
+      // Update cache for specific collection
+      queryClient.setQueryData(['collections', shopId], (old: Collection[] = []) =>
+        old.map(col => col.id === updatedCollection.id ? updatedCollection : col)
+      );
+
+      // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ["collections", shopId] });
+      return updatedCollection;
+    },
+    onError: (error: any) => {
+      console.error('Error updating collection:', error);
+      throw error;
     },
   });
 
   const deleteCollection = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("collections")
-        .update({ is_active: false })
-        .eq("id", id);
+      // Soft delete - update is_active to false
+      const formData = new FormData();
+      formData.append('isActive', 'false');
 
-      if (error) throw error;
+      return await collectionAPI.updateShop(id, formData);
     },
-    onSuccess: () => {
+    onSuccess: (_, collectionId) => {
+      // Remove from collections list
+      queryClient.setQueryData(['collections', shopId], (old: Collection[] = []) =>
+        old.filter(collection => collection.id !== collectionId)
+      );
+
+      // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ["collections", shopId] });
     },
+    onError: (error: any) => {
+      console.error('Error deleting collection:', error);
+      throw error;
+    },
   });
+
+  // Helper to get collection items (if your API doesn't return items with collection)
+  const getCollectionItems = (collectionId: string) => {
+    // You might need a separate API endpoint for this
+    // For now, returning empty array
+    return [];
+  };
 
   return {
     collections,
@@ -175,5 +143,69 @@ export const useCollections = (shopId: string | undefined) => {
     createCollection,
     updateCollection,
     deleteCollection,
+    getCollectionItems,
   };
+};
+
+// Hook for a specific collection
+export const useCollectionById = (collectionId: string | undefined) => {
+  return useQuery({
+    queryKey: ["collection", collectionId],
+    queryFn: async () => {
+      if (!collectionId) return null;
+      try {
+        return await collectionAPI.getById(collectionId);
+      } catch (error: any) {
+        console.error('Error fetching collection:', error);
+        return null;
+      }
+    },
+    enabled: !!collectionId,
+  });
+};
+
+// Hook for all collections (admin or public view)
+export const useAllCollections = (options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: ["all-collections"],
+    queryFn: async () => {
+      try {
+        return await collectionAPI.getAll();
+      } catch (error: any) {
+        console.error('Error fetching all collections:', error);
+        return [];
+      }
+    },
+    enabled: options?.enabled ?? true,
+  });
+};
+
+// Helper function to create FormData for collection operations
+export const createCollectionFormData = (data: {
+  name: string;
+  description?: string;
+  shopId: string;
+  serviceItemIds?: string[];
+  image?: File;
+  estimatedDuration: number;
+}) => {
+  const formData = new FormData();
+
+  // Add required fields
+  formData.append('name', data.name);
+  formData.append('shopId', data.shopId);
+  formData.append('estimatedDuration', String(data.estimatedDuration));
+
+  // Add optional fields
+  if (data.description) formData.append('description', data.description);
+  if (data.serviceItemIds && data.serviceItemIds.length > 0) {
+    formData.append('serviceItemIds', JSON.stringify(data.serviceItemIds));
+  }
+
+  // Add image if provided
+  if (data.image) {
+    formData.append('image', data.image);
+  }
+
+  return formData;
 };

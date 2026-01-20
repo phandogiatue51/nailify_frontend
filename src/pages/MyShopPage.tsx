@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "../hooks/use-auth";
 import { Navigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useShop } from "@/hooks/useShop";
@@ -23,11 +23,11 @@ import {
 } from "@/components/ui/dialog";
 
 const COMPONENT_TYPES: { value: ComponentType; label: string }[] = [
-  { value: "form", label: "Forms" },
-  { value: "base", label: "Bases" },
-  { value: "shape", label: "Shapes" },
-  { value: "polish", label: "Polish" },
-  { value: "design", label: "Designs" },
+  { value: "Form", label: "Forms" },
+  { value: "Base", label: "Bases" },
+  { value: "Shape", label: "Shapes" },
+  { value: "Polish", label: "Polish" },
+  { value: "Design", label: "Designs" },
 ];
 
 const MyShopPage = () => {
@@ -54,7 +54,7 @@ const MyShopPage = () => {
   const [showCollectionForm, setShowCollectionForm] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [editingCollection, setEditingCollection] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<ComponentType>("form");
+  const [selectedType, setSelectedType] = useState<ComponentType>("Form");
 
   if (loading || shopLoading) {
     return (
@@ -68,7 +68,7 @@ const MyShopPage = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (profile?.user_type !== "shop_owner") {
+  if (profile?.role !== "ShopOwner") {
     return <Navigate to="/" replace />;
   }
 
@@ -128,8 +128,8 @@ const MyShopPage = () => {
             <p className="text-muted-foreground">Set up your nail salon</p>
           </div>
           <ShopForm
-            onSubmit={async (data) => {
-              await createShop.mutateAsync(data);
+            onSubmit={async (formData) => {
+              await createShop.mutateAsync(formData);
             }}
             isLoading={createShop.isPending}
           />
@@ -265,9 +265,11 @@ const MyShopPage = () => {
             </DialogHeader>
             <ShopForm
               initialData={myShop}
-              onSubmit={async (data) => {
-                await updateShop.mutateAsync({ id: myShop.id, ...data });
-                setShowShopForm(false);
+              onSubmit={async (formData) => {
+                await updateShop.mutateAsync({
+                  id: myShop.id,
+                  formData
+                });
               }}
               isLoading={updateShop.isPending}
             />

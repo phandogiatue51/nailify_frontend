@@ -1,6 +1,6 @@
 import React from 'react';
 import BottomNav from './BottomNav';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '../../hooks/use-auth';
 
 interface MobileLayoutProps {
   children: React.ReactNode;

@@ -1,4 +1,6 @@
-import { useAuth } from '@/contexts/AuthContext';
+"use client";
+
+import { useAuth } from '../hooks/use-auth';
 import MobileLayout from '@/components/layout/MobileLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,15 +9,15 @@ import { LogOut, User, Mail, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
-  const { profile, signOut } = useAuth();
+  const { profile, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    await signOut();
+    await logout();
     navigate('/auth');
   };
 
-  const initials = profile?.full_name
+  const initials = profile?.fullName
     ?.split(' ')
     .map((n) => n[0])
     .join('')
@@ -30,13 +32,13 @@ const ProfilePage = () => {
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
               <Avatar className="w-16 h-16">
-                <AvatarImage src={profile?.avatar_url || ''} />
+                <AvatarImage src={profile?.avatarUrl || ''} />
                 <AvatarFallback className="text-lg">{initials}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-xl font-semibold">{profile?.full_name}</h2>
+                <h2 className="text-xl font-semibold">{profile?.fullName}</h2>
                 <p className="text-sm text-muted-foreground capitalize">
-                  {profile?.user_type?.replace('_', ' ')}
+                  {profile?.role?.replace('_', ' ')}
                 </p>
               </div>
             </div>
@@ -61,9 +63,9 @@ const ProfilePage = () => {
           </CardContent>
         </Card>
 
-        <Button 
-          variant="destructive" 
-          className="w-full" 
+        <Button
+          variant="destructive"
+          className="w-full"
           onClick={handleSignOut}
         >
           <LogOut className="w-4 h-4 mr-2" />
