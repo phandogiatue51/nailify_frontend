@@ -3,7 +3,9 @@
 
 import { BookingStatus } from "@/types/database";
 
-const API_BASE_URL = "https://nailify.onrender.com/api";
+const REACT_APP_API_URL = "https://eli-calculational-temika.ngrok-free.dev/api";
+
+const API_BASE_URL = REACT_APP_API_URL || "https://nailify.onrender.com/api";
 
 interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;

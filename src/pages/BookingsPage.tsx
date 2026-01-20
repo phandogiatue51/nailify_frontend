@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const BookingsPage = () => {
-  const { user, profile, loading } = useAuthContext();
+  const { user, loading } = useAuthContext();
   const { customerBookings, customerBookingsLoading, cancelBooking } =
     useBookings();
 

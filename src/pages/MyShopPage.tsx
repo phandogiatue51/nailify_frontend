@@ -31,7 +31,7 @@ const COMPONENT_TYPES: { value: ComponentType; label: string }[] = [
 ];
 
 const MyShopPage = () => {
-  const { user, profile, loading } = useAuthContext();
+  const { user, loading } = useAuthContext();
   const { myShop, shopLoading, createShop, updateShop } = useShop();
   const {
     serviceItems,
@@ -68,7 +68,7 @@ const MyShopPage = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (profile?.role !== "ShopOwner") {
+  if (user?.role !== "ShopOwner") {
     return <Navigate to="/" replace />;
   }
 

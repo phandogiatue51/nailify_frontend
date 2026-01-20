@@ -8,7 +8,7 @@ import { Loader2, Store, Calendar, Package, TrendingUp } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 
 const DashboardPage = () => {
-  const { profile, loading } = useAuthContext();
+  const { user, loading } = useAuthContext();
   const { myShop, shopLoading } = useShop();
   const { useShopBookings } = useBookings();
   const { data: bookings } = useShopBookings(myShop?.id);
@@ -22,7 +22,7 @@ const DashboardPage = () => {
     );
   }
 
-  if (profile?.role !== "ShopOwner") {
+  if (user?.role !== "ShopOwner") {
     return <Navigate to="/" replace />;
   }
 

@@ -108,7 +108,6 @@ export function useAuth() {
         setUser(decoded);
         toast({ description: "Login successful!", duration: 3000 });
 
-        // Single navigation call
         setTimeout(() => {
           if (decoded.role === "ShopOwner") {
             navigate("/dashboard");

@@ -6,7 +6,7 @@ import ShopCard from "@/components/shop/ShopCard";
 import { Loader2, Sparkles } from "lucide-react";
 
 const Index = () => {
-  const { user, profile, loading } = useAuthContext();
+  const { user, loading } = useAuthContext();
   const { data: shops, isLoading: shopsLoading } = useAllShops();
 
   if (loading) {
@@ -21,7 +21,7 @@ const Index = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (profile?.role === "ShopOwner") {
+  if (user?.role === "ShopOwner") {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -34,7 +34,7 @@ const Index = () => {
             <h1 className="text-2xl font-bold">Nailify</h1>
           </div>
           <p className="text-muted-foreground">
-            Hi {profile?.fullName?.split(" ")[0]}! Find your perfect nail salon.
+            Hi {user.fullName}! Find your perfect nail salon.
           </p>
         </div>
 

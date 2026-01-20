@@ -29,7 +29,7 @@ const STATUS_COLORS: Record<BookingStatus, string> = {
 };
 
 const SchedulePage = () => {
-  const { user, profile, loading } = useAuthContext();
+  const { user, loading } = useAuthContext();
   const { myShop, shopLoading } = useShop();
   const { useShopBookings, updateBookingStatus } = useBookings();
   const { data: bookings, isLoading: bookingsLoading } = useShopBookings(
@@ -51,7 +51,7 @@ const SchedulePage = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (profile?.role !== "ShopOwner") {
+  if (user?.role !== "ShopOwner") {
     return <Navigate to="/" replace />;
   }
 
