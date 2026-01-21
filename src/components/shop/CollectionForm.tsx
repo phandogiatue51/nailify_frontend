@@ -7,29 +7,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Upload, X } from "lucide-react";
 import { Collection, ComponentType, ServiceItem } from "@/types/database";
 import { Badge } from "@/components/ui/badge";
+import { ComponentBadge } from "../badge/ComponentBadge";
 
 interface CollectionFormProps {
   serviceItems: ServiceItem[];
   initialData?: Partial<Collection>;
-  onSubmit: (formData: FormData) => Promise<void>; // Changed to FormData
+  onSubmit: (formData: FormData) => Promise<void>;
   isLoading?: boolean;
 }
-
-const typeLabels: Record<ComponentType, string> = {
-  Form: "Form",
-  Base: "Base",
-  Shape: "Shape",
-  Polish: "Polish",
-  Design: "Design",
-};
-
-const typeColors: Record<ComponentType, string> = {
-  Form: "bg-blue-100 text-blue-800",
-  Base: "bg-green-100 text-green-800",
-  Shape: "bg-purple-100 text-purple-800",
-  Polish: "bg-pink-100 text-pink-800",
-  Design: "bg-orange-100 text-orange-800",
-};
 
 const CollectionForm: React.FC<CollectionFormProps> = ({
   serviceItems,
@@ -42,9 +27,11 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
     initialData?.description || "",
   );
   const [selectedItems, setSelectedItems] = useState<string[]>(
-    initialData?.items?.map((i) => i.id) || [],
+    initialData?.items?.map((i) => i.serviceItemId) || [],
   );
-
+  const [estimatedDuration, setEstimatedDuration] = useState(
+    initialData?.estimatedDuration?.toString() || "60",
+  );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState(initialData?.imageUrl || "");
   const [uploading, setUploading] = useState(false);
@@ -80,17 +67,20 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
     setUploading(true);
 
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description || "");
 
-    // Add image file if exists
+    // Use capitalized field names to match backend
+    formData.append("Name", name);
+    formData.append("Description", description || "");
+    formData.append("EstimatedDuration", estimatedDuration || "60"); // Default 60 minutes, add input for this
+
+    // Add image file - field name must be "imageFile"
     if (imageFile) {
-      formData.append("imageFile", imageFile);
+      formData.append("imageFile", imageFile); // Changed from "image" to "imageFile"
     }
 
-    // Add selected item IDs
-    selectedItems.forEach((itemId, index) => {
-      formData.append(`itemIds[${index}]`, itemId);
+    // Add selected item IDs - use ServiceItemIds (plural) as field name
+    selectedItems.forEach((itemId) => {
+      formData.append("ServiceItemIds", itemId); // Multiple entries with same key
     });
 
     try {
@@ -148,6 +138,21 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="estimatedDuration">
+          Estimated Duration (minutes) *
+        </Label>
+        <Input
+          id="estimatedDuration"
+          type="number"
+          min="1"
+          value={estimatedDuration}
+          onChange={(e) => setEstimatedDuration(e.target.value)}
+          placeholder="e.g., 60"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
         <Label>Cover Image</Label>
         <div className="relative">
           <div className="relative aspect-video bg-muted rounded-lg overflow-hidden group">
@@ -200,7 +205,8 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
         {Object.entries(groupedItems).map(([type, items]) => (
           <div key={type} className="space-y-2">
             <p className="text-sm font-medium capitalize">
-              {typeLabels[type as ComponentType]}
+              {/* Use ComponentBadge for the header */}
+              <ComponentBadge role={Number(type)} />
             </p>
             <div className="space-y-2">
               {items.map((item) => (
@@ -226,12 +232,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
                         ${Number(item.price).toFixed(2)}
                       </p>
                     </div>
-                    <Badge
-                      className={typeColors[item.componentType]}
-                      variant="secondary"
-                    >
-                      {item.componentType}
-                    </Badge>
+                    <ComponentBadge role={item.componentType} />
                   </div>
                 </label>
               ))}

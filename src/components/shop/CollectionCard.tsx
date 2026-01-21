@@ -41,8 +41,11 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
           />
         ) : collection.items && collection.items.length > 0 ? (
           <div className="w-full h-full grid grid-cols-2 gap-0.5 p-0.5">
-            {collection.items.slice(0, 4).map((item, index) => (
-              <div key={item.id} className="bg-muted-foreground/10">
+            {collection.items?.slice(0, 4).map((item, index) => (
+              <div
+                key={item.id || `item-${index}`}
+                className="bg-muted-foreground/10"
+              >
                 {item.imageUrl ? (
                   <img
                     src={item.imageUrl}

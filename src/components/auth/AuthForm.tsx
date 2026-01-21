@@ -21,22 +21,21 @@ import { toast } from "sonner";
 import { Loader2, Sparkles } from "lucide-react";
 
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email("Hãy điền email hợp lệ"),
+  password: z.string().min(6, "Mật khẩu có ít nhất 6 chữ số"),
 });
 
 const signupSchema = z
   .object({
-    fullName: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Please enter a valid email"),
+    fullName: z.string().min(2, "Tên cần ít nhất 2 từ"),
+    email: z.string().email("Hãy điền email hợp lệ"),
     phone: z.string().optional(),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string()
-      .min(6, "Confirm Password must be at least 6 characters"),
-    role: z.enum(['0', '1']), // Keep as string in form
+    password: z.string().min(6, "Mật khẩu có ít nhất 6 chữ số"),
+    confirmPassword: z.string().min(6, "Mật khẩu có ít nhất 6 chữ số"),
+    role: z.enum(["0", "1"]), // Keep as string in form
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Mật khẩu không trùng khớp",
     path: ["confirmPassword"],
   });
 
@@ -85,7 +84,6 @@ const AuthForm = () => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-pink-50 via-background to-purple-50">
@@ -236,7 +234,7 @@ const AuthForm = () => {
                     <RadioGroup
                       defaultValue="0"
                       onValueChange={(value: string) => {
-                        signupForm.setValue("role", value as '0' | '1');
+                        signupForm.setValue("role", value as "0" | "1");
                       }}
                     >
                       <RadioGroupItem value="0" id="Customer" />
@@ -256,7 +254,7 @@ const AuthForm = () => {
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating account...
+                        Đang tạo tài khoản...
                       </>
                     ) : (
                       "Create Account"

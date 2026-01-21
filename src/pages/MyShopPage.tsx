@@ -3,24 +3,19 @@ import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { useShop } from "@/hooks/useShop";
-import { useServiceItems } from "@/hooks/useServiceItems";
-import { useCollections } from "@/hooks/useCollections";
+import { useShopOwnerServiceItems } from "@/hooks/useServiceItems";
+import { useShopOwnerCollections } from "@/hooks/useCollections";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, Store, Edit } from "lucide-react";
+import { Loader2, Plus, Edit } from "lucide-react";
 import { ComponentType } from "@/types/database";
 import ShopForm from "@/components/shop/ShopForm";
-import ServiceItemForm from "@/components/shop/ServiceItemForm";
-import CollectionForm from "@/components/shop/CollectionForm";
 import ServiceItemCard from "@/components/shop/ServiceItemCard";
 import CollectionCard from "@/components/shop/CollectionCard";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
+import { useShopOwnerLocations } from "@/hooks/useLocation";
+import { Trash } from "lucide-react";
 
 const COMPONENT_TYPES: { value: ComponentType; label: string }[] = [
   { value: 0, label: "Forms" },
@@ -32,29 +27,29 @@ const COMPONENT_TYPES: { value: ComponentType; label: string }[] = [
 
 const MyShopPage = () => {
   const { user, loading } = useAuthContext();
-  const { myShop, shopLoading, createShop, updateShop } = useShop();
+  const navigate = useNavigate();
+  const { myShop, shopLoading, createShop, updateShop, refetchMyShop } =
+    useShop();
+  const {
+    locations,
+    isLoading: locationsLoading,
+    deleteLocation,
+  } = useShopOwnerLocations();
+
   const {
     serviceItems,
     groupedItems,
     isLoading: itemsLoading,
-    createServiceItem,
-    updateServiceItem,
     deleteServiceItem,
-  } = useServiceItems(myShop?.id);
+  } = useShopOwnerServiceItems();
+
   const {
     collections,
     isLoading: collectionsLoading,
-    createCollection,
-    updateCollection,
     deleteCollection,
-  } = useCollections(myShop?.id);
+  } = useShopOwnerCollections();
 
-  const [showShopForm, setShowShopForm] = useState(false);
-  const [showItemForm, setShowItemForm] = useState(false);
-  const [showCollectionForm, setShowCollectionForm] = useState(false);
-  const [editingItem, setEditingItem] = useState<any>(null);
-  const [editingCollection, setEditingCollection] = useState<any>(null);
-  const [selectedType, setSelectedType] = useState<ComponentType>(0);
+  const [isEditingShop, setIsEditingShop] = useState(false);
 
   if (loading || shopLoading) {
     return (
@@ -72,50 +67,16 @@ const MyShopPage = () => {
     return <Navigate to="/" replace />;
   }
 
-  const handleCreateItem = async (data: any) => {
-    if (!myShop) return;
-    await createServiceItem.mutateAsync({
-      ...data,
-      shop_id: myShop.id,
-    });
-    setShowItemForm(false);
-  };
-
-  const handleUpdateItem = async (data: any) => {
-    await updateServiceItem.mutateAsync({
-      id: editingItem.id,
-      ...data,
-    });
-    setEditingItem(null);
-  };
-
   const handleDeleteItem = async (id: string) => {
     await deleteServiceItem.mutateAsync(id);
   };
 
-  const handleCreateCollection = async (data: any) => {
-    if (!myShop) return;
-    await createCollection.mutateAsync({
-      collection: {
-        ...data,
-        shop_id: myShop.id,
-      },
-      itemIds: data.itemIds || [],
-    });
-    setShowCollectionForm(false);
-  };
-
-  const handleUpdateCollection = async (data: any) => {
-    await updateCollection.mutateAsync({
-      id: editingCollection.id,
-      collection: data,
-      itemIds: data.itemIds,
-    });
-    setEditingCollection(null);
-  };
-
   const handleDeleteCollection = async (id: string) => {
     await deleteCollection.mutateAsync(id);
+  };
+
+  const handleDeleteLocation = async (shopLocationId: string) => {
+    await deleteLocation.mutateAsync(shopLocationId);
   };
 
   // No shop yet - show create form
@@ -138,6 +99,39 @@ const MyShopPage = () => {
     );
   }
 
+  if (isEditingShop) {
+    return (
+      <MobileLayout>
+        <div className="p-4 space-y-6">
+          <div className="pt-4">
+            <h1 className="text-2xl font-bold">Edit Shop</h1>
+            <p className="text-muted-foreground">Update your shop details</p>
+          </div>
+          <ShopForm
+            initialData={myShop}
+            onSubmit={async (formData) => {
+              await updateShop.mutateAsync({
+                formData,
+              });
+              setTimeout(() => {
+                refetchMyShop();
+                setIsEditingShop(false);
+              }, 500);
+            }}
+            isLoading={updateShop.isPending}
+          />
+          <Button
+            variant="outline"
+            onClick={() => setIsEditingShop(false)}
+            className="w-full"
+          >
+            Cancel
+          </Button>
+        </div>
+      </MobileLayout>
+    );
+  }
+
   return (
     <MobileLayout>
       <div className="p-4 space-y-6">
@@ -145,23 +139,24 @@ const MyShopPage = () => {
         <div className="pt-4 flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold">{myShop.name}</h1>
-            <p className="text-muted-foreground">
-              {myShop.address || "No address set"}
-            </p>
+            <p className="text-muted-foreground">{myShop.description}</p>
           </div>
           <Button
             variant="outline"
-            size="icon"
-            onClick={() => setShowShopForm(true)}
+            size="sm"
+            onClick={() => setIsEditingShop(true)}
+            className="flex items-center gap-1"
           >
             <Edit className="w-4 h-4" />
+            <span>Edit Shop</span>
           </Button>
         </div>
 
         <Tabs defaultValue="services" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="collections">Collections</TabsTrigger>
+            <TabsTrigger value="locations">Locations</TabsTrigger>
           </TabsList>
 
           <TabsContent value="services" className="space-y-4">
@@ -170,13 +165,15 @@ const MyShopPage = () => {
               {COMPONENT_TYPES.map((type) => (
                 <Button
                   key={type.value}
-                  variant={selectedType === type.value ? "default" : "outline"}
+                  variant="outline"
                   size="sm"
-                  onClick={() => setSelectedType(type.value)}
+                  onClick={() =>
+                    navigate(`/my-shop/service-items/create/${type.value}`)
+                  }
                   className="whitespace-nowrap"
                 >
                   {type.label}
-                  {groupedItems[type.value]?.length > 0 && (
+                  {groupedItems && groupedItems[type.value]?.length > 0 && (
                     <span className="ml-1 text-xs">
                       ({groupedItems[type.value].length})
                     </span>
@@ -185,28 +182,21 @@ const MyShopPage = () => {
               ))}
             </div>
 
-            {/* Add Button */}
-            <Button onClick={() => setShowItemForm(true)} className="w-full">
-              <Plus className="w-4 h-4 mr-2" />
-              Add{" "}
-              {COMPONENT_TYPES.find(
-                (t) => t.value === selectedType,
-              )?.label.slice(0, -1)}
-            </Button>
-
             {/* Items List */}
             {itemsLoading ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
               </div>
-            ) : groupedItems[selectedType]?.length > 0 ? (
+            ) : serviceItems && serviceItems.length > 0 ? (
               <div className="grid grid-cols-2 gap-3">
-                {groupedItems[selectedType].map((item) => (
+                {serviceItems.map((item) => (
                   <ServiceItemCard
                     key={item.id}
                     item={item}
                     showActions
-                    onEdit={() => setEditingItem(item)}
+                    onEdit={() =>
+                      navigate(`/my-shop/service-items/edit/${item.id}`)
+                    }
                     onDelete={() => handleDeleteItem(item.id)}
                   />
                 ))}
@@ -214,34 +204,47 @@ const MyShopPage = () => {
             ) : (
               <Card>
                 <CardContent className="py-8 text-center text-muted-foreground">
-                  <p>No {selectedType}s added yet</p>
+                  <p>No services added yet</p>
                   <p className="text-sm">Add your first one to get started</p>
+                  <Button
+                    onClick={() => navigate("/my-shop/service-items/create/0")}
+                    className="mt-4"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add First Service
+                  </Button>
                 </CardContent>
               </Card>
             )}
           </TabsContent>
 
           <TabsContent value="collections" className="space-y-4">
-            <Button
-              onClick={() => setShowCollectionForm(true)}
-              className="w-full"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Collection
-            </Button>
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/my-shop/collections/create")}
+                className="whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Collection
+              </Button>
+            </div>
 
             {collectionsLoading ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
               </div>
             ) : collections && collections.length > 0 ? (
-              <div className="space-y-4">
-                {collections.map((collection) => (
+              <div className="grid grid-cols-2 gap-3">
+                {collections.map((collection, index) => (
                   <CollectionCard
-                    key={collection.id}
+                    key={collection.id || index}
                     collection={collection}
                     showActions
-                    onEdit={() => setEditingCollection(collection)}
+                    onEdit={() =>
+                      navigate(`/my-shop/collections/edit/${collection.id}`)
+                    }
                     onDelete={() => handleDeleteCollection(collection.id)}
                   />
                 ))}
@@ -251,95 +254,91 @@ const MyShopPage = () => {
                 <CardContent className="py-8 text-center text-muted-foreground">
                   <p>No collections yet</p>
                   <p className="text-sm">Create a set of services</p>
+                  <Button
+                    onClick={() => navigate("/my-shop/collections/create")}
+                    className="mt-4"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create First Collection
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="locations" className="space-y-4">
+            <Button
+              onClick={() => navigate("/my-shop/locations/create")}
+              className="w-full"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Location
+            </Button>
+
+            {locationsLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            ) : locations && locations.length > 0 ? (
+              <div className="space-y-3">
+                {locations.map((location) => (
+                  <Card key={location.shopLocationId}>
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-1">
+                          <h3 className="font-semibold">{location.address}</h3>
+                          {location.city && (
+                            <p className="text-sm text-muted-foreground">
+                              {location.city}
+                            </p>
+                          )}
+                          {location.phone && (
+                            <p className="text-sm">{location.phone}</p>
+                          )}
+                          {location.openingTime && location.closingTime && (
+                            <p className="text-sm">
+                              Hours: {location.openingTime} -{" "}
+                              {location.closingTime}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              navigate(
+                                `/my-shop/locations/edit/${location.shopLocationId}`,
+                              )
+                            }
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              handleDeleteLocation(location.shopLocationId)
+                            }
+                          >
+                            <Trash className="w-4 h-4 text-red-500" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="py-8 text-center text-muted-foreground">
+                  <p>No locations added yet</p>
+                  <p className="text-sm">Add your shop location</p>
                 </CardContent>
               </Card>
             )}
           </TabsContent>
         </Tabs>
-
-        {/* Shop Edit Dialog */}
-        <Dialog open={showShopForm} onOpenChange={setShowShopForm}>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Edit Shop</DialogTitle>
-            </DialogHeader>
-            <ShopForm
-              initialData={myShop}
-              onSubmit={async (formData) => {
-                await updateShop.mutateAsync({
-                  id: myShop.id,
-                  formData,
-                });
-              }}
-              isLoading={updateShop.isPending}
-            />
-          </DialogContent>
-        </Dialog>
-
-        {/* Service Item Form Dialog */}
-        <Dialog open={showItemForm} onOpenChange={setShowItemForm}>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Add {selectedType}</DialogTitle>
-            </DialogHeader>
-            <ServiceItemForm
-              componentType={selectedType}
-              onSubmit={handleCreateItem}
-              isLoading={createServiceItem.isPending}
-            />
-          </DialogContent>
-        </Dialog>
-
-        {/* Edit Service Item Dialog */}
-        <Dialog open={!!editingItem} onOpenChange={() => setEditingItem(null)}>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Edit {editingItem?.component_type}</DialogTitle>
-            </DialogHeader>
-            {editingItem && (
-              <ServiceItemForm
-                componentType={editingItem.component_type}
-                initialData={editingItem}
-                onSubmit={handleUpdateItem}
-                isLoading={updateServiceItem.isPending}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-
-        {/* Collection Form Dialog */}
-        <Dialog open={showCollectionForm} onOpenChange={setShowCollectionForm}>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Create Collection</DialogTitle>
-            </DialogHeader>
-            <CollectionForm
-              serviceItems={serviceItems || []}
-              onSubmit={handleCreateCollection}
-              isLoading={createCollection.isPending}
-            />
-          </DialogContent>
-        </Dialog>
-
-        {/* Edit Collection Dialog */}
-        <Dialog
-          open={!!editingCollection}
-          onOpenChange={() => setEditingCollection(null)}
-        >
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Edit Collection</DialogTitle>
-            </DialogHeader>
-            {editingCollection && (
-              <CollectionForm
-                serviceItems={serviceItems || []}
-                initialData={editingCollection}
-                onSubmit={handleUpdateCollection}
-                isLoading={updateCollection.isPending}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
       </div>
     </MobileLayout>
   );

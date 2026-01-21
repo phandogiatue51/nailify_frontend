@@ -41,6 +41,14 @@ export interface ServiceItem {
   updatedAt: string;
 }
 
+export interface CollectionItemDto {
+  id: string;
+  serviceItemId: string;
+  serviceItemName?: string;
+  serviceItemPrice?: number;
+  serviceItemImageUrl?: string | null;
+}
+
 export interface Collection {
   id: string;
   shopId: string;
@@ -51,7 +59,7 @@ export interface Collection {
   estimatedDuration: number;
   createdAt: string;
   updatedAt: string;
-  items?: ServiceItem[];
+  items?: CollectionItemDto[];
   totalPrice?: number;
 }
 
@@ -87,4 +95,28 @@ export interface BookingItem {
   price: number;
   createdAt: string;
   serviceItem?: ServiceItem;
+}
+
+export interface ShopLocation {
+  shopLocationId: string;
+  address: string;
+  city?: string | null;
+  phone?: string | null;
+  openingTime?: string | null;
+  closingTime?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
+}
+
+export interface ShopLocationCreateDto {
+  address: string;
+  city?: string;
+  phone?: string;
+  openingTime?: string;
+  closingTime?: string;
+  latitude?: number;
+  longitude?: number;
 }

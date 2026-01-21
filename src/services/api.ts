@@ -3,7 +3,7 @@
 
 import { BookingStatus } from "@/types/database";
 
-const API_BASE_URL = "https://nailify.onrender.com/api";
+const API_BASE_URL = "https://localhost:7144/api";
 
 interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;
@@ -151,16 +151,23 @@ export const collectionAPI = {
 
   getByShop: (shopId: string) => apiRequest(`/Collection/shop/${shopId}`),
 
-  createShop: (formData: FormData) =>
+  getByShopAuth: () => apiRequest("/Collection/shopAuth"),
+
+  createCollection: (formData: FormData) =>
     apiRequest("/Collection", {
       method: "POST",
       body: formData,
     }),
 
-  updateShop: (id: string, formData: FormData) =>
+  updateCollection: (id: string, formData: FormData) =>
     apiRequest(`/Collection/${id}`, {
       method: "PUT",
       body: formData,
+    }),
+
+  deleteCollection: (id: string) =>
+    apiRequest(`/Collection/${id}`, {
+      method: "DELETE",
     }),
 };
 
@@ -177,8 +184,8 @@ export const shopAPI = {
       body: formData,
     }),
 
-  updateShop: (id: string, formData: FormData) =>
-    apiRequest(`/Shop/${id}`, {
+  updateShop: (formData: FormData) =>
+    apiRequest(`/Shop`, {
       method: "PUT",
       body: formData,
     }),
@@ -191,6 +198,8 @@ export const serviceItemAPI = {
 
   getByShop: (shopId: string) => apiRequest(`/ServiceItem/shop/${shopId}`),
 
+  getByShopAuth: () => apiRequest("/ServiceItem/shopAuth"),
+
   createServiceItem: (formData: FormData) =>
     apiRequest("/ServiceItem", {
       method: "POST",
@@ -201,6 +210,11 @@ export const serviceItemAPI = {
     apiRequest(`/ServiceItem/${id}`, {
       method: "PUT",
       body: formData,
+    }),
+
+  deleteServiceItem: (id: string) =>
+    apiRequest(`/ServiceItem/${id}`, {
+      method: "DELETE",
     }),
 };
 
@@ -214,17 +228,49 @@ export const BookingAPI = {
   getByCustomer: (customerId: string) =>
     apiRequest(`/Booking/customer/${customerId}`),
 
-  createBooking: (dto: any) =>
-    apiRequest("/Booking", {
+  createUserBooking: (dto: any) =>
+    apiRequest("/Booking/user-booking", {
       method: "POST",
       body: dto,
     }),
 
-  // updateStatus: (id: string, status: BookingStatus) =>
-  //   apiRequest(`/Booking/update-status/${id}`, {
-  //     method: "PUT",
-  //     body: status,
-  //   }),
+  createShopBooking: (dto: any) =>
+    apiRequest("/Booking/shop-booking", {
+      method: "POST",
+      body: dto,
+    }),
+
+  updateStatus: (id: string, status: any) =>
+    apiRequest(`/Booking/update-status/${id}`, {
+      method: "PUT",
+      body: status,
+    }),
+};
+
+export const LocationAPI = {
+  getByShop: () => apiRequest(`/Location`),
+
+  getById: (id: string) =>
+    apiRequest(`/Location/${id}`, {
+      method: "GET",
+    }),
+
+  createLocation: (dto: any) =>
+    apiRequest("/Location", {
+      method: "POST",
+      body: dto,
+    }),
+
+  updateLocation: (id: string, dto: any) =>
+    apiRequest(`/Location/${id}`, {
+      method: "PUT",
+      body: dto,
+    }),
+
+  deleteLocation: (id: string) =>
+    apiRequest(`/Location/${id}`, {
+      method: "DELETE",
+    }),
 };
 
 export default apiRequest;

@@ -10,6 +10,7 @@ interface DecodedJWT {
   email: string;
   role: 0 | 1 | 2; // 0: Customer, 1: ShopOwner, 2: Admin
   fullName?: string;
+  shopId: string;
   exp: number;
 }
 
@@ -25,7 +26,11 @@ const decodeJWT = (token: string): DecodedJWT | null => {
 
     if (roleClaim === "Customer" || roleClaim === "0" || roleClaim === 0) {
       role = 0;
-    } else if (roleClaim === "ShopOwner" || roleClaim === "1" || roleClaim === 1) {
+    } else if (
+      roleClaim === "ShopOwner" ||
+      roleClaim === "1" ||
+      roleClaim === 1
+    ) {
       role = 1;
     } else if (roleClaim === "Admin" || roleClaim === "2" || roleClaim === 2) {
       role = 2;
@@ -37,15 +42,19 @@ const decodeJWT = (token: string): DecodedJWT | null => {
     return {
       userId:
         decoded[
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/nameidentifier"
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/nameidentifier"
         ],
       email:
         decoded[
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress"
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress"
         ],
       role: role,
       fullName:
         decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/name"],
+      shopId:
+        decoded[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/shopId"
+        ],
       exp: decoded.exp,
     };
   } catch (error) {
@@ -73,7 +82,6 @@ export function useAuth() {
     };
   }, []);
 
-  // Initialize user from token on mount
   useEffect(() => {
     const token =
       localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
@@ -110,7 +118,8 @@ export function useAuth() {
 
         setTimeout(() => {
           // Check role as number now
-          if (decoded.role === 1) { // ShopOwner = 1
+          if (decoded.role === 1) {
+            // ShopOwner = 1
             navigate("/dashboard");
           } else {
             navigate("/");
@@ -213,7 +222,8 @@ export function useAuth() {
   }, []);
 
   const hasRole = useCallback(
-    (role: number | number[]) => { // Updated to accept numbers
+    (role: number | number[]) => {
+      // Updated to accept numbers
       if (user?.role === undefined) return false;
       if (Array.isArray(role)) return role.includes(user.role);
       return user.role === role;

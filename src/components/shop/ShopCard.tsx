@@ -42,20 +42,6 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
             {shop.description}
           </p>
         )}
-        <div className="flex flex-col gap-1 mt-3 text-sm text-muted-foreground">
-          {shop.address && (
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              <span className="truncate">{shop.address}</span>
-            </div>
-          )}
-          {shop.phone && (
-            <div className="flex items-center gap-2">
-              <Phone className="w-4 h-4" />
-              <span>{shop.phone}</span>
-            </div>
-          )}
-        </div>
       </CardContent>
     </Card>
   );

@@ -21,8 +21,6 @@ const ShopForm: React.FC<ShopFormProps> = ({
   const [description, setDescription] = useState(
     initialData?.description || "",
   );
-  const [address, setAddress] = useState(initialData?.address || "");
-  const [phone, setPhone] = useState(initialData?.phone || "");
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState(initialData?.logoUrl || "");
@@ -74,15 +72,11 @@ const ShopForm: React.FC<ShopFormProps> = ({
     const formData = new FormData();
     formData.append("name", name);
     formData.append("description", description || "");
-    formData.append("address", address || "");
-    formData.append("phone", phone || "");
 
-    // Only append logo if a new file was selected
     if (logoFile) {
       formData.append("logoFile", logoFile);
     }
 
-    // Only append cover if a new file was selected
     if (coverFile) {
       formData.append("coverFile", coverFile);
     }
@@ -90,7 +84,6 @@ const ShopForm: React.FC<ShopFormProps> = ({
     try {
       await onSubmit(formData);
 
-      // Reset files after successful submission
       if (logoFile) {
         setLogoFile(null);
       }
@@ -125,26 +118,6 @@ const ShopForm: React.FC<ShopFormProps> = ({
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Tell customers about your shop..."
           rows={3}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="address">Address</Label>
-        <Input
-          id="address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="123 Main St, City"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="phone">Phone</Label>
-        <Input
-          id="phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="+1 234 567 8900"
         />
       </div>
 

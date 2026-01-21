@@ -1,14 +1,13 @@
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import { ComponentType, ServiceItem } from "@/types/database";
 
 interface ServiceItemFormProps {
   componentType: ComponentType;
-  shopId?: string;
   initialData?: Partial<ServiceItem>;
   onSubmit: (formData: FormData) => Promise<void>;
   isLoading?: boolean;
@@ -16,7 +15,6 @@ interface ServiceItemFormProps {
 
 const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
   componentType,
-  shopId,
   initialData,
   onSubmit,
   isLoading,
@@ -28,17 +26,39 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
   const [price, setPrice] = useState(initialData?.price?.toString() || "");
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || "");
+  const [hasExistingImage, setHasExistingImage] = useState(
+    !!initialData?.imageUrl,
+  );
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (initialData?.imageUrl) {
+      setImageUrl(initialData.imageUrl);
+      setHasExistingImage(true);
+    } else {
+      setImageUrl("");
+      setHasExistingImage(false);
+    }
+  }, [initialData]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
+      setHasExistingImage(false);
 
-      // Create preview URL
       const previewUrl = URL.createObjectURL(selectedFile);
       setImageUrl(previewUrl);
+    }
+  };
+
+  const removeImage = () => {
+    setFile(null);
+    setImageUrl("");
+    setHasExistingImage(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -47,28 +67,28 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
     setUploading(true);
 
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description || "");
-    formData.append("price", price);
-    formData.append("componentType", componentType);
 
-    if (shopId) {
-      formData.append("shopId", shopId);
-    }
+    // Use exact field names your backend expects
+    formData.append("Name", name);
+    formData.append("Description", description || "");
+    formData.append("Price", price);
+    formData.append("ComponentType", componentType.toString());
 
+    // Use "imageFile" as field name (matching your backend)
     if (file) {
-      formData.append("image", file);
+      formData.append("imageFile", file); // Field name must be "imageFile"
     }
 
     try {
       await onSubmit(formData);
-      // Reset form if successful
+
       if (!initialData) {
         setName("");
         setDescription("");
         setPrice("");
         setFile(null);
         setImageUrl("");
+        setHasExistingImage(false);
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
@@ -81,11 +101,11 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
   };
 
   const typeLabels: Record<ComponentType, string> = {
-    Form: "Form",
-    Base: "Base",
-    Shape: "Shape",
-    Polish: "Polish",
-    Design: "Design",
+    0: "Form",
+    1: "Base",
+    2: "Shape",
+    3: "Polish",
+    4: "Design",
   };
 
   return (
@@ -96,7 +116,7 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder={`Enter ${typeLabels[componentType].toLowerCase()} name`}
+          placeholder={`Enter ${typeLabels[componentType]?.toLowerCase() || "service"} name`}
           required
         />
       </div>
@@ -131,13 +151,22 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
       <div className="space-y-2">
         <Label htmlFor="image">Image</Label>
         <div className="flex items-center gap-4">
-          <div className="relative aspect-square bg-muted rounded-lg overflow-hidden w-32">
+          <div className="relative aspect-square bg-muted rounded-lg overflow-hidden w-32 group">
             {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt={name}
-                className="w-full h-full object-cover"
-              />
+              <>
+                <img
+                  src={imageUrl}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </>
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <Upload className="w-8 h-8 text-muted-foreground" />
@@ -156,6 +185,11 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
           <div className="text-sm text-muted-foreground">
             <p>Upload an image (optional)</p>
             <p className="text-xs">JPG, PNG up to 5MB</p>
+            {hasExistingImage && !file && (
+              <p className="text-xs text-amber-600 mt-1">
+                Existing image will be kept
+              </p>
+            )}
           </div>
         </div>
         {uploading && (

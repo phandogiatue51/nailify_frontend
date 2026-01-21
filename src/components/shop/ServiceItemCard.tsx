@@ -13,12 +13,22 @@ interface ServiceItemCardProps {
   onDelete?: (item: ServiceItem) => void;
 }
 
-const componentTypeColors: Record<string, string> = {
-  Form: "bg-blue-100 text-blue-800",
-  Base: "bg-green-100 text-green-800",
-  Shape: "bg-purple-100 text-purple-800",
-  Polish: "bg-pink-100 text-pink-800",
-  Design: "bg-orange-100 text-orange-800",
+// Map numeric component types to colors
+const componentTypeColors: Record<number, string> = {
+  0: "bg-blue-100 text-blue-800",
+  1: "bg-green-100 text-green-800",
+  2: "bg-purple-100 text-purple-800",
+  3: "bg-pink-100 text-pink-800",
+  4: "bg-orange-100 text-orange-800",
+};
+
+// Map numeric component types to labels
+const componentTypeLabels: Record<number, string> = {
+  0: "Form",
+  1: "Base",
+  2: "Shape",
+  3: "Polish",
+  4: "Design",
 };
 
 const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
@@ -61,7 +71,7 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
             componentTypeColors[item.componentType],
           )}
         >
-          {item.componentType}
+          {componentTypeLabels[item.componentType]} {/* Use the label */}
         </Badge>
       </div>
       <CardContent className="p-3">

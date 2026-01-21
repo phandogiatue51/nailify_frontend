@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/components/auth/AuthProvider";
-import { useShopById } from "@/hooks/useShop";
-import { useServiceItems } from "@/hooks/useServiceItems";
-import { useCollections } from "@/hooks/useCollections";
+import {
+  useCustomerShopById,
+  useCustomerServiceItems,
+  useCustomerCollections,
+} from "@/hooks/useCustomer";
+
 import { useBookings } from "@/hooks/useBookings";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
@@ -41,9 +44,11 @@ const ShopDetailPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const navigate = useNavigate();
   const { user, loading } = useAuthContext();
-  const { data: shop, isLoading: shopLoading } = useShopById(shopId);
-  const { groupedItems, isLoading: itemsLoading } = useServiceItems(shopId);
-  const { collections, isLoading: collectionsLoading } = useCollections(shopId);
+  const { data: shop, isLoading: shopLoading } = useCustomerShopById(shopId);
+  const { groupedItems, isLoading: itemsLoading } =
+    useCustomerServiceItems(shopId);
+  const { data: collections, isLoading: collectionsLoading } =
+    useCustomerCollections(shopId);
   const { createBooking } = useBookings();
 
   const [selectedItems, setSelectedItems] = useState<ServiceItem[]>([]);
@@ -56,7 +61,14 @@ const ShopDetailPage = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [showCustomerForm, setShowCustomerForm] = useState(false);
-  const COMPONENT_TYPES = [{ value: 0, label: "Forms" }, { value: 1, label: "Bases" }, { value: 2, label: "Shapes" }, { value: 3, label: "Polish" }, { value: 4, label: "Designs" },];
+
+  const COMPONENT_TYPES = [
+    { value: 0, label: "Forms" },
+    { value: 1, label: "Bases" },
+    { value: 2, label: "Shapes" },
+    { value: 3, label: "Polish" },
+    { value: 4, label: "Designs" },
+  ];
   if (loading || shopLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
