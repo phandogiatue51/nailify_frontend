@@ -1,9 +1,7 @@
 //https://localhost:7144/api
 //https://nailify.onrender.com/api
 
-import { BookingStatus } from "@/types/database";
-
-const API_BASE_URL = "https://localhost:7144/api";
+const API_BASE_URL = "https://nailify.onrender.com/api";
 
 interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;

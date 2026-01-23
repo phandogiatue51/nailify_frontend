@@ -15,7 +15,6 @@ const ProfilePage = () => {
   const { logout } = useAuthContext();
   const { profile, updateProfile, fetchProfile, loading, error } = useProfile();
   const navigate = useNavigate();
-
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -139,6 +138,7 @@ const ProfilePage = () => {
               >
                 Edit
               </Button>
+
             ) : (
               <Button variant="ghost" size="sm" onClick={handleCancel}>
                 Cancel
@@ -200,6 +200,13 @@ const ProfilePage = () => {
                 </Button>
               </>
             )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/profile/change-password")}
+              className="mt-2" >
+              Change Password
+            </Button>
           </CardContent>
         </Card>
 

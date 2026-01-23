@@ -21,7 +21,7 @@ import CreateCollectionPage from "./components/shop/CreateCollectionPage";
 import EditCollectionPage from "./components/shop/EditCollectionPage";
 import CreateLocationPage from "./components/shop/CreateLocationPage";
 import EditLocationPage from "./components/shop/EditLocationPage";
-
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -33,9 +33,11 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
 
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/change-password" element={<ChangePasswordPage />} />
+
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/my-shop" element={<MyShopPage />} />
           <Route
             path="/my-shop/service-items/create/:type"

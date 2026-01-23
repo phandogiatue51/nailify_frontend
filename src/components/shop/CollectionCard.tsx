@@ -46,10 +46,10 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
                 key={item.id || `item-${index}`}
                 className="bg-muted-foreground/10"
               >
-                {item.imageUrl ? (
+                {item.serviceItemImageUrl ? (
                   <img
-                    src={item.imageUrl}
-                    alt={item.name}
+                    src={item.serviceItemImageUrl}
+                    alt={item.serviceItemName}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -63,9 +63,10 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
             No items
           </div>
         )}
-        <Badge className="absolute top-2 right-2 bg-background/90">
+        <Badge className="absolute top-2 right-2">
           {itemCount} items
         </Badge>
+
       </div>
       <CardContent className="p-3">
         <h3 className="font-semibold truncate">{collection.name}</h3>
