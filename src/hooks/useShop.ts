@@ -13,7 +13,7 @@ export const useShop = () => {
   const navigate = useNavigate();
 
   const {
-    data: myShop = null, // Single shop, not array
+    data: myShop = null,
     isLoading: shopLoading,
     refetch: refetchMyShop,
   } = useQuery({
@@ -21,10 +21,9 @@ export const useShop = () => {
     queryFn: async () => {
       if (!user) return null;
       try {
-        return await shopAPI.getMyShops(); // This returns a single shop
+        return await shopAPI.getMyShops();
       } catch (error: any) {
         console.error("Error fetching user shop:", error);
-        // Return null for 404 (user has no shop yet)
         if (
           error.message?.includes("404") ||
           error.message?.includes("not found")
@@ -37,7 +36,6 @@ export const useShop = () => {
     enabled: !!user && user?.role === 1,
   });
 
-  // For backward compatibility, wrap in array
   const myShops = myShop ? [myShop] : [];
 
   const createShop = useMutation({
@@ -45,7 +43,6 @@ export const useShop = () => {
       if (!user || user.role !== 1) {
         throw new Error("Only Shop Owners can create shops");
       }
-      // Check if user already has a shop
       if (myShop) {
         throw new Error(
           "You already have a shop. Each user can only own one shop.",
@@ -54,16 +51,13 @@ export const useShop = () => {
       return await shopAPI.createShop(formData);
     },
     onSuccess: (data) => {
-      // Invalidate and refetch the user's shop query
       queryClient.invalidateQueries({ queryKey: ["my-shop"] });
-
-      // Show success toast
       toast({
-        description: data.Message || "Shop created successfully!",
+        description: data.message || "Tạo cửa hàng thành công!", // ✅ Use `data`
+        variant: "success",
         duration: 3000,
       });
 
-      // Navigate after a delay
       setTimeout(() => {
         navigate("/dashboard");
       }, 100);
@@ -73,8 +67,9 @@ export const useShop = () => {
     onError: (error: any) => {
       console.error("Error creating shop:", error);
       toast({
-        description: error.message || "Failed to create shop",
+        description: error?.message || "Có lỗi xảy ra!",
         variant: "destructive",
+        duration: 5000,
       });
       throw error;
     },
@@ -85,14 +80,11 @@ export const useShop = () => {
       return await shopAPI.updateShop(formData);
     },
     onSuccess: (updatedShop) => {
-      // Update cache for specific shop
       queryClient.setQueryData(["shop", updatedShop.id], updatedShop);
-
-      // Update user's shop query
       queryClient.setQueryData(["my-shop", user?.userId], updatedShop);
-
       toast({
-        description: "Shop updated successfully!",
+        description: updatedShop.message || "Cập nhật cửa hàng thành công!", // ✅ Use `updatedShop`
+        variant: "success",
         duration: 3000,
       });
 
@@ -101,39 +93,21 @@ export const useShop = () => {
     onError: (error: any) => {
       console.error("Error updating shop:", error);
       toast({
-        description: error.message || "Failed to update shop",
+        description: error?.message || "Có lỗi xảy ra!",
         variant: "destructive",
+        duration: 5000,
       });
       throw error;
     },
   });
 
-  const deleteShop = useMutation({
-    mutationFn: async (shopId: string) => {
-      throw new Error("Delete shop endpoint not implemented");
-    },
-    onSuccess: (_, shopId) => {
-      // Remove user's shop
-      queryClient.setQueryData(["my-shop", user?.userId], null);
-
-      // Remove shop from cache
-      queryClient.removeQueries({ queryKey: ["shop", shopId] });
-
-      toast({
-        description: "Shop deleted successfully",
-        duration: 3000,
-      });
-    },
-  });
-
   return {
-    myShop, // Single shop (null if no shop)
-    myShops, // Array wrapper for backward compatibility
+    myShop,
+    myShops,
     shopLoading,
     shopsLoading: shopLoading,
     createShop,
     updateShop,
-    deleteShop,
     refetchMyShop,
     canManageShop: user?.role === 1,
   };

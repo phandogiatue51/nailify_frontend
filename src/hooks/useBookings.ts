@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BookingAPI } from "../services/api";
 import { useAuth } from "./use-auth";
 import { BookingStatus } from "@/types/database";
-
+import { useToast } from "./use-toast";
 interface CreateBookingParams {
   shopId: string;
   bookingDate: string;
@@ -15,9 +15,9 @@ interface CreateBookingParams {
 }
 
 export const useBookings = () => {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-
+  const { toast } = useToast();
   const { data: customerBookings = [], isLoading: customerBookingsLoading } =
     useQuery({
       queryKey: ["customer-bookings", user?.userId],
@@ -25,7 +25,7 @@ export const useBookings = () => {
         if (!user?.userId) return [];
         return await BookingAPI.getByCustomer(user.userId);
       },
-      enabled: !!user?.userId && profile?.role === "Customer",
+      enabled: !!user?.userId && user?.role === 0,
     });
 
   const useShopBookings = (shopId: string | undefined) => {
@@ -54,14 +54,23 @@ export const useBookings = () => {
         bookingTime: params.bookingTime,
         notes: params.notes,
       };
-      return await BookingAPI.createBooking(bookingData);
+      //const response = await BookingAPI.createBooking(bookingData);
     },
     onSuccess: () => {
+      toast({
+        //description: response.message,
+        variant: "success",
+        duration: 3000,
+      });
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
     },
     onError: (error: any) => {
       console.error("Booking creation error:", error);
-      throw error;
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
     },
   });
 
@@ -73,31 +82,52 @@ export const useBookings = () => {
       bookingId: string;
       status: BookingStatus;
     }) => {
-      return await BookingAPI.updateStatus(bookingId, status);
+      const response = await BookingAPI.updateStatus(bookingId, status);
     },
     onSuccess: (data, variables) => {
+      toast({
+        //description: response.message,
+        variant: "success",
+        duration: 3000,
+      });
       queryClient.invalidateQueries({ queryKey: ["shop-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
-
       queryClient.invalidateQueries({
         queryKey: ["booking", variables.bookingId],
       });
     },
     onError: (error: any) => {
       console.error("Update booking status error:", error);
-      throw error;
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
     },
   });
 
   const cancelBooking = useMutation({
     mutationFn: async (bookingId: string) => {
-      return await BookingAPI.updateStatus(
+      const response = await BookingAPI.updateStatus(
         bookingId,
-        "Cancelled" as BookingStatus,
+        4,
       );
     },
     onSuccess: () => {
+      toast({
+        //description: response.message,
+        variant: "success",
+        duration: 3000,
+      });
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
+    },
+    onError: (error: any) => {
+      console.error("Cancel booking error:", error);
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
     },
   });
 

@@ -6,7 +6,7 @@ import { useToast } from "./use-toast";
 export const useShopOwnerCollections = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  // Shop owners use getByShopAuth() which extracts shopId from JWT
+
   const { data: collections = [], isLoading } = useQuery({
     queryKey: ["shop-owner-collections"],
     queryFn: async () => {
@@ -27,26 +27,30 @@ export const useShopOwnerCollections = () => {
 
   const createCollection = useMutation({
     mutationFn: async (formData: FormData) => {
-      // Backend extracts shopId from JWT - no need to add shopId
+      // ✅ MUST return the response
       return await collectionAPI.createCollection(formData);
     },
     onSuccess: (data) => {
-      // Update cache immediately
+      // ✅ Parameter is named `data`
       queryClient.setQueryData(
         ["shop-owner-collections"],
         (old: Collection[] = []) => [...old, data],
       );
       toast({
-        description: "Collection created successfully!",
+        description: data.message || "Tạo bộ sưu tập thành công!", // ✅ Use `data`
+        variant: "success",
         duration: 3000,
       });
-      // Invalidate query to ensure freshness
       queryClient.invalidateQueries({ queryKey: ["shop-owner-collections"] });
       return data;
     },
     onError: (error: any) => {
       console.error("Error creating collection:", error);
-      throw error;
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
     },
   });
 
@@ -61,7 +65,7 @@ export const useShopOwnerCollections = () => {
       return await collectionAPI.updateCollection(id, formData);
     },
     onSuccess: (updatedCollection) => {
-      // Update cache immediately
+      // ✅ Parameter is named `updatedCollection`
       queryClient.setQueryData(
         ["shop-owner-collections"],
         (old: Collection[] = []) =>
@@ -70,43 +74,53 @@ export const useShopOwnerCollections = () => {
           ),
       );
       toast({
-        description: "Collection updated successfully!",
+        description: updatedCollection.message || "Cập nhật thành công!", // ✅ Use `updatedCollection`
+        variant: "success",
         duration: 3000,
       });
-      // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ["shop-owner-collections"] });
       return updatedCollection;
     },
     onError: (error: any) => {
       console.error("Error updating collection:", error);
-      throw error;
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
     },
   });
 
   const deleteCollection = useMutation({
     mutationFn: async (id: string) => {
+      // ✅ MUST return the response
       return await collectionAPI.deleteCollection(id);
     },
-    onSuccess: (_, collectionId) => {
-      // Remove from cache immediately
+    onSuccess: (data, collectionId) => {
+      // ✅ First parameter is `data` (response), second is `collectionId`
+      toast({
+        description: data.message || "Xóa thành công!", // ✅ Use `data`
+        variant: "success",
+        duration: 3000,
+      });
       queryClient.setQueryData(
         ["shop-owner-collections"],
         (old: Collection[] = []) =>
           old.filter((collection) => collection.id !== collectionId),
       );
-
-      // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ["shop-owner-collections"] });
     },
     onError: (error: any) => {
       console.error("Error deleting collection:", error);
-      throw error;
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
     },
   });
 
-  // Helper to get collection items
   const getCollectionItems = (collectionId: string) => {
-    // You might need a separate API endpoint for this
     return [];
   };
 
@@ -120,7 +134,6 @@ export const useShopOwnerCollections = () => {
   };
 };
 
-// Hook for a specific collection (shop owner view)
 export const useShopOwnerCollectionById = (
   collectionId: string | undefined,
 ) => {

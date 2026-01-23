@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { RoleBadge } from "@/components/badge/RoleBadge";
 import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
+import { VerificationButton } from "@/components/email/VerificationButton";
 
 const ProfilePage = () => {
   const { logout } = useAuthContext();
@@ -122,6 +123,14 @@ const ProfilePage = () => {
                 <p className="text-md text-muted-foreground">
                   <RoleBadge role={profile.role} />
                 </p>
+                {!profile?.isVerified && (
+                  <div className="mt-4">
+                    <p className="text-sm text-yellow-600 mb-2">
+                      Your email is not verified
+                    </p>
+                    <VerificationButton email={profile?.email} size="sm" />
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
@@ -138,7 +147,6 @@ const ProfilePage = () => {
               >
                 Edit
               </Button>
-
             ) : (
               <Button variant="ghost" size="sm" onClick={handleCancel}>
                 Cancel
@@ -204,7 +212,8 @@ const ProfilePage = () => {
               variant="outline"
               size="sm"
               onClick={() => navigate("/profile/change-password")}
-              className="mt-2" >
+              className="mt-2"
+            >
               Change Password
             </Button>
           </CardContent>

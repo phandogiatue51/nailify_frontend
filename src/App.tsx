@@ -15,6 +15,10 @@ import BookingsPage from "./pages/BookingsPage";
 import ExplorePage from "./pages/ExplorePage";
 import NotFound from "./pages/NotFound";
 
+import VerifyEmail from "./pages/VerifyEmail";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 import CreateServiceItemPage from "./components/shop/CreateServiceItemPage";
 import EditServiceItemPage from "./components/shop/EditServiceItemPage";
 import CreateCollectionPage from "./components/shop/CreateCollectionPage";
@@ -35,7 +39,10 @@ const App = () => (
           <Route path="/auth" element={<AuthPage />} />
 
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profile/change-password" element={<ChangePasswordPage />} />
+          <Route
+            path="/profile/change-password"
+            element={<ChangePasswordPage />}
+          />
 
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/my-shop" element={<MyShopPage />} />
@@ -64,6 +71,10 @@ const App = () => (
             path="/my-shop/locations/edit/:id"
             element={<EditLocationPage />}
           />
+
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/shop/:shopId" element={<ShopDetailPage />} />

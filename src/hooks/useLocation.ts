@@ -32,25 +32,30 @@ export const useShopOwnerLocations = () => {
 
   const createLocation = useMutation({
     mutationFn: async (dto: ShopLocationCreateDto) => {
+      // ✅ MUST return the response
       return await LocationAPI.createLocation(dto);
     },
     onSuccess: (data) => {
-      // Update cache immediately
+      // ✅ Parameter is named `data`
       queryClient.setQueryData(
         ["shop-owner-locations"],
         (old: ShopLocation[] = []) => [...old, data],
       );
       toast({
-        description: "Location created successfully!",
+        description: data.message,
+        variant: "success",
         duration: 3000,
       });
-      // Invalidate query to ensure freshness
       queryClient.invalidateQueries({ queryKey: ["shop-owner-locations"] });
       return data;
     },
     onError: (error: any) => {
       console.error("Error creating location:", error);
-      throw error;
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
     },
   });
 
@@ -65,7 +70,7 @@ export const useShopOwnerLocations = () => {
       return await LocationAPI.updateLocation(id, dto);
     },
     onSuccess: (updatedLocation) => {
-      // Update cache immediately - use shopLocationId
+      // ✅ Parameter is named `updatedLocation`
       queryClient.setQueryData(
         ["shop-owner-locations"],
         (old: ShopLocation[] = []) =>
@@ -76,7 +81,8 @@ export const useShopOwnerLocations = () => {
           ),
       );
       toast({
-        description: "Location updated successfully!",
+        description: updatedLocation.message,
+        variant: "success",
         duration: 3000,
       });
       queryClient.invalidateQueries({ queryKey: ["shop-owner-locations"] });
@@ -84,7 +90,11 @@ export const useShopOwnerLocations = () => {
     },
     onError: (error: any) => {
       console.error("Error updating location:", error);
-      throw error;
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
     },
   });
 
@@ -92,15 +102,16 @@ export const useShopOwnerLocations = () => {
     mutationFn: async (id: string) => {
       return await LocationAPI.deleteLocation(id);
     },
-    onSuccess: (_, locationId) => {
-      // Remove from cache immediately - use shopLocationId
+    onSuccess: (data, locationId) => {
+      // ✅ First parameter is `data` (response), second is `locationId`
       queryClient.setQueryData(
         ["shop-owner-locations"],
         (old: ShopLocation[] = []) =>
           old.filter((location) => location.shopLocationId !== locationId),
       );
       toast({
-        description: "Location deleted successfully!",
+        description: data.message,
+        variant: "success",
         duration: 3000,
       });
       queryClient.invalidateQueries({ queryKey: ["shop-owner-locations"] });
@@ -108,11 +119,10 @@ export const useShopOwnerLocations = () => {
     onError: (error: any) => {
       console.error("Error deleting location:", error);
       toast({
+        description: error?.message || "Có lỗi xảy ra!",
         variant: "destructive",
-        description: "Failed to delete location. Please try again.",
-        duration: 3000,
+        duration: 5000,
       });
-      throw error;
     },
   });
 

@@ -114,8 +114,11 @@ export function useAuth() {
 
       if (isMounted.current) {
         setUser(decoded);
-        toast({ description: "Login successful!", duration: 3000 });
-
+        toast({
+          description: response.message,
+          variant: "success",
+          duration: 3000,
+        });
         setTimeout(() => {
           // Check role as number now
           if (decoded.role === 1) {
@@ -131,8 +134,9 @@ export function useAuth() {
     } catch (error: any) {
       if (isMounted.current) {
         toast({
-          description: error.message || "Login failed",
+          description: error?.message || "Có lỗi xảy ra!",
           variant: "destructive",
+          duration: 5000,
         });
       }
       throw error;

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserRole } from "@/types/database";
+import { Link } from "react-router-dom";
+
 import {
   Card,
   CardContent,
@@ -152,6 +154,14 @@ const AuthForm = () => {
                       "Sign In"
                     )}
                   </Button>
+                  <div className="text-center mt-4">
+                    <Link
+                      to="/forgot-password"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Forgot your password?
+                    </Link>
+                  </div>
                 </form>
               </TabsContent>
 
@@ -236,11 +246,16 @@ const AuthForm = () => {
                       onValueChange={(value: string) => {
                         signupForm.setValue("role", value as "0" | "1");
                       }}
+                      className="grid grid-cols-2 gap-4"
                     >
-                      <RadioGroupItem value="0" id="Customer" />
-                      <Label htmlFor="Customer">Customer</Label>
-                      <RadioGroupItem value="1" id="ShopOwner" />
-                      <Label htmlFor="ShopOwner">Shop Owner</Label>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="0" id="Customer" />
+                        <Label htmlFor="Customer">Customer</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="1" id="ShopOwner" />
+                        <Label htmlFor="ShopOwner">Shop Owner</Label>
+                      </div>
                     </RadioGroup>
 
                     {signupForm.formState.errors.role && (

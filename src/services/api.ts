@@ -271,4 +271,34 @@ export const LocationAPI = {
     }),
 };
 
+export const emailAPI = {
+  sendVerification: (dto: any) =>
+    apiRequest("/Email/send-verification", {
+      method: "POST",
+      body: dto,
+    }),
+
+  sendPasswordReset: (dto: any) =>
+    apiRequest("/Email/send-password-reset", {
+      method: "POST",
+      body: dto,
+    }),
+
+  verify: (token: string) =>
+    apiRequest(`/Email/verify?token=${encodeURIComponent(token)}`, {
+      method: "GET",
+    }),
+
+  resetPassword: (dto: any) =>
+    apiRequest("/Email/reset-password", {
+      method: "POST",
+      body: dto,
+    }),
+
+  checkResetToken: (token: string) =>
+    apiRequest(`/Email/check-reset-token?token=${encodeURIComponent(token)}`, {
+      method: "GET",
+    }),
+};
+
 export default apiRequest;

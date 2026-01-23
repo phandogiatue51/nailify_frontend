@@ -12,6 +12,9 @@ export interface Profile {
   createdAt: string;
   updatedAt: string;
   isActive: boolean;
+  isVerified: boolean;
+  EmailVerificationToken: string;
+  PasswordResetToken: string;
 }
 
 export interface Shop {

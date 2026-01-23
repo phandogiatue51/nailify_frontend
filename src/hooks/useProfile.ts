@@ -1,11 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
 import { profileAPI } from "@/services/api";
 import { Profile } from "@/types/database";
+import { useToast } from "./use-toast";
 
 export function useProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const fetchProfile = useCallback(
     async (forceRefresh = false) => {
@@ -60,12 +62,21 @@ export function useProfile() {
     setLoading(true);
     setError(null);
     try {
-      const data = await profileAPI.updateProfile(profileData);
+      const data = await profileAPI.updateProfile(profileData); // This returns the response
+      toast({
+        description: data.message,
+        variant: "success",
+        duration: 3000,
+      });
       setProfile(data);
       return data;
-    } catch (err: any) {
-      setError(err.message || "Failed to update profile");
-      throw err;
+    } catch (error: any) {
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
+      throw error; // Consider re-throwing so calling code can handle it
     } finally {
       setLoading(false);
     }
@@ -76,11 +87,20 @@ export function useProfile() {
       setLoading(true);
       setError(null);
       try {
-        const data = await profileAPI.changePassword(passwordData);
+        const data = await profileAPI.changePassword(passwordData); // This returns the response
+        toast({
+          description: data.message,
+          variant: "success",
+          duration: 3000,
+        });
         return data;
-      } catch (err: any) {
-        setError(err.message || "Failed to change password");
-        throw err;
+      } catch (error: any) {
+        toast({
+          description: error?.message || "Có lỗi xảy ra!",
+          variant: "destructive",
+          duration: 5000,
+        });
+        throw error; // Consider re-throwing so calling code can handle it
       } finally {
         setLoading(false);
       }
