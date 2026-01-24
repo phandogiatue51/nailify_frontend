@@ -60,10 +60,10 @@ export const useCustomerServiceItems = (shopId: string | undefined) => {
   // Group items by component type
   const groupedItems = serviceItems.reduce(
     (acc, item) => {
-      if (!acc[item.component_type]) {
-        acc[item.component_type] = [];
+      if (!acc[item.componentType]) {
+        acc[item.componentType] = [];
       }
-      acc[item.component_type].push(item);
+      acc[item.componentType].push(item);
       return acc;
     },
     {} as Record<ComponentType, ServiceItem[]>,

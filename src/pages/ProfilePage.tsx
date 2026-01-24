@@ -4,11 +4,11 @@ import { useAuthContext } from "@/components/auth/AuthProvider";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Mail, Phone, Loader2 } from "lucide-react";
+import { LogOut, Mail, Phone, Loader2, CircleCheckBig, CircleAlert } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import { RoleBadge } from "@/components/badge/RoleBadge";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { VerificationButton } from "@/components/email/VerificationButton";
 
@@ -17,6 +17,7 @@ const ProfilePage = () => {
   const { profile, updateProfile, fetchProfile, loading, error } = useProfile();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -44,21 +45,24 @@ const ProfilePage = () => {
   };
 
   const handleSave = async () => {
+    setIsUpdating(true);
     try {
-      await updateProfile(formData);
+      const updatedProfile = await updateProfile(formData);
 
-      const updatedProfile = await fetchProfile();
-
-      setFormData({
-        fullName: updatedProfile.fullName || "",
-        phone: updatedProfile.phone || "",
-        email: updatedProfile.email || "",
-      });
+      if (updatedProfile) {
+        setFormData({
+          fullName: updatedProfile.fullName || "",
+          phone: updatedProfile.phone || "",
+          email: updatedProfile.email || "",
+        });
+      }
 
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to save profile:", error);
       alert("Failed to update profile. Please try again.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -108,6 +112,27 @@ const ProfilePage = () => {
     );
   }
 
+  // Handle case when profile is undefined
+  if (!profile) {
+    return (
+      <MobileLayout>
+        <div className="p-4">
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded">
+            <p className="font-medium">Profile not found</p>
+            <p className="text-sm mt-1">Please try refreshing the page</p>
+            <Button
+              variant="outline"
+              className="mt-3"
+              onClick={() => window.location.reload()}
+            >
+              Refresh
+            </Button>
+          </div>
+        </div>
+      </MobileLayout>
+    );
+  }
+
   return (
     <MobileLayout>
       <div className="p-4 space-y-6">
@@ -118,17 +143,39 @@ const ProfilePage = () => {
             <div className="flex items-center gap-4">
               <div>
                 <h2 className="text-xl font-semibold">
-                  {profile?.fullName || "User"}
+                  {profile.fullName || "User"}
                 </h2>
                 <p className="text-md text-muted-foreground">
                   <RoleBadge role={profile.role} />
                 </p>
-                {!profile?.isVerified && (
+                {!profile.isVerified ? (
                   <div className="mt-4">
-                    <p className="text-sm text-yellow-600 mb-2">
-                      Your email is not verified
-                    </p>
-                    <VerificationButton email={profile?.email} size="sm" />
+                    <div className="flex items-center gap-2 mb-2">
+                      <CircleAlert className="w-4 h-4 text-yellow-600" />
+                      <span className="text-sm text-yellow-700 font-medium">
+                        Email not verified
+                      </span>
+                    </div>
+                    {/* Only render VerificationButton if email exists */}
+                    {profile.email ? (
+                      <VerificationButton
+                        email={profile.email}
+                        size="sm"
+                        variant="outline"
+                        className="w-full border-yellow-300 text-yellow-700 hover:bg-yellow-50"
+                      />
+                    ) : (
+                      <p className="text-sm text-gray-500">No email available for verification</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="mt-4">
+                    <div className="flex items-center gap-2">
+                      <CircleCheckBig className="w-4 h-4 text-green-600" />
+                      <span className="text-sm text-green-700 font-medium">
+                        Email verified
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -144,11 +191,17 @@ const ProfilePage = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditing(true)}
+                disabled={isUpdating}
               >
                 Edit
               </Button>
             ) : (
-              <Button variant="ghost" size="sm" onClick={handleCancel}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCancel}
+                disabled={isUpdating}
+              >
                 Cancel
               </Button>
             )}
@@ -159,9 +212,9 @@ const ProfilePage = () => {
               <>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-muted-foreground" />
-                  <span>{profile?.email || "No email"}</span>
+                  <span>{profile.email || "No email"}</span>
                 </div>
-                {profile?.phone && (
+                {profile.phone && (
                   <div className="flex items-center gap-3">
                     <Phone className="w-5 h-5 text-muted-foreground" />
                     <span>{profile.phone}</span>
@@ -175,7 +228,7 @@ const ProfilePage = () => {
                   value={formData.fullName}
                   onChange={handleChange}
                   placeholder="Full Name"
-                  disabled={loading}
+                  disabled={isUpdating}
                 />
                 <Input
                   name="email"
@@ -183,21 +236,21 @@ const ProfilePage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Email"
-                  disabled={loading}
+                  disabled={isUpdating}
                 />
                 <Input
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Phone"
-                  disabled={loading}
+                  disabled={isUpdating}
                 />
                 <Button
                   onClick={handleSave}
-                  disabled={loading}
+                  disabled={isUpdating}
                   className="w-full"
                 >
-                  {loading ? (
+                  {isUpdating ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       Saving...
@@ -213,6 +266,7 @@ const ProfilePage = () => {
               size="sm"
               onClick={() => navigate("/profile/change-password")}
               className="mt-2"
+              disabled={isUpdating}
             >
               Change Password
             </Button>
@@ -223,7 +277,7 @@ const ProfilePage = () => {
           variant="destructive"
           className="w-full"
           onClick={handleSignOut}
-          disabled={loading}
+          disabled={loading || isUpdating}
         >
           <LogOut className="w-4 h-4 mr-2" />
           Sign Out

@@ -53,13 +53,12 @@ const ExplorePage = () => {
           />
         </div>
 
-        {/* Results */}
         {shopsLoading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
         ) : filteredShops.length > 0 ? (
-          <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
             {filteredShops.map((shop) => (
               <ShopCard key={shop.id} shop={shop} />
             ))}
@@ -79,6 +78,7 @@ const ExplorePage = () => {
             </CardContent>
           </Card>
         )}
+
       </div>
     </MobileLayout>
   );

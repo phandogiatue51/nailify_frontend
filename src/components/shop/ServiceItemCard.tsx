@@ -48,7 +48,7 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
       )}
       onClick={() => onSelect?.(item)}
     >
-      <div className="relative aspect-square bg-muted">
+      <div className="relative aspect-[4/3] bg-muted">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
@@ -60,22 +60,30 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
             No image
           </div>
         )}
+
         {selected && (
           <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
             <Check className="w-4 h-4 text-primary-foreground" />
           </div>
         )}
+
         <Badge
           className={cn(
             "absolute top-2 left-2 text-xs capitalize",
             componentTypeColors[item.componentType],
           )}
         >
-          {componentTypeLabels[item.componentType]} {/* Use the label */}
+          {componentTypeLabels[item.componentType]}
         </Badge>
       </div>
+
       <CardContent className="p-3">
         <h3 className="font-medium text-sm truncate">{item.name}</h3>
+        {item.description && (
+          <p className="text-sm text-muted-foreground truncate mt-1">
+            {item.description}
+          </p>
+        )}
         <p className="text-primary font-semibold mt-1">
           ${Number(item.price).toFixed(2)}
         </p>

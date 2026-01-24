@@ -66,8 +66,8 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
         <Badge className="absolute top-2 right-2">
           {itemCount} items
         </Badge>
-
       </div>
+
       <CardContent className="p-3">
         <h3 className="font-semibold truncate">{collection.name}</h3>
         {collection.description && (

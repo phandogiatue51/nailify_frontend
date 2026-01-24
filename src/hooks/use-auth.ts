@@ -42,18 +42,18 @@ const decodeJWT = (token: string): DecodedJWT | null => {
     return {
       userId:
         decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/nameidentifier"
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/nameidentifier"
         ],
       email:
         decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress"
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress"
         ],
       role: role,
       fullName:
         decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/name"],
       shopId:
         decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/shopId"
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/shopId"
         ],
       exp: decoded.exp,
     };

@@ -1,7 +1,16 @@
 const roleMap: Record<number, { label: string; color: string }> = {
-  0: { label: "Customer", color: "bg-blue-100 text-blue-800" },
-  1: { label: "Shop Owner", color: "bg-green-100 text-green-800" },
-  2: { label: "Admin", color: "bg-red-100 text-red-800" },
+  0: {
+    label: "Customer",
+    color: "bg-gradient-to-r from-sky-100 to-sky-300 text-sky-900"
+  },
+  1: {
+    label: "Shop Owner",
+    color: "bg-gradient-to-r from-indigo-100 to-indigo-300 text-indigo-900"
+  },
+  2: {
+    label: "Admin",
+    color: "bg-gradient-to-r from-amber-100 to-orange-300 text-orange-900"
+  },
 };
 
 export const RoleBadge = ({ role }: { role: number }) => {

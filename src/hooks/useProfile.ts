@@ -9,26 +9,23 @@ export function useProfile() {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const fetchProfile = useCallback(
-    async (forceRefresh = false) => {
-      // Don't fetch if already loading
-      if (loading && !forceRefresh) return profile;
+  const fetchProfile = useCallback(async (forceRefresh = false) => {
+    // Don't fetch if already loading
+    if (loading && !forceRefresh) return profile;
 
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await profileAPI.getProfile();
-        setProfile(data);
-        return data;
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch profile");
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [loading, profile],
-  );
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await profileAPI.getProfile();
+      setProfile(data);
+      return data;
+    } catch (err: any) {
+      setError(err.message || "Failed to fetch profile");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   // Load profile on mount
   useEffect(() => {
@@ -62,21 +59,28 @@ export function useProfile() {
     setLoading(true);
     setError(null);
     try {
-      const data = await profileAPI.updateProfile(profileData); // This returns the response
+      // 1. Update the profile
+      const response = await profileAPI.updateProfile(profileData);
+
+      // Show success toast
       toast({
-        description: data.message,
+        description: response.message || "Profile updated successfully",
         variant: "success",
         duration: 3000,
       });
-      setProfile(data);
-      return data;
+
+      // 2. IMPORTANT: Fetch the updated profile from the server
+      const updatedProfile = await profileAPI.getProfile();
+      setProfile(updatedProfile);
+
+      return updatedProfile;
     } catch (error: any) {
       toast({
         description: error?.message || "Có lỗi xảy ra!",
         variant: "destructive",
         duration: 5000,
       });
-      throw error; // Consider re-throwing so calling code can handle it
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -87,20 +91,20 @@ export function useProfile() {
       setLoading(true);
       setError(null);
       try {
-        const data = await profileAPI.changePassword(passwordData); // This returns the response
+        const response = await profileAPI.changePassword(passwordData);
         toast({
-          description: data.message,
+          description: response.message || "Password changed successfully",
           variant: "success",
           duration: 3000,
         });
-        return data;
+        return response;
       } catch (error: any) {
         toast({
           description: error?.message || "Có lỗi xảy ra!",
           variant: "destructive",
           duration: 5000,
         });
-        throw error; // Consider re-throwing so calling code can handle it
+        throw error;
       } finally {
         setLoading(false);
       }
