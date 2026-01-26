@@ -8,6 +8,8 @@ import { Loader2, Upload, X } from "lucide-react";
 import { Collection, ComponentType, ServiceItem } from "@/types/database";
 import { Badge } from "@/components/ui/badge";
 import { ComponentBadge } from "../badge/ComponentBadge";
+import { Separator } from "@/components/ui/separator";
+import { TagSelector } from "../ui/TagSelector";
 
 interface CollectionFormProps {
   serviceItems: ServiceItem[];
@@ -36,6 +38,10 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
   const [imagePreview, setImagePreview] = useState(initialData?.imageUrl || "");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>(
+    initialData?.tags?.map((t) => t.id) || [],
+  );
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -81,6 +87,10 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
     // Add selected item IDs - use ServiceItemIds (plural) as field name
     selectedItems.forEach((itemId) => {
       formData.append("ServiceItemIds", itemId); // Multiple entries with same key
+    });
+
+    selectedTagIds.forEach((tagId) => {
+      formData.append("TagIds", tagId);
     });
 
     try {
@@ -245,6 +255,28 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
             No services available. Add some services first!
           </p>
         )}
+      </div>
+      
+      <Separator className="my-4" />
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label>Collection Tags</Label>
+          <span className="text-xs text-muted-foreground">
+            Optional - helps customers find your collection
+          </span>
+        </div>
+
+        <TagSelector
+          selectedTagIds={selectedTagIds}
+          onTagChange={setSelectedTagIds}
+          maxTags={5}
+        />
+
+        <p className="text-xs text-muted-foreground">
+          Add tags like "Wedding", "Summer", "Minimalist" to help customers
+          discover your collection.
+        </p>
       </div>
 
       <Button

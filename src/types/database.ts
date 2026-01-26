@@ -1,7 +1,7 @@
 export type UserRole = 0 | 1 | 2; // 0: Customer, 1: Shop Owner, 2: Admin
 export type ComponentType = 0 | 1 | 2 | 3 | 4; // 0: Form, 1: Base, 2: Shape, 3: Polish, 4: Design
 export type BookingStatus = 0 | 1 | 2 | 3 | 4; // 0: Pending, 1: Approved, 2: Rejected, 3: Completed, 4: Cancelled
-
+import { TagDto } from "./type";
 export interface Profile {
   id: string;
   fullName: string;
@@ -63,6 +63,7 @@ export interface Collection {
   createdAt: string;
   updatedAt: string;
   items?: CollectionItemDto[];
+  tags?: TagDto[];
   totalPrice?: number;
 }
 

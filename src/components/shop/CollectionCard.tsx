@@ -2,6 +2,7 @@ import { Collection } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { TagBadge } from "../badge/TagBadge";
 
 interface CollectionCardProps {
   collection: Collection;
@@ -63,9 +64,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
             No items
           </div>
         )}
-        <Badge className="absolute top-2 right-2">
-          {itemCount} items
-        </Badge>
+        <Badge className="absolute top-2 right-2">{itemCount} items</Badge>
       </div>
 
       <CardContent className="p-3">
@@ -75,9 +74,25 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
             {collection.description}
           </p>
         )}
-        <p className="text-primary font-bold text-lg mt-2">
-          ${(collection.totalPrice || 0).toFixed(2)}
+
+        <p className="text-green-600 font-bold mt-2">
+          {(collection.totalPrice || 0).toFixed(3)} VND
         </p>
+
+        {collection.tags && collection.tags.length > 0 && (
+          <div className="mt-2">
+            <div className="flex flex-wrap gap-1">
+              {collection.tags.slice(0, 3).map((tag) => (
+                <TagBadge key={tag.id} tag={tag} size="sm" />
+              ))}
+              {collection.tags.length > 3 && (
+                <span className="text-xs text-muted-foreground self-center">
+                  +{collection.tags.length - 3} more
+                </span>
+              )}
+            </div>
+          </div>
+        )}
         {showActions && (
           <div className="flex gap-2 mt-2">
             <button

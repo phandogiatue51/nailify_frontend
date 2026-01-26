@@ -1,3 +1,5 @@
+import { TagDto } from "@/types/type";
+
 //https://localhost:7144/api
 //https://nailify.onrender.com/api
 
@@ -297,6 +299,18 @@ export const emailAPI = {
 
   checkResetToken: (token: string) =>
     apiRequest(`/Email/check-reset-token?token=${encodeURIComponent(token)}`, {
+      method: "GET",
+    }),
+};
+
+export const tagAPI = {
+  getAllTags: (): Promise<TagDto[]> =>
+    apiRequest("/Tag", {
+      method: "GET",
+    }),
+
+  getTagsByCategory: (category: number): Promise<TagDto[]> =>
+    apiRequest(`/Tag/category?tagCategory=${encodeURIComponent(category)}`, {
       method: "GET",
     }),
 };
