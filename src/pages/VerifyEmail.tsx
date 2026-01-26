@@ -1,5 +1,4 @@
-// @/pages/VerifyEmail.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEmail } from "@/hooks/useEmail";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Loader2, CheckCircle, XCircle, Mail, ArrowLeft } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ArrowLeft } from "lucide-react";
 
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
@@ -22,6 +21,7 @@ const VerifyEmail = () => {
     "loading",
   );
   const [isResending, setIsResending] = useState(false);
+  const hasVerified = useRef(false); // Add ref to prevent double verification
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -30,6 +30,10 @@ const VerifyEmail = () => {
       setStatus("error");
       return;
     }
+
+    // Prevent multiple verifications
+    if (hasVerified.current) return;
+    hasVerified.current = true;
 
     const verify = async () => {
       try {
@@ -46,7 +50,15 @@ const VerifyEmail = () => {
     };
 
     verify();
-  }, [searchParams, verifyEmail, navigate]);
+
+    // Cleanup function
+    return () => {
+      // Reset verification status if component unmounts during verification
+      if (status === "loading") {
+        console.log("Verification cancelled - component unmounted");
+      }
+    };
+  }, [searchParams, navigate]); // Remove verifyEmail from dependencies
 
   const handleResendVerification = async () => {
     const userEmail = prompt("Please enter your email to resend verification:");
