@@ -1,18 +1,26 @@
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { useAllCustomerServiceItems, useAllCustomerCollections } from "@/hooks/useCustomer";
+import {
+  useAllCustomerServiceItems,
+  useAllCustomerCollections,
+} from "@/hooks/useCustomer";
 import ServiceItemCard from "@/components/shop/ServiceItemCard";
 import CollectionCard from "@/components/shop/CollectionCard";
 import { Loader2, Sparkles } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 const Index = () => {
   const { user, loading } = useAuthContext();
-  const { data: allServices = [], isLoading: servicesLoading } = useAllCustomerServiceItems();
-  const { data: allCollections = [], isLoading: collectionsLoading } = useAllCustomerCollections();
-
+  const { data: allServices = [], isLoading: servicesLoading } =
+    useAllCustomerServiceItems();
+  const { data: allCollections = [], isLoading: collectionsLoading } =
+    useAllCustomerCollections();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const initialTab = params.get("tab") || "services";
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -42,14 +50,12 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Tabs for Services & Collections */}
-        <Tabs defaultValue="services">
+        <Tabs defaultValue={initialTab}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="collections">Collections</TabsTrigger>
           </TabsList>
 
-          {/* Services Tab */}
           <TabsContent value="services" className="mt-4">
             {servicesLoading ? (
               <div className="flex justify-center py-8">
@@ -58,7 +64,9 @@ const Index = () => {
             ) : allServices && allServices.length > 0 ? (
               <div className="grid grid-cols-2 gap-3">
                 {allServices.map((item) => (
-                  <ServiceItemCard key={item.id} item={item} />
+                  <Link key={item.id} to={`/services/${item.id}`}>
+                    <ServiceItemCard item={item} />
+                  </Link>
                 ))}
               </div>
             ) : (
@@ -79,7 +87,12 @@ const Index = () => {
             ) : allCollections && allCollections.length > 0 ? (
               <div className="grid grid-cols-2 gap-3">
                 {allCollections.map((collection) => (
-                  <CollectionCard key={collection.id} collection={collection} />
+                  <Link
+                    key={collection.id}
+                    to={`/collections/${collection.id}`}
+                  >
+                    <CollectionCard collection={collection} />
+                  </Link>
                 ))}
               </div>
             ) : (

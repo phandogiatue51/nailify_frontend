@@ -1,20 +1,51 @@
-const roleMap: Record<number, { label: string; color: string }> = {
-    0: { label: "Forms", color: "bg-purple-100 text-purple-800" },
-    1: { label: "Bases", color: "bg-yellow-100 text-yellow-800" },
-    2: { label: "Shapes", color: "bg-pink-100 text-pink-800" },
-    3: { label: "Polish", color: "bg-teal-100 text-teal-800" },
-    4: { label: "Designs", color: "bg-indigo-100 text-indigo-800" },
+const roleMap: Record<
+  number,
+  { label: string; color: string; border: string }
+> = {
+  0: {
+    label: "Forms",
+    color: "bg-gradient-to-r from-purple-100 to-purple-300 text-purple-900",
+    border: "border-purple-300",
+  },
+  1: {
+    label: "Bases",
+    color: "bg-gradient-to-r from-yellow-100 to-yellow-300 text-yellow-900",
+    border: "border-yellow-300",
+  },
+  2: {
+    label: "Shapes",
+    color: "bg-gradient-to-r from-pink-100 to-pink-300 text-pink-900",
+    border: "border-pink-300",
+  },
+  3: {
+    label: "Polish",
+    color: "bg-gradient-to-r from-teal-100 to-teal-300 text-teal-900",
+    border: "border-teal-300",
+  },
+  4: {
+    label: "Designs",
+    color: "bg-gradient-to-r from-indigo-100 to-indigo-300 text-indigo-900",
+    border: "border-indigo-300",
+  },
 };
 
 export const ComponentBadge = ({ role }: { role: number }) => {
-    const roleInfo = roleMap[role];
-    if (!roleInfo) return null;
+  const roleInfo = roleMap[role];
+  if (!roleInfo) return null;
 
-    return (
-        <span
-            className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${roleInfo.color}`}
-        >
-            {roleInfo.label}
-        </span>
-    );
+  return (
+    <span
+      className={`
+        px-2.5 py-0.5 
+        rounded-full 
+        text-xs font-semibold 
+        border shadow-sm 
+        inline-flex items-center
+        ${roleInfo.color} 
+        ${roleInfo.border}
+      `}
+    >
+      {roleInfo.label}
+    </span>
+  );
 };

@@ -27,6 +27,10 @@ const LocationForm: React.FC<LocationFormProps> = ({
     closingTime: initialData?.closingTime || "",
     latitude: initialData?.latitude || undefined,
     longitude: initialData?.longitude || undefined,
+    maxConcurrentBookings: initialData?.maxConcurrentBookings || undefined,
+    bufferMinutes: initialData?.bufferMinutes || undefined,
+    bookingLeadTimeMinutes: initialData?.bookingLeadTimeMinutes || undefined,
+    bookingWindowDays: initialData?.bookingWindowDays || undefined,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -79,7 +83,6 @@ const LocationForm: React.FC<LocationFormProps> = ({
     }
 
     try {
-      // Convert empty strings to undefined
       const submitData: ShopLocationCreateDto = {
         address: formData.address.trim(),
         city: formData.city?.trim() || undefined,
@@ -88,6 +91,10 @@ const LocationForm: React.FC<LocationFormProps> = ({
         closingTime: formData.closingTime?.trim() || undefined,
         latitude: formData.latitude || undefined,
         longitude: formData.longitude || undefined,
+        maxConcurrentBookings: formData.maxConcurrentBookings || undefined,
+        bufferMinutes: formData.bufferMinutes || undefined,
+        bookingLeadTimeMinutes: formData.bookingLeadTimeMinutes || undefined,
+        bookingWindowDays: formData.bookingWindowDays || undefined,
       };
 
       await onSubmit(submitData);
@@ -113,6 +120,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
           <p className="text-sm text-red-500">{errors.address}</p>
         )}
       </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="city">City</Label>
@@ -133,6 +141,58 @@ const LocationForm: React.FC<LocationFormProps> = ({
             value={formData.phone || ""}
             onChange={handleChange}
             placeholder="Phone number"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="city">Max Concurrent Bookings</Label>
+          <Input
+            id="maxConcurrentBookings"
+            name="maxConcurrentBookings"
+            type="number"
+            value={formData.maxConcurrentBookings || ""}
+            onChange={handleChange}
+            placeholder="Max Concurrent Bookings"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone">Buffer Minutes</Label>
+          <Input
+            id="bufferMinutes"
+            name="bufferMinutes"
+            type="number"
+            value={formData.bufferMinutes || ""}
+            onChange={handleChange}
+            placeholder="Buffer Minutes"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="city">Booking Lead Time Minutes</Label>
+          <Input
+            id="bookingLeadTimeMinutes"
+            name="bookingLeadTimeMinutes"
+            type="number"
+            value={formData.bookingLeadTimeMinutes || ""}
+            onChange={handleChange}
+            placeholder="Booking Lead Time Minutes"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone">Booking Window Days</Label>
+          <Input
+            id="bookingWindowDays"
+            name="bookingWindowDays"
+            type="number"
+            value={formData.bookingWindowDays || ""}
+            onChange={handleChange}
+            placeholder="Booking Window Days"
           />
         </div>
       </div>
@@ -168,6 +228,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
           )}
         </div>
       </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="latitude">Latitude</Label>

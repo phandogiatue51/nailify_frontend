@@ -149,55 +149,42 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="image">Image</Label>
-        <div className="flex items-center gap-4">
-          <div className="relative aspect-square bg-muted rounded-lg overflow-hidden w-32 group">
-            {imageUrl ? (
-              <>
-                <img
-                  src={imageUrl}
-                  alt={name}
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={removeImage}
-                  className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Upload className="w-8 h-8 text-muted-foreground" />
-              </div>
-            )}
-            <input
-              id="image"
-              type="file"
-              accept="image/*"
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              onChange={handleFileChange}
-              disabled={uploading}
-              ref={fileInputRef}
-            />
-          </div>
-          <div className="text-sm text-muted-foreground">
-            <p>Upload an image (optional)</p>
-            <p className="text-xs">JPG, PNG up to 5MB</p>
-            {hasExistingImage && !file && (
-              <p className="text-xs text-amber-600 mt-1">
-                Existing image will be kept
-              </p>
-            )}
-          </div>
+        <Label htmlFor="image">Service Image</Label>
+        <div className="relative aspect-video bg-muted rounded-lg overflow-hidden group">
+          {imageUrl ? (
+            <>
+              <img
+                src={imageUrl}
+                alt={name}
+                className="w-full h-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={removeImage}
+                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+              <Upload className="w-8 h-8 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Click to upload</p>
+            </div>
+          )}
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            onChange={handleFileChange}
+            disabled={uploading}
+            ref={fileInputRef}
+          />
         </div>
-        {uploading && (
-          <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Uploading...
-          </p>
-        )}
+        <p className="text-xs text-muted-foreground text-center mt-1">
+          {imageUrl ? "Click image to change" : "Optional service image"}
+        </p>
       </div>
 
       <Button

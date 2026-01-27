@@ -1,6 +1,5 @@
 import { Shop } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface ShopCardProps {

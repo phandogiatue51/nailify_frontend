@@ -100,7 +100,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
             ${Number(booking.totalPrice).toFixed(2)}
           </p>
 
-          {booking.status === "Pending" && (
+          {booking.status === 2 && (
             <div className="flex gap-2">
               {isShopOwner ? (
                 <>

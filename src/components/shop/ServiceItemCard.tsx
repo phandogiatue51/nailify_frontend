@@ -1,6 +1,6 @@
 import { ServiceItem } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { ComponentBadge } from "../badge/ComponentBadge";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
@@ -12,24 +12,6 @@ interface ServiceItemCardProps {
   onEdit?: (item: ServiceItem) => void;
   onDelete?: (item: ServiceItem) => void;
 }
-
-// Map numeric component types to colors
-const componentTypeColors: Record<number, string> = {
-  0: "bg-blue-100 text-blue-800",
-  1: "bg-green-100 text-green-800",
-  2: "bg-purple-100 text-purple-800",
-  3: "bg-pink-100 text-pink-800",
-  4: "bg-orange-100 text-orange-800",
-};
-
-// Map numeric component types to labels
-const componentTypeLabels: Record<number, string> = {
-  0: "Form",
-  1: "Base",
-  2: "Shape",
-  3: "Polish",
-  4: "Design",
-};
 
 const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
   item,
@@ -60,21 +42,14 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
             No image
           </div>
         )}
-
         {selected && (
           <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
             <Check className="w-4 h-4 text-primary-foreground" />
           </div>
         )}
-
-        <Badge
-          className={cn(
-            "absolute top-2 left-2 text-xs capitalize",
-            componentTypeColors[item.componentType],
-          )}
-        >
-          {componentTypeLabels[item.componentType]}
-        </Badge>
+        <div className="absolute top-2 left-2">
+          <ComponentBadge role={item.componentType} />
+        </div>
       </div>
 
       <CardContent className="p-3">

@@ -110,6 +110,10 @@ export interface ShopLocation {
   closingTime?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  maxConcurrentBookings?: number | null;
+  bufferMinutes?: number | null;
+  bookingLeadTimeMinutes?: number | null;
+  bookingWindowDays?: number | null;
   isActive: boolean;
   createdAt: string;
   updatedAt?: string | null;
@@ -123,4 +127,8 @@ export interface ShopLocationCreateDto {
   closingTime?: string;
   latitude?: number;
   longitude?: number;
+  maxConcurrentBookings?: number;
+  bufferMinutes?: number;
+  bookingLeadTimeMinutes?: number;
+  bookingWindowDays?: number;
 }

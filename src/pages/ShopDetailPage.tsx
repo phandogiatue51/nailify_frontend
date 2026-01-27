@@ -16,7 +16,7 @@ import { Loader2, ArrowLeft, ShoppingBag, X } from "lucide-react";
 import { ServiceItem } from "@/types/database";
 import ServiceItemCard from "@/components/shop/ServiceItemCard";
 import CollectionCard from "@/components/shop/CollectionCard";
-
+import { Link } from "react-router-dom";
 const ShopDetailPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const navigate = useNavigate();
@@ -26,7 +26,9 @@ const ShopDetailPage = () => {
     useCustomerServiceItems(shopId);
   const { data: collections, isLoading: collectionsLoading } =
     useCustomerCollections(shopId);
-  const allItems: ServiceItem[] = (Object.values(groupedItems) as ServiceItem[][]).flat();
+  const allItems: ServiceItem[] = (
+    Object.values(groupedItems) as ServiceItem[][]
+  ).flat();
   const [selectedItems, setSelectedItems] = useState<ServiceItem[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>();
 
@@ -130,7 +132,6 @@ const ShopDetailPage = () => {
           </div>
         </div>
 
-
         {/* Services & Collections */}
         <div className="p-4">
           <Tabs defaultValue="services">
@@ -147,8 +148,9 @@ const ShopDetailPage = () => {
               ) : Object.values(groupedItems).flat().length > 0 ? (
                 <div className="grid grid-cols-2 gap-3">
                   {allItems.map((item) => (
-                    <ServiceItemCard key={item.id} item={item} onSelect={() => toggleItem(item)}
-                    />
+                    <Link key={item.id} to={`/services/${item.id}`}>
+                      <ServiceItemCard item={item} />
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -169,10 +171,12 @@ const ShopDetailPage = () => {
               ) : collections && collections.length > 0 ? (
                 <div className="grid grid-cols-2 gap-3">
                   {collections.map((collection) => (
-                    <CollectionCard
+                    <Link
                       key={collection.id}
-                      collection={collection}
-                    />
+                      to={`/collections/${collection.id}`}
+                    >
+                      <CollectionCard collection={collection} />
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -185,7 +189,6 @@ const ShopDetailPage = () => {
             </TabsContent>
           </Tabs>
         </div>
-
 
         {selectedItems.length > 0 && (
           <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">

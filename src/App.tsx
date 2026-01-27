@@ -26,6 +26,8 @@ import EditCollectionPage from "./components/shop/EditCollectionPage";
 import CreateLocationPage from "./components/shop/CreateLocationPage";
 import EditLocationPage from "./components/shop/EditLocationPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import ServiceItemDetailPage from "./pages/ServiceItemDetailPage";
+import CollectionDetailPage from "./pages/CollectionDetailPage";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -36,6 +38,11 @@ const App = () => (
         <Sonner />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/services/:id" element={<ServiceItemDetailPage />} />
+          <Route
+            path="/collections/:id"
+            element={<CollectionDetailPage />}
+          />
           <Route path="/auth" element={<AuthPage />} />
 
           <Route path="/profile" element={<ProfilePage />} />
