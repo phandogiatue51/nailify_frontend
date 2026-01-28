@@ -26,7 +26,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
   return (
     <Card
       className={cn(
-        "overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md active:scale-[0.98] h-[330px]",
+        "overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md active:scale-[0.98] h-[290px]",
       )}
       onClick={() => {
         onClick?.(collection);

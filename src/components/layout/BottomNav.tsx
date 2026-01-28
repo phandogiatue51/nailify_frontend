@@ -5,9 +5,9 @@ import { useAuth } from "../../hooks/use-auth";
 
 const BottomNav = () => {
   const location = useLocation();
-  const { profile } = useAuth();
+  const { user } = useAuth();
 
-  const isShopOwner = profile?.role === "ShopOwner";
+  const isShopOwner = user?.role === 1;
 
   const customerNavItems = [
     { href: "/", icon: Home, label: "Home" },
