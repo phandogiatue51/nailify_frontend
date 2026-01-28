@@ -37,6 +37,7 @@ export interface ServiceItem {
   componentType: ComponentType;
   name: string;
   description: string | null;
+  estimatedDuration: number;
   price: number;
   imageUrl: string | null;
   isActive: boolean;
@@ -60,6 +61,7 @@ export interface Collection {
   imageUrl: string | null;
   isActive: boolean;
   estimatedDuration: number;
+  calculatedDuration: number;
   createdAt: string;
   updatedAt: string;
   items?: CollectionItemDto[];

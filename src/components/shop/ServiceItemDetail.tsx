@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useCustomerServiceItems } from "@/hooks/useCustomer";
 import ServiceItemCard from "@/components/shop/ServiceItemCard";
+import { Badge } from "../ui/badge";
 import { Link } from "react-router-dom";
 interface ServiceItemDetailProps {
   item: ServiceItem;
@@ -30,11 +31,21 @@ const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
       {item.description && (
         <p className="text-muted-foreground">{item.description}</p>
       )}
-      <div className="flex justify-end w-full">
-        <p className="text-xl font-bold text-green-600">
-          {item.price.toFixed(3)} VND
-        </p>
+
+      <div className="flex items-center gap-4 w-full">
+        {item.estimatedDuration && (
+          <Badge variant="secondary" className="whitespace-nowrap text-md">
+            {item.estimatedDuration} minutes
+          </Badge>
+        )}
+
+        {item.price !== undefined && (
+          <p className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
+            {item.price.toFixed(3)} VND
+          </p>
+        )}
       </div>
+
       {/* Shop Info */}
       <div className="border-t pt-4">
         {isLoading ? (
@@ -49,16 +60,18 @@ const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
               />
             )}
             <div>
-              <p className="text-sm font-medium">{shop.name}</p>
+              <p className="text-md font-medium">{shop.name}</p>
               {shop.address && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
                   <MapPin className="w-3 h-3" /> {shop.address}
                 </p>
               )}
             </div>
+
             <Button
               variant="outline"
               onClick={() => navigate(`/shop/${shop.id}`)}
+              className="ml-auto"
             >
               View Shop
             </Button>

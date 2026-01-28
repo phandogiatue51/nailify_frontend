@@ -3,7 +3,7 @@ import { TagDto } from "@/types/type";
 //https://localhost:7144/api
 //https://nailify.onrender.com/api
 
-const API_BASE_URL = "https://nailify.onrender.com/api";
+const API_BASE_URL = "https://localhost:7144/api";
 
 interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;
@@ -248,7 +248,7 @@ export const BookingAPI = {
 };
 
 export const LocationAPI = {
-  getByShop: () => apiRequest(`/Location`),
+  getByShop: () => apiRequest(`/Location/get-location-auth`),
 
   getById: (id: string) =>
     apiRequest(`/Location/${id}`, {

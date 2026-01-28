@@ -26,7 +26,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
   return (
     <Card
       className={cn(
-        "overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md active:scale-[0.98]",
+        "overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md active:scale-[0.98] h-[330px]",
       )}
       onClick={() => {
         onClick?.(collection);
@@ -69,15 +69,21 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
 
       <CardContent className="p-3">
         <h3 className="font-semibold truncate">{collection.name}</h3>
-        {collection.description && (
+        {collection.estimatedDuration ? (
           <p className="text-sm text-muted-foreground truncate mt-1">
-            {collection.description}
+            {collection.estimatedDuration} minutes
           </p>
-        )}
+        ) : collection.calculatedDuration > 0 ? (
+          <p className="text-sm text-muted-foreground truncate mt-1">
+            {collection.calculatedDuration} minutes
+          </p>
+        ) : null}
 
-        <p className="text-green-600 font-bold mt-2">
-          {(collection.totalPrice || 0).toFixed(3)} VND
-        </p>
+        <div className="flex justify-end mt-2">
+          <p className="text-green-600 font-bold whitespace-nowrap">
+            {(collection.totalPrice || 0).toFixed(3)} VND
+          </p>
+        </div>
 
         {collection.tags && collection.tags.length > 0 && (
           <div className="mt-2">

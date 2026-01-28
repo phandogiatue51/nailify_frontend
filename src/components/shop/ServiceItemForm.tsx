@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Upload, X } from "lucide-react";
 import { ComponentType, ServiceItem } from "@/types/database";
+import { number } from "zod";
 
 interface ServiceItemFormProps {
   componentType: ComponentType;
@@ -24,6 +25,10 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
     initialData?.description || "",
   );
   const [price, setPrice] = useState(initialData?.price?.toString() || "");
+
+  const [estimatedDuration, setEstimatedDuration] = useState(
+    initialData?.estimatedDuration?.toString() || "",
+  );
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || "");
   const [hasExistingImage, setHasExistingImage] = useState(
@@ -73,6 +78,7 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
     formData.append("Description", description || "");
     formData.append("Price", price);
     formData.append("ComponentType", componentType.toString());
+    formData.append("EstimatedDuration", estimatedDuration);
 
     // Use "imageFile" as field name (matching your backend)
     if (file) {
@@ -85,6 +91,7 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
       if (!initialData) {
         setName("");
         setDescription("");
+        setEstimatedDuration("");
         setPrice("");
         setFile(null);
         setImageUrl("");
@@ -129,6 +136,17 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Optional description..."
           rows={2}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Estimated Duration</Label>
+        <Input
+          id="estimatedDuration"
+          value={estimatedDuration}
+          onChange={(e) => setEstimatedDuration(e.target.value)}
+          placeholder="Set Estimated Duration.."
+          type="number"
         />
       </div>
 

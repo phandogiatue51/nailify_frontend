@@ -32,7 +32,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
     initialData?.items?.map((i) => i.serviceItemId) || [],
   );
   const [estimatedDuration, setEstimatedDuration] = useState(
-    initialData?.estimatedDuration?.toString() || "60",
+    initialData?.estimatedDuration?.toString() || "",
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState(initialData?.imageUrl || "");
@@ -77,7 +77,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
     // Use capitalized field names to match backend
     formData.append("Name", name);
     formData.append("Description", description || "");
-    formData.append("EstimatedDuration", estimatedDuration || "60"); // Default 60 minutes, add input for this
+    formData.append("EstimatedDuration", estimatedDuration || ""); // Default 60 minutes, add input for this
 
     // Add image file - field name must be "imageFile"
     if (imageFile) {
@@ -123,6 +123,10 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
     .filter((i) => selectedItems.includes(i.id))
     .reduce((sum, i) => sum + Number(i.price), 0);
 
+  const calculatedDuration = serviceItems
+    .filter((i) => selectedItems.includes(i.id))
+    .reduce((sum, i) => sum + Number(i.estimatedDuration), 0);
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
@@ -148,17 +152,12 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="estimatedDuration">
-          Estimated Duration (minutes) *
-        </Label>
+        <Label htmlFor="estimatedDuration">Estimated Duration (minutes)</Label>
         <Input
           id="estimatedDuration"
           type="number"
-          min="1"
           value={estimatedDuration}
           onChange={(e) => setEstimatedDuration(e.target.value)}
-          placeholder="e.g., 60"
-          required
         />
       </div>
 
@@ -207,7 +206,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
           <Label>Select Services</Label>
           {selectedItems.length > 0 && (
             <Badge variant="secondary">
-              {selectedItems.length} selected · ${totalPrice.toFixed(2)}
+              {selectedItems.length} selected · {totalPrice.toFixed(3)} VND · {calculatedDuration} minutes
             </Badge>
           )}
         </div>
@@ -215,7 +214,6 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
         {Object.entries(groupedItems).map(([type, items]) => (
           <div key={type} className="space-y-2">
             <p className="text-sm font-medium capitalize">
-              {/* Use ComponentBadge for the header */}
               <ComponentBadge role={Number(type)} />
             </p>
             <div className="space-y-2">
@@ -238,8 +236,11 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
                     )}
                     <div className="flex-1">
                       <p className="text-sm font-medium">{item.name}</p>
+                      <p className="text-xs text-green-600 font-bold">
+                        {Number(item.price).toFixed(3)} VND
+                      </p>
                       <p className="text-xs text-muted-foreground">
-                        ${Number(item.price).toFixed(2)}
+                        {item.estimatedDuration} minutes
                       </p>
                     </div>
                     <ComponentBadge role={item.componentType} />
@@ -256,7 +257,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
           </p>
         )}
       </div>
-      
+
       <Separator className="my-4" />
 
       <div className="space-y-3">

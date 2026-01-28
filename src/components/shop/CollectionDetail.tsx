@@ -34,12 +34,17 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           <p className="text-muted-foreground mt-2">{collection.description}</p>
         )}
       </div>
-      <div className="flex items-center gap-4 text-sm w-full">
-        {collection.estimatedDuration && (
-          <Badge variant="secondary" className="whitespace-nowrap">
-            {collection.estimatedDuration} min
+
+      <div className="flex items-center gap-4 w-full">
+        {collection.estimatedDuration ? (
+          <Badge variant="secondary" className="whitespace-nowrap text-md">
+            {collection.estimatedDuration} minutes
           </Badge>
-        )}
+        ) : collection.calculatedDuration > 0 ? (
+          <Badge variant="secondary" className="whitespace-nowrap text-md">
+            {collection.calculatedDuration} minutes
+          </Badge>
+        ) : null}
 
         {collection.totalPrice !== undefined && (
           <p className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
@@ -47,6 +52,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           </p>
         )}
       </div>
+
       {collection.tags && collection.tags.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">Tags</h3>
@@ -73,16 +79,18 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
               />
             )}
             <div>
-              <p className="text-sm font-medium">{shop.name}</p>
+              <p className="text-md font-medium">{shop.name}</p>
               {shop.address && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
                   <MapPin className="w-3 h-3" /> {shop.address}
                 </p>
               )}
             </div>
+
             <Button
               variant="outline"
               onClick={() => navigate(`/shop/${shop.id}`)}
+              className="ml-auto"
             >
               View Shop
             </Button>

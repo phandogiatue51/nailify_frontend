@@ -54,15 +54,18 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
 
       <CardContent className="p-3">
         <h3 className="font-semibold truncate">{item.name}</h3>
-        {item.description && (
+
+        {item.estimatedDuration && (
           <p className="text-sm text-muted-foreground truncate mt-1">
-            {item.description}
+            {item.estimatedDuration} minutes
           </p>
         )}
 
-        <p className="text-green-600 font-bold mt-2">
-          {Number(item.price).toFixed(3)} VND
-        </p>
+        <div className="flex justify-end mt-2">
+          <p className="text-green-600 font-bold whitespace-nowrap">
+            {Number(item.price).toFixed(3)} VND
+          </p>
+        </div>
 
         {showActions && (
           <div className="flex gap-2 mt-2">
