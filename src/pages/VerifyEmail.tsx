@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEmail } from "@/hooks/useEmail";
 import { Button } from "@/components/ui/button";
@@ -21,10 +21,20 @@ const VerifyEmail = () => {
     "loading",
   );
   const [isResending, setIsResending] = useState(false);
-  const hasVerified = useRef(false); // Add ref to prevent double verification
 
+  // Use refs to track verification state
+  const hasVerified = useRef(false);
+  const redirectTimer = useRef<NodeJS.Timeout | null>(null);
+  const tokenRef = useRef<string | null>(null);
+
+  // Extract token once and store in ref
   useEffect(() => {
-    const token = searchParams.get("token");
+    tokenRef.current = searchParams.get("token");
+  }, [searchParams]);
+
+  // Main verification effect - runs once
+  useEffect(() => {
+    const token = tokenRef.current;
 
     if (!token) {
       setStatus("error");
@@ -40,8 +50,9 @@ const VerifyEmail = () => {
         await verifyEmail.mutateAsync(token);
         setStatus("success");
 
-        setTimeout(() => {
-          navigate("/login");
+        // Set up auto-redirect
+        redirectTimer.current = setTimeout(() => {
+          navigate("/auth");
         }, 5000);
       } catch (error) {
         console.error("Verification failed:", error);
@@ -53,14 +64,14 @@ const VerifyEmail = () => {
 
     // Cleanup function
     return () => {
-      // Reset verification status if component unmounts during verification
-      if (status === "loading") {
-        console.log("Verification cancelled - component unmounted");
+      if (redirectTimer.current) {
+        clearTimeout(redirectTimer.current);
       }
     };
-  }, [searchParams, navigate]); // Remove verifyEmail from dependencies
+  }, [navigate, verifyEmail]); // Only depend on navigate and verifyEmail
 
-  const handleResendVerification = async () => {
+  // Memoized handlers
+  const handleResendVerification = useCallback(async () => {
     const userEmail = prompt("Please enter your email to resend verification:");
     if (!userEmail) return;
 
@@ -76,15 +87,28 @@ const VerifyEmail = () => {
     } finally {
       setIsResending(false);
     }
-  };
+  }, [sendVerificationEmail]);
 
-  const handleGoToLogin = () => {
+  const handleGoToLogin = useCallback(() => {
+    if (redirectTimer.current) {
+      clearTimeout(redirectTimer.current);
+    }
     navigate("/auth");
-  };
+  }, [navigate]);
 
-  const handleGoToHome = () => {
+  const handleGoToHome = useCallback(() => {
+    if (redirectTimer.current) {
+      clearTimeout(redirectTimer.current);
+    }
     navigate("/");
-  };
+  }, [navigate]);
+
+  const handleManualRedirect = useCallback(() => {
+    if (redirectTimer.current) {
+      clearTimeout(redirectTimer.current);
+    }
+    navigate("/auth");
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
@@ -117,9 +141,18 @@ const VerifyEmail = () => {
 
         <CardContent className="text-center space-y-4">
           {status === "success" && (
-            <p className="text-muted-foreground">
-              Redirecting to login page in a few seconds...
-            </p>
+            <div className="space-y-2">
+              <p className="text-muted-foreground">
+                Redirecting to login page in 5 seconds...
+              </p>
+              <Button
+                onClick={handleManualRedirect}
+                variant="link"
+                className="text-sm"
+              >
+                Click here to redirect now
+              </Button>
+            </div>
           )}
 
           {status === "error" && (

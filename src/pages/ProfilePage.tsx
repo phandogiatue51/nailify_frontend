@@ -4,7 +4,14 @@ import { useAuthContext } from "@/components/auth/AuthProvider";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Mail, Phone, Loader2, CircleCheckBig, CircleAlert } from "lucide-react";
+import {
+  LogOut,
+  Mail,
+  Phone,
+  Loader2,
+  CircleCheckBig,
+  CircleAlert,
+} from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import { RoleBadge } from "@/components/badge/RoleBadge";
@@ -14,7 +21,7 @@ import { VerificationButton } from "@/components/email/VerificationButton";
 
 const ProfilePage = () => {
   const { logout } = useAuthContext();
-  const { profile, updateProfile, fetchProfile, loading, error } = useProfile();
+  const { profile, updateProfile, loading, error } = useProfile();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -24,7 +31,6 @@ const ProfilePage = () => {
     email: "",
   });
 
-  // Initialize form data when profile loads
   useEffect(() => {
     if (profile) {
       setFormData({
@@ -148,27 +154,7 @@ const ProfilePage = () => {
                 <p className="text-md text-muted-foreground">
                   <RoleBadge role={profile.role} />
                 </p>
-                {!profile.isVerified ? (
-                  <div className="mt-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CircleAlert className="w-4 h-4 text-yellow-600" />
-                      <span className="text-sm text-yellow-700 font-medium">
-                        Email not verified
-                      </span>
-                    </div>
-                    {/* Only render VerificationButton if email exists */}
-                    {profile.email ? (
-                      <VerificationButton
-                        email={profile.email}
-                        size="sm"
-                        variant="outline"
-                        className="w-full border-yellow-300 text-yellow-700 hover:bg-yellow-50"
-                      />
-                    ) : (
-                      <p className="text-sm text-gray-500">No email available for verification</p>
-                    )}
-                  </div>
-                ) : (
+                {profile.isVerified === true ? (
                   <div className="mt-4">
                     <div className="flex items-center gap-2">
                       <CircleCheckBig className="w-4 h-4 text-green-600" />
@@ -177,7 +163,24 @@ const ProfilePage = () => {
                       </span>
                     </div>
                   </div>
-                )}
+                ) : profile.isVerified === false ? (
+                  <div className="mt-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CircleAlert className="w-4 h-4 text-yellow-600" />
+                      <span className="text-sm text-yellow-700 font-medium">
+                        Email not verified
+                      </span>
+                    </div>
+                    {profile.email && (
+                      <VerificationButton
+                        email={profile.email}
+                        size="sm"
+                        variant="outline"
+                        className="w-full border-yellow-300 text-yellow-700 hover:bg-yellow-50"
+                      />
+                    )}
+                  </div>
+                ) : null}
               </div>
             </div>
           </CardContent>

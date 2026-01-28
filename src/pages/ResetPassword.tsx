@@ -84,7 +84,7 @@ const ResetPassword = () => {
 
       // Auto redirect to login after 3 seconds
       setTimeout(() => {
-        navigate("/login");
+        navigate("/auth");
       }, 3000);
     } catch (error: any) {
       console.error("Failed to reset password:", error);

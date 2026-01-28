@@ -2,7 +2,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { emailAPI } from "@/services/api";
 import { useToast } from "./use-toast";
-import { useEffect } from "react"; // Add this import
+import { useEffect, useMemo } from "react";
 
 export type ResetPasswordRequest = {
   token: string;
@@ -105,7 +105,7 @@ export const useEmail = () => {
     },
   });
 
-  // Check reset token validity query - FIXED VERSION
+  // Check reset token validity query
   const useCheckResetToken = (token: string | null) => {
     const query = useQuery({
       queryKey: ["reset-token-validity", token],
@@ -133,18 +133,21 @@ export const useEmail = () => {
     return query;
   };
 
-  return {
-    sendVerificationEmail,
-    sendPasswordResetEmail,
-    verifyEmail,
-    resetPassword,
-    useCheckResetToken,
-    isLoading:
-      sendVerificationEmail.isPending ||
-      sendPasswordResetEmail.isPending ||
-      verifyEmail.isPending ||
-      resetPassword.isPending,
-  };
+  return useMemo(
+    () => ({
+      sendVerificationEmail,
+      sendPasswordResetEmail,
+      verifyEmail,
+      resetPassword,
+      useCheckResetToken,
+      isLoading:
+        sendVerificationEmail.isPending ||
+        sendPasswordResetEmail.isPending ||
+        verifyEmail.isPending ||
+        resetPassword.isPending,
+    }),
+    [sendVerificationEmail, sendPasswordResetEmail, verifyEmail, resetPassword],
+  );
 };
 
 // Convenience hook for password reset flow
