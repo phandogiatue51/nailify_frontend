@@ -97,7 +97,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
         <div className="flex items-center justify-between pt-2 border-t">
           <p className="font-bold text-lg text-primary">
-            ${Number(booking.totalPrice).toFixed(2)}
+            {Number(booking.totalPrice).toLocaleString()} VND
           </p>
 
           {booking.status === 2 && (

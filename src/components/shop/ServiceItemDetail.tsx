@@ -41,7 +41,7 @@ const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
 
         {item.price !== undefined && (
           <p className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
-            {item.price.toFixed(3)} VND
+            {item.price.toLocaleString()} VND
           </p>
         )}
       </div>

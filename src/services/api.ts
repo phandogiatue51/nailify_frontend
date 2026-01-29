@@ -3,7 +3,7 @@ import { TagDto } from "@/types/type";
 //https://localhost:7144/api
 //https://nailify.onrender.com/api
 
-const API_BASE_URL = "https://nailify.onrender.com/api";
+const API_BASE_URL = "https://localhost:7144/api";
 
 interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;
@@ -152,9 +152,16 @@ export const collectionAPI = {
   getByShop: (shopId: string) => apiRequest(`/Collection/shop/${shopId}`),
 
   getByShopAuth: () => apiRequest("/Collection/shopAuth"),
+  getByArtistAuth: () => apiRequest("/Collection/artistAuth"),
 
-  createCollection: (formData: FormData) =>
-    apiRequest("/Collection", {
+  createShopCollection: (formData: FormData) =>
+    apiRequest("/Collection/shop", {
+      method: "POST",
+      body: formData,
+    }),
+
+  createArtistCollection: (formData: FormData) =>
+    apiRequest("/Collection/artist", {
       method: "POST",
       body: formData,
     }),
@@ -169,6 +176,52 @@ export const collectionAPI = {
     apiRequest(`/Collection/${id}`, {
       method: "DELETE",
     }),
+
+  adminFilter: (filterParams: {
+    ShopId?: string;
+    Name?: string;
+    EstimatedDuration?: number;
+    Category?: number;
+    TagId?: string;
+  }) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `/Collection/admin-filter?${queryString}`
+      : "/Collection/admin-filter";
+
+    return apiRequest(url);
+  },
+
+  customerFilter: (filterParams: {
+    ShopId?: string;
+    Name?: string;
+    EstimatedDuration?: number;
+    Category?: number;
+    TagId?: string;
+  }) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `/Collection/customer-filter?${queryString}`
+      : "/Collection/customer-filter";
+
+    return apiRequest(url);
+  },
 };
 
 export const shopAPI = {
@@ -189,6 +242,44 @@ export const shopAPI = {
       method: "PUT",
       body: formData,
     }),
+
+  adminFilter: (filterParams: {
+    Name?: string;
+    IsActive?: boolean;
+    IsVerified?: boolean;
+  }) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/Shop/filter?${queryString}` : "/Shop/filter";
+
+    return apiRequest(url);
+  },
+
+  customerFilter: (filterParams: {
+    Name?: string;
+    IsActive?: true;
+    IsVerified?: true;
+  }) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/Shop/filter?${queryString}` : "/Shop/filter";
+
+    return apiRequest(url);
+  },
 };
 
 export const serviceItemAPI = {
@@ -245,6 +336,32 @@ export const BookingAPI = {
       method: "PUT",
       body: status,
     }),
+
+  filter: (filterParams: {
+    ShopId?: string;
+    ShopLocationId?: string;
+    CustomerId?: string;
+    StaffId?: string;
+    Name?: string;
+    EstimatedDuration?: number;
+    Category?: number;
+    TagId?: string;
+  }) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `/Booking/filter?${queryString}`
+      : "/Booking/filter";
+
+    return apiRequest(url);
+  },
 };
 
 export const LocationAPI = {

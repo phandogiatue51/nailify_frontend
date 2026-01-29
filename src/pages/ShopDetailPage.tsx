@@ -198,7 +198,7 @@ const ShopDetailPage = () => {
                   {selectedItems.length} items selected
                 </p>
                 <p className="text-lg font-bold text-primary">
-                  ${totalPrice.toFixed(2)}
+                  {totalPrice.toLocaleString()} VND
                 </p>
               </div>
               <Button onClick={handleBookNow}>

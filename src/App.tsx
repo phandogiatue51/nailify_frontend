@@ -28,6 +28,13 @@ import EditLocationPage from "./components/shop/EditLocationPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import ServiceItemDetailPage from "./pages/ServiceItemDetailPage";
 import CollectionDetailPage from "./pages/CollectionDetailPage";
+
+import AdminLayout from "./components/layout/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ShopsManagement from "./pages/admin/ShopsManagement";
+import UsersManagement from "./pages/admin/UsersManagement";
+import ServicesManagement from "./pages/admin/ServicesManagement";
+import CollectionsManagement from "./pages/admin/CollectionsManagement";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -39,10 +46,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/services/:id" element={<ServiceItemDetailPage />} />
-          <Route
-            path="/collections/:id"
-            element={<CollectionDetailPage />}
-          />
+          <Route path="/collections/:id" element={<CollectionDetailPage />} />
           <Route path="/auth" element={<AuthPage />} />
 
           <Route path="/profile" element={<ProfilePage />} />
@@ -87,6 +91,14 @@ const App = () => (
           <Route path="/shop/:shopId" element={<ShopDetailPage />} />
           <Route path="/bookings" element={<BookingsPage />} />
           <Route path="/explore" element={<ExplorePage />} />
+
+          <Route path="/admin/*" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="shops" element={<ShopsManagement />} />
+            <Route path="users" element={<UsersManagement />} />
+            <Route path="services" element={<ServicesManagement />} />
+            <Route path="collections" element={<CollectionsManagement />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

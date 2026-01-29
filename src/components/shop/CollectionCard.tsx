@@ -81,7 +81,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
 
         <div className="flex justify-end mt-2">
           <p className="text-green-600 font-bold whitespace-nowrap">
-            {(collection.totalPrice || 0).toFixed(3)} VND
+            {Number(collection.totalPrice).toLocaleString()} VND
           </p>
         </div>
 

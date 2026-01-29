@@ -63,7 +63,7 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
 
         <div className="flex justify-end mt-2">
           <p className="text-green-600 font-bold whitespace-nowrap">
-            {Number(item.price).toFixed(3)} VND
+            {Number(item.price).toLocaleString()} VND
           </p>
         </div>
 

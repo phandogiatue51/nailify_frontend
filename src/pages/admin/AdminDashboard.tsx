@@ -1,4 +1,3 @@
-// pages/admin/AdminDashboard.tsx
 import { useEffect, useState } from "react";
 import {
   Store,
@@ -11,6 +10,10 @@ import {
   XCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "@/components/auth/AuthProvider";
+import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -21,7 +24,20 @@ const AdminDashboard = () => {
     totalRevenue: 125400,
     growthRate: 24.5,
   });
+  const { user, loading } = useAuthContext();
+  const navigate = useNavigate();
 
+  if (!user || user?.role !== 2) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
   const [recentShops, setRecentShops] = useState([
     { id: 1, name: "Elegant Nails", status: "pending", date: "2024-01-28" },
     { id: 2, name: "Glamour Spa", status: "approved", date: "2024-01-27" },

@@ -237,7 +237,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
                     <div className="flex-1">
                       <p className="text-sm font-medium">{item.name}</p>
                       <p className="text-xs text-green-600 font-bold">
-                        {Number(item.price).toFixed(3)} VND
+                        {Number(item.price).toLocaleString()} VND
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {item.estimatedDuration} minutes
