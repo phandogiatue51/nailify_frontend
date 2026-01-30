@@ -245,6 +245,7 @@ export const shopAPI = {
 
   adminFilter: (filterParams: {
     Name?: string;
+    Rating?: number;
     IsActive?: boolean;
     IsVerified?: boolean;
   }) => {
@@ -264,8 +265,7 @@ export const shopAPI = {
 
   customerFilter: (filterParams: {
     Name?: string;
-    IsActive?: true;
-    IsVerified?: true;
+    Rating?: number;
   }) => {
     const queryParams = new URLSearchParams();
 
@@ -276,10 +276,12 @@ export const shopAPI = {
     });
 
     const queryString = queryParams.toString();
-    const url = queryString ? `/Shop/filter?${queryString}` : "/Shop/filter";
+    const url = queryString
+      ? `/Shop/customer-filter?${queryString}`
+      : "/Shop/customer-filter";
 
     return apiRequest(url);
-  },
+  }
 };
 
 export const serviceItemAPI = {
@@ -291,10 +293,18 @@ export const serviceItemAPI = {
 
   getByShopAuth: () => apiRequest("/ServiceItem/shopAuth"),
 
-  createServiceItem: (formData: FormData) =>
-    apiRequest("/ServiceItem", {
-      method: "POST",
-      body: formData,
+  getByArtist: (artistId: string) => apiRequest(`/ServiceItem/artist/${artistId}`),
+
+  getByArtistAuth: () => apiRequest("/ServiceItem/artistAuth"),
+
+  createShopServiceItem: (formData: FormData) =>
+    apiRequest("/ServiceItem/shop", {
+      method: "POST", body: formData
+    }),
+
+  createArtistServiceItem: (formData: FormData) =>
+    apiRequest("/ServiceItem/artist", {
+      method: "POST", body: formData
     }),
 
   updateServiceItem: (id: string, formData: FormData) =>
@@ -315,6 +325,10 @@ export const BookingAPI = {
   getById: (id: string) => apiRequest(`/Booking/${id}`),
 
   getByShop: (shopId: string) => apiRequest(`/Booking/shop/${shopId}`),
+  getByShopAuth: () => apiRequest("/Booking/shopAuth"),
+
+  getByArtist: (shopId: string) => apiRequest(`/Booking/artist/${shopId}`),
+  getByArtistAuth: () => apiRequest("/Booking/artistAuth"),
 
   getByCustomer: (customerId: string) =>
     apiRequest(`/Booking/customer/${customerId}`),
@@ -365,10 +379,15 @@ export const BookingAPI = {
 };
 
 export const LocationAPI = {
-  getByShop: () => apiRequest(`/Location/get-location-auth`),
+  getByShopAuth: () => apiRequest(`/Location/get-location-auth`),
 
   getById: (id: string) =>
     apiRequest(`/Location/${id}`, {
+      method: "GET",
+    }),
+
+  getByShop: (id: string) =>
+    apiRequest(`/Location/get-location-from-shop/${id}`, {
       method: "GET",
     }),
 

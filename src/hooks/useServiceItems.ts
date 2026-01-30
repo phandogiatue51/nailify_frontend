@@ -27,7 +27,7 @@ export const useShopOwnerServiceItems = () => {
 
   const createServiceItem = useMutation({
     mutationFn: async (formData: FormData) => {
-      return await serviceItemAPI.createServiceItem(formData);
+      return await serviceItemAPI.createShopServiceItem(formData);
     },
     onSuccess: (data) => {
       queryClient.setQueryData(

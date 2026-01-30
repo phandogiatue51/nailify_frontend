@@ -28,7 +28,7 @@ export const useShopOwnerCollections = () => {
   const createCollection = useMutation({
     mutationFn: async (formData: FormData) => {
       // ✅ MUST return the response
-      return await collectionAPI.createCollection(formData);
+      return await collectionAPI.createShopCollection(formData);
     },
     onSuccess: (data) => {
       // ✅ Parameter is named `data`

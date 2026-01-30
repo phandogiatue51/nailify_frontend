@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { shopAPI, serviceItemAPI, collectionAPI } from "@/services/api";
 import { Shop, ServiceItem, Collection, ComponentType } from "@/types/database";
 
-// Hook to get all shops (for customer browsing)
 export const useCustomerShops = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ["customer-shops"],
@@ -18,7 +17,6 @@ export const useCustomerShops = (options?: { enabled?: boolean }) => {
   });
 };
 
-// Hook to get a specific shop by ID
 export const useCustomerShopById = (shopId: string | undefined) => {
   return useQuery({
     queryKey: ["customer-shop", shopId],
@@ -35,7 +33,6 @@ export const useCustomerShopById = (shopId: string | undefined) => {
   });
 };
 
-// Hook to get service items for a specific shop (customer view)
 export const useCustomerServiceItems = (shopId: string | undefined) => {
   const { data: serviceItems = [], isLoading } = useQuery({
     queryKey: ["customer-service-items", shopId],
@@ -57,7 +54,6 @@ export const useCustomerServiceItems = (shopId: string | undefined) => {
     enabled: !!shopId,
   });
 
-  // Group items by component type
   const groupedItems = serviceItems.reduce(
     (acc, item) => {
       if (!acc[item.componentType]) {
@@ -76,7 +72,6 @@ export const useCustomerServiceItems = (shopId: string | undefined) => {
   };
 };
 
-// Hook to get collections for a specific shop (customer view)
 export const useCustomerCollections = (shopId: string | undefined) => {
   return useQuery({
     queryKey: ["customer-collections", shopId],
@@ -99,7 +94,6 @@ export const useCustomerCollections = (shopId: string | undefined) => {
   });
 };
 
-// Hook to get a specific service item (customer view)
 export const useCustomerServiceItemById = (itemId: string | undefined) => {
   return useQuery({
     queryKey: ["customer-service-item", itemId],
@@ -116,7 +110,6 @@ export const useCustomerServiceItemById = (itemId: string | undefined) => {
   });
 };
 
-// Hook to get a specific collection (customer view)
 export const useCustomerCollectionById = (collectionId: string | undefined) => {
   return useQuery({
     queryKey: ["customer-collection", collectionId],
@@ -133,7 +126,6 @@ export const useCustomerCollectionById = (collectionId: string | undefined) => {
   });
 };
 
-// Hook to get all service items (for search/browsing)
 export const useAllCustomerServiceItems = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ["all-customer-service-items"],
@@ -149,7 +141,6 @@ export const useAllCustomerServiceItems = (options?: { enabled?: boolean }) => {
   });
 };
 
-// Hook to get all collections (for search/browsing)
 export const useAllCustomerCollections = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ["all-customer-collections"],

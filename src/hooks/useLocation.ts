@@ -15,7 +15,7 @@ export const useShopOwnerLocations = () => {
     queryFn: async () => {
       if (!user || user.role !== 1) return [];
       try {
-        return await LocationAPI.getByShop();
+        return await LocationAPI.getByShopAuth();
       } catch (error: any) {
         console.error("Error fetching shop owner locations:", error);
         if (
