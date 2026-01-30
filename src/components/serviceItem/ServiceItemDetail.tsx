@@ -1,21 +1,39 @@
 import { ServiceItem } from "@/types/database";
-import { useCustomerShopById } from "@/hooks/useCustomer";
-import { Loader2, MapPin } from "lucide-react";
+import {
+  useCustomerShopById,
+  useCustomerArtistById,
+} from "@/hooks/useCustomer";
+import { Loader2, MapPin, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useCustomerServiceItems } from "@/hooks/useCustomer";
-import ServiceItemCard from "@/components/shop/ServiceItemCard";
+import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
 import { Badge } from "../ui/badge";
 import { Link } from "react-router-dom";
+
 interface ServiceItemDetailProps {
   item: ServiceItem;
 }
 
 const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
-  const { data: shop, isLoading } = useCustomerShopById(item.shopId);
   const navigate = useNavigate();
-  const { serviceItems = [], isLoading: loadingServices } =
-    useCustomerServiceItems(item.shopId);
+
+  const isArtistItem = !!item.nailArtistId && !item.shopId;
+
+  const { data: shop, isLoading: shopLoading } = useCustomerShopById(
+    item.shopId,
+  );
+  const { data: artist, isLoading: artistLoading } = useCustomerArtistById(
+    item.nailArtistId,
+  );
+
+  const { serviceItems = [], isLoading: itemsLoading } =
+    useCustomerServiceItems(item.shopId, item.nailArtistId);
+
+  const isLoading = shopLoading || artistLoading;
+  const owner = shop || artist;
+  const isArtist = !!artist;
+
   return (
     <div className="space-y-4">
       {item.imageUrl && (
@@ -27,7 +45,9 @@ const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
           />
         </div>
       )}
+
       <h2 className="text-xl font-semibold">{item.name}</h2>
+
       {item.description && (
         <p className="text-muted-foreground">{item.description}</p>
       )}
@@ -46,42 +66,60 @@ const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
         )}
       </div>
 
-      {/* Shop Info */}
+      {/* Owner Info (Shop or Artist) */}
       <div className="border-t pt-4">
         {isLoading ? (
           <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-        ) : shop ? (
+        ) : owner ? (
           <div className="flex items-center gap-3">
-            {shop.logoUrl && (
+            {owner.avatarUrl || owner.logoUrl ? (
               <img
-                src={shop.logoUrl}
-                alt={shop.name}
+                src={owner.avatarUrl || owner.logoUrl}
+                alt={owner.name || artist?.profile?.fullName}
                 className="w-10 h-10 rounded-full object-cover"
               />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                {isArtist ? (
+                  <User className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <MapPin className="w-5 h-5 text-muted-foreground" />
+                )}
+              </div>
             )}
+
             <div>
-              <p className="text-md font-medium">{shop.name}</p>
-              {shop.address && (
+              <p className="text-md font-medium">
+                {isArtist ? artist?.profile?.fullName : shop?.name}
+              </p>
+              {owner.address && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> {shop.address}
+                  <MapPin className="w-3 h-3" /> {owner.address}
                 </p>
               )}
             </div>
 
             <Button
               variant="outline"
-              onClick={() => navigate(`/shop/${shop.id}`)}
+              onClick={() => {
+                if (isArtist) {
+                  navigate(`/artist/${artist.id}`);
+                } else {
+                  navigate(`/shop/${shop.id}`);
+                }
+              }}
               className="ml-auto"
             >
-              View Shop
+              View {isArtist ? "Artist" : "Shop"}
             </Button>
           </div>
         ) : null}
       </div>
+
       {serviceItems.length > 1 && (
         <div className="space-y-2 mt-6">
           <h3 className="text-lg font-semibold">
-            Other Services from this Shop
+            Other Services from this {isArtist ? "Artist" : "Shop"}
           </h3>
           <div className="grid grid-cols-2 gap-3">
             {serviceItems

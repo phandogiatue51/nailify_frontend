@@ -5,29 +5,34 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import { AuthProvider } from "./components/auth/AuthProvider";
-import AuthPage from "./pages/AuthPage";
-import ProfilePage from "./pages/ProfilePage";
-import DashboardPage from "./pages/DashboardPage";
-import MyShopPage from "./pages/MyShopPage";
-import SchedulePage from "./pages/SchedulePage";
-import ShopDetailPage from "./pages/ShopDetailPage";
+
+import AuthPage from "./pages/auth/AuthPage";
+import ProfilePage from "./pages/auth/ProfilePage";
+import EditProfilePage from "./pages/auth/EditProfilePage";
+
 import BookingsPage from "./pages/BookingsPage";
 import ExplorePage from "./pages/ExplorePage";
-import NotFound from "./pages/NotFound";
+import NotFound from "./pages/auth/NotFound";
+import VerifyEmail from "./pages/auth/VerifyEmail";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 
-import VerifyEmail from "./pages/VerifyEmail";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
+import MyShopPage from "./pages/shop/MyShopPage";
+import SchedulePage from "./pages/SchedulePage";
+import ShopDetailPage from "./pages/shop/ShopDetailPage";
 
-import CreateServiceItemPage from "./components/shop/CreateServiceItemPage";
-import EditServiceItemPage from "./components/shop/EditServiceItemPage";
-import CreateCollectionPage from "./components/shop/CreateCollectionPage";
-import EditCollectionPage from "./components/shop/EditCollectionPage";
-import CreateLocationPage from "./components/shop/CreateLocationPage";
-import EditLocationPage from "./components/shop/EditLocationPage";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
-import ServiceItemDetailPage from "./pages/ServiceItemDetailPage";
-import CollectionDetailPage from "./pages/CollectionDetailPage";
+import CreateServiceItemPage from "./pages/serviceItem/CreateServiceItemPage";
+import EditServiceItemPage from "./pages/serviceItem/EditServiceItemPage";
+import CreateCollectionPage from "./pages/collection/CreateCollectionPage";
+import EditCollectionPage from "./pages/collection/EditCollectionPage";
+import CreateLocationPage from "./pages/shop/CreateLocationPage";
+import EditLocationPage from "./pages/shop/EditLocationPage";
+import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
+import ServiceItemDetailPage from "./pages/serviceItem/ServiceItemDetailPage";
+import CollectionDetailPage from "./pages/collection/CollectionDetailPage";
+
+import NailArtistDashboardPage from "./pages/nailArtist/NailArtistDashboardPage";
+import ArtistDetailPage from "./pages/nailArtist/ArtistDetailPage";
 
 import AdminLayout from "./components/layout/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -35,6 +40,9 @@ import ShopsManagement from "./pages/admin/ShopsManagement";
 import UsersManagement from "./pages/admin/UsersManagement";
 import ServicesManagement from "./pages/admin/ServicesManagement";
 import CollectionsManagement from "./pages/admin/CollectionsManagement";
+import MyNailArtistPage from "./pages/nailArtist/MyNailArtistPage";
+import ShopOwnerDashboardPage from "./pages/shop/ShopOwnerDashboardPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -50,12 +58,14 @@ const App = () => (
           <Route path="/auth" element={<AuthPage />} />
 
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/edit" element={<EditProfilePage />} />
+
           <Route
             path="/profile/change-password"
             element={<ChangePasswordPage />}
           />
+          <Route path="/staff-dashboard" element={<ShopOwnerDashboardPage />} />
 
-          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/my-shop" element={<MyShopPage />} />
           <Route
             path="/my-shop/service-items/create/:type"
@@ -81,6 +91,29 @@ const App = () => (
           <Route
             path="/my-shop/locations/edit/:id"
             element={<EditLocationPage />}
+          />
+          <Route
+            path="/my-artist/service-items/create/:type"
+            element={<CreateServiceItemPage />}
+          />
+          <Route
+            path="/my-artist/service-items/edit/:id"
+            element={<EditServiceItemPage />}
+          />
+          <Route
+            path="/my-artist/collections/create"
+            element={<CreateCollectionPage />}
+          />
+          <Route
+            path="/my-artist/collections/edit/:id"
+            element={<EditCollectionPage />}
+          />
+          <Route path="/my-artist" element={<MyNailArtistPage />} />
+
+          <Route path="/artist/:id" element={<ArtistDetailPage />} />
+          <Route
+            path="/artist-dashboard"
+            element={<NailArtistDashboardPage />}
           />
 
           <Route path="/verify-email" element={<VerifyEmail />} />

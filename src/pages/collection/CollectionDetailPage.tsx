@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useCustomerCollectionById } from "@/hooks/useCustomer";
-import CollectionDetail from "@/components/shop/CollectionDetail";
+import CollectionDetail from "@/components/collection/CollectionDetail";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

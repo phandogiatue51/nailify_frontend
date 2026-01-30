@@ -1,12 +1,14 @@
-export type UserRole = 0 | 1 | 2; // 0: Customer, 1: Shop Owner, 2: Admin
+export type UserRole = 0 | 1 | 2 | 3 | 4; // 0: Customer, 1: Shop Owner, 2: Admin, 3: Staff, 4: Nail Artist
 export type ComponentType = 0 | 1 | 2 | 3 | 4; // 0: Form, 1: Base, 2: Shape, 3: Polish, 4: Design
 export type BookingStatus = 0 | 1 | 2 | 3 | 4; // 0: Pending, 1: Approved, 2: Rejected, 3: Completed, 4: Cancelled
 import { TagDto } from "./type";
+
 export interface Profile {
   id: string;
   fullName: string;
   email: string;
   phone: string | null;
+  address: string | null;
   avatarUrl: string | null;
   role: UserRole;
   createdAt: string;
@@ -15,6 +17,17 @@ export interface Profile {
   isVerified: boolean;
   EmailVerificationToken: string;
   PasswordResetToken: string;
+}
+
+export interface NailArtist {
+  id: string;
+  rating?: number;
+  isVerified: boolean;
+  profileId: string;
+  profile?: Profile;
+  bookings?: Booking[];
+  serviceItems?: ServiceItem[];
+  collections?: Collection[];
 }
 
 export interface Shop {
@@ -33,7 +46,8 @@ export interface Shop {
 
 export interface ServiceItem {
   id: string;
-  shopId: string;
+  shopId: string | null;
+  nailArtistId: string | null;
   componentType: ComponentType;
   name: string;
   description: string | null;
@@ -55,7 +69,8 @@ export interface CollectionItemDto {
 
 export interface Collection {
   id: string;
-  shopId: string;
+  shopId: string | null;
+  nailArtistId: string | null;
   name: string;
   description: string | null;
   imageUrl: string | null;
@@ -79,11 +94,16 @@ export interface CollectionItem {
 
 export interface Booking {
   id: string;
-  shopId: string;
+  shopLocationId: string;
+  nailArtistId: string;
   customerId: string;
+  customerName: string;
+  customerPhone: string;
+  customerAddress: string;
   collectionId: string | null;
-  bookingDate: string;
-  bookingTime: string;
+  scheduleStart: string;
+  scheduleEnd: string;
+  rating: number;
   status: BookingStatus;
   totalPrice: number;
   notes: string | null;

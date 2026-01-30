@@ -108,10 +108,7 @@ export const useBookings = () => {
 
   const cancelBooking = useMutation({
     mutationFn: async (bookingId: string) => {
-      const response = await BookingAPI.updateStatus(
-        bookingId,
-        4,
-      );
+      const response = await BookingAPI.updateStatus(bookingId, 4);
     },
     onSuccess: () => {
       toast({
@@ -131,6 +128,22 @@ export const useBookings = () => {
     },
   });
 
+  const useArtistBookings = (artistId: string | undefined) => {
+    return useQuery({
+      queryKey: ["artist-bookings", artistId],
+      queryFn: async () => {
+        if (!artistId) return [];
+        try {
+          return await BookingAPI.getByArtist(artistId);
+        } catch (error: any) {
+          console.error("Error fetching artist bookings:", error);
+          return [];
+        }
+      },
+      enabled: !!artistId,
+    });
+  };
+
   return {
     customerBookings,
     customerBookingsLoading,
@@ -138,5 +151,6 @@ export const useBookings = () => {
     createBooking,
     updateBookingStatus,
     cancelBooking,
+    useArtistBookings,
   };
 };

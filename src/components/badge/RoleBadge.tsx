@@ -1,15 +1,23 @@
 const roleMap: Record<number, { label: string; color: string }> = {
   0: {
     label: "Customer",
-    color: "bg-gradient-to-r from-sky-100 to-sky-300 text-sky-900"
+    color: "bg-gradient-to-r from-sky-100 to-sky-300 text-sky-900",
   },
   1: {
     label: "Shop Owner",
-    color: "bg-gradient-to-r from-indigo-100 to-indigo-300 text-indigo-900"
+    color: "bg-gradient-to-r from-indigo-100 to-indigo-300 text-indigo-900",
   },
   2: {
     label: "Admin",
-    color: "bg-gradient-to-r from-amber-100 to-orange-300 text-orange-900"
+    color: "bg-gradient-to-r from-red-100 to-red-300 text-red-900",
+  },
+  3: {
+    label: "Staff",
+    color: "bg-gradient-to-r from-green-100 to-green-300 text-green-900",
+  },
+  4: {
+    label: "Nail Artist",
+    color: "bg-gradient-to-r from-pink-100 to-pink-300 text-pink-900",
   },
 };
 

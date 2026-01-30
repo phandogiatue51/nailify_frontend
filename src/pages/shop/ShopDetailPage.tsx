@@ -14,8 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, ArrowLeft, ShoppingBag, X } from "lucide-react";
 import { ServiceItem } from "@/types/database";
-import ServiceItemCard from "@/components/shop/ServiceItemCard";
-import CollectionCard from "@/components/shop/CollectionCard";
+import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
+import CollectionCard from "@/components/collection/CollectionCard";
 import { Link } from "react-router-dom";
 const ShopDetailPage = () => {
   const { shopId } = useParams<{ shopId: string }>();

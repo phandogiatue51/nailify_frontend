@@ -1,29 +1,29 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useAuthContext } from "@/components/auth/AuthProvider";
-import { Navigate } from "react-router-dom";
+// pages/EditServiceItemPage.tsx
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { useShop } from "@/hooks/useShop";
-import {
-  useShopOwnerServiceItemById,
-  useShopOwnerServiceItems,
-} from "@/hooks/useServiceItems";
-import ServiceItemForm from "@/components/shop/ServiceItemForm";
+import ServiceItemForm from "@/components/serviceItem/ServiceItemForm";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { Loader2 } from "lucide-react";
-
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { serviceItemAPI } from "@/services/api";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { useShopOwnerServiceItems } from "@/hooks/useServiceItems";
+import { useNailArtistServiceItems } from "@/hooks/useNailArtistServiceItems";
 const EditServiceItemPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, loading } = useAuthContext();
-  const { myShop } = useShop();
+  const { redirect, loading, user } = useRequireRole([1, 4]);
 
-  // Hook for fetching the specific item
-  const { data: item, isLoading: itemLoading } =
-    useShopOwnerServiceItemById(id);
+  const { data: item, isLoading: itemLoading } = useQuery({
+    queryKey: ["service-item", id],
+    queryFn: async () => {
+      if (!id) return null;
+      return await serviceItemAPI.getById(id);
+    },
+    enabled: !!id,
+  });
 
-  // Hook for mutations (update)
-  const { updateServiceItem } = useShopOwnerServiceItems();
+  if (redirect) return redirect;
 
   if (loading || itemLoading) {
     return (
@@ -33,20 +33,21 @@ const EditServiceItemPage = () => {
     );
   }
 
-  if (!user || user?.role !== 1) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  if (!myShop || !item) {
-    return <Navigate to="/my-shop" replace />;
-  }
+  const isArtist = user.role === 4;
+  const serviceItemsHook = isArtist
+    ? useNailArtistServiceItems()
+    : useShopOwnerServiceItems();
 
   const handleSubmit = async (formData: FormData) => {
-    await updateServiceItem.mutateAsync({
-      id: item.id,
-      formData,
-    });
-    navigate(-1); // Go back to shop page
+    try {
+      await serviceItemsHook.updateServiceItem.mutateAsync({
+        id: item.id,
+        formData,
+      });
+      navigate(-1);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const componentLabels = ["Form", "Base", "Shape", "Polish", "Design"];
@@ -67,7 +68,10 @@ const EditServiceItemPage = () => {
             <h1 className="text-2xl font-bold">
               Edit {componentLabels[item.componentType]}
             </h1>
-            <p className="text-muted-foreground">Update service item details</p>
+            <p className="text-muted-foreground">
+              Update service item details for your{" "}
+              {isArtist ? "artist profile" : "shop"}
+            </p>
           </div>
         </div>
 
@@ -75,7 +79,7 @@ const EditServiceItemPage = () => {
           componentType={item.componentType}
           initialData={item}
           onSubmit={handleSubmit}
-          isLoading={updateServiceItem.isPending}
+          isLoading={serviceItemsHook.updateServiceItem.isPending}
         />
 
         <Button

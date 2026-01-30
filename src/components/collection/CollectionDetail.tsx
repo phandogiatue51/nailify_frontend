@@ -1,22 +1,40 @@
 import { Collection } from "@/types/database";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useCustomerShopById } from "@/hooks/useCustomer";
-import { Loader2, MapPin } from "lucide-react";
+import {
+  useCustomerShopById,
+  useCustomerArtistById,
+} from "@/hooks/useCustomer";
+import { Loader2, MapPin, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useCustomerCollections } from "@/hooks/useCustomer";
-import CollectionCard from "@/components/shop/CollectionCard";
+import CollectionCard from "@/components/collection/CollectionCard";
 import { Link } from "react-router-dom";
+
 interface CollectionDetailProps {
   collection: Collection;
 }
 
 const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
-  const { data: shop, isLoading } = useCustomerShopById(collection.shopId);
   const navigate = useNavigate();
-  const { data: collections = [], isLoading: loadingCollections } =
-    useCustomerCollections(collection.shopId);
+
+  const isArtistCollection = !!collection.nailArtistId && !collection.shopId;
+
+  const { data: shop, isLoading: shopLoading } = useCustomerShopById(
+    collection.shopId,
+  );
+  const { data: artist, isLoading: artistLoading } = useCustomerArtistById(
+    collection.nailArtistId,
+  );
+
+  const { data: collections = [], isLoading: collectionsLoading } =
+    useCustomerCollections(collection.shopId, collection.nailArtistId);
+
+  const isLoading = shopLoading || artistLoading;
+  const owner = shop || artist;
+  const isArtist = !!artist;
+
   return (
     <div className="space-y-6">
       {collection.imageUrl && (
@@ -28,6 +46,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           />
         </div>
       )}
+
       <div>
         <h2 className="text-2xl font-bold">{collection.name}</h2>
         {collection.description && (
@@ -49,7 +68,6 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
         {collection.totalPrice !== undefined && (
           <p className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
             {collection.totalPrice.toLocaleString()} VND
-
           </p>
         )}
       </div>
@@ -66,42 +84,63 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           </div>
         </div>
       )}
+
       <Separator />
+
+      {/* Owner Info */}
       <div className="pt-2">
         {isLoading ? (
           <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-        ) : shop ? (
+        ) : owner ? (
           <div className="flex items-center gap-3">
-            {shop.logoUrl && (
+            {owner.avatarUrl || owner.logoUrl ? (
               <img
-                src={shop.logoUrl}
-                alt={shop.name}
+                src={owner.avatarUrl || owner.logoUrl}
+                alt={owner.name || artist?.profile?.fullName}
                 className="w-10 h-10 rounded-full object-cover"
               />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                {isArtist ? (
+                  <User className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <MapPin className="w-5 h-5 text-muted-foreground" />
+                )}
+              </div>
             )}
+
             <div>
-              <p className="text-md font-medium">{shop.name}</p>
-              {shop.address && (
+              <p className="text-md font-medium">
+                {isArtist ? artist?.profile?.fullName : shop?.name}
+              </p>
+              {owner.address && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> {shop.address}
+                  <MapPin className="w-3 h-3" /> {owner.address}
                 </p>
               )}
             </div>
 
             <Button
               variant="outline"
-              onClick={() => navigate(`/shop/${shop.id}`)}
+              onClick={() => {
+                if (isArtist) {
+                  navigate(`/artist/${artist.id}`);
+                } else {
+                  navigate(`/shop/${shop.id}`);
+                }
+              }}
               className="ml-auto"
             >
-              View Shop
+              View {isArtist ? "Artist" : "Shop"}
             </Button>
           </div>
         ) : null}
       </div>
+
       {collections.length > 1 && (
         <div className="space-y-2 mt-6">
           <h3 className="text-lg font-semibold">
-            Other Collections from this Shop
+            Other Collections from this {isArtist ? "Artist" : "Shop"}
           </h3>
           <div className="grid grid-cols-2 gap-3">
             {collections

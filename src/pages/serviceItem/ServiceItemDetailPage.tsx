@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useCustomerServiceItemById } from "@/hooks/useCustomer";
-import ServiceItemDetail from "@/components/shop/ServiceItemDetail";
+import ServiceItemDetail from "@/components/serviceItem/ServiceItemDetail";
 import { Loader2, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button"; 
+import { Button } from "@/components/ui/button";
 const ServiceItemDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();

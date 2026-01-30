@@ -1,24 +1,23 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { useShopOwnerServiceItems } from "@/hooks/useServiceItems";
-import ServiceItemForm from "@/components/shop/ServiceItemForm";
+import ServiceItemForm from "@/components/serviceItem/ServiceItemForm";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { ComponentType } from "@/types/database";
+import { useShopOwnerServiceItems } from "@/hooks/useServiceItems";
+import { useNailArtistServiceItems } from "@/hooks/useNailArtistServiceItems";
+import { useRequireRole } from "@/hooks/useRequireRole";
 
 const CreateServiceItemPage = () => {
   const { type } = useParams<{ type: string }>();
   const navigate = useNavigate();
-  const { user, loading } = useAuthContext();
-  const { createServiceItem } = useShopOwnerServiceItems();
+  const { redirect, loading, user } = useRequireRole([1, 4]);
 
-  // Validate and parse component type
   const parsedType = parseInt(type || "0");
   const componentType: ComponentType =
-    parsedType >= 0 && parsedType <= 4 ? (parsedType as ComponentType) : 0; // Default to 0 if invalid
+    parsedType >= 0 && parsedType <= 4 ? (parsedType as ComponentType) : 0;
 
   if (loading) {
     return (
@@ -27,14 +26,21 @@ const CreateServiceItemPage = () => {
       </div>
     );
   }
+  
+  if (redirect) return redirect;
 
-  if (!user || user?.role !== 1) {
-    return <Navigate to="/auth" replace />;
-  }
+  const isArtist = user.role === 4;
+  const serviceItemsHook = isArtist
+    ? useNailArtistServiceItems()
+    : useShopOwnerServiceItems();
 
   const handleSubmit = async (formData: FormData) => {
-    await createServiceItem.mutateAsync(formData);
-    navigate(-1);
+    try {
+      await serviceItemsHook.createServiceItem.mutateAsync(formData);
+      navigate(-1);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const componentLabels = ["Form", "Base", "Shape", "Polish", "Design"];
@@ -55,14 +61,17 @@ const CreateServiceItemPage = () => {
             <h1 className="text-2xl font-bold">
               Add {componentLabels[componentType]}
             </h1>
-            <p className="text-muted-foreground">Create a new service item</p>
+            <p className="text-muted-foreground">
+              Create a new service item for your{" "}
+              {isArtist ? "artist profile" : "shop"}
+            </p>
           </div>
         </div>
 
         <ServiceItemForm
           componentType={componentType}
           onSubmit={handleSubmit}
-          isLoading={createServiceItem.isPending}
+          isLoading={serviceItemsHook.createServiceItem.isPending}
         />
 
         <Button

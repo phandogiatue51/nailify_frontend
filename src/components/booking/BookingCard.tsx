@@ -9,9 +9,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin } from "lucide-react";
-import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-
+import { BookingStatusBadge } from "../badge/BookingStatusBadge";
 interface BookingCardProps {
   booking: Booking & {
     shop?: Shop;
@@ -24,14 +23,6 @@ interface BookingCardProps {
   onCancel?: (bookingId: string) => void;
 }
 
-const statusColors: Record<string, string> = {
-  Pending: "bg-yellow-100 text-yellow-800",
-  Approved: "bg-green-100 text-green-800",
-  Rejected: "bg-red-100 text-red-800",
-  Completed: "bg-blue-100 text-blue-800",
-  Cancelled: "bg-gray-100 text-gray-800",
-};
-
 const BookingCard: React.FC<BookingCardProps> = ({
   booking,
   isShopOwner = false,
@@ -39,9 +30,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onReject,
   onCancel,
 }) => {
-  const formattedDate = format(new Date(booking.bookingDate), "MMM d, yyyy");
-  const formattedTime = booking.bookingTime.slice(0, 5);
-
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
@@ -53,19 +41,17 @@ const BookingCard: React.FC<BookingCardProps> = ({
             <p className="font-semibold">{booking.shop.name}</p>
           )}
         </div>
-        <Badge className={cn("capitalize", statusColors[booking.status])}>
-          {booking.status}
-        </Badge>
+        <BookingStatusBadge status={booking.status} />
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Calendar className="w-4 h-4" />
-            <span>{formattedDate}</span>
+            <span>{booking.scheduleStart}</span>
           </div>
           <div className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
-            <span>{formattedTime}</span>
+            <span>{booking.scheduleEnd}</span>
           </div>
         </div>
 

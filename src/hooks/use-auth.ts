@@ -8,9 +8,10 @@ import { useToast } from "./use-toast";
 interface DecodedJWT {
   userId: string;
   email: string;
-  role: 0 | 1 | 2; // 0: Customer, 1: ShopOwner, 2: Admin
+  role: 0 | 1 | 2 | 3 | 4; // 0: Customer, 1: ShopOwner, 2: Admin, 3: Staff, 4: NailArtist
   fullName?: string;
-  shopId: string;
+  shopId?: string | null;
+  nailArtistId?: string | null;
   exp: number;
 }
 
@@ -22,18 +23,18 @@ const decodeJWT = (token: string): DecodedJWT | null => {
     const roleClaim =
       decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
-    let role: 0 | 1 | 2;
+    let role: 0 | 1 | 2 | 3 | 4;
 
-    if (roleClaim === "Customer" || roleClaim === "0" || roleClaim === 0) {
+    if (roleClaim === "Customer") {
       role = 0;
-    } else if (
-      roleClaim === "ShopOwner" ||
-      roleClaim === "1" ||
-      roleClaim === 1
-    ) {
+    } else if (roleClaim === "ShopOwner") {
       role = 1;
-    } else if (roleClaim === "Admin" || roleClaim === "2" || roleClaim === 2) {
+    } else if (roleClaim === "Admin") {
       role = 2;
+    } else if (roleClaim === "Staff") {
+      role = 3;
+    } else if (roleClaim === "NailArtist") {
+      role = 4;
     } else {
       console.warn("Unknown role claim:", roleClaim);
       role = 0;
@@ -42,19 +43,17 @@ const decodeJWT = (token: string): DecodedJWT | null => {
     return {
       userId:
         decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/nameidentifier"
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
         ],
       email:
         decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress"
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
         ],
       role: role,
       fullName:
-        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/name"],
-      shopId:
-        decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/shopId"
-        ],
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+      shopId: decoded["ShopId"],
+      nailArtistId: decoded["NailArtistId"],
       exp: decoded.exp,
     };
   } catch (error) {
@@ -121,9 +120,11 @@ export function useAuth() {
         });
         setTimeout(() => {
           if (decoded.role === 1) {
-            navigate("/dashboard");
+            navigate("/staff-dashboard");
           } else if (decoded.role === 2) {
             navigate("/admin");
+          } else if (decoded.role === 4) {
+            navigate("/artist-dashboard");
           } else {
             navigate("/");
           }
@@ -152,7 +153,8 @@ export function useAuth() {
     password: string;
     fullName: string;
     phone?: string;
-    role: 0 | 1; // Updated to numbers
+    address?: string;
+    role: 0 | 1 | 4;
   }) => {
     if (!isMounted.current) return;
 
@@ -227,7 +229,6 @@ export function useAuth() {
 
   const hasRole = useCallback(
     (role: number | number[]) => {
-      // Updated to accept numbers
       if (user?.role === undefined) return false;
       if (Array.isArray(role)) return role.includes(user.role);
       return user.role === role;

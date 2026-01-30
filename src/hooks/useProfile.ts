@@ -55,36 +55,50 @@ export function useProfile() {
     };
   }, []);
 
-  const updateProfile = useCallback(async (profileData: Partial<Profile>) => {
-    setLoading(true);
-    setError(null);
-    try {
-      // 1. Update the profile
-      const response = await profileAPI.updateProfile(profileData);
+  const updateProfile = useCallback(
+    async (profileData: Partial<Profile>, imageFile?: File | null) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const formData = new FormData();
+        if (profileData.fullName)
+          formData.append("fullName", profileData.fullName);
 
-      // Show success toast
-      toast({
-        description: response.message || "Profile updated successfully",
-        variant: "success",
-        duration: 3000,
-      });
+        if (profileData.email) formData.append("email", profileData.email);
 
-      // 2. IMPORTANT: Fetch the updated profile from the server
-      const updatedProfile = await profileAPI.getProfile();
-      setProfile(updatedProfile);
+        if (profileData.phone)
+          formData.append("phone", profileData.phone || "");
 
-      return updatedProfile;
-    } catch (error: any) {
-      toast({
-        description: error?.message || "Có lỗi xảy ra!",
-        variant: "destructive",
-        duration: 5000,
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+        if (imageFile) formData.append("imageFile", imageFile);
+
+        if (profileData.address)
+          formData.append("address", profileData.address || "");
+
+        const response = await profileAPI.updateProfile(formData);
+
+        toast({
+          description: response.message,
+          variant: "success",
+          duration: 3000,
+        });
+
+        const updatedProfile = await profileAPI.getProfile();
+        setProfile(updatedProfile);
+
+        return updatedProfile;
+      } catch (error: any) {
+        toast({
+          description: error?.message || "Có lỗi xảy ra!",
+          variant: "destructive",
+          duration: 5000,
+        });
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   const changePassword = useCallback(
     async (passwordData: { currentPassword: string; newPassword: string }) => {
@@ -93,7 +107,7 @@ export function useProfile() {
       try {
         const response = await profileAPI.changePassword(passwordData);
         toast({
-          description: response.message || "Password changed successfully",
+          description: response.message,
           variant: "success",
           duration: 3000,
         });

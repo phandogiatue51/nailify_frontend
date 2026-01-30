@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { shopAPI, serviceItemAPI, collectionAPI } from "@/services/api";
-import { Shop, ServiceItem, Collection, ComponentType } from "@/types/database";
+import {
+  shopAPI,
+  serviceItemAPI,
+  collectionAPI,
+  artistAPI,
+} from "@/services/api";
+import { ServiceItem, ComponentType } from "@/types/database";
 
 export const useCustomerShops = (options?: { enabled?: boolean }) => {
   return useQuery({
@@ -33,25 +38,44 @@ export const useCustomerShopById = (shopId: string | undefined) => {
   });
 };
 
-export const useCustomerServiceItems = (shopId: string | undefined) => {
-  const { data: serviceItems = [], isLoading } = useQuery({
-    queryKey: ["customer-service-items", shopId],
+export const useCustomerArtistById = (artistId: string | undefined) => {
+  return useQuery({
+    queryKey: ["customer-artist", artistId],
     queryFn: async () => {
-      if (!shopId) return [];
+      if (!artistId) return null;
       try {
-        return await serviceItemAPI.getByShop(shopId);
+        return await artistAPI.getById(artistId);
       } catch (error: any) {
-        console.error("Error fetching customer service items:", error);
-        if (
-          error.message?.includes("404") ||
-          error.message?.includes("not found")
-        ) {
-          return [];
-        }
-        throw error;
+        console.error("Error fetching artist:", error);
+        return null;
       }
     },
-    enabled: !!shopId,
+    enabled: !!artistId,
+  });
+};
+
+export const useCustomerServiceItems = (shopId?: string, artistId?: string) => {
+  const { data: serviceItems = [], isLoading } = useQuery({
+    queryKey: ["customer-service-items", shopId, artistId],
+    queryFn: async () => {
+      if (shopId) {
+        try {
+          return await serviceItemAPI.getByShop(shopId);
+        } catch (error: any) {
+          console.error("Error fetching shop service items:", error);
+          return [];
+        }
+      } else if (artistId) {
+        try {
+          return await serviceItemAPI.getByArtist(artistId);
+        } catch (error: any) {
+          console.error("Error fetching artist service items:", error);
+          return [];
+        }
+      }
+      return [];
+    },
+    enabled: !!shopId || !!artistId,
   });
 
   const groupedItems = serviceItems.reduce(
@@ -72,25 +96,28 @@ export const useCustomerServiceItems = (shopId: string | undefined) => {
   };
 };
 
-export const useCustomerCollections = (shopId: string | undefined) => {
+export const useCustomerCollections = (shopId?: string, artistId?: string) => {
   return useQuery({
-    queryKey: ["customer-collections", shopId],
+    queryKey: ["customer-collections", shopId, artistId],
     queryFn: async () => {
-      if (!shopId) return [];
-      try {
-        return await collectionAPI.getByShop(shopId);
-      } catch (error: any) {
-        console.error("Error fetching customer collections:", error);
-        if (
-          error.message?.includes("404") ||
-          error.message?.includes("not found")
-        ) {
+      if (shopId) {
+        try {
+          return await collectionAPI.getByShop(shopId);
+        } catch (error: any) {
+          console.error("Error fetching shop collections:", error);
           return [];
         }
-        throw error;
+      } else if (artistId) {
+        try {
+          return await collectionAPI.getByArtist(artistId);
+        } catch (error: any) {
+          console.error("Error fetching artist collections:", error);
+          return [];
+        }
       }
+      return [];
     },
-    enabled: !!shopId,
+    enabled: !!shopId || !!artistId,
   });
 };
 
@@ -149,6 +176,21 @@ export const useAllCustomerCollections = (options?: { enabled?: boolean }) => {
         return await collectionAPI.getAll();
       } catch (error: any) {
         console.error("Error fetching all collections:", error);
+        return [];
+      }
+    },
+    enabled: options?.enabled ?? true,
+  });
+};
+
+export const useCustomerArtists = (options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: ["customer-artists"],
+    queryFn: async () => {
+      try {
+        return await artistAPI.getAll();
+      } catch (error: any) {
+        console.error("Error fetching artists:", error);
         return [];
       }
     },

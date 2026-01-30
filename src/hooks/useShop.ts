@@ -59,7 +59,7 @@ export const useShop = () => {
       });
 
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/staff-dashboard");
       }, 100);
 
       return data;

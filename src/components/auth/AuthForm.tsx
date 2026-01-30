@@ -1,277 +1,80 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+"use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Sparkles } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useAuthContext } from "../auth/AuthProvider";
-import { Loader2, Sparkles } from "lucide-react";
-
-const loginSchema = z.object({
-  email: z.string().email("Hãy điền email hợp lệ"),
-  password: z.string().min(6, "Mật khẩu có ít nhất 6 chữ số"),
-});
-
-const signupSchema = z
-  .object({
-    fullName: z.string().min(2, "Tên cần ít nhất 2 từ"),
-    email: z.string().email("Hãy điền email hợp lệ"),
-    phone: z.string().optional(),
-    password: z.string().min(6, "Mật khẩu có ít nhất 6 chữ số"),
-    confirmPassword: z.string().min(6, "Mật khẩu có ít nhất 6 chữ số"),
-    role: z.enum(["0", "1"]), // Keep as string in form
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Mật khẩu không trùng khớp",
-    path: ["confirmPassword"],
-  });
-
-type SignupFormData = z.infer<typeof signupSchema>;
-type LoginFormData = z.infer<typeof loginSchema>;
+import { LoginForm } from "./LoginForm";
+import { SignupForm } from "./SignUpForm";
 
 const AuthForm = () => {
-  const navigate = useNavigate();
-  const { login, signup } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const loginForm = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  const signupForm = useForm<SignupFormData>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: {
-      role: "0",
-    },
-  });
-
-  const handleLogin = async (data: LoginFormData) => {
-    setIsLoading(true);
-    try {
-      await login(data.email, data.password);
-    } catch (error: any) {
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSignup = async (data: SignupFormData) => {
-    setIsLoading(true);
-    try {
-      await signup({
-        email: data.email,
-        password: data.password,
-        fullName: data.fullName,
-        phone: data.phone || "",
-        role: parseInt(data.role) as 0 | 1, // Convert here
-      });
-      navigate("/auth");
-    } catch (error: any) {
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-pink-50 via-background to-purple-50">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
-            <Sparkles className="w-8 h-8 text-primary" />
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center p-4 overflow-hidden bg-[#fafafa]">
+      <div
+        className="absolute top-[-5%] right-[-5%] w-[50%] h-[50%] rounded-full blur-[120px] opacity-40 animate-pulse"
+        style={{ backgroundColor: "#FFC988" }}
+      />
+      <div
+        className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] rounded-full blur-[120px] opacity-40 animate-pulse"
+        style={{ backgroundColor: "#E288F9" }}
+      />
+
+      <div className="relative w-full max-w-[400px] z-10">
+        <div className="text-center mb-10 space-y-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white shadow-sm border border-orange-50 mb-2">
+            <Sparkles className="w-7 h-7 text-[#FFC988]" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+
+          <h1
+            className="text-4xl font-black tracking-tight bg-clip-text text-transparent italic"
+            style={{ color: "#f988b3ff" }}
+          >
             Nailify
           </h1>
+          <p className="text-slate-400 text-sm font-medium tracking-wide">
+            BEAUTY AT YOUR FINGERTIPS
+          </p>
         </div>
 
-        <Card className="border-0 shadow-xl">
+        <Card className="border-none shadow-[0_30px_60px_rgba(0,0,0,0.04)] bg-white/70 backdrop-blur-2xl rounded-[2.5rem] overflow-hidden">
           <Tabs defaultValue="login" className="w-full">
-            <CardHeader className="pb-2">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-            </CardHeader>
-
-            <CardContent>
-              <TabsContent value="login" className="mt-0">
-                <form
-                  onSubmit={loginForm.handleSubmit(handleLogin)}
-                  className="space-y-4"
+            <div className="px-8 pt-8">
+              <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-slate-200/30 rounded-2xl">
+                <TabsTrigger
+                  value="login"
+                  className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm font-bold text-slate-500 transition-all"
                 >
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
-                    <Input
-                      id="login-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      {...loginForm.register("email")}
-                    />
-                    {loginForm.formState.errors.email && (
-                      <p className="text-sm text-destructive">
-                        {loginForm.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
+                  Sign In
+                </TabsTrigger>
+                <TabsTrigger
+                  value="signup"
+                  className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm font-bold text-slate-500 transition-all"
+                >
+                  Sign Up
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
-                    <Input
-                      id="login-password"
-                      type="password"
-                      placeholder="••••••••"
-                      {...loginForm.register("password")}
-                    />
-                    {loginForm.formState.errors.password && (
-                      <p className="text-sm text-destructive">
-                        {loginForm.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      "Sign In"
-                    )}
-                  </Button>
-                  <div className="text-center mt-4">
-                    <Link
-                      to="/forgot-password"
-                      className="text-sm text-primary hover:underline"
-                    >
-                      Forgot your password?
-                    </Link>
-                  </div>
-                </form>
+            <CardContent className="p-8">
+              <TabsContent
+                value="login"
+                className="mt-0 animate-in fade-in zoom-in-95 duration-500"
+              >
+                <LoginForm />
               </TabsContent>
 
-              <TabsContent value="signup" className="mt-0">
-                <form
-                  onSubmit={signupForm.handleSubmit(handleSignup)}
-                  className="space-y-4"
-                >
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <Input
-                      id="signup-name"
-                      placeholder="Jane Doe"
-                      {...signupForm.register("fullName")}
-                    />
-                    {signupForm.formState.errors.fullName && (
-                      <p className="text-sm text-destructive">
-                        {signupForm.formState.errors.fullName.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      {...signupForm.register("email")}
-                    />
-                    {signupForm.formState.errors.email && (
-                      <p className="text-sm text-destructive">
-                        {signupForm.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-phone">Phone (optional)</Label>
-                    <Input
-                      id="signup-phone"
-                      type="tel"
-                      placeholder="+1 234 567 8900"
-                      {...signupForm.register("phone")}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      placeholder="••••••••"
-                      {...signupForm.register("password")}
-                    />
-                    {signupForm.formState.errors.password && (
-                      <p className="text-sm text-destructive">
-                        {signupForm.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-confirm">Confirm Password</Label>
-                    <Input
-                      id="signup-confirm"
-                      type="password"
-                      placeholder="••••••••"
-                      {...signupForm.register("confirmPassword")}
-                    />
-                    {signupForm.formState.errors.confirmPassword && (
-                      <p className="text-sm text-destructive">
-                        {signupForm.formState.errors.confirmPassword.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label>I am a...</Label>
-                    <RadioGroup
-                      defaultValue="0"
-                      onValueChange={(value: string) => {
-                        signupForm.setValue("role", value as "0" | "1");
-                      }}
-                      className="grid grid-cols-2 gap-4"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="0" id="Customer" />
-                        <Label htmlFor="Customer">Customer</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="1" id="ShopOwner" />
-                        <Label htmlFor="ShopOwner">Shop Owner</Label>
-                      </div>
-                    </RadioGroup>
-
-                    {signupForm.formState.errors.role && (
-                      <p className="text-sm text-destructive">
-                        {signupForm.formState.errors.role.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Đang tạo tài khoản...
-                      </>
-                    ) : (
-                      "Create Account"
-                    )}
-                  </Button>
-                </form>
+              <TabsContent
+                value="signup"
+                className="mt-0 animate-in fade-in zoom-in-95 duration-500"
+              >
+                <SignupForm />
               </TabsContent>
             </CardContent>
           </Tabs>
         </Card>
+
+        <p className="mt-8 text-center text-slate-700 text-[10px] uppercase tracking-widest px-10 leading-relaxed">
+          Secure access • Professional Standards • Community Driven
+        </p>
       </div>
     </div>
   );

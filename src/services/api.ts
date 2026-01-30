@@ -129,10 +129,10 @@ export const profileAPI = {
 
   getById: (id: any) => apiRequest(`/Profile/${id}`),
 
-  updateProfile: (userData: any) =>
+  updateProfile: (formData: FormData) =>
     apiRequest(`/Profile/`, {
       method: "PUT",
-      body: userData,
+      body: formData,
     }),
 
   changePassword: (passwordData: any) =>
@@ -152,6 +152,9 @@ export const collectionAPI = {
   getByShop: (shopId: string) => apiRequest(`/Collection/shop/${shopId}`),
 
   getByShopAuth: () => apiRequest("/Collection/shopAuth"),
+
+  getByArtist: (artistId: string) =>
+    apiRequest(`/Collection/artist/${artistId}`),
   getByArtistAuth: () => apiRequest("/Collection/artistAuth"),
 
   createShopCollection: (formData: FormData) =>
@@ -263,10 +266,7 @@ export const shopAPI = {
     return apiRequest(url);
   },
 
-  customerFilter: (filterParams: {
-    Name?: string;
-    Rating?: number;
-  }) => {
+  customerFilter: (filterParams: { Name?: string; Rating?: number }) => {
     const queryParams = new URLSearchParams();
 
     Object.entries(filterParams).forEach(([key, value]) => {
@@ -281,7 +281,7 @@ export const shopAPI = {
       : "/Shop/customer-filter";
 
     return apiRequest(url);
-  }
+  },
 };
 
 export const serviceItemAPI = {
@@ -293,18 +293,21 @@ export const serviceItemAPI = {
 
   getByShopAuth: () => apiRequest("/ServiceItem/shopAuth"),
 
-  getByArtist: (artistId: string) => apiRequest(`/ServiceItem/artist/${artistId}`),
+  getByArtist: (artistId: string) =>
+    apiRequest(`/ServiceItem/artist/${artistId}`),
 
   getByArtistAuth: () => apiRequest("/ServiceItem/artistAuth"),
 
   createShopServiceItem: (formData: FormData) =>
     apiRequest("/ServiceItem/shop", {
-      method: "POST", body: formData
+      method: "POST",
+      body: formData,
     }),
 
   createArtistServiceItem: (formData: FormData) =>
     apiRequest("/ServiceItem/artist", {
-      method: "POST", body: formData
+      method: "POST",
+      body: formData,
     }),
 
   updateServiceItem: (id: string, formData: FormData) =>
@@ -449,6 +452,45 @@ export const tagAPI = {
     apiRequest(`/Tag/category?tagCategory=${encodeURIComponent(category)}`, {
       method: "GET",
     }),
+};
+
+export const artistAPI = {
+  getAll: () => apiRequest("/Artist"),
+
+  getById: (artistId: string) => apiRequest(`/Artist/${artistId}`),
+
+  getByAuth: () => apiRequest("/Artist/artistAuth"),
+
+  createArtist: () =>
+    apiRequest("/Artist", {
+      method: "POST",
+    }),
+
+  verifyArtist: (artistId: string) =>
+    apiRequest(`/Artist/verify/${artistId}`, {
+      method: "PUT",
+    }),
+
+  filterArtists: (filterParams: {
+    Name?: string;
+    Rating?: number;
+    IsVerified?: boolean;
+  }) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `/Artist/filter?${queryString}`
+      : "/Artist/filter";
+
+    return apiRequest(url);
+  },
 };
 
 export default apiRequest;
