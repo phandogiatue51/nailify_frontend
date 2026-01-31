@@ -1,178 +1,189 @@
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/components/auth/AuthProvider";
-import { Navigate } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
-import { useCustomerArtistById } from "@/hooks/useCustomer";
 import {
+  useCustomerArtistById,
   useCustomerServiceItems,
   useCustomerCollections,
 } from "@/hooks/useCustomer";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { Loader2, MapPin, Star, User, Phone, Mail } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2,
+  MapPin,
+  Star,
+  User,
+  Phone,
+  MessageCircle,
+  Heart,
+  ShoppingBag,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
 import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
 import CollectionCard from "@/components/collection/CollectionCard";
-import { Card, CardContent } from "@/components/ui/card";
+import { ServiceItem } from "@/types/database";
 
 const ArtistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { user, loading } = useAuthContext();
+
+  // Data Fetching
   const { data: artist, isLoading: artistLoading } = useCustomerArtistById(id);
   const { serviceItems = [], isLoading: servicesLoading } =
     useCustomerServiceItems(undefined, id);
   const { data: collections = [], isLoading: collectionsLoading } =
     useCustomerCollections(undefined, id);
-  const navigate = useNavigate();
 
-  if (loading) {
+  // Selection State
+  const [selectedItems, setSelectedItems] = useState<ServiceItem[]>([]);
+
+  if (loading || artistLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-8 h-8 animate-spin text-[#E288F9]" />
       </div>
     );
   }
 
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
+  if (!user) return <Navigate to="/auth" replace />;
+  if (!artist) return <Navigate to="/explore" replace />;
 
-  if (artistLoading) {
-    return (
-      <MobileLayout>
-        <div className="flex justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin" />
-        </div>
-      </MobileLayout>
-    );
-  }
+  const toggleItem = (item: ServiceItem) => {
+    setSelectedItems((prev) => {
+      const exists = prev.find((i) => i.id === item.id);
+      return exists ? prev.filter((i) => i.id !== item.id) : [...prev, item];
+    });
+  };
 
-  if (!artist) {
-    return <Navigate to="/explore" replace />;
-  }
+  const totalPrice = selectedItems.reduce(
+    (sum, item) => sum + Number(item.price),
+    0,
+  );
 
-  const isLoading = servicesLoading || collectionsLoading;
+  const handleBookNow = () => {
+    navigate(`/artists/${id}/book`, {
+      state: { selectedItems },
+    });
+  };
 
   return (
-    <MobileLayout>
-      <div className="space-y-6">
-        {/* Artist Header */}
+    <MobileLayout showNav={false}>
+      <div className="bg-white min-h-screen pb-32">
+        {/* 1. HERO SECTION */}
+        <div className="relative h-72">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#E288F9]/20 to-transparent" />
+          <img
+            src={artist.avatarUrl || "/placeholder-artist.jpg"}
+            className="w-full h-full object-cover"
+            alt={artist.fullName}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-black/10" />
 
-        <div className="relative">
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-4 left-4 bg-background/80 backdrop-blur"
+            className="absolute top-6 left-4 bg-white/40 backdrop-blur-md rounded-2xl"
             onClick={() => navigate(-1)}
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5 text-slate-900" />
           </Button>
-          {/* Cover/Profile Image */}
-          <div className="aspect-[16/9] bg-gradient-to-r from-pink-100 to-purple-100" />
 
-          <div className="px-4 pb-4">
-            <div className="relative -mt-12 flex items-end gap-4">
-              <div className="w-24 h-24 rounded-full border-4 border-background bg-muted overflow-hidden">
-                {artist.avatarUrl ? (
-                  <img
-                    src={artist.avatarUrl}
-                    alt={artist.fullName}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <User className="w-12 h-12 text-muted-foreground" />
-                  </div>
-                )}
-
-              </div>
-
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <h1 className="text-2xl font-bold">
-                    {artist.fullName}
-                  </h1>
-                  {artist.rating !== undefined && (
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold">
-                        {artist.rating.toFixed(1)}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-4 mt-2">
-                  {artist.isVerified && (
-                    <Badge className="bg-green-500">Verified Artist</Badge>
-                  )}
-                  <p className="text-sm text-muted-foreground">
-                    {serviceItems.length} services
-                  </p>
-                </div>
+          <div className="absolute bottom-6 left-6 right-6">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge className="bg-[#FFC988] text-slate-900 font-black border-none text-[10px]">
+                {artist.isVerified ? "VERIFIED PRO" : "ARTIST"}
+              </Badge>
+              <div className="flex items-center gap-1 bg-white/80 backdrop-blur px-2 py-0.5 rounded-full">
+                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                <span className="text-[10px] font-black">
+                  {artist.rating?.toFixed(1) || "0.0"}
+                </span>
               </div>
             </div>
-
-            {/* Contact Info */}
-            <div className="space-y-2 mt-4">
-              {artist.address && (
-                <p className="flex items-center gap-2 text-sm">
-                  <MapPin className="w-4 h-4 text-muted-foreground" />
-                  {artist.address}
-                </p>
-              )}
-              {artist.phone && (
-                <p className="flex items-center gap-2 text-sm">
-                  <Phone className="w-4 h-4 text-muted-foreground" />
-                  {artist.phone}
-                </p>
-              )}
-              {artist.email && (
-                <p className="flex items-center gap-2 text-sm">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
-                  {artist.email}
-                </p>
-              )}
-            </div>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tighter">
+              {artist.fullName}
+            </h1>
           </div>
         </div>
 
-        <div className="px-4">
+        {/* 2. ACTION BAR */}
+        <div className="flex gap-3 px-6 -mt-4 relative z-20">
+          <Button className="flex-1 h-12 rounded-2xl bg-[#E288F9] shadow-lg shadow-purple-100 font-bold border-none hover:bg-[#d07ae6]">
+            <MessageCircle className="w-4 h-4 mr-2" /> Chat
+          </Button>
+          <Button
+            variant="outline"
+            className="flex-1 h-12 rounded-2xl border-slate-100 bg-white shadow-sm font-bold"
+          >
+            <Phone className="w-4 h-4 mr-2" /> Call
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-12 w-12 rounded-2xl border-slate-100 bg-white shadow-sm"
+          >
+            <Heart className="w-4 h-4 text-pink-500" />
+          </Button>
+        </div>
+
+        {/* 3. TABS CONTENT */}
+        <div className="px-4 mt-8">
           <Tabs defaultValue="services" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="services">Services</TabsTrigger>
-              <TabsTrigger value="collections">Collections</TabsTrigger>
+            <TabsList className="bg-transparent gap-8 border-b border-slate-100 rounded-none h-auto p-0 mb-6 w-full justify-start">
+              <TabsTrigger
+                value="services"
+                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-[#E288F9] rounded-none px-0 pb-2 font-black text-xs uppercase tracking-widest text-slate-400 data-[state=active]:text-slate-900"
+              >
+                Services
+              </TabsTrigger>
+              <TabsTrigger
+                value="collections"
+                className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-[#E288F9] rounded-none px-0 pb-2 font-black text-xs uppercase tracking-widest text-slate-400 data-[state=active]:text-slate-900"
+              >
+                Lookbook
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="services" className="space-y-4 mt-4">
-              {isLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin" />
+            <TabsContent value="services" className="space-y-4 m-0">
+              {servicesLoading ? (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="animate-spin text-[#E288F9]" />
                 </div>
               ) : serviceItems.length > 0 ? (
                 <div className="grid grid-cols-2 gap-3">
                   {serviceItems.map((item) => (
-                    <ServiceItemCard key={item.id} item={item} />
+                    <div
+                      key={item.id}
+                      onClick={() => toggleItem(item)}
+                      className="cursor-pointer"
+                    >
+                      <ServiceItemCard
+                        item={item}
+                        selected={selectedItems.some((i) => i.id === item.id)}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (
-                <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    <p>No services available yet</p>
-                    <p className="text-sm">Check back later</p>
+                <Card className="border-dashed">
+                  <CardContent className="py-10 text-center text-slate-400 text-sm">
+                    No services listed yet.
                   </CardContent>
                 </Card>
               )}
             </TabsContent>
 
-            <TabsContent value="collections" className="space-y-4 mt-4">
-              {isLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin" />
+            <TabsContent value="collections" className="m-0">
+              {collectionsLoading ? (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="animate-spin text-[#E288F9]" />
                 </div>
-              ) : collections.length > 0 ? (
+              ) : (
                 <div className="grid grid-cols-2 gap-3">
                   {collections.map((collection) => (
                     <CollectionCard
@@ -181,24 +192,33 @@ const ArtistDetailPage = () => {
                     />
                   ))}
                 </div>
-              ) : (
-                <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    <p>No collections available yet</p>
-                    <p className="text-sm">Check back later</p>
-                  </CardContent>
-                </Card>
               )}
             </TabsContent>
           </Tabs>
-
-          {/* Book Button */}
-          <div className="mt-6">
-            <Button className="w-full" size="lg">
-              Book Appointment
-            </Button>
-          </div>
         </div>
+
+        {/* 4. FLOATING SELECTION BAR (The "Checkout" Experience) */}
+        {selectedItems.length > 0 && (
+          <div className="fixed bottom-6 left-4 right-4 z-50 animate-in slide-in-from-bottom-10 duration-300">
+            <div className="bg-slate-900 rounded-[2.5rem] p-3 pl-6 shadow-2xl flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  {selectedItems.length} items selected
+                </span>
+                <span className="text-white font-black text-lg">
+                  {totalPrice.toLocaleString()} VND
+                </span>
+              </div>
+              <Button
+                onClick={handleBookNow}
+                className="bg-[#E288F9] hover:bg-[#d07ae6] text-white rounded-[2rem] px-6 h-12 font-black uppercase text-xs tracking-tighter"
+              >
+                Book Now
+                <ShoppingBag className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </MobileLayout>
   );

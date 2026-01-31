@@ -2,7 +2,7 @@ import { ServiceItem } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
 import { ComponentBadge } from "../badge/ComponentBadge";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, Edit2, Trash2 } from "lucide-react"; // Added Icons
 
 interface ServiceItemCardProps {
   item: ServiceItem;
@@ -24,12 +24,36 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
   return (
     <Card
       className={cn(
-        "group overflow-hidden cursor-pointer transition-all duration-300 border-none shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] rounded-[2rem]",
+        "group overflow-hidden cursor-pointer transition-all duration-300 border-none shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] rounded-[2rem] relative",
         selected && "ring-2 ring-[#E288F9] ring-offset-2",
         onSelect && "active:scale-[0.96]",
       )}
       onClick={() => onSelect?.(item)}
     >
+      {/* 1. Action Buttons (Top Right) */}
+      {showActions && (
+        <div className="absolute top-3 right-3 z-30 flex gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit?.(item);
+            }}
+            className="p-2 bg-white/90 backdrop-blur-md rounded-xl shadow-sm text-slate-700 hover:text-[#E288F9] active:scale-90 transition-all"
+          >
+            <Edit2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete?.(item);
+            }}
+            className="p-2 bg-white/90 backdrop-blur-md rounded-xl shadow-sm text-red-500 hover:bg-red-50 active:scale-90 transition-all"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       <div className="relative aspect-square bg-slate-100 overflow-hidden">
         {item.imageUrl ? (
           <img
@@ -45,14 +69,17 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
           </div>
         )}
 
-        {/* Floating Badges */}
+        {/* 2. Floating Badge (Top Left) */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           <ComponentBadge role={item.componentType} />
         </div>
 
-        {selected && (
-          <div className="absolute top-3 right-3 w-7 h-7 bg-[#E288F9] rounded-full flex items-center justify-center shadow-lg animate-in zoom-in">
-            <Check className="w-4 h-4 text-white" />
+        {/* 3. Selected State Overlay (Only shown when not in 'showActions' mode) */}
+        {selected && !showActions && (
+          <div className="absolute inset-0 bg-[#E288F9]/10 backdrop-blur-[2px] flex items-center justify-center animate-in fade-in duration-300">
+            <div className="w-10 h-10 bg-[#E288F9] rounded-full flex items-center justify-center shadow-lg animate-in zoom-in">
+              <Check className="w-6 h-6 text-white" />
+            </div>
           </div>
         )}
       </div>
@@ -70,29 +97,6 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
             {Number(item.price).toLocaleString()}đ
           </p>
         </div>
-
-        {showActions && (
-          <div className="flex gap-3 mt-3 pt-2 border-t border-slate-50">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit?.(item);
-              }}
-              className="text-[10px] font-bold uppercase text-slate-400 hover:text-slate-900"
-            >
-              Edit
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete?.(item);
-              }}
-              className="text-[10px] font-bold uppercase text-red-400 hover:text-red-600"
-            >
-              Delete
-            </button>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

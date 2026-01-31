@@ -13,7 +13,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
-
+import Header from "@/components/ui/header";
 const ShopOwnerDashboardPage = () => {
   const { user, loading } = useAuthContext();
   const { myShop, shopLoading } = useShop();
@@ -34,6 +34,8 @@ const ShopOwnerDashboardPage = () => {
   if (!myShop) {
     return (
       <MobileLayout>
+        <Header title="Nailify" hasNotification={true} />
+
         <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center space-y-6">
           <div className="w-24 h-24 bg-slate-50 rounded-[3rem] flex items-center justify-center shadow-inner">
             <Store className="w-10 h-10 text-slate-300" />
@@ -66,6 +68,8 @@ const ShopOwnerDashboardPage = () => {
 
   return (
     <MobileLayout>
+      <Header title="Nailify" hasNotification={true} />
+
       <div className="p-6 space-y-8 bg-slate-50/30 min-h-screen pb-24">
         {/* Header Section */}
         <div className="pt-4 flex justify-between items-end">

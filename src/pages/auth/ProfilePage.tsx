@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DetailRow } from "@/components/ui/detail-row";
 import { Badge } from "@/components/ui/badge";
+import Header from "@/components/ui/header";
 import {
   LogOut,
   Loader2,
-  CircleAlert, CircleCheckBig,
+  CircleCheckBig,
   ChevronRight,
   Mail,
   Phone,
@@ -62,6 +63,8 @@ const ProfilePage = () => {
 
   return (
     <MobileLayout>
+      <Header title="Nailify" hasNotification={true} />
+
       <div className="pb-20">
         <div className="bg-gradient-to-b from-slate-50 to-white px-6 pt-10 pb-6 text-center">
           <div className="relative mx-auto w-24 h-24 mb-4">
@@ -127,7 +130,10 @@ const ProfilePage = () => {
               <CardContent className="p-0 divide-y divide-slate-100">
                 <DetailRow icon={Mail} label="Email" value={profile.email}>
                   {profile.isVerified ? (
-                    <Badge variant="default" className="bg-green-400 text-white text-xs flex items-center gap-1">
+                    <Badge
+                      variant="default"
+                      className="bg-green-400 text-white text-xs flex items-center gap-1"
+                    >
                       Verified
                     </Badge>
                   ) : (
@@ -171,7 +177,7 @@ const ProfilePage = () => {
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start h-12 px-4 text-destructive hover:bg-destructive/5"
+                className="w-full justify-start h-12 px-4 text-white bg-red-400"
                 onClick={handleSignOut}
                 disabled={loading}
               >

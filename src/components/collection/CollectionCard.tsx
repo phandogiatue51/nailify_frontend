@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TagBadge } from "../badge/TagBadge";
+import { Edit2, Trash2, MoreHorizontal } from "lucide-react"; // Added icons
 
 interface CollectionCardProps {
   collection: Collection;
@@ -26,13 +27,37 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
   return (
     <Card
       className={cn(
-        "group overflow-hidden cursor-pointer transition-all duration-300 border-none shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] rounded-[2rem] h-auto pb-2",
+        "group overflow-hidden cursor-pointer transition-all duration-300 border-none shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] rounded-[2rem] h-auto pb-2 relative",
       )}
       onClick={() => {
         onClick?.(collection);
         onSelect?.();
       }}
     >
+      {/* Action Buttons Overlay */}
+      {showActions && (
+        <div className="absolute top-3 right-3 z-30 flex gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevents card onClick
+              onEdit?.(collection);
+            }}
+            className="p-2 bg-white/90 backdrop-blur-md rounded-xl shadow-sm text-slate-700 hover:text-[#E288F9] active:scale-90 transition-all"
+          >
+            <Edit2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevents card onClick
+              onDelete?.(collection);
+            }}
+            className="p-2 bg-white/90 backdrop-blur-md rounded-xl shadow-sm text-red-500 hover:bg-red-50 active:scale-90 transition-all"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       <div className="relative aspect-square bg-slate-50 overflow-hidden">
         {collection.imageUrl ? (
           <img
@@ -87,7 +112,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
 
               {collection.tags.length > 3 && (
                 <span className="text-xs text-muted-foreground self-center">
-                  +{collection.tags.length - 3} more
+                  +{collection.tags.length - 3}
                 </span>
               )}
             </div>

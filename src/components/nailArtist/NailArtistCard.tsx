@@ -54,18 +54,6 @@ const NailArtistCard: React.FC<NailArtistCardProps> = ({ artist }) => {
                 <span className="line-clamp-1">{artist.address}</span>
               </p>
             )}
-            {/* Services Count */}
-            <div className="flex items-center justify-between pt-1">
-              {hasServices ? (
-                <Badge variant="secondary" className="text-xs">
-                  {artist.serviceItems!.length} services
-                </Badge>
-              ) : (
-                <Badge variant="outline" className="text-xs">
-                  No services yet
-                </Badge>
-              )}
-            </div>
           </div>
         </CardContent>
       </Card>

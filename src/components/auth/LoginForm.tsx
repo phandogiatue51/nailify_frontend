@@ -55,12 +55,6 @@ export const LoginForm = () => {
             <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">
               Password
             </Label>
-            <Link
-              to="/forgot-password"
-              className="text-[10px] font-bold text-pink-600 hover:text-pink-700 underline"
-            >
-              Forgot Password?
-            </Link>
           </div>
           <Input
             type="password"
@@ -68,6 +62,14 @@ export const LoginForm = () => {
             placeholder="••••••••"
             {...loginForm.register("password")}
           />
+          <div className="flex justify-end px-1">
+            <Link
+              to="/forgot-password"
+              className="text-[10px] font-bold text-pink-600 hover:text-pink-700 underline"
+            >
+              Forgot Password?
+            </Link>
+          </div>
         </div>
       </div>
       <Button

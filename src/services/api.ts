@@ -1,9 +1,6 @@
 import { TagDto } from "@/types/type";
 
-//https://localhost:7144/api
-//https://nailify.onrender.com/api
-
-const API_BASE_URL = "https://localhost:7144/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;

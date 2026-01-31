@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { BookingStatusBadge } from "@/components/badge/BookingStatusBadge";
-
+import Header from "@/components/ui/header";
 const NailArtistDashboardPage = () => {
   const { user, loading } = useAuthContext();
   const { myArtist, artistLoading, createArtist } = useNailArtist();
@@ -51,6 +51,8 @@ const NailArtistDashboardPage = () => {
   if (!myArtist) {
     return (
       <MobileLayout>
+        <Header title="Nailify" hasNotification={true} />
+
         <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
             <Briefcase className="w-10 h-10 text-primary" />
@@ -79,15 +81,16 @@ const NailArtistDashboardPage = () => {
 
   return (
     <MobileLayout>
+      <Header title="Nailify" hasNotification={true} />
+
       <div className="min-h-screen bg-slate-50/50 pb-24">
-        {/* Top Section / Header */}
         <div className="bg-white px-6 pt-8 pb-6 border-b shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="relative">
-                {myArtist.profile?.avatarUrl ? (
+                {myArtist.avatarUrl ? (
                   <img
-                    src={myArtist.profile.avatarUrl}
+                    src={myArtist.avatarUrl}
                     alt=""
                     className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/10"
                   />
@@ -103,7 +106,7 @@ const NailArtistDashboardPage = () => {
                   Welcome back,
                 </p>
                 <h1 className="text-xl font-bold text-slate-900 leading-tight">
-                  {myArtist.profile?.fullName?.split(" ")[0] || "Artist"}
+                  {myArtist.fullName}
                 </h1>
               </div>
             </div>

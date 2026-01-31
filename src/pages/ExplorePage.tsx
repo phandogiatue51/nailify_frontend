@@ -9,7 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Search, User, Store, Sparkles, Filter } from "lucide-react";
 import ShopCard from "@/components/shop/ShopCard";
 import NailArtistCard from "@/components/nailArtist/NailArtistCard";
-
+import { ExploreSkeleton } from "@/components/ui/explore-skeleton";
+import { EmptyExploreState } from "@/components/ui/empty-explore-page";
+import Header from "@/components/ui/header";
 const ExplorePage = () => {
   const { user, loading } = useAuthContext();
   const { data: shops, isLoading: shopsLoading } = useAllShops();
@@ -27,28 +29,32 @@ const ExplorePage = () => {
 
   if (!user) return <Navigate to="/auth" replace />;
 
-  const filteredShops = shops?.filter((shop) =>
-    [shop.name, shop.description, shop.address].some(field =>
-      field?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  ) || [];
+  const filteredShops =
+    shops?.filter((shop) =>
+      [shop.name, shop.description, shop.address].some((field) =>
+        field?.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
+    ) || [];
 
-  const filteredArtists = artists?.filter((artist) =>
-    [artist.profile?.fullName, artist.address].some(field =>
-      field?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  ) || [];
+  const filteredArtists =
+    artists?.filter((artist) =>
+      [artist.profile?.fullName, artist.address].some((field) =>
+        field?.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
+    ) || [];
 
   const isLoading = activeTab === "shops" ? shopsLoading : artistsLoading;
 
   return (
     <MobileLayout>
       <div className="bg-slate-50/50 min-h-screen pb-24">
-        {/* Header & Search Area */}
+        <Header title="Nailify" hasNotification={true} />
         <div className="bg-white px-6 pt-8 pb-6 rounded-b-[3rem] shadow-sm">
           <div className="flex items-center gap-2 text-[#E288F9] mb-2">
             <Sparkles className="w-4 h-4" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Discover</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+              Discover
+            </span>
           </div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-6">
             Find your <span className="text-[#FFC988]">Vibe</span>
@@ -71,13 +77,23 @@ const ExplorePage = () => {
         </div>
 
         <div className="p-4 space-y-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-2 h-14 p-1.5 bg-white rounded-[1.5rem] shadow-sm mb-6 border border-slate-100">
-              <TabsTrigger value="shops" className="rounded-xl font-bold data-[state=active]:bg-[#FFC988] data-[state=active]:text-white transition-all">
+              <TabsTrigger
+                value="shops"
+                className="rounded-xl font-bold data-[state=active]:bg-[#FFC988] data-[state=active]:text-white transition-all"
+              >
                 <Store className="w-4 h-4 mr-2" />
                 Salons
               </TabsTrigger>
-              <TabsTrigger value="artists" className="rounded-xl font-bold data-[state=active]:bg-[#E288F9] data-[state=active]:text-white transition-all">
+              <TabsTrigger
+                value="artists"
+                className="rounded-xl font-bold data-[state=active]:bg-[#E288F9] data-[state=active]:text-white transition-all"
+              >
                 <User className="w-4 h-4 mr-2" />
                 Artists
               </TabsTrigger>
@@ -88,7 +104,7 @@ const ExplorePage = () => {
                 {isLoading ? (
                   <ExploreSkeleton />
                 ) : filteredShops.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-5">
+                  <div className="grid grid-cols-2 gap-4">
                     {filteredShops.map((shop) => (
                       <ShopCard key={shop.id} shop={shop} />
                     ))}
@@ -116,7 +132,8 @@ const ExplorePage = () => {
 
           <div className="py-4 border-t border-slate-200/60 text-center">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              {filteredShops.length} Salons • {filteredArtists.length} Artists near you
+              {filteredShops.length} Salons • {filteredArtists.length} Artists
+              near you
             </p>
           </div>
         </div>
@@ -124,29 +141,5 @@ const ExplorePage = () => {
     </MobileLayout>
   );
 };
-
-// Simplified Skeleton for loading
-const ExploreSkeleton = () => (
-  <div className="grid grid-cols-2 gap-4 animate-pulse">
-    {[1, 2, 3, 4].map((i) => (
-      <div key={i} className="h-48 bg-slate-200 rounded-[2rem]" />
-    ))}
-  </div>
-);
-
-// Improved Empty State
-const EmptyExploreState = ({ query, type }: { query: string; type: string }) => (
-  <div className="flex flex-col items-center justify-center py-20 px-10 text-center bg-white rounded-[3rem] border border-dashed border-slate-200">
-    <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-      <Search className="w-10 h-10 text-slate-200" />
-    </div>
-    <h3 className="font-bold text-slate-900">
-      {query ? `No ${type} matching "${query}"` : `No ${type} available`}
-    </h3>
-    <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-      Try checking your spelling or using more general keywords.
-    </p>
-  </div>
-);
 
 export default ExplorePage;

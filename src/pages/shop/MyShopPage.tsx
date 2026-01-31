@@ -8,14 +8,13 @@ import { useShopOwnerCollections } from "@/hooks/useCollections";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Edit } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useShopOwnerLocations } from "@/hooks/useLocation";
 import { ShopSetupView } from "./ShopSetUpView";
 import { ServicesTab } from "@/components/shop/ServicesTab";
 import { LocationsTab } from "@/components/shop/LocationsTab";
 import { CollectionsTab } from "@/components/shop/CollectionsTab";
 import ShopEditView from "./ShopEditView";
-
+import Header from "@/components/ui/header";
 const MyShopPage = () => {
   const { user, loading } = useAuthContext();
   const { myShop, shopLoading, createShop, updateShop, refetchMyShop } =
@@ -98,6 +97,8 @@ const MyShopPage = () => {
   }
   return (
     <MobileLayout>
+      <Header title="Nailify" hasNotification={true} />
+
       <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen pb-20">
         <header className="pt-4 flex items-start justify-between">
           <div>

@@ -6,7 +6,7 @@ import {
   useCustomerServiceItems,
   useCustomerCollections,
 } from "@/hooks/useCustomer";
-
+import { MapPin, Info, Star, Share2 } from "lucide-react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -82,62 +82,69 @@ const ShopDetailPage = () => {
 
   return (
     <MobileLayout showNav={false}>
-      <div className="relative">
-        {/* Header Image */}
-        <div className="relative">
-          {/* Cover */}
-          <div className="h-48 bg-muted relative">
-            {shop.coverUrl ? (
-              <img
-                src={shop.coverUrl}
-                alt={shop.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5" />
-            )}
-
-            {/* Back button */}
+      <div className="relative bg-slate-50/30 min-h-screen pb-32">
+        {/* Immersive Header */}
+        <div className="relative h-64 overflow-hidden">
+          {shop.coverUrl ? (
+            <img src={shop.coverUrl} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-[#FFC988] to-[#E288F9]" />
+          )}
+          <div className="absolute inset-0 bg-black/20" />{" "}
+          {/* Subtle overlay for contrast */}
+          <div className="absolute top-6 left-4 right-4 flex justify-between items-center">
             <Button
-              variant="ghost"
+              variant="secondary"
               size="icon"
-              className="absolute top-4 left-4 bg-background/80 backdrop-blur"
+              className="rounded-2xl bg-white/90 backdrop-blur"
               onClick={() => navigate(-1)}
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5 text-slate-900" />
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="rounded-2xl bg-white/90 backdrop-blur"
+            >
+              <Share2 className="w-5 h-5 text-slate-900" />
             </Button>
           </div>
-
-          {/* Logo/avatar overlay */}
-          {shop.logoUrl && (
-            <div className="absolute -bottom-8 left-6">
-              <img
-                src={shop.logoUrl}
-                alt={shop.name}
-                className="w-20 h-20 rounded-xl object-cover border-4 border-background shadow-md"
-              />
-            </div>
-          )}
+          <div className="absolute -bottom-1 left-0 right-0 h-8 bg-slate-50 rounded-t-[3rem]" />
         </div>
 
-        {/* Shop Info */}
-        <div className="p-4 mt-10 space-y-4">
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-bold">{shop.name}</h1>
-            {shop.description && (
-              <p className="text-muted-foreground text-sm mt-1">
-                {shop.description}
-              </p>
-            )}
+        {/* Shop Info Card */}
+        <div className="px-6 -mt-16 relative z-10">
+          <div className="bg-white rounded-[2.5rem] p-6 shadow-xl shadow-slate-200/50 border border-white">
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="text-3xl font-black tracking-tight text-slate-900">
+                  {shop.name}
+                </h1>
+              </div>
+              {shop.logoUrl && (
+                <img
+                  src={shop.logoUrl}
+                  className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-50 shadow-sm"
+                />
+              )}
+            </div>
+
+            <p className="text-sm text-slate-400 leading-relaxed italic">
+              "{shop.description || "Welcome to our studio."}"
+            </p>
           </div>
         </div>
 
-        {/* Services & Collections */}
-        <div className="p-4">
-          <Tabs defaultValue="services">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="services">Services</TabsTrigger>
-              <TabsTrigger value="collections">Collections</TabsTrigger>
+        {/* Tabs System */}
+        <div className="p-4 mt-4">
+          <Tabs defaultValue="services" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-white rounded-2xl mb-6 shadow-sm border border-slate-100">
+              <TabsTrigger value="services" className="rounded-xl font-bold">
+                Services
+              </TabsTrigger>
+              <TabsTrigger value="collections" className="rounded-xl font-bold">
+                Lookbook
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="services" className="space-y-4 mt-4">

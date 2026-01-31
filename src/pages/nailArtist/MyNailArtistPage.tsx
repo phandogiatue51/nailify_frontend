@@ -11,7 +11,7 @@ import { Edit } from "lucide-react";
 import { ArtistCollectionsTab } from "@/components/nailArtist/ArtistCollectionsTab";
 import { ArtistServicesTab } from "@/components/nailArtist/ArtistServicesTab";
 import { useNavigate } from "react-router-dom";
-
+import Header from "@/components/ui/header";
 const MyNailArtistPage = () => {
   const { user, loading } = useAuthContext();
   const navigate = useNavigate();
@@ -51,6 +51,8 @@ const MyNailArtistPage = () => {
 
   return (
     <MobileLayout>
+      <Header title="Nailify" hasNotification={true} />
+
       <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen pb-20">
         {/* Profile Header */}
         <header className="pt-4 flex items-center justify-between">
