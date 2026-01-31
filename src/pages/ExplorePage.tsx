@@ -1,4 +1,3 @@
-// pages/ExplorePage.tsx
 import { useState } from "react";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
@@ -7,10 +6,9 @@ import { useAllShops } from "@/hooks/useShop";
 import { useCustomerArtists } from "@/hooks/useCustomer";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Search, User, Store } from "lucide-react";
+import { Loader2, Search, User, Store, Sparkles, Filter } from "lucide-react";
 import ShopCard from "@/components/shop/ShopCard";
 import NailArtistCard from "@/components/nailArtist/NailArtistCard";
-import { Card, CardContent } from "@/components/ui/card";
 
 const ExplorePage = () => {
   const { user, loading } = useAuthContext();
@@ -21,142 +19,134 @@ const ExplorePage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-8 h-8 animate-spin text-[#E288F9]" />
       </div>
     );
   }
 
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
+  if (!user) return <Navigate to="/auth" replace />;
 
-  // Filter shops by search query
-  const filteredShops =
-    shops?.filter(
-      (shop) =>
-        shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        shop.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        shop.address?.toLowerCase().includes(searchQuery.toLowerCase()),
-    ) || [];
+  const filteredShops = shops?.filter((shop) =>
+    [shop.name, shop.description, shop.address].some(field =>
+      field?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  ) || [];
 
-  // Filter artists by search query
-  const filteredArtists =
-    artists?.filter(
-      (artist) =>
-        artist.profile?.fullName
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        artist.address?.toLowerCase().includes(searchQuery.toLowerCase()),
-    ) || [];
+  const filteredArtists = artists?.filter((artist) =>
+    [artist.profile?.fullName, artist.address].some(field =>
+      field?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  ) || [];
 
   const isLoading = activeTab === "shops" ? shopsLoading : artistsLoading;
-  const showEmptyState =
-    activeTab === "shops"
-      ? filteredShops.length === 0
-      : filteredArtists.length === 0;
 
   return (
     <MobileLayout>
-      <div className="p-4 space-y-4">
-        <div className="pt-4">
-          <h1 className="text-2xl font-bold">Explore</h1>
-          <p className="text-muted-foreground">
-            Find nail salons and artists near you
-          </p>
+      <div className="bg-slate-50/50 min-h-screen pb-24">
+        {/* Header & Search Area */}
+        <div className="bg-white px-6 pt-8 pb-6 rounded-b-[3rem] shadow-sm">
+          <div className="flex items-center gap-2 text-[#E288F9] mb-2">
+            <Sparkles className="w-4 h-4" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Discover</span>
+          </div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-6">
+            Find your <span className="text-[#FFC988]">Vibe</span>
+          </h1>
+
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#E288F9] transition-colors">
+              <Search className="w-5 h-5" />
+            </div>
+            <Input
+              placeholder={`Search for ${activeTab}...`}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-14 pl-12 pr-12 rounded-2xl border-none bg-slate-100/80 focus-visible:ring-2 focus-visible:ring-[#E288F9]/20 font-medium text-slate-900 placeholder:text-slate-400 transition-all"
+            />
+            <button className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
+              <Filter className="w-4 h-4 text-slate-600" />
+            </button>
+          </div>
         </div>
 
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder={`Search ${activeTab === "shops" ? "shops" : "artists"}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+        <div className="p-4 space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 h-14 p-1.5 bg-white rounded-[1.5rem] shadow-sm mb-6 border border-slate-100">
+              <TabsTrigger value="shops" className="rounded-xl font-bold data-[state=active]:bg-[#FFC988] data-[state=active]:text-white transition-all">
+                <Store className="w-4 h-4 mr-2" />
+                Salons
+              </TabsTrigger>
+              <TabsTrigger value="artists" className="rounded-xl font-bold data-[state=active]:bg-[#E288F9] data-[state=active]:text-white transition-all">
+                <User className="w-4 h-4 mr-2" />
+                Artists
+              </TabsTrigger>
+            </TabsList>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="shops" className="flex items-center gap-2">
-              <Store className="w-4 h-4" />
-              <span>Shops</span>
-            </TabsTrigger>
-            <TabsTrigger value="artists" className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              <span>Artists</span>
-            </TabsTrigger>
-          </TabsList>
+            <div className="px-1">
+              <TabsContent value="shops" className="m-0 space-y-4">
+                {isLoading ? (
+                  <ExploreSkeleton />
+                ) : filteredShops.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-5">
+                    {filteredShops.map((shop) => (
+                      <ShopCard key={shop.id} shop={shop} />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyExploreState query={searchQuery} type="shops" />
+                )}
+              </TabsContent>
 
-          <TabsContent value="shops" className="space-y-4 mt-4">
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              </div>
-            ) : filteredShops.length > 0 ? (
-              <div className="grid grid-cols-2 gap-3">
-                {filteredShops.map((shop) => (
-                  <ShopCard key={shop.id} shop={shop} />
-                ))}
-              </div>
-            ) : showEmptyState ? (
-              <Card>
-                <CardContent className="py-8 text-center text-muted-foreground">
-                  <p>
-                    {searchQuery
-                      ? `No shops found for "${searchQuery}"`
-                      : "No nail shops available"}
-                  </p>
-                  <p className="text-sm">
-                    {searchQuery
-                      ? "Try a different search term"
-                      : "Check back soon!"}
-                  </p>
-                </CardContent>
-              </Card>
-            ) : null}
-          </TabsContent>
+              <TabsContent value="artists" className="m-0 space-y-4">
+                {isLoading ? (
+                  <ExploreSkeleton />
+                ) : filteredArtists.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-4">
+                    {filteredArtists.map((artist) => (
+                      <NailArtistCard key={artist.id} artist={artist} />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyExploreState query={searchQuery} type="artists" />
+                )}
+              </TabsContent>
+            </div>
+          </Tabs>
 
-          <TabsContent value="artists" className="space-y-4 mt-4">
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              </div>
-            ) : filteredArtists.length > 0 ? (
-              <div className="grid grid-cols-2 gap-3">
-                {filteredArtists.map((artist) => (
-                  <NailArtistCard key={artist.id} artist={artist} />
-                ))}
-              </div>
-            ) : showEmptyState ? (
-              <Card>
-                <CardContent className="py-8 text-center text-muted-foreground">
-                  <p>
-                    {searchQuery
-                      ? `No artists found for "${searchQuery}"`
-                      : "No nail artists available"}
-                  </p>
-                  <p className="text-sm">
-                    {searchQuery
-                      ? "Try a different search term"
-                      : "Check back soon!"}
-                  </p>
-                </CardContent>
-              </Card>
-            ) : null}
-          </TabsContent>
-        </Tabs>
-
-        <div className="text-xs text-muted-foreground text-center pt-2">
-          <p>
-            Found {filteredShops.length} shops and {filteredArtists.length}{" "}
-            artists
-          </p>
+          <div className="py-4 border-t border-slate-200/60 text-center">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              {filteredShops.length} Salons • {filteredArtists.length} Artists near you
+            </p>
+          </div>
         </div>
       </div>
     </MobileLayout>
   );
 };
+
+// Simplified Skeleton for loading
+const ExploreSkeleton = () => (
+  <div className="grid grid-cols-2 gap-4 animate-pulse">
+    {[1, 2, 3, 4].map((i) => (
+      <div key={i} className="h-48 bg-slate-200 rounded-[2rem]" />
+    ))}
+  </div>
+);
+
+// Improved Empty State
+const EmptyExploreState = ({ query, type }: { query: string; type: string }) => (
+  <div className="flex flex-col items-center justify-center py-20 px-10 text-center bg-white rounded-[3rem] border border-dashed border-slate-200">
+    <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+      <Search className="w-10 h-10 text-slate-200" />
+    </div>
+    <h3 className="font-bold text-slate-900">
+      {query ? `No ${type} matching "${query}"` : `No ${type} available`}
+    </h3>
+    <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+      Try checking your spelling or using more general keywords.
+    </p>
+  </div>
+);
 
 export default ExplorePage;

@@ -5,10 +5,11 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DetailRow } from "@/components/ui/detail-row";
+import { Badge } from "@/components/ui/badge";
 import {
   LogOut,
   Loader2,
-  CircleAlert,
+  CircleAlert, CircleCheckBig,
   ChevronRight,
   Mail,
   Phone,
@@ -78,27 +79,33 @@ const ProfilePage = () => {
               )}
             </div>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-2xl font-bold tracking-tight flex items-center justify-center gap-2">
             {profile.fullName || "User"}
           </h1>
+
           <div className="flex justify-center mt-2">
             <RoleBadge role={profile.role} />
           </div>
 
-          {profile.isVerified === false && (
+          {profile.shopVerified && (
             <div className="mt-4 flex flex-col items-center">
-              <div className="flex items-center gap-1.5 mb-2 text-amber-600">
-                <CircleAlert className="w-4 h-4" />
+              <div className="flex items-center gap-1.5 mb-2 bg-green-400 text-white px-3 py-1 rounded-full">
                 <span className="text-xs font-bold uppercase tracking-wide">
-                  Email not verified
+                  Shop Verified
                 </span>
+                <CircleCheckBig className="w-3 h-3" />
               </div>
-              <VerificationButton
-                email={profile.email}
-                size="sm"
-                variant="outline"
-                className="w-auto px-6 h-8 text-xs border-amber-200 text-amber-700 rounded-full"
-              />
+            </div>
+          )}
+
+          {profile.artistVerified && (
+            <div className="mt-4 flex flex-col items-center">
+              <div className="flex items-center gap-1.5 mb-2 bg-green-400 text-white px-3 py-1 rounded-full">
+                <span className="text-xs font-bold uppercase tracking-wide">
+                  Artist Verified
+                </span>
+                <CircleCheckBig className="w-3 h-3" />
+              </div>
             </div>
           )}
         </div>
@@ -118,7 +125,20 @@ const ProfilePage = () => {
             </div>
             <Card className="overflow-hidden border-none shadow-sm ring-1 ring-slate-200">
               <CardContent className="p-0 divide-y divide-slate-100">
-                <DetailRow icon={Mail} label="Email" value={profile.email} />
+                <DetailRow icon={Mail} label="Email" value={profile.email}>
+                  {profile.isVerified ? (
+                    <Badge variant="default" className="bg-green-400 text-white text-xs flex items-center gap-1">
+                      Verified
+                    </Badge>
+                  ) : (
+                    <VerificationButton
+                      email={profile.email}
+                      size="sm"
+                      variant="outline"
+                      className="w-auto px-4 h-6 text-xs border-amber-200 text-amber-700 rounded-full"
+                    />
+                  )}
+                </DetailRow>
                 <DetailRow
                   icon={Phone}
                   label="Phone"

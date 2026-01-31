@@ -7,6 +7,8 @@ import {
   useCustomerServiceItems,
   useCustomerCollections,
 } from "@/hooks/useCustomer";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { Loader2, MapPin, Star, User, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +25,7 @@ const ArtistDetailPage = () => {
     useCustomerServiceItems(undefined, id);
   const { data: collections = [], isLoading: collectionsLoading } =
     useCustomerCollections(undefined, id);
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -56,17 +59,26 @@ const ArtistDetailPage = () => {
     <MobileLayout>
       <div className="space-y-6">
         {/* Artist Header */}
+
         <div className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 left-4 bg-background/80 backdrop-blur"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
           {/* Cover/Profile Image */}
           <div className="aspect-[16/9] bg-gradient-to-r from-pink-100 to-purple-100" />
 
           <div className="px-4 pb-4">
             <div className="relative -mt-12 flex items-end gap-4">
               <div className="w-24 h-24 rounded-full border-4 border-background bg-muted overflow-hidden">
-                {artist.profile?.avatarUrl ? (
+                {artist.avatarUrl ? (
                   <img
-                    src={artist.profile.avatarUrl}
-                    alt={artist.profile.fullName}
+                    src={artist.avatarUrl}
+                    alt={artist.fullName}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -74,12 +86,13 @@ const ArtistDetailPage = () => {
                     <User className="w-12 h-12 text-muted-foreground" />
                   </div>
                 )}
+
               </div>
 
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <h1 className="text-2xl font-bold">
-                    {artist.profile?.fullName}
+                    {artist.fullName}
                   </h1>
                   {artist.rating !== undefined && (
                     <div className="flex items-center gap-1">
@@ -110,16 +123,16 @@ const ArtistDetailPage = () => {
                   {artist.address}
                 </p>
               )}
-              {artist.profile?.phone && (
+              {artist.phone && (
                 <p className="flex items-center gap-2 text-sm">
                   <Phone className="w-4 h-4 text-muted-foreground" />
-                  {artist.profile.phone}
+                  {artist.phone}
                 </p>
               )}
-              {artist.profile?.email && (
+              {artist.email && (
                 <p className="flex items-center gap-2 text-sm">
                   <Mail className="w-4 h-4 text-muted-foreground" />
-                  {artist.profile.email}
+                  {artist.email}
                 </p>
               )}
             </div>

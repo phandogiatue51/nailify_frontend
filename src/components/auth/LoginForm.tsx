@@ -59,7 +59,7 @@ export const LoginForm = () => {
               to="/forgot-password"
               className="text-[10px] font-bold text-pink-600 hover:text-pink-700 underline"
             >
-              Forgot?
+              Forgot Password?
             </Link>
           </div>
           <Input

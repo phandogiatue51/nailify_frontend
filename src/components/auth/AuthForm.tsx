@@ -30,7 +30,7 @@ const AuthForm = () => {
           >
             Nailify
           </h1>
-          <p className="text-slate-400 text-sm font-medium tracking-wide">
+          <p className="text-sm font-medium tracking-wide">
             BEAUTY AT YOUR FINGERTIPS
           </p>
         </div>
@@ -72,7 +72,7 @@ const AuthForm = () => {
           </Tabs>
         </Card>
 
-        <p className="mt-8 text-center text-slate-700 text-[10px] uppercase tracking-widest px-10 leading-relaxed">
+        <p className="mt-8 text-center text-[10px] uppercase tracking-widest px-10 leading-relaxed">
           Secure access • Professional Standards • Community Driven
         </p>
       </div>

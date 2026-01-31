@@ -15,20 +15,32 @@ export interface Profile {
   updatedAt: string;
   isActive: boolean;
   isVerified: boolean;
+  shopVerified: boolean | null;
+  artistVerified: boolean | null;
   EmailVerificationToken: string;
   PasswordResetToken: string;
 }
 
 export interface NailArtist {
   id: string;
-  rating?: number;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  avatarUrl: string | null;
+  role: number;
+  createdAt: string;
+  updatedAt: string;
+  isActive: boolean;
   isVerified: boolean;
-  profileId: string;
-  profile?: Profile;
-  bookings?: Booking[];
+  rating?: number;
+  artistId?: string | null;
+  artistVerified?: boolean;
   serviceItems?: ServiceItem[];
   collections?: Collection[];
+  bookings?: Booking[];
 }
+
 
 export interface Shop {
   id: string;
@@ -40,6 +52,7 @@ export interface Shop {
   logoUrl: string | null;
   coverUrl: string | null;
   isActive: boolean;
+  isVerified: boolean;
   createdAt: string;
   updatedAt: string;
 }

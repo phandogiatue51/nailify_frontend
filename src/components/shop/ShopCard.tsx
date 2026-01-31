@@ -1,7 +1,7 @@
 import { Shop } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-
+import { CircleCheckBig } from "lucide-react";
 interface ShopCardProps {
   shop: Shop;
 }
@@ -35,7 +35,13 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
         )}
       </div>
       <CardContent className="pt-8 pb-4">
-        <h3 className="font-semibold text-lg">{shop.name}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-lg">{shop.name}</h3>
+          {shop.isVerified && (
+            <CircleCheckBig className="w-5 h-5 text-green-500" />
+          )}
+        </div>
+
         {shop.description && (
           <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
             {shop.description}
