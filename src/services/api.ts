@@ -1,5 +1,11 @@
 import { TagDto } from "@/types/type";
-
+import {
+  ProfileFilter,
+  ShopFilterDto,
+  ServiceItemFilterDto,
+  CollectionFilterDto,
+  ArtistFilterDto,
+} from "@/types/filter";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ApiRequestOptions extends RequestInit {
@@ -132,6 +138,11 @@ export const profileAPI = {
       body: formData,
     }),
 
+  changeStatus: (id: any) =>
+    apiRequest(`/Profile/change-status/${id}`, {
+      method: "PUT",
+    }),
+
   changePassword: (passwordData: any) =>
     apiRequest(`/Profile/change-password/`, {
       method: "PUT",
@@ -139,6 +150,21 @@ export const profileAPI = {
     }),
 
   getProfile: () => apiRequest("/Profile/user-profile"),
+
+  filterProfiles: (filter: ProfileFilter) => {
+    const queryParams = new URLSearchParams();
+    if (filter.SearchTerm !== undefined) {
+      queryParams.append("SearchTerm", filter.SearchTerm);
+    }
+    if (filter.Role !== undefined) {
+      queryParams.append("Role", filter.Role.toString());
+    }
+    if (filter.IsActive !== undefined) {
+      queryParams.append("IsActive", filter.IsActive.toString());
+    }
+
+    return apiRequest(`/Profile/filter?${queryParams.toString()}`);
+  },
 };
 
 export const collectionAPI = {
@@ -177,13 +203,7 @@ export const collectionAPI = {
       method: "DELETE",
     }),
 
-  adminFilter: (filterParams: {
-    ShopId?: string;
-    Name?: string;
-    EstimatedDuration?: number;
-    Category?: number;
-    TagId?: string;
-  }) => {
+  adminFilter: (filterParams: CollectionFilterDto) => {
     const queryParams = new URLSearchParams();
 
     Object.entries(filterParams).forEach(([key, value]) => {
@@ -200,13 +220,7 @@ export const collectionAPI = {
     return apiRequest(url);
   },
 
-  customerFilter: (filterParams: {
-    ShopId?: string;
-    Name?: string;
-    EstimatedDuration?: number;
-    Category?: number;
-    TagId?: string;
-  }) => {
+  customerFilter: (filterParams: CollectionFilterDto) => {
     const queryParams = new URLSearchParams();
 
     Object.entries(filterParams).forEach(([key, value]) => {
@@ -243,12 +257,12 @@ export const shopAPI = {
       body: formData,
     }),
 
-  adminFilter: (filterParams: {
-    Name?: string;
-    Rating?: number;
-    IsActive?: boolean;
-    IsVerified?: boolean;
-  }) => {
+  verifyShop: (id: string) =>
+    apiRequest(`/Shop/verify/${id}`, {
+      method: "PUT",
+    }),
+
+  adminFilter: (filterParams: ShopFilterDto) => {
     const queryParams = new URLSearchParams();
 
     Object.entries(filterParams).forEach(([key, value]) => {
@@ -258,12 +272,14 @@ export const shopAPI = {
     });
 
     const queryString = queryParams.toString();
-    const url = queryString ? `/Shop/filter?${queryString}` : "/Shop/filter";
+    const url = queryString
+      ? `/Shop/admin-filter?${queryString}`
+      : "/Shop/admin-filter";
 
     return apiRequest(url);
   },
 
-  customerFilter: (filterParams: { Name?: string; Rating?: number }) => {
+  customerFilter: (filterParams: ShopFilterDto) => {
     const queryParams = new URLSearchParams();
 
     Object.entries(filterParams).forEach(([key, value]) => {
@@ -317,6 +333,40 @@ export const serviceItemAPI = {
     apiRequest(`/ServiceItem/${id}`, {
       method: "DELETE",
     }),
+
+  adminFilter: (filterParams: ServiceItemFilterDto) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `/ServiceItem/admin-filter?${queryString}`
+      : "/ServiceItem/admin-filter";
+
+    return apiRequest(url);
+  },
+
+  customerFilter: (filterParams: ServiceItemFilterDto) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `/ServiceItem/customer-filter?${queryString}`
+      : "/ServiceItem/customer-filter";
+
+    return apiRequest(url);
+  },
 };
 
 export const BookingAPI = {
@@ -468,11 +518,7 @@ export const artistAPI = {
       method: "PUT",
     }),
 
-  filterArtists: (filterParams: {
-    Name?: string;
-    Rating?: number;
-    IsVerified?: boolean;
-  }) => {
+  adminFilter: (filterParams: ArtistFilterDto) => {
     const queryParams = new URLSearchParams();
 
     Object.entries(filterParams).forEach(([key, value]) => {
@@ -483,8 +529,25 @@ export const artistAPI = {
 
     const queryString = queryParams.toString();
     const url = queryString
-      ? `/Artist/filter?${queryString}`
-      : "/Artist/filter";
+      ? `/Artist/admin-filter?${queryString}`
+      : "/Artist/admin-filter";
+
+    return apiRequest(url);
+  },
+
+  customerFilter: (filterParams: ArtistFilterDto) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const url = queryString
+      ? `/Artist/customer-filter?${queryString}`
+      : "/Artist/customer-filter";
 
     return apiRequest(url);
   },

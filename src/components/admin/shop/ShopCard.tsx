@@ -1,5 +1,7 @@
 import { Shop } from "@/types/database";
-import { Card, CardContent } from "@/components/ui/card";
+import { ServicePreview } from "../ServicePreview";
+import { CollectionPreview } from "../CollectionPreview";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,24 +20,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { shopAPI } from "@/services/api";
-import { ServicePreview } from "../admin/ServicePreview";
-import { CollectionPreview } from "../admin/CollectionPreview";
 
 interface ShopCardProps {
   shop: Shop;
   onViewDetails: () => void;
-  onShopUpdated?: () => void;
 }
 
-export const ShopCard = ({
-  shop,
-  onViewDetails,
-  onShopUpdated,
-}: ShopCardProps) => {
+export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
   const handleVerify = async () => {
     try {
       await shopAPI.verifyShop(shop.id);
-      onShopUpdated?.();
+      // Refresh or update state
     } catch (error) {
       console.error("Failed to verify shop:", error);
     }
@@ -141,12 +136,12 @@ export const ShopCard = ({
         </div>
       </CardContent>
 
-      <div className="bg-muted/30 p-4">
+      <CardFooter className="bg-muted/30 p-4">
         <Button variant="outline" className="w-full" onClick={onViewDetails}>
           <Eye className="w-4 h-4 mr-2" />
           View Full Details
         </Button>
-      </div>
+      </CardFooter>
     </Card>
   );
 };

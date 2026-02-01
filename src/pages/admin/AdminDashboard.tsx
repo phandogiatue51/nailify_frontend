@@ -25,7 +25,6 @@ const AdminDashboard = () => {
     growthRate: 24.5,
   });
   const { user, loading } = useAuthContext();
-  const navigate = useNavigate();
 
   if (!user || user?.role !== 2) {
     return <Navigate to="/auth" replace />;

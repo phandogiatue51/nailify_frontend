@@ -19,10 +19,15 @@ const AdminLayout: React.FC = () => {
 
   const menuItems = [
     { path: "/admin", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/admin/shops", icon: Store, label: "Shops Management" },
     { path: "/admin/users", icon: Users, label: "Users Management" },
+    { path: "/admin/shops", icon: Store, label: "Shops Management" },
+    { path: "/admin/artists", icon: Store, label: "Artists Management" },
     { path: "/admin/services", icon: Scissors, label: "Services Management" },
-    { path: "/admin/collections", icon: Scissors, label: "Collections Management" }
+    {
+      path: "/admin/collections",
+      icon: Scissors,
+      label: "Collections Management",
+    },
   ];
 
   return (

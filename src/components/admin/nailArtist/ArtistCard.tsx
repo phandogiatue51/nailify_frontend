@@ -1,4 +1,4 @@
-import { Shop } from "@/types/database";
+import { NailArtist } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,10 +6,12 @@ import {
   CheckCircle,
   XCircle,
   Eye,
-  MapPin,
+  Star,
+  Mail,
   Phone,
   Calendar,
   MoreVertical,
+  User,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -17,27 +19,27 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { shopAPI } from "@/services/api";
-import { ServicePreview } from "../admin/ServicePreview";
-import { CollectionPreview } from "../admin/CollectionPreview";
+import { artistAPI } from "@/services/api";
+import { CollectionPreview } from "../CollectionPreview";
+import { ServicePreview } from "../ServicePreview";
 
-interface ShopCardProps {
-  shop: Shop;
+interface ArtistCardProps {
+  artist: NailArtist;
   onViewDetails: () => void;
-  onShopUpdated?: () => void;
+  onArtistUpdated?: () => void;
 }
 
-export const ShopCard = ({
-  shop,
+export const ArtistCard = ({
+  artist,
   onViewDetails,
-  onShopUpdated,
-}: ShopCardProps) => {
+  onArtistUpdated,
+}: ArtistCardProps) => {
   const handleVerify = async () => {
     try {
-      await shopAPI.verifyShop(shop.id);
-      onShopUpdated?.();
+      await artistAPI.verifyArtist(artist.id);
+      onArtistUpdated?.();
     } catch (error) {
-      console.error("Failed to verify shop:", error);
+      console.error("Failed to verify artist:", error);
     }
   };
 
@@ -48,22 +50,27 @@ export const ShopCard = ({
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-4">
-        {/* Shop Header */}
+        {/* Artist Header */}
         <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
-            <div className="flex items-start gap-3">
-              {shop.logoUrl && (
-                <img
-                  src={shop.logoUrl}
-                  alt={shop.name}
-                  className="w-12 h-12 rounded-lg object-cover border"
-                />
-              )}
-              <div>
-                <h3 className="font-semibold text-lg">{shop.name}</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {shop.description || "No description"}
-                </p>
+          <div className="flex items-start gap-3">
+            {artist.avatarUrl && (
+              <img
+                src={artist.avatarUrl}
+                alt={artist.fullName}
+                className="w-12 h-12 rounded-full object-cover border"
+              />
+            )}
+            <div>
+              <h3 className="font-semibold text-lg">{artist.fullName}</h3>
+              <div className="flex items-center gap-2 mt-1">
+                {artist.email && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Mail className="w-3 h-3" />
+                    <span className="truncate max-w-[150px]">
+                      {artist.email}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -81,63 +88,65 @@ export const ShopCard = ({
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleVerify}
-                disabled={shop.isVerified}
+                disabled={artist.isVerified}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                {shop.isVerified ? "Already Verified" : "Verify Shop"}
+                {artist.isVerified ? "Already Verified" : "Verify Artist"}
               </DropdownMenuItem>
               <DropdownMenuItem className="text-destructive">
                 <XCircle className="w-4 h-4 mr-2" />
-                Disable Shop
+                Disable Artist
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
-        {/* Status Badges */}
+        {/* Status & Rating */}
         <div className="flex flex-wrap gap-2 mb-4">
-          <Badge variant={shop.isVerified ? "default" : "secondary"}>
-            {shop.isVerified ? (
+          <Badge variant={artist.isVerified ? "default" : "secondary"}>
+            {artist.isVerified ? (
               <>
                 <CheckCircle className="w-3 h-3 mr-1" />
-                Verified
+                Verified Pro
               </>
             ) : (
               "Unverified"
             )}
           </Badge>
 
-          <Badge variant={shop.isActive ? "default" : "destructive"}>
-            {shop.isActive ? "Active" : "Inactive"}
+          <Badge variant="outline" className="flex items-center gap-1">
+            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+            <span>{artist.rating?.toFixed(1) || "N/A"}</span>
           </Badge>
 
-          {shop.phone && (
+          {artist.phone && (
             <Badge variant="outline" className="flex items-center gap-1">
               <Phone className="w-3 h-3" />
-              {shop.phone}
+              {artist.phone}
             </Badge>
           )}
         </div>
 
-        {/* Contact Info */}
-        <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
-          {shop.address && (
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <MapPin className="w-3 h-3" />
-              <span className="truncate">{shop.address}</span>
-            </div>
-          )}
-
+        {/* Basic Info */}
+        <div className="grid gap-2 mb-4 text-sm">
           <div className="flex items-center gap-1 text-muted-foreground">
             <Calendar className="w-3 h-3" />
-            <span>Created: {formatDate(shop.createdAt)}</span>
+            <span>Joined: {formatDate(artist.createdAt)}</span>
           </div>
         </div>
 
         {/* Service & Collection Previews */}
         <div className="space-y-3 pt-4 border-t">
-          <ServicePreview shopId={shop.id} compact />
-          <CollectionPreview shopId={shop.id} compact />
+          <ServicePreview
+            artistId={artist.id}
+            compact
+            title="Artist Services"
+          />
+          <CollectionPreview
+            artistId={artist.id}
+            compact
+            title="Artist Collections"
+          />
         </div>
       </CardContent>
 
@@ -151,4 +160,4 @@ export const ShopCard = ({
   );
 };
 
-export default ShopCard;
+export default ArtistCard;

@@ -6,7 +6,7 @@ import {
   useCustomerServiceItems,
   useCustomerCollections,
 } from "@/hooks/useCustomer";
-import { MapPin, Info, Star, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,14 +31,6 @@ const ShopDetailPage = () => {
   ).flat();
   const [selectedItems, setSelectedItems] = useState<ServiceItem[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>();
-
-  const COMPONENT_TYPES = [
-    { value: 0, label: "Forms" },
-    { value: 1, label: "Bases" },
-    { value: 2, label: "Shapes" },
-    { value: 3, label: "Polish" },
-    { value: 4, label: "Designs" },
-  ];
 
   if (loading || shopLoading) {
     return (

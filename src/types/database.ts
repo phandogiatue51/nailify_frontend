@@ -41,7 +41,6 @@ export interface NailArtist {
   bookings?: Booking[];
 }
 
-
 export interface Shop {
   id: string;
   ownerId: string;
