@@ -1,16 +1,21 @@
-// ErrorBoundary.tsx
-import React from "react";
+import React, { ReactNode } from "react";
 
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; error: Error | null }
-> {
-  constructor(props: { children: React.ReactNode }) {
+type Props = {
+  children?: ReactNode;
+};
+
+type State = {
+  hasError: boolean;
+  error: Error | null;
+};
+
+class ErrorBoundary extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error: Error) {
+  static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation, Outlet } from "react-router-dom";
+import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Store,
@@ -11,12 +11,15 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "../auth/AuthProvider";
 
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, loading } = useAuth();
+  const { logout } = useAuthContext();
 
+  const navigate = useNavigate();
   const menuItems = [
     { path: "/admin", icon: LayoutDashboard, label: "Dashboard" },
     { path: "/admin/users", icon: Users, label: "Users Management" },
@@ -29,6 +32,11 @@ const AdminLayout: React.FC = () => {
       label: "Collections Management",
     },
   ];
+
+  const handleSignOut = async () => {
+    logout();
+    navigate("/auth");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -102,7 +110,8 @@ const AdminLayout: React.FC = () => {
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
           <button
-            onClick={() => logout()}
+            onClick={handleSignOut}
+            disabled={loading}
             className="flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 rounded-lg w-full"
           >
             <LogOut size={20} />

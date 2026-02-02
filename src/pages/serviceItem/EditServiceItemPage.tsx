@@ -13,6 +13,8 @@ const EditServiceItemPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { redirect, loading, user } = useRequireRole([1, 4]);
+  const shopHook = useShopOwnerServiceItems();
+  const artistHook = useNailArtistServiceItems();
 
   const { data: item, isLoading: itemLoading } = useQuery({
     queryKey: ["service-item", id],
@@ -33,10 +35,8 @@ const EditServiceItemPage = () => {
     );
   }
 
-  const isArtist = user.role === 4;
-  const serviceItemsHook = isArtist
-    ? useNailArtistServiceItems()
-    : useShopOwnerServiceItems();
+  const isArtist = user?.role === 4;
+  const serviceItemsHook = isArtist ? artistHook : shopHook;
 
   const handleSubmit = async (formData: FormData) => {
     try {

@@ -7,10 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DetailRow } from "@/components/ui/detail-row";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/ui/header";
+import InstallButton from "@/components/install-button";
 import {
   LogOut,
   Loader2,
-  CircleCheckBig,
   ChevronRight,
   Mail,
   Phone,
@@ -29,7 +29,7 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    await logout();
+    logout();
     navigate("/auth");
   };
 
@@ -93,7 +93,7 @@ const ProfilePage = () => {
           {profile.role === 1 && (
             <VerificationBadge label="Shop" verified={profile.shopVerified} />
           )}
-          
+
           {profile.role === 4 && (
             <VerificationBadge
               label="Artist"
@@ -147,7 +147,7 @@ const ProfilePage = () => {
               </CardContent>
             </Card>
           </section>
-
+          <InstallButton />
           <section>
             <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
               Security

@@ -49,15 +49,6 @@ const ShopEditView = ({
         </div>
 
         <div className="bg-white rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden">
-          <div className="h-32 bg-slate-100 flex flex-col items-center justify-center border-b border-dashed border-slate-200 group cursor-pointer hover:bg-slate-50 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-[#FFC988]">
-              <ImageIcon className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">
-              Change Cover Photo
-            </span>
-          </div>
-
           <div className="p-6">
             <ShopForm
               initialData={myShop}

@@ -1,25 +1,24 @@
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App.tsx";
-import ErrorBoundary from "./ErrorBoundary.tsx";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
 import "./index.css";
+import { registerSW } from "virtual:pwa-register";
 
 try {
   const rootElement = document.getElementById("root");
+  if (!rootElement) throw new Error("❌ No element with id 'root' found!");
 
-  if (!rootElement) {
-    throw new Error("❌ No element with id 'root' found!");
-  }
+  registerSW({
+    onNeedRefresh() {
+      console.log("New content available, please refresh.");
+    },
+    onOfflineReady() {
+      console.log("App ready to work offline.");
+    },
+  });
 
   const root = createRoot(rootElement);
-
-  root.render(
-    <BrowserRouter>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    </BrowserRouter>,
-  );
+  root.render(<RouterProvider router={router} />);
 } catch (error) {
   document.body.innerHTML = `
     <div style="color: red; padding: 20px; font-family: sans-serif;">
