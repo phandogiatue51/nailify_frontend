@@ -68,19 +68,24 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
         ) : (
           <div className="w-full h-full grid grid-cols-2 gap-1 p-1">
             {collection.items?.slice(0, 4).map((item, index) => (
-              <div key={index} className="bg-white rounded-lg overflow-hidden">
+              <div key={index} className="rounded-lg overflow-hidden">
                 {item.serviceItemImageUrl ? (
                   <img
                     src={item.serviceItemImageUrl}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-slate-100" />
+                  <div className="w-full h-full flex items-center justify-center text-white bg-gradient-to-br from-pink-200 to-purple-200">
+                    <span className="text-[8px] font-bold uppercase tracking-widest">
+                      Nailify
+                    </span>
+                  </div>
                 )}
               </div>
             ))}
           </div>
         )}
+
         <div className="absolute bottom-3 left-3">
           <Badge className="bg-white/90 backdrop-blur-md text-slate-900 border-none text-[10px] font-bold px-2 rounded-lg">
             {itemCount} ITEMS

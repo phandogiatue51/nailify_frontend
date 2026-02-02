@@ -3,15 +3,13 @@ import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import ShopList from "@/components/admin/shop/ShopList";
-import ShopDetailModal from "@/components/admin/shop/ShopDetailModal";
 import ShopFilter from "../../components/admin/shop/ShopFilter";
 import { ShopFilterDto } from "@/types/filter";
-
+import { useNavigate } from "react-router-dom";
 const ShopsManagement = () => {
   const { user, loading } = useAuthContext();
   const [filters, setFilters] = useState<ShopFilterDto>({});
-  const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -23,7 +21,9 @@ const ShopsManagement = () => {
   if (!user || user?.role !== 2) {
     return <Navigate to="/auth" replace />;
   }
-
+  const handleShopSelect = (shopId: string) => {
+    navigate(`/admin/shops/${shopId}`);
+  };
   return (
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
@@ -37,16 +37,8 @@ const ShopsManagement = () => {
       <ShopFilter filters={filters} onFilterChange={setFilters} />
 
       <div className="mt-6">
-        <ShopList filters={filters} onShopSelect={setSelectedShopId} />
+        <ShopList filters={filters} onShopSelect={handleShopSelect} />
       </div>
-
-      {selectedShopId && (
-        <ShopDetailModal
-          shopId={selectedShopId}
-          open={!!selectedShopId}
-          onClose={() => setSelectedShopId(null)}
-        />
-      )}
     </div>
   );
 };

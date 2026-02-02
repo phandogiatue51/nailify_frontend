@@ -37,20 +37,9 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
   return (
     <Card>
       <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            <h3 className="font-semibold">User Filters</h3>
-          </div>
-          <Button variant="ghost" size="sm" onClick={resetFilters}>
-            Clear All
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search by Name/Email */}
           <div className="space-y-2">
-            <Label htmlFor="search">Search</Label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -65,9 +54,8 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
 
           {/* Role Filter */}
           <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
             <Select
-              value={filters.Role?.toString() || ""}
+              value={filters.Role?.toString() || undefined}
               onValueChange={(value) =>
                 handleChange("Role", value ? Number(value) : undefined)
               }
@@ -76,7 +64,6 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
                 <SelectValue placeholder="All Roles" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Roles</SelectItem>
                 {roleOptions.map((role) => (
                   <SelectItem key={role.value} value={role.value}>
                     {role.label}
@@ -88,7 +75,6 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
 
           {/* Active Status */}
           <div className="space-y-2">
-            <Label>Status</Label>
             <div className="flex items-center space-x-2">
               <Switch
                 id="active"
@@ -102,6 +88,9 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
               </Label>
             </div>
           </div>
+          <Button variant="ghost" size="sm" onClick={resetFilters}>
+            Clear All
+          </Button>
         </div>
       </CardContent>
     </Card>

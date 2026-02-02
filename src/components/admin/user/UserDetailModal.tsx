@@ -49,10 +49,8 @@ export const UserDetailModal = ({
 
     setLoading(true);
     try {
-      // Since we don't have a getById endpoint, filter with the ID
-      const users = await profileAPI.filterProfiles({});
-      const foundUser = users.find((u) => u.id === userId);
-      setUser(foundUser || null);
+      const users = await profileAPI.getById(userId);
+      setUser(users || null);
     } catch (error) {
       console.error("Error loading user details:", error);
     } finally {
@@ -285,29 +283,7 @@ export const UserDetailModal = ({
                     </div>
                   )}
                 </div>
-              </div>
-
-              {/* Security Info (Read Only) */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Security Information</h4>
-                <div className="bg-muted/30 p-4 rounded-lg space-y-3">
-                  <div className="text-sm">
-                    <p className="font-medium">Email Verification Token</p>
-                    <p className="text-xs font-mono text-muted-foreground truncate">
-                      {user.EmailVerificationToken || "No token"}
-                    </p>
-                  </div>
-                  <div className="text-sm">
-                    <p className="font-medium">Password Reset Token</p>
-                    <p className="text-xs font-mono text-muted-foreground truncate">
-                      {user.PasswordResetToken || "No token"}
-                    </p>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Note: These tokens are for system use only.
-                  </p>
-                </div>
-              </div>
+              </div>              
             </div>
           </>
         )}

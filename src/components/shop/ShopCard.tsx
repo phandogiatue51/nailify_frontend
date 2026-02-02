@@ -1,152 +1,53 @@
 import { Shop } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  CheckCircle,
-  XCircle,
-  Eye,
-  MapPin,
-  Phone,
-  Calendar,
-  MoreVertical,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { shopAPI } from "@/services/api";
-import { ServicePreview } from "../admin/ServicePreview";
-import { CollectionPreview } from "../admin/CollectionPreview";
-
+import { useNavigate } from "react-router-dom";
+import { CircleCheckBig } from "lucide-react";
 interface ShopCardProps {
   shop: Shop;
-  onViewDetails: () => void;
-  onShopUpdated?: () => void;
 }
 
-export const ShopCard = ({
-  shop,
-  onViewDetails,
-  onShopUpdated,
-}: ShopCardProps) => {
-  const handleVerify = async () => {
-    try {
-      await shopAPI.verifyShop(shop.id);
-      onShopUpdated?.();
-    } catch (error) {
-      console.error("Failed to verify shop:", error);
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
+  const navigate = useNavigate();
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-4">
-        {/* Shop Header */}
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
-            <div className="flex items-start gap-3">
-              {shop.logoUrl && (
-                <img
-                  src={shop.logoUrl}
-                  alt={shop.name}
-                  className="w-12 h-12 rounded-lg object-cover border"
-                />
-              )}
-              <div>
-                <h3 className="font-semibold text-lg">{shop.name}</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {shop.description || "No description"}
-                </p>
-              </div>
-            </div>
+    <Card
+      className="overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.98]"
+      onClick={() => navigate(`/shop/${shop.id}`)}
+    >
+      <div className="relative aspect-video bg-muted">
+        {shop.coverUrl ? (
+          <img
+            src={shop.coverUrl}
+            alt={shop.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-pink-200 to-purple-200" />
+        )}
+        {shop.logoUrl && (
+          <div className="absolute -bottom-6 left-4 w-14 h-14 rounded-xl border-4 border-background overflow-hidden bg-background">
+            <img
+              src={shop.logoUrl}
+              alt={`${shop.name} logo`}
+              className="w-full h-full object-cover"
+            />
           </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onViewDetails}>
-                <Eye className="w-4 h-4 mr-2" />
-                View Details
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleVerify}
-                disabled={shop.isVerified}
-              >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                {shop.isVerified ? "Already Verified" : "Verify Shop"}
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                <XCircle className="w-4 h-4 mr-2" />
-                Disable Shop
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        {/* Status Badges */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          <Badge variant={shop.isVerified ? "default" : "secondary"}>
-            {shop.isVerified ? (
-              <>
-                <CheckCircle className="w-3 h-3 mr-1" />
-                Verified
-              </>
-            ) : (
-              "Unverified"
-            )}
-          </Badge>
-
-          <Badge variant={shop.isActive ? "default" : "destructive"}>
-            {shop.isActive ? "Active" : "Inactive"}
-          </Badge>
-
-          {shop.phone && (
-            <Badge variant="outline" className="flex items-center gap-1">
-              <Phone className="w-3 h-3" />
-              {shop.phone}
-            </Badge>
-          )}
-        </div>
-
-        {/* Contact Info */}
-        <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
-          {shop.address && (
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <MapPin className="w-3 h-3" />
-              <span className="truncate">{shop.address}</span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Calendar className="w-3 h-3" />
-            <span>Created: {formatDate(shop.createdAt)}</span>
-          </div>
-        </div>
-
-        {/* Service & Collection Previews */}
-        <div className="space-y-3 pt-4 border-t">
-          <ServicePreview shopId={shop.id} compact />
-          <CollectionPreview shopId={shop.id} compact />
-        </div>
-      </CardContent>
-
-      <div className="bg-muted/30 p-4">
-        <Button variant="outline" className="w-full" onClick={onViewDetails}>
-          <Eye className="w-4 h-4 mr-2" />
-          View Full Details
-        </Button>
+        )}
       </div>
+      <CardContent className="pt-8 pb-4">
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-lg">{shop.name}</h3>
+          {shop.isVerified && (
+            <CircleCheckBig className="w-5 h-5 text-green-500" />
+          )}
+        </div>
+
+        {shop.description && (
+          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+            {shop.description}
+          </p>
+        )}
+      </CardContent>
     </Card>
   );
 };

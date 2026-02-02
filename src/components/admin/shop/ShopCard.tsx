@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { shopAPI } from "@/services/api";
-
+import DateDisplay from "@/components/ui/date-display";
 interface ShopCardProps {
   shop: Shop;
   onViewDetails: () => void;
@@ -30,15 +30,11 @@ export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
   const handleVerify = async () => {
     try {
       await shopAPI.verifyShop(shop.id);
-      // Refresh or update state
     } catch (error) {
       console.error("Failed to verify shop:", error);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -114,22 +110,14 @@ export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
           )}
         </div>
 
-        {/* Contact Info */}
-        <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
-          {shop.address && (
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <MapPin className="w-3 h-3" />
-              <span className="truncate">{shop.address}</span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Calendar className="w-3 h-3" />
-            <span>Created: {formatDate(shop.createdAt)}</span>
-          </div>
+        <div className="grid gap-2 mb-4 text-sm">
+          <DateDisplay
+            dateString={shop.createdAt}
+            label="Created At"
+            showTime
+          />
         </div>
 
-        {/* Service & Collection Previews */}
         <div className="space-y-3 pt-4 border-t">
           <ServicePreview shopId={shop.id} compact />
           <CollectionPreview shopId={shop.id} compact />

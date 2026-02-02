@@ -17,6 +17,7 @@ import {
   MapPin,
   KeyRound,
 } from "lucide-react";
+import { VerificationBadge } from "@/components/badge/VerificationBadge";
 import { useProfile } from "@/hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import { RoleBadge } from "@/components/badge/RoleBadge";
@@ -85,31 +86,19 @@ const ProfilePage = () => {
           <h1 className="text-2xl font-bold tracking-tight flex items-center justify-center gap-2">
             {profile.fullName || "User"}
           </h1>
-
           <div className="flex justify-center mt-2">
             <RoleBadge role={profile.role} />
           </div>
 
-          {profile.shopVerified && (
-            <div className="mt-4 flex flex-col items-center">
-              <div className="flex items-center gap-1.5 mb-2 bg-green-400 text-white px-3 py-1 rounded-full">
-                <span className="text-xs font-bold uppercase tracking-wide">
-                  Shop Verified
-                </span>
-                <CircleCheckBig className="w-3 h-3" />
-              </div>
-            </div>
+          {profile.role === 1 && (
+            <VerificationBadge label="Shop" verified={profile.shopVerified} />
           )}
-
-          {profile.artistVerified && (
-            <div className="mt-4 flex flex-col items-center">
-              <div className="flex items-center gap-1.5 mb-2 bg-green-400 text-white px-3 py-1 rounded-full">
-                <span className="text-xs font-bold uppercase tracking-wide">
-                  Artist Verified
-                </span>
-                <CircleCheckBig className="w-3 h-3" />
-              </div>
-            </div>
+          
+          {profile.role === 4 && (
+            <VerificationBadge
+              label="Artist"
+              verified={profile.artistVerified}
+            />
           )}
         </div>
 

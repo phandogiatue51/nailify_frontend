@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ComponentBadge } from "@/components/badge/ComponentBadge";
-
+import DateDisplay from "@/components/ui/date-display";
 interface ServiceCardProps {
   service: ServiceItem;
   onViewDetails: () => void;
@@ -31,10 +31,6 @@ export const ServiceCard = ({
   onViewDetails,
   onServiceUpdated,
 }: ServiceCardProps) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
   return (
     <Card className="hover:shadow-md transition-shadow overflow-hidden">
       {/* Service Image */}
@@ -126,11 +122,11 @@ export const ServiceCard = ({
             )}
           </div>
 
-          {/* Created Date */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="w-3 h-3" />
-            <span>Created: {formatDate(service.createdAt)}</span>
-          </div>
+          <DateDisplay
+            dateString={service.createdAt}
+            label="Created At"
+            showTime
+          />
         </div>
       </CardContent>
 

@@ -83,7 +83,7 @@ export const useShop = () => {
       queryClient.setQueryData(["shop", updatedShop.id], updatedShop);
       queryClient.setQueryData(["my-shop", user?.userId], updatedShop);
       toast({
-        description: updatedShop.message || "Cập nhật cửa hàng thành công!", // ✅ Use `updatedShop`
+        description: updatedShop.message || "Cập nhật cửa hàng thành công!", 
         variant: "success",
         duration: 3000,
       });

@@ -59,18 +59,7 @@ export const SignupForm = () => {
       onSubmit={signupForm.handleSubmit(handleSignup)}
       className="space-y-4"
     >
-      <div className="grid grid-cols-1 gap-3 max-h-[350px] overflow-y-auto px-1 py-1 scrollbar-hide">
-        {/* Name & Email */}
-        <div className="space-y-1.5">
-          <Label className="text-xs font-bold uppercase text-slate-500">
-            Full Name
-          </Label>
-          <Input
-            className="h-11 rounded-xl border-slate-100"
-            placeholder="Jane Doe"
-            {...signupForm.register("fullName")}
-          />
-        </div>
+      <div className="grid grid-cols-1 gap-3 px-1 py-1">
         <div className="space-y-1.5">
           <Label className="text-xs font-bold uppercase text-slate-500">
             Email
@@ -82,23 +71,6 @@ export const SignupForm = () => {
           />
         </div>
 
-        {/* Role Selection - Styled as Tiles */}
-        <div className="space-y-2 py-2">
-          <Label className="text-xs font-bold uppercase text-slate-500">
-            I am a...
-          </Label>
-          <RadioGroup
-            defaultValue="0"
-            className="grid grid-cols-3 gap-2"
-            onValueChange={(v) => signupForm.setValue("role", v as any)}
-          >
-            <RoleTile value="0" label="Customer" id="role-0" />
-            <RoleTile value="4" label="Artist" id="role-4" />
-            <RoleTile value="1" label="Shop" id="role-1" />
-          </RadioGroup>
-        </div>
-
-        {/* Password Fields */}
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5">
             <Label className="text-xs font-bold uppercase text-slate-500">
@@ -120,6 +92,45 @@ export const SignupForm = () => {
               {...signupForm.register("confirmPassword")}
             />
           </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-xs font-bold uppercase text-slate-500">
+            Full Name
+          </Label>
+          <Input
+            className="h-11 rounded-xl border-slate-100"
+            placeholder="Jane Doe"
+            {...signupForm.register("fullName")}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-xs font-bold uppercase text-slate-500">
+            Phone Number
+          </Label>
+          <Input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="h-11 rounded-xl border-slate-100"
+            placeholder="09"
+            {...signupForm.register("phone")}
+          />
+        </div>
+        <div className="space-y-2 py-2">
+          <Label className="text-xs font-bold uppercase text-slate-500">
+            I am a...
+          </Label>
+          <RadioGroup
+            defaultValue="0"
+            className="grid grid-cols-3 gap-2"
+            onValueChange={(v) => signupForm.setValue("role", v as any)}
+          >
+            <RoleTile value="0" label="Customer" id="role-0" />
+            <RoleTile value="4" label="Artist" id="role-4" />
+            <RoleTile value="1" label="Shop" id="role-1" />
+          </RadioGroup>
         </div>
       </div>
 

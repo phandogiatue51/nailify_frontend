@@ -31,6 +31,7 @@ export const ServiceFilter = ({
   };
 
   const componentTypeOptions = [
+    { value: "all", label: "All Types" },
     { value: ComponentType.Form.toString(), label: "Form" },
     { value: ComponentType.Base.toString(), label: "Base" },
     { value: ComponentType.Shape.toString(), label: "Shape" },
@@ -71,16 +72,18 @@ export const ServiceFilter = ({
           <div className="space-y-2">
             <Label htmlFor="componentType">Component Type</Label>
             <Select
-              value={filters.ComponentType?.toString() || ""}
+              value={filters.ComponentType?.toString() || "all"}
               onValueChange={(value) =>
-                handleChange("ComponentType", value ? Number(value) : undefined)
+                handleChange(
+                  "ComponentType",
+                  value === "all" ? undefined : Number(value),
+                )
               }
             >
               <SelectTrigger id="componentType">
                 <SelectValue placeholder="All Types" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
                 {componentTypeOptions.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
                     {type.label}

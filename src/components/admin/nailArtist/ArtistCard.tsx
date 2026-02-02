@@ -22,7 +22,7 @@ import {
 import { artistAPI } from "@/services/api";
 import { CollectionPreview } from "../CollectionPreview";
 import { ServicePreview } from "../ServicePreview";
-
+import DateDisplay from "@/components/ui/date-display";
 interface ArtistCardProps {
   artist: NailArtist;
   onViewDetails: () => void;
@@ -41,10 +41,6 @@ export const ArtistCard = ({
     } catch (error) {
       console.error("Failed to verify artist:", error);
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
   };
 
   return (
@@ -88,10 +84,10 @@ export const ArtistCard = ({
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleVerify}
-                disabled={artist.isVerified}
+                disabled={artist.artistVerified}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                {artist.isVerified ? "Already Verified" : "Verify Artist"}
+                {artist.artistVerified ? "Already Verified" : "Verify Artist"}
               </DropdownMenuItem>
               <DropdownMenuItem className="text-destructive">
                 <XCircle className="w-4 h-4 mr-2" />
@@ -103,11 +99,11 @@ export const ArtistCard = ({
 
         {/* Status & Rating */}
         <div className="flex flex-wrap gap-2 mb-4">
-          <Badge variant={artist.isVerified ? "default" : "secondary"}>
-            {artist.isVerified ? (
+          <Badge variant={artist.artistVerified ? "default" : "secondary"}>
+            {artist.artistVerified ? (
               <>
                 <CheckCircle className="w-3 h-3 mr-1" />
-                Verified Pro
+                Verified
               </>
             ) : (
               "Unverified"
@@ -129,10 +125,11 @@ export const ArtistCard = ({
 
         {/* Basic Info */}
         <div className="grid gap-2 mb-4 text-sm">
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Calendar className="w-3 h-3" />
-            <span>Joined: {formatDate(artist.createdAt)}</span>
-          </div>
+          <DateDisplay
+            dateString={artist.createdAt}
+            label="Created At"
+            showTime
+          />
         </div>
 
         {/* Service & Collection Previews */}

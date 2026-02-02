@@ -3,13 +3,13 @@ import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import ArtistFilter from "@/components/admin/nailArtist/ArtistFilter";
-import ArtistDetailModal from "@/components/admin/nailArtist/ArtistDetailModal";
 import { ArtistFilterDto } from "@/types/filter";
 import ArtistList from "@/components/admin/nailArtist/ArtistList";
+import { useNavigate } from "react-router-dom";
 const ArtistsManagement = () => {
   const { user, loading } = useAuthContext();
   const [filters, setFilters] = useState<ArtistFilterDto>({});
-  const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -22,6 +22,9 @@ const ArtistsManagement = () => {
   if (!user || user?.role !== 2) {
     return <Navigate to="/auth" replace />;
   }
+  const handleArtistSelect = (artistId: string) => {
+    navigate(`/admin/artists/${artistId}`);
+  };
 
   return (
     <div className="container mx-auto p-4 md:p-6">
@@ -35,26 +38,11 @@ const ArtistsManagement = () => {
         <div className="text-sm text-muted-foreground">Admin Dashboard</div>
       </div>
 
-      {/* Filter Section */}
       <ArtistFilter filters={filters} onFilterChange={setFilters} />
 
-      {/* Artist List */}
       <div className="mt-6">
-        <ArtistList filters={filters} onArtistSelect={setSelectedArtistId} />
+        <ArtistList filters={filters} onArtistSelect={handleArtistSelect} />
       </div>
-
-      {/* Artist Detail Modal */}
-      {selectedArtistId && (
-        <ArtistDetailModal
-          artistId={selectedArtistId}
-          open={!!selectedArtistId}
-          onClose={() => setSelectedArtistId(null)}
-          onArtistUpdated={() => {
-            // Refresh artist list
-            setSelectedArtistId(null);
-          }}
-        />
-      )}
     </div>
   );
 };

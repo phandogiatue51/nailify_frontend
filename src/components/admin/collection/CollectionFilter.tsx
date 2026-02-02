@@ -31,6 +31,7 @@ export const CollectionFilter = ({
   };
 
   const tagCategoryOptions = [
+    { value: "all", label: "All Categories" },
     { value: TagCategory.Occasion.toString(), label: "Occasion" },
     { value: TagCategory.Season.toString(), label: "Season" },
     { value: TagCategory.Style.toString(), label: "Style" },
@@ -95,20 +96,21 @@ export const CollectionFilter = ({
             </div>
           </div>
 
-          {/* Tag Category Filter */}
           <div className="space-y-2">
             <Label htmlFor="category">Tag Category</Label>
             <Select
-              value={filters.Category?.toString() || ""}
+              value={filters.Category?.toString() || "all"}
               onValueChange={(value) =>
-                handleChange("Category", value ? Number(value) : undefined)
+                handleChange(
+                  "Category",
+                  value === "all" ? undefined : Number(value),
+                )
               }
             >
               <SelectTrigger id="category">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
                 {tagCategoryOptions.map((category) => (
                   <SelectItem key={category.value} value={category.value}>
                     {category.label}

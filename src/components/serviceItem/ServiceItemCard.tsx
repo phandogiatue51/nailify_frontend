@@ -62,7 +62,7 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-50">
+          <div className="w-full h-full flex items-center justify-center text-white bg-gradient-to-br from-pink-200 to-purple-200">
             <span className="text-[10px] font-bold uppercase tracking-widest">
               Nailify
             </span>

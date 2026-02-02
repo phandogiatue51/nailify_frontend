@@ -41,6 +41,8 @@ import UsersManagement from "./pages/admin/UsersManagement";
 import ServicesManagement from "./pages/admin/ServicesManagement";
 import CollectionsManagement from "./pages/admin/CollectionsManagement";
 import ArtistsManagement from "./pages/admin/ArtistManagement";
+import AdminShopDetailPage from "./components/admin/shop/AdminShopDetailPage";
+import AdminArtistDetailPage from "./components/admin/nailArtist/AdminArtistDetailPage";
 
 import MyNailArtistPage from "./pages/nailArtist/MyNailArtistPage";
 import ShopOwnerDashboardPage from "./pages/shop/ShopOwnerDashboardPage";
@@ -131,8 +133,12 @@ const App = () => (
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<UsersManagement />} />
             <Route path="shops" element={<ShopsManagement />} />
+            <Route path="shops/:shopId" element={<AdminShopDetailPage />} />
             <Route path="artists" element={<ArtistsManagement />} />
-
+            <Route
+              path="artists/:artistId"
+              element={<AdminArtistDetailPage />}
+            />
             <Route path="services" element={<ServicesManagement />} />
             <Route path="collections" element={<CollectionsManagement />} />
           </Route>

@@ -12,8 +12,6 @@ import {
   Calendar,
   Package,
   MoreVertical,
-  CheckCircle,
-  XCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -21,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import DateDisplay from "@/components/ui/date-display";
 interface CollectionCardProps {
   collection: Collection;
   onViewDetails: () => void;
@@ -31,61 +29,57 @@ export const CollectionCard = ({
   collection,
   onViewDetails,
 }: CollectionCardProps) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
   return (
-    <Card className="hover:shadow-md transition-shadow overflow-hidden">
-      {/* Collection Image */}
-      {collection.imageUrl && (
-        <div className="relative h-40">
-          <img
-            src={collection.imageUrl}
-            alt={collection.name}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute top-2 right-2">
-            <Badge variant={collection.isActive ? "default" : "destructive"}>
-              {collection.isActive ? "Active" : "Inactive"}
-            </Badge>
-          </div>
+    <Card className="h-[400px] flex flex-col hover:shadow-md transition-shadow overflow-hidden">
+      <div className="relative h-40 bg-muted">
+        <div className="absolute inset-0">
+          {collection.imageUrl ? (
+            <img
+              src={collection.imageUrl}
+              alt={collection.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-pink-200 to-purple-200" />
+          )}
         </div>
-      )}
+        <div className="absolute top-2 right-2">
+          <Badge variant={collection.isActive ? "default" : "destructive"}>
+            {collection.isActive ? "Active" : "Inactive"}
+          </Badge>
+        </div>
+      </div>
 
-      <CardContent className="p-4">
-        {/* Collection Header */}
-        <div className="flex justify-between items-start mb-3">
-          <div>
-            <h3 className="font-semibold text-lg line-clamp-1">
-              {collection.name}
-            </h3>
-            {collection.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                {collection.description}
-              </p>
-            )}
+      <CardContent className="flex-1 p-4 flex flex-col justify-between">
+        <div>
+          <div className="flex justify-between items-start mb-3">
+            <div>
+              <h3 className="font-semibold text-lg line-clamp-1">
+                {collection.name}
+              </h3>
+              {collection.description && (
+                <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                  {collection.description}
+                </p>
+              )}
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={onViewDetails}>
+                  <Eye className="w-4 h-4 mr-2" />
+                  View Details
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onViewDetails}>
-                <Eye className="w-4 h-4 mr-2" />
-                View Details
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        {/* Collection Details */}
-        <div className="space-y-3">
-          {/* Price & Duration */}
-          <div className="flex items-center justify-between">
+          <div className="space-y-3">
+            {/* Price & Duration */}
             <div className="flex items-center gap-4">
               {collection.totalPrice && (
                 <div className="flex items-center gap-1">
@@ -100,40 +94,32 @@ export const CollectionCard = ({
                 <span>{collection.estimatedDuration} min</span>
               </div>
             </div>
-          </div>
 
-          {/* Owner Information */}
-          <div className="flex items-center gap-4 text-sm">
-            {collection.shopId ? (
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <Building className="w-3 h-3" />
-                <span>Shop Collection</span>
-              </div>
-            ) : collection.nailArtistId ? (
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <User className="w-3 h-3" />
-                <span>Artist Collection</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <Layers className="w-3 h-3" />
-                <span>General Collection</span>
-              </div>
-            )}
-          </div>
-
-          {/* Items Count */}
-          {collection.items && collection.items.length > 0 && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Package className="w-3 h-3" />
-              <span>{collection.items.length} service items</span>
+            {/* Owner */}
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              {collection.shopId ? (
+                <>
+                  <Building className="w-3 h-3" />
+                  <span>Shop Collection</span>
+                </>
+              ) : collection.nailArtistId ? (
+                <>
+                  <User className="w-3 h-3" />
+                  <span>Artist Collection</span>
+                </>
+              ) : (
+                <>
+                  <Layers className="w-3 h-3" />
+                  <span>General Collection</span>
+                </>
+              )}
             </div>
-          )}
 
-          {/* Created Date */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="w-3 h-3" />
-            <span>Created: {formatDate(collection.createdAt)}</span>
+            <DateDisplay
+              dateString={collection.createdAt}
+              label="Created At"
+              showTime
+            />
           </div>
         </div>
       </CardContent>

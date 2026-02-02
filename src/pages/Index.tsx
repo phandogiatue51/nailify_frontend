@@ -31,11 +31,20 @@ const Index = () => {
       </div>
     );
   }
-
   if (!user) return <Navigate to="/auth" replace />;
-  if (user?.role === 1) return <Navigate to="/staff-dashboard" replace />;
-  if (user?.role === 4) return <Navigate to="/artist-dashboard" replace />;
 
+  switch (user.role) {
+    case 1:
+      return <Navigate to="/staff-dashboard" replace />;
+    case 2:
+      return <Navigate to="/admin" replace />;
+    case 4:
+      return <Navigate to="/artist-dashboard" replace />;
+    case 0:
+    case 3:
+    default:
+      break;
+  }
   return (
     <MobileLayout>
       <div className="min-h-screen bg-slate-50/50 pb-20">
