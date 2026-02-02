@@ -4,11 +4,10 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
 import { useToast } from "./use-toast";
-
 interface DecodedJWT {
   userId: string;
   email: string;
-  role: 0 | 1 | 2 | 3 | 4; // 0: Customer, 1: ShopOwner, 2: Admin, 3: Staff, 4: NailArtist
+  role: 0 | 1 | 2 | 3 | 4;
   fullName?: string;
   shopId?: string | null;
   nailArtistId?: string | null;
@@ -25,19 +24,30 @@ const decodeJWT = (token: string): DecodedJWT | null => {
 
     let role: 0 | 1 | 2 | 3 | 4;
 
-    if (roleClaim === "Customer") {
-      role = 0;
-    } else if (roleClaim === "ShopOwner") {
-      role = 1;
-    } else if (roleClaim === "Admin") {
-      role = 2;
-    } else if (roleClaim === "Staff") {
-      role = 3;
-    } else if (roleClaim === "NailArtist") {
-      role = 4;
-    } else {
-      console.warn("Unknown role claim:", roleClaim);
-      role = 0;
+    switch (roleClaim) {
+      case "0":
+      case "Customer":
+        role = 0;
+        break;
+      case "1":
+      case "ShopOwner":
+        role = 1;
+        break;
+      case "2":
+      case "Admin":
+        role = 2;
+        break;
+      case "3":
+      case "Staff":
+        role = 3;
+        break;
+      case "4":
+      case "NailArtist":
+        role = 4;
+        break;
+      default:
+        console.warn("Unknown role claim:", roleClaim);
+        role = 0;
     }
 
     return {
@@ -49,11 +59,11 @@ const decodeJWT = (token: string): DecodedJWT | null => {
         decoded[
           "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
         ],
-      role: role,
+      role,
       fullName:
         decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-      shopId: decoded["ShopId"],
-      nailArtistId: decoded["NailArtistId"],
+      shopId: decoded["ShopId"] ?? null,
+      nailArtistId: decoded["NailArtistId"] ?? null,
       exp: decoded.exp,
     };
   } catch (error) {
