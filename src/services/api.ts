@@ -377,14 +377,29 @@ export const BookingAPI = {
   getByShop: (shopId: string) => apiRequest(`/Booking/shop/${shopId}`),
   getByShopAuth: () => apiRequest("/Booking/shopAuth"),
 
+  getByLocation: (shopLocationId: string) =>
+    apiRequest(`/Booking/location/${shopLocationId}`),
+
   getByArtist: (shopId: string) => apiRequest(`/Booking/artist/${shopId}`),
   getByArtistAuth: () => apiRequest("/Booking/artistAuth"),
 
   getByCustomer: (customerId: string) =>
     apiRequest(`/Booking/customer/${customerId}`),
 
+  getSummary: (dto: any) =>
+    apiRequest("/Booking/calculate", {
+      method: "POST",
+      body: dto,
+    }),
+
   createUserBooking: (dto: any) =>
-    apiRequest("/Booking/user-booking", {
+    apiRequest("/Booking/customer-booking", {
+      method: "POST",
+      body: dto,
+    }),
+
+  createArtistBooking: (dto: any) =>
+    apiRequest("/Booking/artist-booking", {
       method: "POST",
       body: dto,
     }),
