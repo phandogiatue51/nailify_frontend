@@ -50,7 +50,7 @@ const MyNailArtistPage = () => {
   };
 
   return (
-    <MobileLayout>
+    <div>
       <Header title="Nailify" hasNotification={true} />
 
       <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen pb-20">
@@ -108,7 +108,7 @@ const MyNailArtistPage = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

@@ -19,7 +19,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { shopAPI } from "@/services/api";
 import DateDisplay from "@/components/ui/date-display";
 interface ShopCardProps {
   shop: Shop;
@@ -27,14 +26,6 @@ interface ShopCardProps {
 }
 
 export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
-  const handleVerify = async () => {
-    try {
-      await shopAPI.verifyShop(shop.id);
-    } catch (error) {
-      console.error("Failed to verify shop:", error);
-    }
-  };
-
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -58,31 +49,6 @@ export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
               </div>
             </div>
           </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onViewDetails}>
-                <Eye className="w-4 h-4 mr-2" />
-                View Details
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleVerify}
-                disabled={shop.isVerified}
-              >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                {shop.isVerified ? "Already Verified" : "Verify Shop"}
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                <XCircle className="w-4 h-4 mr-2" />
-                Disable Shop
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
 
         {/* Status Badges */}

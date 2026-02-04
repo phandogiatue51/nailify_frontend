@@ -31,7 +31,7 @@ const CreateLocationPage = () => {
   };
 
   return (
-    <MobileLayout>
+    <div>
       <div className="p-4 space-y-6">
         <div className="flex items-center">
           <Button
@@ -54,7 +54,7 @@ const CreateLocationPage = () => {
           onCancel={() => navigate("/my-shop?tab=locations")}
         />
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

@@ -3,7 +3,11 @@ import { BookingAPI, dashboardAPI } from "../services/api";
 import { useAuth } from "./use-auth";
 import { BookingStatus } from "@/types/database";
 import { BookingFilterDto } from "@/types/filter";
-import { BookingStats, CreateBookingParams, UpdateBookingParams } from "@/types/booking";
+import {
+  BookingStats,
+  CreateBookingParams,
+  UpdateBookingParams,
+} from "@/types/booking";
 import { useToast } from "./use-toast";
 
 export const useBookings = () => {
@@ -21,14 +25,54 @@ export const useBookings = () => {
       enabled: !!user?.userId && user?.role === 0,
     });
 
-  const useShopBookings = (shopId: string | undefined, date?: Date) => {
+  const useShopBookings = (
+    shopId: string | undefined,
+    date?: Date | string,
+  ) => {
+    const isoDate = toIsoStringSafe(date);
+
     return useQuery({
-      queryKey: ["shop-bookings", shopId, date?.toISOString()],
+      queryKey: ["shop-bookings", shopId, isoDate],
       queryFn: async () => {
         if (!shopId) return [];
-        return await BookingAPI.getByShop(shopId, date);
+        return await BookingAPI.getByShop(
+          shopId,
+          isoDate ? new Date(isoDate) : undefined,
+        );
       },
       enabled: !!shopId,
+    });
+  };
+
+  const useLocationBookings = (
+    shopLocationId: string | undefined,
+    date?: Date | string,
+  ) => {
+    const isoDate = toIsoStringSafe(date);
+
+    return useQuery({
+      queryKey: ["location-bookings", shopLocationId, isoDate],
+      queryFn: async () => {
+        if (!shopLocationId) return [];
+        return await BookingAPI.getAvailableByLocation(
+          shopLocationId,
+          isoDate ? new Date(isoDate) : undefined,
+        );
+      },
+      enabled: !!shopLocationId,
+    });
+  };
+
+  const useArtistBookings = (date?: Date | string) => {
+    const isoDate = toIsoStringSafe(date);
+
+    return useQuery({
+      queryKey: ["artist-bookings", isoDate],
+      queryFn: async () => {
+        return await BookingAPI.getAvailableByArtist(
+          isoDate ? new Date(isoDate) : undefined,
+        );
+      },
     });
   };
 
@@ -41,36 +85,16 @@ export const useBookings = () => {
       enabled: !!user?.userId && user?.role === 1,
     });
 
-  const useLocationBookings = (shopLocationId: string | undefined, date?: Date) => {
-    return useQuery({
-      queryKey: ["location-bookings", shopLocationId, date?.toISOString()],
-      queryFn: async () => {
-        if (!shopLocationId) return [];
-        return await BookingAPI.getByLocation(shopLocationId, date);
-      },
-      enabled: !!shopLocationId,  
-    });
-  };
-
-  const useArtistBookings = (artistId: string | undefined, date?: Date) => {
-    return useQuery({
-      queryKey: ["artist-bookings", artistId, date?.toISOString()],
-      queryFn: async () => {
-        if (!artistId) return [];
-        return await BookingAPI.getByArtist(artistId, date);
-      },
-      enabled: !!artistId,
-    });
-  };
-
-  const { data: artistAuthBookings = [], isLoading: artistAuthBookingsLoading } =
-    useQuery({
-      queryKey: ["artist-auth-bookings"],
-      queryFn: async () => {
-        return await BookingAPI.getByArtistAuth();
-      },
-      enabled: !!user?.userId && user?.role === 2,
-    });
+  const {
+    data: artistAuthBookings = [],
+    isLoading: artistAuthBookingsLoading,
+  } = useQuery({
+    queryKey: ["artist-auth-bookings"],
+    queryFn: async () => {
+      return await BookingAPI.getByArtistAuth();
+    },
+    enabled: !!user?.userId && user?.role === 2,
+  });
 
   const useBookingById = (bookingId: string | undefined) => {
     return useQuery({
@@ -92,34 +116,73 @@ export const useBookings = () => {
     });
   };
 
-  const useShopStats = (shopId: string | undefined, startDate?: Date, endDate?: Date) => {
+  const useShopStats = (
+    shopId: string | undefined,
+    startDate?: Date,
+    endDate?: Date,
+  ) => {
     return useQuery<BookingStats>({
-      queryKey: ["shop-stats", shopId, startDate?.toISOString(), endDate?.toISOString()],
+      queryKey: [
+        "shop-stats",
+        shopId,
+        startDate?.toISOString(),
+        endDate?.toISOString(),
+      ],
       queryFn: async () => {
         if (!shopId) throw new Error("Shop ID is required");
-        return await dashboardAPI.getByShop(shopId, startDate?.toISOString(), endDate?.toISOString());
+        return await dashboardAPI.getByShop(
+          shopId,
+          startDate?.toISOString(),
+          endDate?.toISOString(),
+        );
       },
       enabled: !!shopId,
     });
   };
 
-  const useArtistStats = (artistId: string | undefined, startDate?: Date, endDate?: Date) => {
+  const useArtistStats = (
+    artistId: string | undefined,
+    startDate?: Date,
+    endDate?: Date,
+  ) => {
     return useQuery<BookingStats>({
-      queryKey: ["artist-stats", artistId, startDate?.toISOString(), endDate?.toISOString()],
+      queryKey: [
+        "artist-stats",
+        artistId,
+        startDate?.toISOString(),
+        endDate?.toISOString(),
+      ],
       queryFn: async () => {
         if (!artistId) throw new Error("Artist ID is required");
-        return await dashboardAPI.getByArtist(artistId, startDate?.toISOString(), endDate?.toISOString());
+        return await dashboardAPI.getByArtist(
+          artistId,
+          startDate?.toISOString(),
+          endDate?.toISOString(),
+        );
       },
       enabled: !!artistId,
     });
   };
 
-  const useLocationStats = (locationId: string | undefined, startDate?: Date, endDate?: Date) => {
+  const useLocationStats = (
+    locationId: string | undefined,
+    startDate?: Date,
+    endDate?: Date,
+  ) => {
     return useQuery<BookingStats>({
-      queryKey: ["location-stats", locationId, startDate?.toISOString(), endDate?.toISOString()],
+      queryKey: [
+        "location-stats",
+        locationId,
+        startDate?.toISOString(),
+        endDate?.toISOString(),
+      ],
       queryFn: async () => {
         if (!locationId) throw new Error("Location ID is required");
-        return await dashboardAPI.getByLocation(locationId, startDate?.toISOString(), endDate?.toISOString());
+        return await dashboardAPI.getByLocation(
+          locationId,
+          startDate?.toISOString(),
+          endDate?.toISOString(),
+        );
       },
       enabled: !!locationId,
     });
@@ -139,11 +202,16 @@ export const useBookings = () => {
 
   const createBooking = useMutation({
     mutationFn: async (params: CreateBookingParams) => {
-      const scheduledStart = new Date(`${params.bookingDate}T${params.bookingTime}`);
+      const scheduledStart = new Date(
+        `${params.bookingDate}T${params.bookingTime}`,
+      );
 
       const baseDto = {
         collectionId: params.collectionId || null,
-        bookingItems: params.items?.map(item => ({ serviceItemId: item.serviceItemId })) || null,
+        bookingItems:
+          params.items?.map((item) => ({
+            serviceItemId: item.serviceItemId,
+          })) || null,
         scheduledStart: scheduledStart.toISOString(),
         notes: params.notes || null,
       };
@@ -193,7 +261,9 @@ export const useBookings = () => {
       queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
 
       if (data.bookingId) {
-        queryClient.invalidateQueries({ queryKey: ["booking", data.bookingId] });
+        queryClient.invalidateQueries({
+          queryKey: ["booking", data.bookingId],
+        });
       }
     },
     onError: (error: any) => {
@@ -212,17 +282,25 @@ export const useBookings = () => {
       const formData = new FormData();
 
       // Append only non-undefined values
-      if (data.collectionId !== undefined) formData.append("collectionId", data.collectionId || "");
-      if (data.scheduledStart) formData.append("scheduledStart", data.scheduledStart);
+      if (data.collectionId !== undefined)
+        formData.append("collectionId", data.collectionId || "");
+      if (data.scheduledStart)
+        formData.append("scheduledStart", data.scheduledStart);
       if (data.notes !== undefined) formData.append("notes", data.notes || "");
-      if (data.customerName !== undefined) formData.append("customerName", data.customerName || "");
-      if (data.customerPhone !== undefined) formData.append("customerPhone", data.customerPhone || "");
-      if (data.customerAddress !== undefined) formData.append("customerAddress", data.customerAddress || "");
+      if (data.customerName !== undefined)
+        formData.append("customerName", data.customerName || "");
+      if (data.customerPhone !== undefined)
+        formData.append("customerPhone", data.customerPhone || "");
+      if (data.customerAddress !== undefined)
+        formData.append("customerAddress", data.customerAddress || "");
 
       // Handle booking items
       if (data.bookingItems) {
         data.bookingItems.forEach((item, index) => {
-          formData.append(`bookingItems[${index}].serviceItemId`, item.serviceItemId);
+          formData.append(
+            `bookingItems[${index}].serviceItemId`,
+            item.serviceItemId,
+          );
         });
       }
 
@@ -278,7 +356,13 @@ export const useBookings = () => {
 
   // Update booking status
   const updateBookingStatus = useMutation({
-    mutationFn: async ({ bookingId, status }: { bookingId: string; status: BookingStatus }) => {
+    mutationFn: async ({
+      bookingId,
+      status,
+    }: {
+      bookingId: string;
+      status: BookingStatus;
+    }) => {
       return await BookingAPI.updateStatus(bookingId, { status });
     },
     onSuccess: (data, variables) => {
@@ -291,7 +375,9 @@ export const useBookings = () => {
       queryClient.invalidateQueries({ queryKey: ["shop-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["artist-bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["booking", variables.bookingId] });
+      queryClient.invalidateQueries({
+        queryKey: ["booking", variables.bookingId],
+      });
     },
     onError: (error: any) => {
       console.error("Update booking status error:", error);
@@ -324,4 +410,11 @@ export const useBookings = () => {
     cancelBooking,
     updateBookingStatus,
   };
+
+  // helper function
+  function toIsoStringSafe(date?: Date | string) {
+    if (!date) return undefined;
+    const d = date instanceof Date ? date : new Date(date);
+    return isNaN(d.getTime()) ? undefined : d.toISOString();
+  }
 };

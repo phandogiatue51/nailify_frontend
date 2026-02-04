@@ -30,14 +30,6 @@ const AdminShopDetailPage = () => {
     return <Navigate to="/admin/shops" replace />;
   }
 
-  const handleClose = () => {
-    navigate("/admin/shops");
-  };
-
-  const handleShopUpdated = () => {
-    console.log("Shop updated");
-  };
-
   return (
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex items-center gap-4 mb-6">
@@ -54,7 +46,7 @@ const AdminShopDetailPage = () => {
 
       <Card>
         <CardContent className="p-6">
-          <ShopDetailView shopId={shopId} onShopUpdated={handleShopUpdated} />
+          <ShopDetailView shopId={shopId}/>
         </CardContent>
       </Card>
     </div>

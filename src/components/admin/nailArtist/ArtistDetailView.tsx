@@ -18,6 +18,17 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { format } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 interface ArtistDetailViewProps {
   artistId: string;
@@ -131,14 +142,29 @@ export const ArtistDetailView = ({
 
         <div className="flex gap-2">
           {!artist.artistVerified && (
-            <Button onClick={handleVerify} disabled={verifying} size="sm">
-              {verifying ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <CheckCircle className="w-4 h-4 mr-2" />
-              )}
-              Verify Artist
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button disabled={verifying} size="sm">
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Verify Artist
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Verify Artist</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to verify {artist.fullName}? This
+                    action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleVerify}>
+                    Confirm
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
           <Button variant="destructive" size="sm">
             <XCircle className="w-4 h-4 mr-2" />

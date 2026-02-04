@@ -6,31 +6,18 @@ import {
   useCustomerServiceItems,
   useCustomerCollections,
 } from "@/hooks/useCustomer";
-import { Share2 } from "lucide-react";
-import MobileLayout from "@/components/layout/MobileLayout";
+import { Share2, Loader2, ArrowLeft, Wand2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, ArrowLeft, ShoppingBag, X } from "lucide-react";
-import { ServiceItem } from "@/types/database";
-import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
 import CollectionCard from "@/components/collection/CollectionCard";
-import { Link } from "react-router-dom";
 
 const ShopDetailPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const navigate = useNavigate();
   const { user, loading } = useAuthContext();
   const { data: shop, isLoading: shopLoading } = useCustomerShopById(shopId);
-  const { groupedItems, isLoading: itemsLoading } =
-    useCustomerServiceItems(shopId);
   const { data: collections, isLoading: collectionsLoading } =
     useCustomerCollections(shopId);
-  const allItems: ServiceItem[] = (
-    Object.values(groupedItems) as ServiceItem[][]
-  ).flat();
-  const [selectedItems, setSelectedItems] = useState<ServiceItem[]>([]);
 
   if (loading || shopLoading) {
     return (
@@ -48,43 +35,17 @@ const ShopDetailPage = () => {
     return <Navigate to="/" replace />;
   }
 
-  const toggleItem = (item: ServiceItem) => {
-    setSelectedItems((prev) => {
-      const exists = prev.find((i) => i.id === item.id);
-      if (exists) {
-        return prev.filter((i) => i.id !== item.id);
-      }
-      return [...prev, item];
-    });
-  };
-
-  const handleBookNow = () => {
-    navigate(`/book`, {
-      state: {
-        selectedItems,
-        shopId,
-        type: "shop",
-      },
-    });
-  };
-
-  const totalPrice = selectedItems.reduce(
-    (sum, item) => sum + Number(item.price),
-    0,
-  );
-
   return (
-    <MobileLayout showNav={false}>
+    <div>
       <div className="relative bg-slate-50/30 min-h-screen pb-32">
         {/* Immersive Header */}
-        <div className="relative h-64 overflow-hidden">
+        <div className="relative h-40 overflow-hidden">
           {shop.coverUrl ? (
             <img src={shop.coverUrl} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-[#FFC988] to-[#E288F9]" />
           )}
-          <div className="absolute inset-0 bg-black/20" />{" "}
-          {/* Subtle overlay for contrast */}
+          <div className="absolute inset-0 bg-black/20" />
           <div className="absolute top-6 left-4 right-4 flex justify-between items-center">
             <Button
               variant="secondary"
@@ -128,104 +89,79 @@ const ShopDetailPage = () => {
           </div>
         </div>
 
-        {/* Tabs System */}
-        <div className="p-4 mt-4">
-          <Tabs defaultValue="services" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-white rounded-2xl mb-6 shadow-sm border border-slate-100">
-              <TabsTrigger value="services" className="rounded-xl font-bold">
-                Services
-              </TabsTrigger>
-              <TabsTrigger value="collections" className="rounded-xl font-bold">
-                Lookbook
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="services" className="space-y-4 mt-4">
-              {itemsLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <div className="px-4 mt-6">
+          <Card className="overflow-hidden border-0 shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFC988] to-[#E288F9] flex items-center justify-center">
+                  <Wand2 className="w-6 h-6 text-white" />
                 </div>
-              ) : Object.values(groupedItems).flat().length > 0 ? (
-                <div className="grid grid-cols-2 gap-3">
-                  {allItems.map((item) => (
-                    <Link key={item.id} to={`/services/${item.id}`}>
-                      <ServiceItemCard item={item} />
-                    </Link>
-                  ))}
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900">
+                    Want something unique?
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    Create your own custom nail design
+                  </p>
                 </div>
-              ) : (
-                <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    <p>No services available</p>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-
-            <TabsContent value="collections" className="space-y-4 mt-4">
-              {collectionsLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                </div>
-              ) : collections && collections.length > 0 ? (
-                <div className="grid grid-cols-2 gap-3">
-                  {collections.map((collection) => (
-                    <Link
-                      key={collection.id}
-                      to={`/collections/${collection.id}`}
-                    >
-                      <CollectionCard collection={collection} />
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <Card>
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    <p>No collections available</p>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-          </Tabs>
+                <Button
+                  onClick={() => navigate(`/shop/${shopId}/custom`)}
+                  size="sm"
+                >
+                  Customize
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {selectedItems.length > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <p className="font-semibold">
-                  {selectedItems.length} items selected
-                </p>
-                <p className="text-lg font-bold text-primary">
-                  {totalPrice.toLocaleString()} VND
-                </p>
-              </div>
-              <Button onClick={handleBookNow}>
-                <ShoppingBag className="w-4 h-4 mr-2" />
-                Book Now
-              </Button>
+        {/* Lookbook Section */}
+        <div className="p-4 mt-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-black text-slate-900">Lookbook</h2>
+          </div>
+
+          {collectionsLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
-            <div className="flex gap-2 overflow-x-auto">
-              {selectedItems.map((item) => (
-                <Badge
-                  key={item.id}
-                  variant="secondary"
-                  className="whitespace-nowrap"
+          ) : collections && collections.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3">
+              {collections.map((collection) => (
+                <div
+                  key={collection.id}
+                  className="cursor-pointer"
+                  onClick={() => navigate(`/collections/${collection.id}`)}
                 >
-                  {item.name}
-                  <button
-                    onClick={() => toggleItem(item)}
-                    className="ml-1 hover:text-destructive"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </Badge>
+                  <CollectionCard collection={collection} />
+                </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-[#FFC988]/20 to-[#E288F9]/20 flex items-center justify-center mb-4">
+                  <Sparkles className="w-8 h-8 text-[#E288F9]" />
+                </div>
+                <h3 className="font-semibold text-slate-800 mb-2">
+                  No lookbooks yet
+                </h3>
+                <p className="text-sm text-slate-500 mb-4">
+                  Check back later or create your own custom design.
+                </p>
+                <Button
+                  onClick={() => navigate(`/shop/${shopId}/custom`)}
+                  className="w-full"
+                >
+                  <Wand2 className="w-4 h-4 mr-2" />
+                  Make Your Own Design
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

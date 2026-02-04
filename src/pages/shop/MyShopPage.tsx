@@ -70,18 +70,18 @@ const MyShopPage = () => {
 
   if (!myShop) {
     return (
-      <MobileLayout>
+      <div>
         <ShopSetupView
           onSubmit={(data) => createShop.mutateAsync(data)}
           isLoading={createShop.isPending}
         />
-      </MobileLayout>
+      </div>
     );
   }
 
   if (isEditingShop) {
     return (
-      <MobileLayout>
+      <div>
         <ShopEditView
           myShop={myShop}
           onCancel={() => setIsEditingShop(false)}
@@ -92,11 +92,11 @@ const MyShopPage = () => {
           }}
           isLoading={updateShop.isPending}
         />
-      </MobileLayout>
+      </div>
     );
   }
   return (
-    <MobileLayout>
+    <div>
       <Header title="Nailify" hasNotification={true} />
 
       <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen pb-20">
@@ -158,7 +158,7 @@ const MyShopPage = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

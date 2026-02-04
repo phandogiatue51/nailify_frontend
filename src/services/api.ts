@@ -5,7 +5,7 @@ import {
   ServiceItemFilterDto,
   CollectionFilterDto,
   ArtistFilterDto,
-  BookingFilterDto
+  BookingFilterDto,
 } from "@/types/filter";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -154,7 +154,9 @@ export const profileAPI = {
 
   filterProfiles: (filter: ProfileFilter) => {
     const queryString = buildQuery(filter);
-    const url = queryString ? `/Profile/filter?${queryString}` : "/Profile/filter";
+    const url = queryString
+      ? `/Profile/filter?${queryString}`
+      : "/Profile/filter";
     return apiRequest(url);
   },
 };
@@ -197,13 +199,17 @@ export const collectionAPI = {
 
   adminFilter: (filterParams: CollectionFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/Collection/admin-filter?${queryString}` : "/Collection/admin-filter";
+    const url = queryString
+      ? `/Collection/admin-filter?${queryString}`
+      : "/Collection/admin-filter";
     return apiRequest(url);
   },
 
   customerFilter: (filterParams: CollectionFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/Collection/customer-filter?${queryString}` : "/Collection/customer-filter";
+    const url = queryString
+      ? `/Collection/customer-filter?${queryString}`
+      : "/Collection/customer-filter";
     return apiRequest(url);
   },
 };
@@ -234,12 +240,17 @@ export const shopAPI = {
 
   adminFilter: (filterParams: ShopFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/Shop/admin-filter?${queryString}` : "/Shop/admin-filter"; return apiRequest(url);
+    const url = queryString
+      ? `/Shop/admin-filter?${queryString}`
+      : "/Shop/admin-filter";
+    return apiRequest(url);
   },
 
   customerFilter: (filterParams: ShopFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/Shop/customer-filter?${queryString}` : "/Shop/customer-filter";
+    const url = queryString
+      ? `/Shop/customer-filter?${queryString}`
+      : "/Shop/customer-filter";
     return apiRequest(url);
   },
 };
@@ -283,13 +294,17 @@ export const serviceItemAPI = {
 
   adminFilter: (filterParams: ServiceItemFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/ServiceItem/admin-filter?${queryString}` : "/ServiceItem/admin-filter";
+    const url = queryString
+      ? `/ServiceItem/admin-filter?${queryString}`
+      : "/ServiceItem/admin-filter";
     return apiRequest(url);
   },
 
   customerFilter: (filterParams: ServiceItemFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/ServiceItem/customer-filter?${queryString}` : "/ServiceItem/customer-filter";
+    const url = queryString
+      ? `/ServiceItem/customer-filter?${queryString}`
+      : "/ServiceItem/customer-filter";
     return apiRequest(url);
   },
 };
@@ -316,6 +331,21 @@ export const BookingAPI = {
     const url = date
       ? `/Booking/location/${shopLocationId}?date=${date.toISOString()}`
       : `/Booking/location/${shopLocationId}`;
+    return apiRequest(url);
+  },
+
+  getAvailableByLocation: (shopLocationId: string, date?: Date) => {
+    const url = date
+      ? `/Booking/location/available/${shopLocationId}?date=${date.toISOString()}`
+      : `/Booking/location/available/${shopLocationId}`;
+
+    return apiRequest(url);
+  },
+
+  getAvailableByArtist: (date?: Date) => {
+    const url = date
+      ? `/Booking/artist/available/?date=${date.toISOString()}`
+      : `/Booking/artist/available`;
     return apiRequest(url);
   },
 
@@ -390,7 +420,10 @@ export const BookingAPI = {
 
   filter: (filterParams: BookingFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/Booking/filter?${queryString}` : "/Booking/filter"; return apiRequest(url);
+    const url = queryString
+      ? `/Booking/filter?${queryString}`
+      : "/Booking/filter";
+    return apiRequest(url);
   },
 };
 
@@ -486,39 +519,60 @@ export const artistAPI = {
 
   adminFilter: (filterParams: ArtistFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/Artist/admin-filter?${queryString}` : "/Artist/admin-filter";
+    const url = queryString
+      ? `/Artist/admin-filter?${queryString}`
+      : "/Artist/admin-filter";
     return apiRequest(url);
   },
 
   customerFilter: (filterParams: ArtistFilterDto) => {
     const queryString = buildQuery(filterParams);
-    const url = queryString ? `/Artist/customer-filter?${queryString}` : "/Artist/customer-filter";
+    const url = queryString
+      ? `/Artist/customer-filter?${queryString}`
+      : "/Artist/customer-filter";
     return apiRequest(url);
   },
 };
 
 export const dashboardAPI = {
   getByShop: (shopId: string, startDate?: string, endDate?: string) =>
-    apiRequest(`/Dashboard/shop/${shopId}?${buildQuery({ startDate, endDate })}`),
+    apiRequest(
+      `/Dashboard/shop/${shopId}?${buildQuery({ startDate, endDate })}`,
+    ),
 
   getByShopAuth: (startDate?: string, endDate?: string) =>
     apiRequest(`/Dashboard/shopAuth?${buildQuery({ startDate, endDate })}`),
 
   getByArtist: (artistId: string, startDate?: string, endDate?: string) =>
-    apiRequest(`/Dashboard/artist/${artistId}?${buildQuery({ startDate, endDate })}`),
+    apiRequest(
+      `/Dashboard/artist/${artistId}?${buildQuery({ startDate, endDate })}`,
+    ),
 
   getByArtistAuth: (startDate?: string, endDate?: string) =>
     apiRequest(`/Dashboard/artistAuth?${buildQuery({ startDate, endDate })}`),
 
-  getByLocation: (shopLocationId: string, startDate?: string, endDate?: string) =>
-    apiRequest(`/Dashboard/location/${shopLocationId}?${buildQuery({ startDate, endDate })}`),
+  getByLocation: (
+    shopLocationId: string,
+    startDate?: string,
+    endDate?: string,
+  ) =>
+    apiRequest(
+      `/Dashboard/location/${shopLocationId}?${buildQuery({ startDate, endDate })}`,
+    ),
 
-  getStats: (
-    params: { shopId?: string; artistId?: string; shopLocationId?: string; startDate?: string; endDate?: string }
-  ) => apiRequest(`/Dashboard/stats?${buildQuery(params)}`),
+  getStats: (params: {
+    shopId?: string;
+    artistId?: string;
+    shopLocationId?: string;
+    startDate?: string;
+    endDate?: string;
+  }) => apiRequest(`/Dashboard/stats?${buildQuery(params)}`),
 
-  getQuickStats: (params: { shopId?: string; artistId?: string; shopLocationId?: string }) =>
-    apiRequest(`/Dashboard/quick?${buildQuery(params)}`),
+  getQuickStats: (params: {
+    shopId?: string;
+    artistId?: string;
+    shopLocationId?: string;
+  }) => apiRequest(`/Dashboard/quick?${buildQuery(params)}`),
 
   customerFilter: (filterParams: ServiceItemFilterDto) => {
     const queryString = buildQuery(filterParams);

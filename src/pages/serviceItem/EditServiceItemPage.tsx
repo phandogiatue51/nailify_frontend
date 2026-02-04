@@ -53,7 +53,7 @@ const EditServiceItemPage = () => {
   const componentLabels = ["Form", "Base", "Shape", "Polish", "Design"];
 
   return (
-    <MobileLayout>
+    <div>
       <div className="p-4 space-y-6">
         <div className="flex items-center">
           <Button
@@ -90,7 +90,7 @@ const EditServiceItemPage = () => {
           Cancel
         </Button>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

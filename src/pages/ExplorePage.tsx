@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
-import MobileLayout from "@/components/layout/MobileLayout";
 import { useAllShops } from "@/hooks/useShop";
 import { useCustomerArtists } from "@/hooks/useCustomer";
 import { Input } from "@/components/ui/input";
@@ -46,7 +45,7 @@ const ExplorePage = () => {
   const isLoading = activeTab === "shops" ? shopsLoading : artistsLoading;
 
   return (
-    <MobileLayout>
+    <div>
       <div className="bg-slate-50/50 min-h-screen pb-24">
         <Header title="Nailify" hasNotification={true} />
         <div className="bg-white px-6 pt-8 pb-6 rounded-b-[3rem] shadow-sm">
@@ -138,7 +137,7 @@ const ExplorePage = () => {
           </div>
         </div>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

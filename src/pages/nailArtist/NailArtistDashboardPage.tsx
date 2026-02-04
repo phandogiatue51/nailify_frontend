@@ -50,7 +50,7 @@ const NailArtistDashboardPage = () => {
 
   if (!myArtist) {
     return (
-      <MobileLayout>
+      <div>
         <Header title="Nailify" hasNotification={true} />
 
         <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center">
@@ -75,12 +75,12 @@ const NailArtistDashboardPage = () => {
             )}
           </Button>
         </div>
-      </MobileLayout>
+      </div>
     );
   }
 
   return (
-    <MobileLayout>
+    <div>
       <Header title="Nailify" hasNotification={true} />
 
       <div className="min-h-screen bg-slate-50/50 pb-24">
@@ -225,7 +225,7 @@ const NailArtistDashboardPage = () => {
           </section>
         </div>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

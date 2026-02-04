@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
-import MobileLayout from "@/components/layout/MobileLayout";
 import { useShop } from "@/hooks/useShop";
 import { useBookings } from "@/hooks/useBookings";
 import { Button } from "@/components/ui/button";
@@ -162,7 +161,7 @@ const SchedulePage = () => {
   );
 
   return (
-    <MobileLayout>
+    <div>
       <div className="p-4 space-y-4">
         <div className="pt-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Schedule</h1>
@@ -287,7 +286,7 @@ const SchedulePage = () => {
           </div>
         )}
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

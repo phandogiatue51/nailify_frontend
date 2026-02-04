@@ -75,7 +75,7 @@ const EditCollectionPage = () => {
   }
 
   return (
-    <MobileLayout>
+    <div>
       <div className="p-4 space-y-6">
         <div className="flex items-center">
           <Button
@@ -110,7 +110,7 @@ const EditCollectionPage = () => {
           Cancel
         </Button>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

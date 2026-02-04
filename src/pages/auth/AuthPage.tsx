@@ -1,5 +1,4 @@
 import { useAuthContext } from "@/components/auth/AuthProvider";
-import MobileLayout from "@/components/layout/MobileLayout";
 import AuthForm from "@/components/auth/AuthForm";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -24,9 +23,9 @@ const AuthPage = () => {
   }
 
   return (
-    <MobileLayout showNav={false}>
+    <div>
       <AuthForm />
-    </MobileLayout>
+    </div>
   );
 };
 

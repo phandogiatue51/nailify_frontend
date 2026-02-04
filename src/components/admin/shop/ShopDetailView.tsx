@@ -27,6 +27,17 @@ interface ShopDetailViewProps {
 }
 import { profileAPI } from "@/services/api";
 import UserCard from "../user/UserCard";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 export const ShopDetailView = ({
   shopId,
   onShopUpdated,
@@ -141,14 +152,29 @@ export const ShopDetailView = ({
 
         <div className="flex gap-2">
           {!shop.isVerified && (
-            <Button onClick={handleVerify} disabled={verifying} size="sm">
-              {verifying ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <CheckCircle className="w-4 h-4 mr-2" />
-              )}
-              Verify Shop
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button disabled={verifying} size="sm">
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Verify Shop
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Verify Shop</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to verify {shop.name}? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleVerify}>
+                    Confirm
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
           <Button
             variant="destructive"

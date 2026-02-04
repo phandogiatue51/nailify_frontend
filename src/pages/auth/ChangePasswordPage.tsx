@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MobileLayout from "@/components/layout/MobileLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +44,7 @@ const ChangePasswordPage = () => {
     };
 
     return (
-        <MobileLayout>
+        <div>
             <div className="p-4 space-y-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Change Password</h1>
@@ -113,7 +112,7 @@ const ChangePasswordPage = () => {
                     </CardContent>
                 </Card>
             </div>
-        </MobileLayout>
+        </div>
     );
 };
 

@@ -55,7 +55,7 @@ export const useCustomerArtistById = (artistId: string | undefined) => {
 };
 
 export const useCustomerServiceItems = (shopId?: string, artistId?: string) => {
-  const { data: serviceItems = [], isLoading } = useQuery({
+  const { data: serviceItems = [], isLoading } = useQuery<ServiceItem[]>({
     queryKey: ["customer-service-items", shopId, artistId],
     queryFn: async () => {
       if (shopId) {

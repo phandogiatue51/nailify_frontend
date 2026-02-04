@@ -33,7 +33,7 @@ const ShopOwnerDashboardPage = () => {
 
   if (!myShop) {
     return (
-      <MobileLayout>
+      <div>
         <Header title="Nailify" hasNotification={true} />
 
         <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center space-y-6">
@@ -56,7 +56,7 @@ const ShopOwnerDashboardPage = () => {
             CREATE YOUR SHOP
           </Button>
         </div>
-      </MobileLayout>
+      </div>
     );
   }
 
@@ -67,7 +67,7 @@ const ShopOwnerDashboardPage = () => {
     bookings?.filter((b) => b.booking_date === todayDate).length || 0;
 
   return (
-    <MobileLayout>
+    <div>
       <Header title="Nailify" hasNotification={true} />
 
       <div className="p-6 space-y-8 bg-slate-50/30 min-h-screen pb-24">
@@ -168,7 +168,7 @@ const ShopOwnerDashboardPage = () => {
           </button>
         </div>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

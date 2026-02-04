@@ -1,6 +1,5 @@
 "use client";
 
-import MobileLayout from "@/components/layout/MobileLayout";
 import { ProfileForm } from "@/components/auth/ProfileForm";
 import { useProfile } from "@/hooks/useProfile";
 import { useNavigate } from "react-router-dom";
@@ -25,21 +24,21 @@ const EditProfilePage = () => {
 
   if (loading && !profile) {
     return (
-      <MobileLayout>
+      <div>
         <div className="flex flex-col justify-center items-center h-[60vh]">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
           <p className="text-muted-foreground mt-4 font-medium">
             Preparing your settings...
           </p>
         </div>
-      </MobileLayout>
+      </div>
     );
   }
 
   if (!profile) return null;
 
   return (
-    <MobileLayout>
+    <div>
       <div className="min-h-screen bg-slate-50/50 pb-10">
         {/* Top Navigation Bar */}
         <div className="bg-white px-4 py-4 flex items-center gap-2 border-b sticky top-0 z-10">
@@ -87,7 +86,7 @@ const EditProfilePage = () => {
           </p>
         </div>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

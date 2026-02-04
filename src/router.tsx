@@ -8,7 +8,7 @@ import AuthPage from "./pages/auth/AuthPage";
 import ProfilePage from "./pages/auth/ProfilePage";
 import EditProfilePage from "./pages/auth/EditProfilePage";
 import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
-import BookingsPage from "./pages/booking/BookingPage";
+import BookingsPage from "./pages/booking/CustomerBookingPage";
 import ExplorePage from "./pages/ExplorePage";
 import NotFound from "./pages/auth/NotFound";
 import VerifyEmail from "./pages/auth/VerifyEmail";
@@ -32,7 +32,7 @@ import NailArtistDashboardPage from "./pages/nailArtist/NailArtistDashboardPage"
 import ArtistDetailPage from "./pages/nailArtist/ArtistDetailPage";
 import MyNailArtistPage from "./pages/nailArtist/MyNailArtistPage";
 import ShopOwnerDashboardPage from "./pages/shop/ShopOwnerDashboardPage";
-
+import { CustomDesignPage } from "./pages/CustomDesignPage";
 import CreateServiceItemPage from "./pages/serviceItem/CreateServiceItemPage";
 import EditServiceItemPage from "./pages/serviceItem/EditServiceItemPage";
 import CreateCollectionPage from "./pages/collection/CreateCollectionPage";
@@ -40,7 +40,9 @@ import EditCollectionPage from "./pages/collection/EditCollectionPage";
 import CreateLocationPage from "./pages/shop/CreateLocationPage";
 import EditLocationPage from "./pages/shop/EditLocationPage";
 
-import BookingPage from "./pages/booking/BookingPage";
+import CustomerBookingPage from "./pages/booking/CustomerBookingPage";
+import DateTimeSelection from "./pages/booking/DateTimeSelection";
+import ConfirmBooking from "./pages/booking/ConfirmBooking";
 
 export const router = createBrowserRouter(
   [
@@ -49,41 +51,118 @@ export const router = createBrowserRouter(
       element: <App />,
       children: [
         { index: true, element: withMobileLayout(<Index />) },
-        { path: "auth", element: withMobileLayout(<AuthPage />, false) },
+
+        { path: "auth", element: <AuthPage /> },
         { path: "profile", element: withMobileLayout(<ProfilePage />) },
-        { path: "profile/edit", element: withMobileLayout(<EditProfilePage />) },
-        { path: "profile/change-password", element: withMobileLayout(<ChangePasswordPage />) },
-        { path: "staff-dashboard", element: withMobileLayout(<ShopOwnerDashboardPage />) },
+        {
+          path: "profile/edit",
+          element: withMobileLayout(<EditProfilePage />),
+        },
+        {
+          path: "profile/change-password",
+          element: withMobileLayout(<ChangePasswordPage />),
+        },
+        {
+          path: "staff-dashboard",
+          element: withMobileLayout(<ShopOwnerDashboardPage />),
+        },
 
         { path: "my-shop", element: withMobileLayout(<MyShopPage />) },
-        { path: "my-shop/service-items/create/:type", element: withMobileLayout(<CreateServiceItemPage />) },
-        { path: "my-shop/service-items/edit/:id", element: withMobileLayout(<EditServiceItemPage />) },
-        { path: "my-shop/collections/create", element: withMobileLayout(<CreateCollectionPage />) },
-        { path: "my-shop/collections/edit/:id", element: withMobileLayout(<EditCollectionPage />) },
-        { path: "my-shop/locations/create", element: withMobileLayout(<CreateLocationPage />) },
-        { path: "my-shop/locations/edit/:id", element: withMobileLayout(<EditLocationPage />) },
+        {
+          path: "my-shop/service-items/create/:type",
+          element: withMobileLayout(<CreateServiceItemPage />),
+        },
+        {
+          path: "my-shop/service-items/edit/:id",
+          element: withMobileLayout(<EditServiceItemPage />),
+        },
+        {
+          path: "my-shop/collections/create",
+          element: withMobileLayout(<CreateCollectionPage />),
+        },
+        {
+          path: "my-shop/collections/edit/:id",
+          element: withMobileLayout(<EditCollectionPage />),
+        },
+        {
+          path: "my-shop/locations/create",
+          element: withMobileLayout(<CreateLocationPage />),
+        },
+        {
+          path: "my-shop/locations/edit/:id",
+          element: withMobileLayout(<EditLocationPage />),
+        },
 
         { path: "my-artist", element: withMobileLayout(<MyNailArtistPage />) },
-        { path: "my-artist/service-items/create/:type", element: withMobileLayout(<CreateServiceItemPage />) },
-        { path: "my-artist/service-items/edit/:id", element: withMobileLayout(<EditServiceItemPage />) },
-        { path: "my-artist/collections/create", element: withMobileLayout(<CreateCollectionPage />) },
-        { path: "my-artist/collections/edit/:id", element: withMobileLayout(<EditCollectionPage />) },
+        {
+          path: "my-artist/service-items/create/:type",
+          element: withMobileLayout(<CreateServiceItemPage />),
+        },
+        {
+          path: "my-artist/service-items/edit/:id",
+          element: withMobileLayout(<EditServiceItemPage />),
+        },
+        {
+          path: "my-artist/collections/create",
+          element: withMobileLayout(<CreateCollectionPage />),
+        },
+        {
+          path: "my-artist/collections/edit/:id",
+          element: withMobileLayout(<EditCollectionPage />),
+        },
+        {
+          path: "/shop/:shopId/custom",
+          element: withMobileLayout(<CustomDesignPage />),
+        },
+        {
+          path: "/artist/:id/custom",
+          element: withMobileLayout(<CustomDesignPage />),
+        },
 
         { path: "shop/:shopId", element: withMobileLayout(<ShopDetailPage />) },
+        { path: "artist/:id", element: withMobileLayout(<ArtistDetailPage />) },
+
         { path: "schedule", element: withMobileLayout(<SchedulePage />) },
         { path: "bookings", element: withMobileLayout(<BookingsPage />) },
         { path: "explore", element: withMobileLayout(<ExplorePage />) },
-        { path: "services/:id", element: withMobileLayout(<ServiceItemDetailPage />) },
-        { path: "collections/:id", element: withMobileLayout(<CollectionDetailPage />) },
-        { path: "verify-email", element: withMobileLayout(<VerifyEmail />, false) },
-        { path: "forgot-password", element: withMobileLayout(<ForgotPassword />, false) },
-        { path: "reset-password", element: withMobileLayout(<ResetPassword />, false) },
-        { path: "artist/:id", element: withMobileLayout(<ArtistDetailPage />) },
-        { path: "artist-dashboard", element: withMobileLayout(<NailArtistDashboardPage />) },
+        {
+          path: "services/:id",
+          element: withMobileLayout(<ServiceItemDetailPage />),
+        },
+        {
+          path: "collections/:id",
+          element: withMobileLayout(<CollectionDetailPage />),
+        },
+        {
+          path: "verify-email",
+          element: withMobileLayout(<VerifyEmail />, false),
+        },
+        {
+          path: "forgot-password",
+          element: withMobileLayout(<ForgotPassword />, false),
+        },
+        {
+          path: "reset-password",
+          element: withMobileLayout(<ResetPassword />, false),
+        },
+        {
+          path: "artist-dashboard",
+          element: withMobileLayout(<NailArtistDashboardPage />),
+        },
 
-        { path: "/book", element: withMobileLayout(<BookingPage />) },
+        {
+          path: "/customer-book",
+          element: withMobileLayout(<CustomerBookingPage />),
+        },
+        {
+          path: "/booking/date-time-selection",
+          element: withMobileLayout(<DateTimeSelection />),
+        },
+        {
+          path: "/booking/confirm-booking",
+          element: withMobileLayout(<ConfirmBooking />),
+        },
 
-        // Admin stays unwrapped
         {
           path: "admin",
           element: <AdminLayout />,
@@ -101,8 +180,7 @@ export const router = createBrowserRouter(
 
         { path: "*", element: withMobileLayout(<NotFound />, false) },
       ],
-    }
-
+    },
   ],
   {
     future: {

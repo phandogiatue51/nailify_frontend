@@ -60,7 +60,7 @@ const CreateCollectionPage = () => {
   }
 
   return (
-    <MobileLayout>
+    <div>
       <div className="p-4 space-y-6">
         <div className="flex items-center">
           <Button
@@ -94,7 +94,7 @@ const CreateCollectionPage = () => {
           Cancel
         </Button>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

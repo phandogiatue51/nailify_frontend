@@ -35,6 +35,23 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
   const owner = shop || artist;
   const isArtist = !!artist;
 
+  const handleBookNow = () => {
+ 
+    const bookingState: any = {
+      type: collection.shopId ? "shop" : "artist",
+      selectedCollection: collection,
+      collectionId: collection.id,
+    };
+
+    if (collection.shopId) {
+      bookingState.shopId = collection.shopId;
+    } else if (collection.nailArtistId) {
+      bookingState.id = collection.nailArtistId;
+    }
+
+    navigate(`/customer-book`, { state: bookingState });
+  };
+
   return (
     <div className="space-y-6">
       {collection.imageUrl && (
@@ -84,7 +101,9 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           </div>
         </div>
       )}
-
+      <Button onClick={handleBookNow} className="w-full">
+        Book Now
+      </Button>
       <Separator />
 
       {/* Owner Info */}
@@ -96,7 +115,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
             {owner.avatarUrl || owner.logoUrl ? (
               <img
                 src={owner.avatarUrl || owner.logoUrl}
-                alt={owner.name || artist?.profile?.fullName}
+                alt={owner.name || artist?.fullName}
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
@@ -111,7 +130,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
 
             <div>
               <p className="text-md font-medium">
-                {isArtist ? artist?.profile?.fullName : shop?.name}
+                {isArtist ? artist?.fullName : shop?.name}
               </p>
               {owner.address && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1">

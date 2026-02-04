@@ -10,11 +10,11 @@ const AuthForm = () => {
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center p-4 overflow-hidden bg-[#fafafa]">
       <div
-        className="absolute top-[-5%] right-[-5%] w-[50%] h-[50%] rounded-full blur-[120px] opacity-40 animate-pulse"
+        className="absolute top-[-5%] right-[-5%] w-[70%] h-[70%] rounded-full blur-[100px] opacity-60 animate-pulse"
         style={{ backgroundColor: "#FFC988" }}
       />
       <div
-        className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] rounded-full blur-[120px] opacity-40 animate-pulse"
+        className="absolute bottom-[-5%] left-[-5%] w-[70%] h-[70%] rounded-full blur-[100px] opacity-60 animate-pulse"
         style={{ backgroundColor: "#E288F9" }}
       />
 

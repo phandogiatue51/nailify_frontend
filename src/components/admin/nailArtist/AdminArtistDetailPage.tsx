@@ -48,7 +48,6 @@ const AdminArtistDetailPage = () => {
           <ArtistDetailView
             artistId={artistId}
             onArtistUpdated={() => {
-              console.log("Artist updated");
             }}
           />
         </CardContent>

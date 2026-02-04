@@ -79,7 +79,7 @@ const isTokenExpired = (token: string): boolean => {
 };
 
 export function useAuth() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<DecodedJWT | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -96,10 +96,11 @@ export function useAuth() {
       localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
     if (token && !isTokenExpired(token)) {
       const decoded = decodeJWT(token);
-      if (decoded && isMounted.current) {
+      if (decoded) {
         setUser(decoded);
       }
     }
+    Promise.resolve().then(() => setLoading(false));
   }, []);
 
   const login = async (

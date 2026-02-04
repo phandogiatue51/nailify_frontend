@@ -35,20 +35,20 @@ const ProfilePage = () => {
 
   if (loading && !profile) {
     return (
-      <MobileLayout>
+      <div>
         <div className="flex flex-col justify-center items-center h-[60vh]">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
           <p className="text-muted-foreground mt-4 font-medium">
             Loading profile...
           </p>
         </div>
-      </MobileLayout>
+      </div>
     );
   }
 
   if (error || !profile) {
     return (
-      <MobileLayout>
+      <div>
         <div className="p-6 mt-10 text-center">
           <div className="bg-destructive/10 p-4 rounded-xl text-destructive mb-6">
             <p className="font-semibold">Error</p>
@@ -58,12 +58,12 @@ const ProfilePage = () => {
             Retry
           </Button>
         </div>
-      </MobileLayout>
+      </div>
     );
   }
 
   return (
-    <MobileLayout>
+    <div>
       <Header title="Nailify" hasNotification={true} />
 
       <div className="pb-20">
@@ -177,7 +177,7 @@ const ProfilePage = () => {
           </section>
         </div>
       </div>
-    </MobileLayout>
+    </div>
   );
 };
 

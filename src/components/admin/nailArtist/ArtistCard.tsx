@@ -19,7 +19,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { artistAPI } from "@/services/api";
 import { CollectionPreview } from "../CollectionPreview";
 import { ServicePreview } from "../ServicePreview";
 import DateDisplay from "@/components/ui/date-display";
@@ -32,21 +31,11 @@ interface ArtistCardProps {
 export const ArtistCard = ({
   artist,
   onViewDetails,
-  onArtistUpdated,
 }: ArtistCardProps) => {
-  const handleVerify = async () => {
-    try {
-      await artistAPI.verifyArtist(artist.id);
-      onArtistUpdated?.();
-    } catch (error) {
-      console.error("Failed to verify artist:", error);
-    }
-  };
 
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-4">
-        {/* Artist Header */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-start gap-3">
             {artist.avatarUrl && (
@@ -70,31 +59,6 @@ export const ArtistCard = ({
               </div>
             </div>
           </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onViewDetails}>
-                <Eye className="w-4 h-4 mr-2" />
-                View Details
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleVerify}
-                disabled={artist.artistVerified}
-              >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                {artist.artistVerified ? "Already Verified" : "Verify Artist"}
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                <XCircle className="w-4 h-4 mr-2" />
-                Disable Artist
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
 
         {/* Status & Rating */}
