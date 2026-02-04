@@ -32,11 +32,9 @@ export const useShopOwnerLocations = () => {
 
   const createLocation = useMutation({
     mutationFn: async (dto: ShopLocationCreateDto) => {
-      // ✅ MUST return the response
       return await LocationAPI.createLocation(dto);
     },
     onSuccess: (data) => {
-      // ✅ Parameter is named `data`
       queryClient.setQueryData(
         ["shop-owner-locations"],
         (old: ShopLocation[] = []) => [...old, data],
@@ -70,7 +68,6 @@ export const useShopOwnerLocations = () => {
       return await LocationAPI.updateLocation(id, dto);
     },
     onSuccess: (updatedLocation) => {
-      // ✅ Parameter is named `updatedLocation`
       queryClient.setQueryData(
         ["shop-owner-locations"],
         (old: ShopLocation[] = []) =>
@@ -103,7 +100,6 @@ export const useShopOwnerLocations = () => {
       return await LocationAPI.deleteLocation(id);
     },
     onSuccess: (data, locationId) => {
-      // ✅ First parameter is `data` (response), second is `locationId`
       queryClient.setQueryData(
         ["shop-owner-locations"],
         (old: ShopLocation[] = []) =>
@@ -148,5 +144,22 @@ export const useShopOwnerLocationById = (locationId: string | undefined) => {
       }
     },
     enabled: !!locationId,
+  });
+};
+
+
+export const useLocationsByShop = (shopId: string | undefined) => {
+  return useQuery({
+    queryKey: ["shop-locations", shopId],
+    queryFn: async () => {
+      if (!shopId) return [];
+      try {
+        return await LocationAPI.getByShop(shopId);
+      } catch (error: any) {
+        console.error("Error fetching shop locations:", error);
+        return [];
+      }
+    },
+    enabled: !!shopId,
   });
 };

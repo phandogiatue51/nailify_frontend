@@ -5,6 +5,7 @@ import {
   ServiceItemFilterDto,
   CollectionFilterDto,
   ArtistFilterDto,
+  BookingFilterDto
 } from "@/types/filter";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -152,18 +153,9 @@ export const profileAPI = {
   getProfile: () => apiRequest("/Profile/user-profile"),
 
   filterProfiles: (filter: ProfileFilter) => {
-    const queryParams = new URLSearchParams();
-    if (filter.SearchTerm !== undefined) {
-      queryParams.append("SearchTerm", filter.SearchTerm);
-    }
-    if (filter.Role !== undefined) {
-      queryParams.append("Role", filter.Role.toString());
-    }
-    if (filter.IsActive !== undefined) {
-      queryParams.append("IsActive", filter.IsActive.toString());
-    }
-
-    return apiRequest(`/Profile/filter?${queryParams.toString()}`);
+    const queryString = buildQuery(filter);
+    const url = queryString ? `/Profile/filter?${queryString}` : "/Profile/filter";
+    return apiRequest(url);
   },
 };
 
@@ -204,36 +196,14 @@ export const collectionAPI = {
     }),
 
   adminFilter: (filterParams: CollectionFilterDto) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/Collection/admin-filter?${queryString}`
-      : "/Collection/admin-filter";
-
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Collection/admin-filter?${queryString}` : "/Collection/admin-filter";
     return apiRequest(url);
   },
 
   customerFilter: (filterParams: CollectionFilterDto) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/Collection/customer-filter?${queryString}`
-      : "/Collection/customer-filter";
-
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Collection/customer-filter?${queryString}` : "/Collection/customer-filter";
     return apiRequest(url);
   },
 };
@@ -263,36 +233,13 @@ export const shopAPI = {
     }),
 
   adminFilter: (filterParams: ShopFilterDto) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/Shop/admin-filter?${queryString}`
-      : "/Shop/admin-filter";
-
-    return apiRequest(url);
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Shop/admin-filter?${queryString}` : "/Shop/admin-filter"; return apiRequest(url);
   },
 
   customerFilter: (filterParams: ShopFilterDto) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/Shop/customer-filter?${queryString}`
-      : "/Shop/customer-filter";
-
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Shop/customer-filter?${queryString}` : "/Shop/customer-filter";
     return apiRequest(url);
   },
 };
@@ -335,36 +282,14 @@ export const serviceItemAPI = {
     }),
 
   adminFilter: (filterParams: ServiceItemFilterDto) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/ServiceItem/admin-filter?${queryString}`
-      : "/ServiceItem/admin-filter";
-
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/ServiceItem/admin-filter?${queryString}` : "/ServiceItem/admin-filter";
     return apiRequest(url);
   },
 
   customerFilter: (filterParams: ServiceItemFilterDto) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/ServiceItem/customer-filter?${queryString}`
-      : "/ServiceItem/customer-filter";
-
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/ServiceItem/customer-filter?${queryString}` : "/ServiceItem/customer-filter";
     return apiRequest(url);
   },
 };
@@ -373,18 +298,54 @@ export const BookingAPI = {
   getAll: () => apiRequest("/Booking"),
 
   getById: (id: string) => apiRequest(`/Booking/${id}`),
+  getByShop: (shopId: string, date?: Date) => {
+    const url = date
+      ? `/Booking/shop/${shopId}?date=${date.toISOString()}`
+      : `/Booking/shop/${shopId}`;
+    return apiRequest(url);
+  },
 
-  getByShop: (shopId: string) => apiRequest(`/Booking/shop/${shopId}`),
-  getByShopAuth: () => apiRequest("/Booking/shopAuth"),
+  getByShopAuth: (date?: Date) => {
+    const url = date
+      ? `/Booking/shopAuth?date=${date.toISOString()}`
+      : `/Booking/shopAuth`;
+    return apiRequest(url);
+  },
 
-  getByLocation: (shopLocationId: string) =>
-    apiRequest(`/Booking/location/${shopLocationId}`),
+  getByLocation: (shopLocationId: string, date?: Date) => {
+    const url = date
+      ? `/Booking/location/${shopLocationId}?date=${date.toISOString()}`
+      : `/Booking/location/${shopLocationId}`;
+    return apiRequest(url);
+  },
 
-  getByArtist: (shopId: string) => apiRequest(`/Booking/artist/${shopId}`),
-  getByArtistAuth: () => apiRequest("/Booking/artistAuth"),
+  getByArtist: (artistId: string, date?: Date) => {
+    const url = date
+      ? `/Booking/artist/${artistId}?date=${date.toISOString()}`
+      : `/Booking/artist/${artistId}`;
+    return apiRequest(url);
+  },
 
-  getByCustomer: (customerId: string) =>
-    apiRequest(`/Booking/customer/${customerId}`),
+  getByArtistAuth: (date?: Date) => {
+    const url = date
+      ? `/Booking/artistAuth?date=${date.toISOString()}`
+      : `/Booking/artistAuth`;
+    return apiRequest(url);
+  },
+
+  getByCustomer: (customerId: string, date?: Date) => {
+    const url = date
+      ? `/Booking/customer/${customerId}?date=${date.toISOString()}`
+      : `/Booking/customer/${customerId}`;
+    return apiRequest(url);
+  },
+
+  getByCustomerAuth: (date?: Date) => {
+    const url = date
+      ? `/Booking/customerAuth?date=${date.toISOString()}`
+      : `/Booking/customerAuth`;
+    return apiRequest(url);
+  },
 
   getSummary: (dto: any) =>
     apiRequest("/Booking/calculate", {
@@ -410,36 +371,26 @@ export const BookingAPI = {
       body: dto,
     }),
 
+  updateBooking: (id: string, formData: FormData) =>
+    apiRequest(`/Booking//${id}`, {
+      method: "PUT",
+      body: formData,
+    }),
+
+  cancelBooking: (id: string) =>
+    apiRequest(`/Booking//${id}`, {
+      method: "DELETE",
+    }),
+
   updateStatus: (id: string, status: any) =>
     apiRequest(`/Booking/update-status/${id}`, {
       method: "PUT",
       body: status,
     }),
 
-  filter: (filterParams: {
-    ShopId?: string;
-    ShopLocationId?: string;
-    CustomerId?: string;
-    StaffId?: string;
-    Name?: string;
-    EstimatedDuration?: number;
-    Category?: number;
-    TagId?: string;
-  }) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/Booking/filter?${queryString}`
-      : "/Booking/filter";
-
-    return apiRequest(url);
+  filter: (filterParams: BookingFilterDto) => {
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Booking/filter?${queryString}` : "/Booking/filter"; return apiRequest(url);
   },
 };
 
@@ -534,38 +485,58 @@ export const artistAPI = {
     }),
 
   adminFilter: (filterParams: ArtistFilterDto) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/Artist/admin-filter?${queryString}`
-      : "/Artist/admin-filter";
-
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Artist/admin-filter?${queryString}` : "/Artist/admin-filter";
     return apiRequest(url);
   },
 
   customerFilter: (filterParams: ArtistFilterDto) => {
-    const queryParams = new URLSearchParams();
-
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        queryParams.append(key, value.toString());
-      }
-    });
-
-    const queryString = queryParams.toString();
-    const url = queryString
-      ? `/Artist/customer-filter?${queryString}`
-      : "/Artist/customer-filter";
-
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Artist/customer-filter?${queryString}` : "/Artist/customer-filter";
     return apiRequest(url);
   },
 };
+
+export const dashboardAPI = {
+  getByShop: (shopId: string, startDate?: string, endDate?: string) =>
+    apiRequest(`/Dashboard/shop/${shopId}?${buildQuery({ startDate, endDate })}`),
+
+  getByShopAuth: (startDate?: string, endDate?: string) =>
+    apiRequest(`/Dashboard/shopAuth?${buildQuery({ startDate, endDate })}`),
+
+  getByArtist: (artistId: string, startDate?: string, endDate?: string) =>
+    apiRequest(`/Dashboard/artist/${artistId}?${buildQuery({ startDate, endDate })}`),
+
+  getByArtistAuth: (startDate?: string, endDate?: string) =>
+    apiRequest(`/Dashboard/artistAuth?${buildQuery({ startDate, endDate })}`),
+
+  getByLocation: (shopLocationId: string, startDate?: string, endDate?: string) =>
+    apiRequest(`/Dashboard/location/${shopLocationId}?${buildQuery({ startDate, endDate })}`),
+
+  getStats: (
+    params: { shopId?: string; artistId?: string; shopLocationId?: string; startDate?: string; endDate?: string }
+  ) => apiRequest(`/Dashboard/stats?${buildQuery(params)}`),
+
+  getQuickStats: (params: { shopId?: string; artistId?: string; shopLocationId?: string }) =>
+    apiRequest(`/Dashboard/quick?${buildQuery(params)}`),
+
+  customerFilter: (filterParams: ServiceItemFilterDto) => {
+    const queryString = buildQuery(filterParams);
+    const url = queryString
+      ? `/Dashboard/customer-filter?${queryString}`
+      : "/Dashboard/customer-filter";
+    return apiRequest(url);
+  },
+};
+
+function buildQuery(params: Record<string, any>): string {
+  const queryParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      queryParams.append(key, value.toString());
+    }
+  });
+  return queryParams.toString();
+}
 
 export default apiRequest;

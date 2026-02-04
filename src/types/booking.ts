@@ -91,3 +91,54 @@ export interface BookingUpdateDto {
   customerPhone?: string | null;
   customerAddress?: string | null | null;
 }
+
+export enum DayOfWeek {
+  Sunday = 0,
+  Monday = 1,
+  Tuesday = 2,
+  Wednesday = 3,
+  Thursday = 4,
+  Friday = 5,
+  Saturday = 6
+}
+
+export interface CreateBookingParams {
+  shopId?: string;
+  shopLocationId?: string;
+  nailArtistId?: string;
+  bookingDate: string;
+  bookingTime: string;
+  notes?: string;
+  collectionId?: string;
+  items?: { serviceItemId: string }[];
+  customerId?: string;
+  customerName?: string;
+  customerPhone?: string;
+  customerAddress?: string;
+  bookingType: "CustomerBooking" | "ArtistBooking" | "ShopBooking";
+}
+
+export interface UpdateBookingParams {
+  id: string;
+  data: {
+    collectionId?: string | null;
+    bookingItems?: { serviceItemId: string }[] | null;
+    scheduledStart?: string | null;
+    notes?: string | null;
+    customerName?: string | null;
+    customerPhone?: string | null;
+    customerAddress?: string | null;
+  };
+}
+
+export interface BookingStats {
+  totalBookings: number;
+  pendingCount: number;
+  approvedCount: number;
+  completedCount: number;
+  cancelledCount: number;
+  rejectedCount: number;
+  totalRevenue: number;
+  statusDistribution: Record<BookingStatus, number>;
+  dayOfWeekDistribution: Record<DayOfWeek, number>;
+}

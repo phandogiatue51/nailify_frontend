@@ -32,14 +32,11 @@ const ArtistDetailPage = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuthContext();
 
-  // Data Fetching
   const { data: artist, isLoading: artistLoading } = useCustomerArtistById(id);
   const { serviceItems = [], isLoading: servicesLoading } =
     useCustomerServiceItems(undefined, id);
   const { data: collections = [], isLoading: collectionsLoading } =
     useCustomerCollections(undefined, id);
-
-  // Selection State
   const [selectedItems, setSelectedItems] = useState<ServiceItem[]>([]);
 
   if (loading || artistLoading) {
@@ -66,15 +63,18 @@ const ArtistDetailPage = () => {
   );
 
   const handleBookNow = () => {
-    navigate(`/artists/${id}/book`, {
-      state: { selectedItems },
+    navigate(`/book`, {
+      state: {
+        selectedItems,
+        id,
+        type: "artist",
+      },
     });
   };
 
   return (
     <MobileLayout showNav={false}>
       <div className="bg-white min-h-screen pb-32">
-        {/* 1. HERO SECTION */}
         <div className="relative h-72">
           <div className="absolute inset-0 bg-gradient-to-b from-[#E288F9]/20 to-transparent" />
           <img
@@ -197,25 +197,38 @@ const ArtistDetailPage = () => {
           </Tabs>
         </div>
 
-        {/* 4. FLOATING SELECTION BAR (The "Checkout" Experience) */}
         {selectedItems.length > 0 && (
-          <div className="fixed bottom-6 left-4 right-4 z-50 animate-in slide-in-from-bottom-10 duration-300">
-            <div className="bg-slate-900 rounded-[2.5rem] p-3 pl-6 shadow-2xl flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+          <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-50">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <p className="font-semibold">
                   {selectedItems.length} items selected
-                </span>
-                <span className="text-white font-black text-lg">
+                </p>
+                <p className="text-lg font-bold text-primary">
                   {totalPrice.toLocaleString()} VND
-                </span>
+                </p>
               </div>
-              <Button
-                onClick={handleBookNow}
-                className="bg-[#E288F9] hover:bg-[#d07ae6] text-white rounded-[2rem] px-6 h-12 font-black uppercase text-xs tracking-tighter"
-              >
+              <Button onClick={handleBookNow}>
+                <ShoppingBag className="w-4 h-4 mr-2" />
                 Book Now
-                <ShoppingBag className="w-4 h-4 ml-2" />
               </Button>
+            </div>
+            <div className="flex gap-2 overflow-x-auto">
+              {selectedItems.map((item) => (
+                <Badge
+                  key={item.id}
+                  variant="secondary"
+                  className="whitespace-nowrap"
+                >
+                  {item.name}
+                  <button
+                    onClick={() => toggleItem(item)}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </Badge>
+              ))}
             </div>
           </div>
         )}

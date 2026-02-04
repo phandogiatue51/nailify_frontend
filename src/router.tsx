@@ -1,12 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import { withMobileLayout } from "./components/layout/MobileWrapper";
+
 import App from "./App";
 import Index from "./pages/Index";
 import AuthPage from "./pages/auth/AuthPage";
 import ProfilePage from "./pages/auth/ProfilePage";
 import EditProfilePage from "./pages/auth/EditProfilePage";
 import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
-import BookingsPage from "./pages/BookingsPage";
+import BookingsPage from "./pages/booking/BookingPage";
 import ExplorePage from "./pages/ExplorePage";
 import NotFound from "./pages/auth/NotFound";
 import VerifyEmail from "./pages/auth/VerifyEmail";
@@ -38,70 +40,50 @@ import EditCollectionPage from "./pages/collection/EditCollectionPage";
 import CreateLocationPage from "./pages/shop/CreateLocationPage";
 import EditLocationPage from "./pages/shop/EditLocationPage";
 
+import BookingPage from "./pages/booking/BookingPage";
+
 export const router = createBrowserRouter(
   [
     {
       path: "/",
       element: <App />,
       children: [
-        { index: true, element: <Index /> },
-        { path: "auth", element: <AuthPage /> },
-        { path: "profile", element: <ProfilePage /> },
-        { path: "profile/edit", element: <EditProfilePage /> },
-        { path: "profile/change-password", element: <ChangePasswordPage /> },
-        { path: "staff-dashboard", element: <ShopOwnerDashboardPage /> },
+        { index: true, element: withMobileLayout(<Index />) },
+        { path: "auth", element: withMobileLayout(<AuthPage />, false) },
+        { path: "profile", element: withMobileLayout(<ProfilePage />) },
+        { path: "profile/edit", element: withMobileLayout(<EditProfilePage />) },
+        { path: "profile/change-password", element: withMobileLayout(<ChangePasswordPage />) },
+        { path: "staff-dashboard", element: withMobileLayout(<ShopOwnerDashboardPage />) },
 
-        { path: "my-shop", element: <MyShopPage /> },
-        {
-          path: "my-shop/service-items/create/:type",
-          element: <CreateServiceItemPage />,
-        },
-        {
-          path: "my-shop/service-items/edit/:id",
-          element: <EditServiceItemPage />,
-        },
-        {
-          path: "my-shop/collections/create",
-          element: <CreateCollectionPage />,
-        },
-        {
-          path: "my-shop/collections/edit/:id",
-          element: <EditCollectionPage />,
-        },
-        { path: "my-shop/locations/create", element: <CreateLocationPage /> },
-        { path: "my-shop/locations/edit/:id", element: <EditLocationPage /> },
+        { path: "my-shop", element: withMobileLayout(<MyShopPage />) },
+        { path: "my-shop/service-items/create/:type", element: withMobileLayout(<CreateServiceItemPage />) },
+        { path: "my-shop/service-items/edit/:id", element: withMobileLayout(<EditServiceItemPage />) },
+        { path: "my-shop/collections/create", element: withMobileLayout(<CreateCollectionPage />) },
+        { path: "my-shop/collections/edit/:id", element: withMobileLayout(<EditCollectionPage />) },
+        { path: "my-shop/locations/create", element: withMobileLayout(<CreateLocationPage />) },
+        { path: "my-shop/locations/edit/:id", element: withMobileLayout(<EditLocationPage />) },
 
-        // Artist-related routes
-        { path: "my-artist", element: <MyNailArtistPage /> },
-        {
-          path: "my-artist/service-items/create/:type",
-          element: <CreateServiceItemPage />,
-        },
-        {
-          path: "my-artist/service-items/edit/:id",
-          element: <EditServiceItemPage />,
-        },
-        {
-          path: "my-artist/collections/create",
-          element: <CreateCollectionPage />,
-        },
-        {
-          path: "my-artist/collections/edit/:id",
-          element: <EditCollectionPage />,
-        },
+        { path: "my-artist", element: withMobileLayout(<MyNailArtistPage />) },
+        { path: "my-artist/service-items/create/:type", element: withMobileLayout(<CreateServiceItemPage />) },
+        { path: "my-artist/service-items/edit/:id", element: withMobileLayout(<EditServiceItemPage />) },
+        { path: "my-artist/collections/create", element: withMobileLayout(<CreateCollectionPage />) },
+        { path: "my-artist/collections/edit/:id", element: withMobileLayout(<EditCollectionPage />) },
 
-        { path: "shop/:shopId", element: <ShopDetailPage /> },
-        { path: "schedule", element: <SchedulePage /> },
-        { path: "bookings", element: <BookingsPage /> },
-        { path: "explore", element: <ExplorePage /> },
-        { path: "services/:id", element: <ServiceItemDetailPage /> },
-        { path: "collections/:id", element: <CollectionDetailPage /> },
-        { path: "verify-email", element: <VerifyEmail /> },
-        { path: "forgot-password", element: <ForgotPassword /> },
-        { path: "reset-password", element: <ResetPassword /> },
-        { path: "artist/:id", element: <ArtistDetailPage /> },
-        { path: "artist-dashboard", element: <NailArtistDashboardPage /> },
+        { path: "shop/:shopId", element: withMobileLayout(<ShopDetailPage />) },
+        { path: "schedule", element: withMobileLayout(<SchedulePage />) },
+        { path: "bookings", element: withMobileLayout(<BookingsPage />) },
+        { path: "explore", element: withMobileLayout(<ExplorePage />) },
+        { path: "services/:id", element: withMobileLayout(<ServiceItemDetailPage />) },
+        { path: "collections/:id", element: withMobileLayout(<CollectionDetailPage />) },
+        { path: "verify-email", element: withMobileLayout(<VerifyEmail />, false) },
+        { path: "forgot-password", element: withMobileLayout(<ForgotPassword />, false) },
+        { path: "reset-password", element: withMobileLayout(<ResetPassword />, false) },
+        { path: "artist/:id", element: withMobileLayout(<ArtistDetailPage />) },
+        { path: "artist-dashboard", element: withMobileLayout(<NailArtistDashboardPage />) },
 
+        { path: "/book", element: withMobileLayout(<BookingPage />) },
+
+        // Admin stays unwrapped
         {
           path: "admin",
           element: <AdminLayout />,
@@ -117,9 +99,10 @@ export const router = createBrowserRouter(
           ],
         },
 
-        { path: "*", element: <NotFound /> },
+        { path: "*", element: withMobileLayout(<NotFound />, false) },
       ],
-    },
+    }
+
   ],
   {
     future: {

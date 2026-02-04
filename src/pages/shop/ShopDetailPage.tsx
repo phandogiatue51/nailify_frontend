@@ -17,6 +17,7 @@ import { ServiceItem } from "@/types/database";
 import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
 import CollectionCard from "@/components/collection/CollectionCard";
 import { Link } from "react-router-dom";
+
 const ShopDetailPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const navigate = useNavigate();
@@ -30,7 +31,6 @@ const ShopDetailPage = () => {
     Object.values(groupedItems) as ServiceItem[][]
   ).flat();
   const [selectedItems, setSelectedItems] = useState<ServiceItem[]>([]);
-  const [selectedCollection, setSelectedCollection] = useState<string>();
 
   if (loading || shopLoading) {
     return (
@@ -59,10 +59,11 @@ const ShopDetailPage = () => {
   };
 
   const handleBookNow = () => {
-    navigate(`/shops/${shopId}/book`, {
+    navigate(`/book`, {
       state: {
         selectedItems,
-        selectedCollection,
+        shopId,
+        type: "shop",
       },
     });
   };
@@ -161,7 +162,6 @@ const ShopDetailPage = () => {
               )}
             </TabsContent>
 
-            {/* Collections Tab */}
             <TabsContent value="collections" className="space-y-4 mt-4">
               {collectionsLoading ? (
                 <div className="flex justify-center py-8">

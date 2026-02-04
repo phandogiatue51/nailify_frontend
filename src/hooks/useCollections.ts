@@ -93,13 +93,11 @@ export const useShopOwnerCollections = () => {
 
   const deleteCollection = useMutation({
     mutationFn: async (id: string) => {
-      // ✅ MUST return the response
       return await collectionAPI.deleteCollection(id);
     },
     onSuccess: (data, collectionId) => {
-      // ✅ First parameter is `data` (response), second is `collectionId`
       toast({
-        description: data.message || "Xóa thành công!", // ✅ Use `data`
+        description: data.message || "Xóa thành công!",
         variant: "success",
         duration: 3000,
       });

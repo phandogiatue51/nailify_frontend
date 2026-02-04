@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TagBadge } from "../badge/TagBadge";
-import { Edit2, Trash2, MoreHorizontal } from "lucide-react"; // Added icons
+import { Edit2, Trash2 } from "lucide-react";
 
 interface CollectionCardProps {
   collection: Collection;

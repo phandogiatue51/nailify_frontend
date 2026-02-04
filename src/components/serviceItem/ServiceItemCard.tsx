@@ -2,7 +2,7 @@ import { ServiceItem } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
 import { ComponentBadge } from "../badge/ComponentBadge";
 import { cn } from "@/lib/utils";
-import { Check, Edit2, Trash2 } from "lucide-react"; // Added Icons
+import { Check, Edit2, Trash2 } from "lucide-react";
 
 interface ServiceItemCardProps {
   item: ServiceItem;

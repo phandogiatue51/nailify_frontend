@@ -20,6 +20,14 @@ export enum TagCategory {
   Style,
 }
 
+export enum BookingStatus {
+  Pending,
+  Approved,
+  Rejected,
+  Completed,
+  Cancelled,
+}
+
 export interface ProfileFilter {
   SearchTerm?: string;
   Role?: UserRole;
@@ -54,4 +62,16 @@ export interface ArtistFilterDto {
   Rating?: number;
   SearchTerm?: string;
   IsVerified?: boolean;
+}
+
+export interface BookingFilterDto {
+  shopId?: string;
+  shopLocationId?: string;
+  customerId?: string;
+  staffId?: string;
+  startDate?: string;
+  endDate?: string;
+  date?: string;
+  status?: BookingStatus;
+  searchTerm?: string;
 }
