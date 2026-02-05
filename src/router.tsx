@@ -44,6 +44,7 @@ import CustomerBookingPage from "./pages/booking/CustomerBookingPage";
 import DateTimeSelection from "./pages/booking/DateTimeSelection";
 import ConfirmBooking from "./pages/booking/ConfirmBooking";
 import BookingDetail from "./pages/booking/BookingDetail";
+import RescheduleBooking from "./pages/booking/RescheduleBooking";
 
 export const router = createBrowserRouter(
   [
@@ -155,6 +156,7 @@ export const router = createBrowserRouter(
           path: "/customer-book",
           element: withMobileLayout(<CustomerBookingPage />),
         },
+
         {
           path: "/booking/date-time-selection",
           element: withMobileLayout(<DateTimeSelection />),
@@ -166,6 +168,10 @@ export const router = createBrowserRouter(
         {
           path: "/booking/detail/:id",
           element: withMobileLayout(<BookingDetail />),
+        },
+        {
+          path: "/booking/reschedule/:id",
+          element: withMobileLayout(<RescheduleBooking />),
         },
 
         {

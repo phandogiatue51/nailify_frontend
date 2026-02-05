@@ -34,7 +34,7 @@ const ConfirmBooking = () => {
   const isArtistBooking = !!artistId;
 
   const { data: selectedLocationObj } = useShopOwnerLocationById(
-    !isArtistBooking ? selectedLocation : undefined
+    !isArtistBooking ? selectedLocation : undefined,
   );
 
   const calculatedPrice = selectedCollection
@@ -43,13 +43,12 @@ const ConfirmBooking = () => {
 
   const calculatedDuration = selectedCollection
     ? selectedCollection.estimatedDuration ||
-    selectedCollection.calculatedDuration ||
-    0
+      selectedCollection.calculatedDuration ||
+      0
     : selectedItems.reduce(
-      (sum, item) => sum + (item.estimatedDuration || 0),
-      0,
-    );
-
+        (sum, item) => sum + (item.estimatedDuration || 0),
+        0,
+      );
 
   const { createBooking } = useBookings();
 
@@ -83,7 +82,6 @@ const ConfirmBooking = () => {
     }
 
     try {
-      createBooking
       const createdBooking = await createBooking.mutateAsync(bookingData);
 
       navigate(`/booking/detail/${createdBooking.id}`, {

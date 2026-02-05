@@ -328,7 +328,6 @@ export const useBookings = () => {
     },
   });
 
-  // Cancel booking
   const cancelBooking = useMutation({
     mutationFn: async (bookingId: string) => {
       return await BookingAPI.cancelBooking(bookingId);
