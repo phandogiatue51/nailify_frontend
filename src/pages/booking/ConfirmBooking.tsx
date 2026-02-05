@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useBookings } from "@/hooks/useBookings";
+import { useShopOwnerLocationById } from "@/hooks/useLocation";
 import { Button } from "@/components/ui/button";
 import {
   Loader2,
   ArrowLeft,
   Check,
   Calendar,
-  Clock,
   MapPin,
   User,
   Package,
@@ -25,8 +25,6 @@ const ConfirmBooking = () => {
     selectedLocation,
     selectedDate,
     selectedTime,
-    calculatedPrice = 0,
-    calculatedDuration = 0,
     customerName = "",
     customerPhone = "",
     customerAddress = "",
@@ -34,6 +32,23 @@ const ConfirmBooking = () => {
   } = location.state || {};
 
   const isArtistBooking = !!artistId;
+
+  const { data: selectedLocationObj } = useShopOwnerLocationById(
+    !isArtistBooking ? selectedLocation : undefined
+  );
+
+  const calculatedPrice = selectedCollection
+    ? selectedCollection.totalPrice || 0
+    : selectedItems.reduce((sum, item) => sum + Number(item.price), 0);
+
+  const calculatedDuration = selectedCollection
+    ? selectedCollection.estimatedDuration ||
+    selectedCollection.calculatedDuration ||
+    0
+    : selectedItems.reduce(
+      (sum, item) => sum + (item.estimatedDuration || 0),
+      0,
+    );
 
 
   const { createBooking } = useBookings();
@@ -68,12 +83,15 @@ const ConfirmBooking = () => {
     }
 
     try {
-      await createBooking.mutateAsync(bookingData);
-      navigate("/booking/confirmation", {
+      createBooking
+      const createdBooking = await createBooking.mutateAsync(bookingData);
+
+      navigate(`/booking/detail/${createdBooking.id}`, {
         state: {
-          bookingId: `temp-${Date.now()}`,
+          booking: createdBooking,
           type: isArtistBooking ? "artist" : "shop",
           id: isArtistBooking ? artistId : shopId,
+          success: true,
         },
       });
     } catch (error) {
@@ -159,7 +177,6 @@ const ConfirmBooking = () => {
           </CardContent>
         </Card>
 
-        {/* Location/Artist Info */}
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
@@ -180,6 +197,23 @@ const ConfirmBooking = () => {
                     Service at: {customerAddress}
                   </p>
                 )}
+              </div>
+            ) : selectedLocationObj ? (
+              <div className="space-y-4 font-sans">
+                <h2 className="text-2xl font-semibold text-gray-900">
+                  {selectedLocationObj.shopName}
+                </h2>
+
+                <div className="text-sm text-gray-700 leading-relaxed">
+                  <p>{selectedLocationObj.address}</p>
+                  <p>{selectedLocationObj.city}</p>
+                  <p>{selectedLocationObj.phone}</p>
+                </div>
+
+                <div className="text-sm text-gray-700">
+                  <p>Opens: {selectedLocationObj.openingTime}</p>
+                  <p>Closes: {selectedLocationObj.closingTime}</p>
+                </div>
               </div>
             ) : (
               <p className="text-muted-foreground">

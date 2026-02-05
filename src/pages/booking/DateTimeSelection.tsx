@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useBookings } from "@/hooks/useBookings";
-import { useBookingCalculate } from "@/hooks/useBookingCalculate";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Calendar, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExistingBookings } from "@/components/booking/ExistingBookings";
 
@@ -35,20 +34,12 @@ const DateTimeSelection = () => {
 
   const { data: bookings = [], isLoading: bookingsLoading } = isArtistBooking
     ? useBookings().useArtistBookings(
-        selectedDate ? new Date(selectedDate) : undefined,
-      )
+      selectedDate ? new Date(selectedDate) : undefined,
+    )
     : useBookings().useLocationBookings(
-        selectedLocation,
-        selectedDate ? new Date(selectedDate) : undefined,
-      );
-
-  const { data: calculation, isLoading: calculating } = useBookingCalculate({
-    collectionId: selectedCollection?.id || null,
-    serviceItemIds: selectedItems?.map((item) => item.id) || null,
-    shopLocationId: selectedLocation || null,
-    nailArtistId: artistId || null,
-    previewDate: selectedDate || null,
-  });
+      selectedLocation,
+      selectedDate ? new Date(selectedDate) : undefined,
+    );
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
@@ -65,8 +56,6 @@ const DateTimeSelection = () => {
         selectedLocation,
         selectedDate,
         selectedTime,
-        calculatedPrice: calculation?.totalPrice,
-        calculatedDuration: calculation?.totalDuration,
         customerName,
         customerPhone,
         customerAddress,
@@ -103,7 +92,6 @@ const DateTimeSelection = () => {
           </CardContent>
         </Card>
 
-        {/* Time Selection - Only show after date is selected */}
         {selectedDate && (
           <Card>
             <CardContent className="p-4">
@@ -121,47 +109,18 @@ const DateTimeSelection = () => {
           </Card>
         )}
 
-        {/* Existing Bookings for reference */}
         {selectedDate && (selectedLocation || artistId) && (
           <ExistingBookings bookings={bookings} isLoading={bookingsLoading} />
-        )}
-
-        {/* Price Calculation - Show when date is selected */}
-        {selectedDate && calculation && (
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="font-semibold mb-2">Price Summary</h2>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Total Price:</span>
-                  <span className="font-bold text-lg text-green-600">
-                    {calculation.totalPrice.toLocaleString()} VND
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Estimated Duration:</span>
-                  <span>{calculation.totalDuration} minutes</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         )}
       </div>
 
       <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-4">
         <Button
           onClick={handleNext}
-          disabled={!selectedDate || !selectedTime || calculating}
+          disabled={!selectedDate || !selectedTime}
           className="w-full h-12 text-lg"
         >
-          {calculating ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin mr-2" />
-              Calculating...
-            </>
-          ) : (
-            `Next: Review Booking`
-          )}
+          Next: Review Booking
         </Button>
       </div>
     </div>

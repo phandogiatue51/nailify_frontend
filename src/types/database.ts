@@ -137,6 +137,7 @@ export interface BookingItem {
 
 export interface ShopLocation {
   shopLocationId: string;
+  shopName: string | null;
   address: string;
   city?: string | null;
   phone?: string | null;

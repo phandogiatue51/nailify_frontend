@@ -21,12 +21,12 @@ export const ServiceSummary = ({
 
   const localTotalDuration = selectedCollection
     ? selectedCollection.estimatedDuration ||
-      selectedCollection.calculatedDuration ||
-      0
+    selectedCollection.calculatedDuration ||
+    0
     : selectedItems.reduce(
-        (sum, item) => sum + (item.estimatedDuration || 0),
-        0,
-      );
+      (sum, item) => sum + (item.estimatedDuration || 0),
+      0,
+    );
 
   return (
     <Card>
@@ -94,10 +94,6 @@ export const ServiceSummary = ({
         ) : (
           <p className="text-muted-foreground">No services selected</p>
         )}
-
-        <div className="mt-4 text-sm text-muted-foreground text-center">
-          ⓘ Final price will be calculated after selecting date
-        </div>
       </CardContent>
     </Card>
   );

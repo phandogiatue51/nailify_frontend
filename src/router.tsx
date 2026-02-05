@@ -16,7 +16,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import MyShopPage from "./pages/shop/MyShopPage";
 import ShopDetailPage from "./pages/shop/ShopDetailPage";
-import SchedulePage from "./pages/SchedulePage";
+import SchedulePage from "./pages/shop/SchedulePage";
 import ServiceItemDetailPage from "./pages/serviceItem/ServiceItemDetailPage";
 import CollectionDetailPage from "./pages/collection/CollectionDetailPage";
 import AdminLayout from "./components/layout/AdminLayout";
@@ -43,6 +43,7 @@ import EditLocationPage from "./pages/shop/EditLocationPage";
 import CustomerBookingPage from "./pages/booking/CustomerBookingPage";
 import DateTimeSelection from "./pages/booking/DateTimeSelection";
 import ConfirmBooking from "./pages/booking/ConfirmBooking";
+import BookingDetail from "./pages/booking/BookingDetail";
 
 export const router = createBrowserRouter(
   [
@@ -161,6 +162,10 @@ export const router = createBrowserRouter(
         {
           path: "/booking/confirm-booking",
           element: withMobileLayout(<ConfirmBooking />),
+        },
+        {
+          path: "/booking/detail/:id",
+          element: withMobileLayout(<BookingDetail />),
         },
 
         {
