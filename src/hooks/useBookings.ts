@@ -10,184 +10,73 @@ import {
 } from "@/types/booking";
 import { useToast } from "./use-toast";
 
+const BOOKING_QUERY_CONFIG = {
+  refetchOnWindowFocus: false,
+  staleTime: 10 * 60 * 1000,
+  gcTime: 30 * 60 * 1000,
+  retry: 1,
+};
+
 export const useBookings = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: customerBookings = [], isLoading: customerBookingsLoading } =
-    useQuery({
-      queryKey: ["customer-bookings", user?.userId],
-      queryFn: async () => {
-        if (!user?.userId) return [];
-        return await BookingAPI.getByCustomer(user.userId);
-      },
-      enabled: !!user?.userId && user?.role === 0,
-    });
+  const {
+    data: customerBookings = [],
+    isLoading: customerBookingsLoading,
+    refetch: refetchCustomerBookings,
+  } = useQuery({
+    queryKey: ["customer-bookings", user?.userId],
+    queryFn: async () => {
+      if (!user?.userId) return [];
+      return await BookingAPI.getByCustomer(user.userId);
+    },
+    enabled: !!user?.userId && user?.role === 0,
+    ...BOOKING_QUERY_CONFIG,
+  });
 
-  const useShopBookings = (
-    shopId: string | undefined,
-    date?: Date | string,
-  ) => {
-    const isoDate = toIsoStringSafe(date);
+  const {
+    data: shopAuthBookings = [],
+    isLoading: shopAuthBookingsLoading,
+    refetch: refetchShopAuthBookings,
+  } = useQuery({
+    queryKey: ["shop-auth-bookings", user?.userId],
+    queryFn: async () => {
+      return await BookingAPI.getByShopAuth();
+    },
+    enabled: !!user?.userId && user?.role === 1,
+    ...BOOKING_QUERY_CONFIG,
+  });
 
-    return useQuery({
-      queryKey: ["shop-bookings", shopId, isoDate],
-      queryFn: async () => {
-        if (!shopId) return [];
-        return await BookingAPI.getByShop(
-          shopId,
-          isoDate ? new Date(isoDate) : undefined,
-        );
-      },
-      enabled: !!shopId,
-    });
-  };
-
-  const useLocationBookings = (
-    shopLocationId: string | undefined,
-    date?: Date | string,
-  ) => {
-    const isoDate = toIsoStringSafe(date);
-
-    return useQuery({
-      queryKey: ["location-bookings", shopLocationId, isoDate],
-      queryFn: async () => {
-        if (!shopLocationId) return [];
-        return await BookingAPI.getAvailableByLocation(
-          shopLocationId,
-          isoDate ? new Date(isoDate) : undefined,
-        );
-      },
-      enabled: !!shopLocationId,
-    });
-  };
-
-  const useArtistBookings = (date?: Date | string) => {
-    const isoDate = toIsoStringSafe(date);
-
-    return useQuery({
-      queryKey: ["artist-bookings", isoDate],
-      queryFn: async () => {
-        return await BookingAPI.getAvailableByArtist(
-          isoDate ? new Date(isoDate) : undefined,
-        );
-      },
-    });
-  };
-
-  const { data: shopAuthBookings = [], isLoading: shopAuthBookingsLoading } =
-    useQuery({
-      queryKey: ["shop-auth-bookings"],
-      queryFn: async () => {
-        return await BookingAPI.getByShopAuth();
-      },
-      enabled: !!user?.userId && user?.role === 1,
-    });
-
+  // Artist bookings (for artists only)
   const {
     data: artistAuthBookings = [],
     isLoading: artistAuthBookingsLoading,
+    refetch: refetchArtistAuthBookings,
   } = useQuery({
-    queryKey: ["artist-auth-bookings"],
+    queryKey: ["artist-auth-bookings", user?.userId],
     queryFn: async () => {
       return await BookingAPI.getByArtistAuth();
     },
     enabled: !!user?.userId && user?.role === 2,
+    ...BOOKING_QUERY_CONFIG,
   });
 
-  const useBookingById = (bookingId: string | undefined) => {
-    return useQuery({
-      queryKey: ["booking", bookingId],
-      queryFn: async () => {
-        if (!bookingId) return null;
-        return await BookingAPI.getById(bookingId);
-      },
-      enabled: !!bookingId,
-    });
-  };
+  const {
+    data: staffAuthBookings = [],
+    isLoading: staffAuthBookingsLoading,
+    refetch: refetchstaffAuthBookings,
+  } = useQuery({
+    queryKey: ["staff-auth-bookings", user?.shopLocationId],
+    queryFn: async () => {
+      return await BookingAPI.getByLocationAuth();
+    },
+    enabled: !!user?.userId && user?.role === 3,
+    ...BOOKING_QUERY_CONFIG,
+  });
 
-  const useFilterBookings = (filter: BookingFilterDto) => {
-    return useQuery({
-      queryKey: ["filter-bookings", filter],
-      queryFn: async () => {
-        return await BookingAPI.filter(filter);
-      },
-    });
-  };
-
-  const useShopStats = (
-    shopId: string | undefined,
-    startDate?: Date,
-    endDate?: Date,
-  ) => {
-    return useQuery<BookingStats>({
-      queryKey: [
-        "shop-stats",
-        shopId,
-        startDate?.toISOString(),
-        endDate?.toISOString(),
-      ],
-      queryFn: async () => {
-        if (!shopId) throw new Error("Shop ID is required");
-        return await dashboardAPI.getByShop(
-          shopId,
-          startDate?.toISOString(),
-          endDate?.toISOString(),
-        );
-      },
-      enabled: !!shopId,
-    });
-  };
-
-  const useArtistStats = (
-    artistId: string | undefined,
-    startDate?: Date,
-    endDate?: Date,
-  ) => {
-    return useQuery<BookingStats>({
-      queryKey: [
-        "artist-stats",
-        artistId,
-        startDate?.toISOString(),
-        endDate?.toISOString(),
-      ],
-      queryFn: async () => {
-        if (!artistId) throw new Error("Artist ID is required");
-        return await dashboardAPI.getByArtist(
-          artistId,
-          startDate?.toISOString(),
-          endDate?.toISOString(),
-        );
-      },
-      enabled: !!artistId,
-    });
-  };
-
-  const useLocationStats = (
-    locationId: string | undefined,
-    startDate?: Date,
-    endDate?: Date,
-  ) => {
-    return useQuery<BookingStats>({
-      queryKey: [
-        "location-stats",
-        locationId,
-        startDate?.toISOString(),
-        endDate?.toISOString(),
-      ],
-      queryFn: async () => {
-        if (!locationId) throw new Error("Location ID is required");
-        return await dashboardAPI.getByLocation(
-          locationId,
-          startDate?.toISOString(),
-          endDate?.toISOString(),
-        );
-      },
-      enabled: !!locationId,
-    });
-  };
-
+  // Mutation for calculating booking summary
   const calculateBooking = useMutation({
     mutationFn: async (dto: {
       collectionId?: string | null;
@@ -198,8 +87,51 @@ export const useBookings = () => {
     }) => {
       return await BookingAPI.getSummary(dto);
     },
+    retry: 1,
   });
 
+  const filterBookings = useMutation({
+    mutationFn: async (filter: BookingFilterDto) => {
+      return await BookingAPI.filter(filter);
+    },
+  });
+
+  const useShopBookings = (
+    shopId: string | undefined,
+    date?: Date | string,
+  ) => {
+    const isoDate = toIsoStringSafe(date);
+    return useQuery({
+      queryKey: ["shop-bookings", shopId, isoDate],
+      queryFn: async () => {
+        if (!shopId) return [];
+        return await BookingAPI.getByShop(
+          shopId,
+          isoDate ? new Date(isoDate) : undefined,
+        );
+      },
+      enabled: !!shopId,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000,
+      gcTime: 15 * 60 * 1000,
+    });
+  };
+
+  const useBookingById = (bookingId: string | undefined) => {
+    return useQuery({
+      queryKey: ["booking", bookingId],
+      queryFn: async () => {
+        if (!bookingId) return null;
+        return await BookingAPI.getById(bookingId);
+      },
+      enabled: !!bookingId,
+      refetchOnWindowFocus: false,
+      staleTime: 2 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+    });
+  };
+
+  // Mutation for creating booking
   const createBooking = useMutation({
     mutationFn: async (params: CreateBookingParams) => {
       const scheduledStart = new Date(
@@ -256,10 +188,16 @@ export const useBookings = () => {
         duration: 3000,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
+      // Invalidate relevant queries based on user role
+      if (user?.role === 0) {
+        queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
+      } else if (user?.role === 1) {
+        queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
+      } else if (user?.role === 2) {
+        queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
+      }
 
+      // Also invalidate the specific booking if ID exists
       if (data.bookingId) {
         queryClient.invalidateQueries({
           queryKey: ["booking", data.bookingId],
@@ -274,9 +212,10 @@ export const useBookings = () => {
         duration: 5000,
       });
     },
+    retry: 1,
   });
 
-  // Update booking
+  // Mutation for updating booking
   const updateBooking = useMutation({
     mutationFn: async ({ id, data }: UpdateBookingParams) => {
       const formData = new FormData();
@@ -313,7 +252,7 @@ export const useBookings = () => {
         duration: 3000,
       });
 
-      // Invalidate relevant queries
+      // Invalidate all booking queries
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
@@ -326,22 +265,31 @@ export const useBookings = () => {
         duration: 5000,
       });
     },
+    retry: 1,
   });
 
   const cancelBooking = useMutation({
     mutationFn: async (bookingId: string) => {
       return await BookingAPI.cancelBooking(bookingId);
     },
-    onSuccess: (data) => {
+    onSuccess: (data, bookingId) => {
       toast({
-        description: data.message || "Hủy đặt lịch thành công!",
+        description: data.message,
         variant: "success",
         duration: 3000,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
+      if (user?.role === 0) {
+        queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
+      } else if (user?.role === 1) {
+        queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
+      } else if (user?.role === 2) {
+        queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["booking", bookingId] });
+
+      queryClient.refetchQueries({ queryKey: ["booking", bookingId] });
     },
     onError: (error: any) => {
       console.error("Cancel booking error:", error);
@@ -351,9 +299,10 @@ export const useBookings = () => {
         duration: 5000,
       });
     },
+    retry: 1,
   });
 
-  // Update booking status
+  // Mutation for updating booking status
   const updateBookingStatus = useMutation({
     mutationFn: async ({
       bookingId,
@@ -371,9 +320,12 @@ export const useBookings = () => {
         duration: 3000,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["shop-bookings"] });
+      // Invalidate all booking lists
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["artist-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
+
+      // Invalidate the specific booking
       queryClient.invalidateQueries({
         queryKey: ["booking", variables.bookingId],
       });
@@ -386,34 +338,156 @@ export const useBookings = () => {
         duration: 5000,
       });
     },
+    retry: 1,
   });
+
+  // Inside your useBookings function, add these:
+
+  const useLocationBookings = (
+    shopLocationId: string | undefined,
+    date?: Date | string,
+  ) => {
+    const isoDate = toIsoStringSafe(date);
+
+    return useQuery({
+      queryKey: ["location-bookings", shopLocationId, isoDate],
+      queryFn: async () => {
+        if (!shopLocationId) return [];
+        return await BookingAPI.getAvailableByLocation(
+          shopLocationId,
+          isoDate ? new Date(isoDate) : undefined,
+        );
+      },
+      enabled: !!shopLocationId,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000,
+      gcTime: 15 * 60 * 1000,
+    });
+  };
+
+  const useArtistBookings = (date?: Date | string) => {
+    const isoDate = toIsoStringSafe(date);
+
+    return useQuery({
+      queryKey: ["artist-bookings", isoDate],
+      queryFn: async () => {
+        return await BookingAPI.getAvailableByArtist(
+          isoDate ? new Date(isoDate) : undefined,
+        );
+      },
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000,
+      gcTime: 15 * 60 * 1000,
+    });
+  };
+
+  // Helper function to refetch all booking data
+  const refetchAllBookings = async () => {
+    const promises = [];
+
+    if (user?.role === 0) {
+      promises.push(refetchCustomerBookings());
+    } else if (user?.role === 1) {
+      promises.push(refetchShopAuthBookings());
+    } else if (user?.role === 2) {
+      promises.push(refetchArtistAuthBookings());
+    }
+
+    await Promise.all(promises);
+  };
 
   return {
     customerBookings,
     customerBookingsLoading,
-    useShopBookings,
     shopAuthBookings,
     shopAuthBookingsLoading,
-    useLocationBookings,
-    useArtistBookings,
     artistAuthBookings,
     artistAuthBookingsLoading,
+    staffAuthBookings,
+    staffAuthBookingsLoading,
+    useLocationBookings,
+    useArtistBookings,
+    refetchCustomerBookings,
+    refetchShopAuthBookings,
+    refetchArtistAuthBookings,
+    refetchstaffAuthBookings,
+    refetchAllBookings,
+    filterBookings,
     useBookingById,
-    useFilterBookings,
-    useShopStats,
-    useArtistStats,
-    useLocationStats,
+    useShopBookings,
     calculateBooking,
     createBooking,
     updateBooking,
     cancelBooking,
     updateBookingStatus,
   };
-
-  // helper function
-  function toIsoStringSafe(date?: Date | string) {
-    if (!date) return undefined;
-    const d = date instanceof Date ? date : new Date(date);
-    return isNaN(d.getTime()) ? undefined : d.toISOString();
-  }
 };
+
+export const useShopBookings = (
+  shopId: string | undefined,
+  date?: Date | string,
+) => {
+  const isoDate = toIsoStringSafe(date);
+
+  return useQuery({
+    queryKey: ["shop-bookings", shopId, isoDate],
+    queryFn: async () => {
+      if (!shopId) return [];
+      return await BookingAPI.getByShop(
+        shopId,
+        isoDate ? new Date(isoDate) : undefined,
+      );
+    },
+    enabled: !!shopId,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+  });
+};
+
+export const useBookingById = (bookingId: string | undefined) => {
+  return useQuery({
+    queryKey: ["booking", bookingId],
+    queryFn: async () => {
+      if (!bookingId) return null;
+      return await BookingAPI.getById(bookingId);
+    },
+    enabled: !!bookingId,
+    refetchOnWindowFocus: false,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+};
+
+export const useShopStats = (
+  shopId: string | undefined,
+  startDate?: Date,
+  endDate?: Date,
+) => {
+  return useQuery<BookingStats>({
+    queryKey: [
+      "shop-stats",
+      shopId,
+      startDate?.toISOString(),
+      endDate?.toISOString(),
+    ],
+    queryFn: async () => {
+      if (!shopId) throw new Error("Shop ID is required");
+      return await dashboardAPI.getByShop(
+        shopId,
+        startDate?.toISOString(),
+        endDate?.toISOString(),
+      );
+    },
+    enabled: !!shopId,
+    refetchOnWindowFocus: false,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+  });
+};
+
+function toIsoStringSafe(date?: Date | string) {
+  if (!date) return undefined;
+  const d = date instanceof Date ? date : new Date(date);
+  return isNaN(d.getTime()) ? undefined : d.toISOString();
+}

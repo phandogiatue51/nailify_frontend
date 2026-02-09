@@ -1,29 +1,32 @@
 "use client";
 
 import { useAuthContext } from "@/components/auth/AuthProvider";
-import { useNailArtist } from "@/hooks/useNailArtist";
+import { useStaff } from "@/hooks/useStaff";
 import { useBookings } from "@/hooks/useBookings";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import QuickStats from "@/components/QuickStats";
+import { Calendar, CheckCircle } from "lucide-react";
 import {
   Loader2,
   User,
   Briefcase,
   ChevronRight,
   LayoutDashboard,
+  MapPin,
 } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { BookingStatusBadge } from "@/components/badge/BookingStatusBadge";
 import Header from "@/components/ui/header";
-const NailArtistDashboardPage = () => {
-  const { user, loading } = useAuthContext();
-  const { myArtist, artistLoading, createArtist } = useNailArtist();
-  const { artistAuthBookings } = useBookings();
-  const navigate = useNavigate();
-  const bookings = artistAuthBookings;
 
-  if (loading || artistLoading) {
+export const StaffDashboardPage = () => {
+  const { user, loading } = useAuthContext();
+  const { currentStaff, isCurrentStaffLoading } = useStaff();
+  const { staffAuthBookings } = useBookings();
+  const navigate = useNavigate();
+  const bookings = staffAuthBookings;
+
+  if (loading || isCurrentStaffLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
@@ -32,50 +35,19 @@ const NailArtistDashboardPage = () => {
     );
   }
 
-  if (user?.role !== 4) return <Navigate to="/" replace />;
-
-  if (!myArtist) {
-    return (
-      <div>
-        <Header title="Nailify" hasNotification={true} />
-
-        <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center">
-          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-            <Briefcase className="w-10 h-10 text-primary" />
-          </div>
-          <h2 className="text-2xl font-bold mb-2">Become an Artist</h2>
-          <p className="text-slate-500 mb-8 max-w-xs">
-            Showcase your talent and start managing your nail salon business
-            today.
-          </p>
-          <Button
-            size="lg"
-            className="w-full rounded-xl h-12 text-base font-bold"
-            onClick={() => createArtist.mutateAsync()}
-            disabled={createArtist.isPending}
-          >
-            {createArtist.isPending ? (
-              <Loader2 className="animate-spin mr-2" />
-            ) : (
-              "Set Up My Studio"
-            )}
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  if (user?.role !== 3) return <Navigate to="/" replace />;
 
   return (
     <div>
       <Header title="Nailify" hasNotification={true} />
 
-      <div className="min-h-screen bg-slate-50/50 pb-24 px-6 pt-8 pb-6">
-        <div className="flex items-center justify-between mb-2">
+      <div className="min-h-screen bg-slate-50/50 pb-24 px-6 pt-8">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="relative">
-              {myArtist.avatarUrl ? (
+              {currentStaff?.avatarUrl ? (
                 <img
-                  src={myArtist.avatarUrl}
+                  src={currentStaff.avatarUrl}
                   alt=""
                   className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/10"
                 />
@@ -91,38 +63,35 @@ const NailArtistDashboardPage = () => {
                 Welcome back,
               </p>
               <h1 className="text-xl font-bold text-slate-900 leading-tight">
-                {myArtist.fullName}
+                {currentStaff?.fullName || "Staff Member"}
               </h1>
             </div>
           </div>
-          <Button
-            variant="outline"
-            className="rounded-full h-10 px-4 flex items-center gap-2"
-            onClick={() => navigate("/my-artist")}
-          >
-            <LayoutDashboard className="w-5 h-5 text-slate-600" />
-            <span className="text-sm font-medium text-slate-700">
-              Studio Page
-            </span>
-          </Button>
         </div>
 
-        <div>
-          <QuickStats compact artistId={myArtist?.id} period="today" />
+        <div className="mb-6">
+          <QuickStats
+            compact
+            shopLocationId={currentStaff?.shopLocationId}
+            period="today"
+          />
         </div>
 
-        <div className="flex items-center justify-between mb-4 mt-4 px-1">
+        {/* If staff have bookings */}
+        <div className="flex items-center justify-between mb-4 px-1">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-            Upcoming Appointments
+            Today's Appointments
           </h3>
-          <Button
-            variant="link"
-            size="sm"
-            className="text-primary font-bold"
-            onClick={() => navigate("/bookings")}
-          >
-            See All
-          </Button>
+          {bookings && bookings.length > 0 && (
+            <Button
+              variant="link"
+              size="sm"
+              className="text-primary font-bold"
+              onClick={() => navigate("/staff/schedule")} // Create staff schedule page
+            >
+              See All
+            </Button>
+          )}
         </div>
 
         <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden">
@@ -149,14 +118,34 @@ const NailArtistDashboardPage = () => {
               ))
             ) : (
               <div className="p-8 text-center text-slate-400 text-sm">
-                No bookings found yet.
+                No appointments scheduled for today.
               </div>
             )}
           </CardContent>
         </Card>
+
+        <div className="mt-8 grid grid-cols-2 gap-3">
+          <Button
+            variant="outline"
+            className="h-16 rounded-2xl flex flex-col items-center justify-center gap-2"
+            onClick={() => navigate("/staff/schedule")}
+          >
+            <Calendar className="w-6 h-6 text-primary" />
+            <span className="text-xs font-bold">Schedule</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            className="h-16 rounded-2xl flex flex-col items-center justify-center gap-2"
+            onClick={() => navigate("/staff/tasks")}
+          >
+            <CheckCircle className="w-6 h-6 text-green-600" />
+            <span className="text-xs font-bold">Tasks</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default NailArtistDashboardPage;
+export default StaffDashboardPage;

@@ -34,6 +34,12 @@ export interface ProfileFilter {
   IsActive?: boolean;
 }
 
+export interface StaffFilterDto {
+  SearchTerm?: string;
+  IsActive?: boolean;
+  ShopLocationId?: string;
+}
+
 export interface ShopFilterDto {
   Name?: string;
   Rating?: number;
@@ -65,13 +71,14 @@ export interface ArtistFilterDto {
 }
 
 export interface BookingFilterDto {
-  shopId?: string;
-  shopLocationId?: string;
-  customerId?: string;
-  staffId?: string;
-  startDate?: string;
-  endDate?: string;
-  date?: string;
-  status?: BookingStatus;
-  searchTerm?: string;
+  NailArtistId?: string;
+  ShopId?: string;
+  ShopLocationId?: string;
+  CustomerId?: string;
+  StaffId?: string;
+  StartDate?: string;
+  EndDate?: string;
+  Date?: string;
+  Status?: BookingStatus;
+  SearchTerm?: string;
 }

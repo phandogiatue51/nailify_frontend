@@ -1,4 +1,3 @@
-// /src/pages/booking/RescheduleBooking.tsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useBookings } from "@/hooks/useBookings";
@@ -28,28 +27,39 @@ const RescheduleBooking = () => {
   // Set initial values from booking
   useEffect(() => {
     if (booking) {
-      // Parse the scheduledStart to get date and time
       const bookingDate = new Date(booking.scheduledStart);
-      const dateStr = bookingDate.toISOString().split('T')[0];
-      const timeStr = format(bookingDate, 'HH:mm');
-      
+      const dateStr = bookingDate.toISOString().split("T")[0];
+      const timeStr = format(bookingDate, "HH:mm");
+
       setSelectedDate(dateStr);
       setSelectedTime(timeStr);
     }
   }, [booking]);
 
-  // Get existing bookings for conflict checking
-  const { data: existingBookings = [], isLoading: bookingsLoading } = 
-    booking?.shopLocationId 
-      ? useBookings().useLocationBookings(
-          booking.shopLocationId,
-          selectedDate ? new Date(selectedDate) : undefined,
-        )
-      : booking?.nailArtistId
-      ? useBookings().useArtistBookings(
-          selectedDate ? new Date(selectedDate) : undefined,
-        )
-      : { data: [], isLoading: false };
+  const { useLocationBookings, useArtistBookings } = useBookings();
+
+  // Always call both hooks, but conditionally enable them
+  const locationBookingsQuery = useLocationBookings(
+    booking?.shopLocationId,
+    selectedDate ? new Date(selectedDate) : undefined,
+  );
+
+  const artistBookingsQuery = useArtistBookings(
+    selectedDate ? new Date(selectedDate) : undefined,
+  );
+
+  // Determine which data to use
+  const existingBookings = booking?.shopLocationId
+    ? locationBookingsQuery.data
+    : booking?.nailArtistId
+      ? artistBookingsQuery.data
+      : [];
+
+  const bookingsLoading = booking?.shopLocationId
+    ? locationBookingsQuery.isLoading
+    : booking?.nailArtistId
+      ? artistBookingsQuery.isLoading
+      : false;
 
   const handleReschedule = async () => {
     if (!selectedDate || !selectedTime || !booking) {
@@ -85,7 +95,7 @@ const RescheduleBooking = () => {
           scheduledStart,
           // Keep all other fields from existing booking
           collectionId: booking.collectionId || null,
-          bookingItems: booking.bookingItems.map(item => ({
+          bookingItems: booking.bookingItems.map((item) => ({
             serviceItemId: item.serviceItemId,
           })),
           notes: booking.notes || null,
@@ -173,7 +183,10 @@ const RescheduleBooking = () => {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar className="w-4 h-4" />
                 <span>
-                  {format(new Date(booking.scheduledStart), "EEEE, MMMM d, yyyy")}
+                  {format(
+                    new Date(booking.scheduledStart),
+                    "EEEE, MMMM d, yyyy",
+                  )}
                 </span>
                 <Clock className="w-4 h-4 ml-2" />
                 <span>
@@ -181,7 +194,8 @@ const RescheduleBooking = () => {
                 </span>
               </div>
               <p className="text-sm">
-                {booking.collectionName || "Custom Service"} • {booking.durationMinutes} min
+                {booking.collectionName || "Custom Service"} •{" "}
+                {booking.durationMinutes} min
               </p>
             </div>
           </CardContent>
@@ -223,13 +237,14 @@ const RescheduleBooking = () => {
             </Card>
 
             {/* Show existing bookings for the selected date */}
-            {selectedDate && (booking.shopLocationId || booking.nailArtistId) && (
-              <ExistingBookings 
-                bookings={existingBookings} 
-                isLoading={bookingsLoading} 
-                currentBookingId={booking.id}
-              />
-            )}
+            {selectedDate &&
+              (booking.shopLocationId || booking.nailArtistId) && (
+                <ExistingBookings
+                  bookings={existingBookings}
+                  isLoading={bookingsLoading}
+                  currentBookingId={booking.id}
+                />
+              )}
           </>
         )}
       </div>

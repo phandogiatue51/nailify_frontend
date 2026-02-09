@@ -1,25 +1,19 @@
 import { useAuthContext } from "@/components/auth/AuthProvider";
-import MobileLayout from "@/components/layout/MobileLayout";
 import { useShop } from "@/hooks/useShop";
 import { useBookings } from "@/hooks/useBookings";
-import { Card, CardContent } from "@/components/ui/card";
+import QuickStats from "@/components/QuickStats";
 import { Button } from "@/components/ui/button";
-import {
-  Loader2,
-  Store,
-  Calendar,
-  TrendingUp,
-  Sparkles,
-  ChevronRight,
-} from "lucide-react";
+import { Loader2, Store, Sparkles, ChevronRight, Users } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 import Header from "@/components/ui/header";
+import { Card, CardContent } from "@/components/ui/card";
+import { BookingStatusBadge } from "@/components/badge/BookingStatusBadge";
 const ShopOwnerDashboardPage = () => {
   const { user, loading } = useAuthContext();
   const { myShop, shopLoading } = useShop();
-  const { useShopBookings } = useBookings();
-  const { data: bookings } = useShopBookings(myShop?.id);
+  const { shopAuthBookings } = useBookings();
   const navigate = useNavigate();
+  const bookings = shopAuthBookings;
 
   if (loading || shopLoading) {
     return (
@@ -60,12 +54,6 @@ const ShopOwnerDashboardPage = () => {
     );
   }
 
-  const pendingBookings =
-    bookings?.filter((b) => b.status === "pending").length || 0;
-  const todayDate = new Date().toISOString().split("T")[0];
-  const todayBookings =
-    bookings?.filter((b) => b.booking_date === todayDate).length || 0;
-
   return (
     <div>
       <Header title="Nailify" hasNotification={true} />
@@ -92,81 +80,92 @@ const ShopOwnerDashboardPage = () => {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <Card className="rounded-[2.5rem] border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white overflow-hidden">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 text-[#FFC988] mb-2">
-                <Calendar className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">
-                  Today
-                </span>
-              </div>
-              <p className="text-4xl font-black text-slate-900 tracking-tighter">
-                {todayBookings}
-              </p>
-              <div className="mt-2 h-1 w-8 bg-[#FFC988] rounded-full" />
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-[2.5rem] border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white overflow-hidden">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 text-[#E288F9] mb-2">
-                <TrendingUp className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">
-                  Pending
-                </span>
-              </div>
-              <p className="text-4xl font-black text-slate-900 tracking-tighter">
-                {pendingBookings}
-              </p>
-              <div className="mt-2 h-1 w-8 bg-[#E288F9] rounded-full" />
-            </CardContent>
-          </Card>
+        <div>
+          <QuickStats compact shopId={myShop?.id} period="today" />
         </div>
 
-        {/* Navigation Actions */}
-        <div className="space-y-3">
-          <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">
             Management
           </h3>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => navigate("/my-shop")}
+              className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center group-hover:bg-[#FFC988] transition-colors">
+                  <Store className="w-6 h-6 text-[#FFC988] group-hover:text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
+                    My Shop
+                  </p>
+                </div>
+              </div>
+            </button>
 
-          <button
-            onClick={() => navigate("/my-shop")}
-            className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center group-hover:bg-[#FFC988] transition-colors">
-                <Store className="w-6 h-6 text-[#FFC988] group-hover:text-white" />
+            <button
+              onClick={() => navigate("/staff-management")}
+              className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-[#E288F9] transition-colors">
+                  <Users className="w-6 h-6 text-[#E288F9] group-hover:text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
+                    Manage staffs
+                  </p>
+                </div>
               </div>
-              <div className="text-left">
-                <p className="font-bold text-slate-900 text-sm">My Shop</p>
-                <p className="text-[10px] text-slate-400 font-medium">
-                  Services, Collections, Locations
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-slate-300" />
-          </button>
-
-          <button
-            onClick={() => navigate("/schedule")}
-            className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-[#E288F9] transition-colors">
-                <Calendar className="w-6 h-6 text-[#E288F9] group-hover:text-white" />
-              </div>
-              <div className="text-left">
-                <p className="font-bold text-slate-900 text-sm">Schedule</p>
-                <p className="text-[10px] text-slate-400 font-medium">
-                  Manage bookings & timing
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-slate-300" />
-          </button>
+            </button>
+          </div>
         </div>
+
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+            Upcoming Appointments
+          </h3>
+          <Button
+            variant="link"
+            size="sm"
+            className="text-primary font-bold"
+            onClick={() => navigate("/bookings")}
+          >
+            See All
+          </Button>
+        </div>
+
+        <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden">
+          <CardContent className="p-0 divide-y">
+            {bookings && bookings.length > 0 ? (
+              bookings.slice(0, 4).map((booking) => (
+                <div
+                  key={booking.id}
+                  className="flex items-center justify-between p-4 active:bg-slate-50 transition-colors"
+                >
+                  <div className="flex flex-col gap-1">
+                    <p className="font-bold text-slate-900">
+                      {booking.customerName}
+                    </p>
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-tight">
+                      {booking.serviceName}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <BookingStatusBadge status={booking.status} />
+                    <ChevronRight className="w-4 h-4 text-slate-300" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="p-8 text-center text-slate-400 text-sm">
+                No bookings found yet.
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

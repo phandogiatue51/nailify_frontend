@@ -106,15 +106,19 @@ export interface CollectionItem {
 
 export interface Booking {
   id: string;
+  shopId: string;
   shopLocationId: string;
+  shopName: string;
   nailArtistId: string;
+  nailArtistName: string;
   customerId: string;
   customerName: string;
   customerPhone: string;
-  customerAddress: string;
+  address: string | null;
+  city: string | null;
   collectionId: string | null;
-  scheduleStart: string;
-  scheduleEnd: string;
+  scheduledStart: string;
+  scheduledEnd: string;
   rating: number;
   status: BookingStatus;
   totalPrice: number;
@@ -166,4 +170,67 @@ export interface ShopLocationCreateDto {
   bufferMinutes?: number;
   bookingLeadTimeMinutes?: number;
   bookingWindowDays?: number;
+}
+
+export interface StaffViewDto {
+  staffId: string;
+  email?: string;
+  fullName?: string;
+  phone?: string;
+  avatarUrl?: string;
+  shopLocationId: string;
+  dddress?: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface StaffCreateDto {
+  email: string;
+  password: string;
+  fullName: string;
+  phone?: string;
+  shopLocationId: string;
+}
+
+export interface StaffUpdateDto extends ProfileUpdateDto {
+  shopLocationId?: string;
+}
+
+export interface ProfileUpdateDto {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
+
+export interface DashboardStats {
+  totalBookings: number;
+  pendingCount: number;
+  approvedCount: number;
+  completedCount: number;
+  cancelledCount?: number;
+  rejectedCount?: number;
+  totalRevenue: number;
+  statusDistribution?: Record<string, number>;
+  dayOfWeekDistribution?: Record<string, number>;
+  period?: string;
+}
+
+export interface QuickStats {
+  totalBookings: number;
+  pendingCount: number;
+  approvedCount: number;
+  completedCount: number;
+  cancelledCount: number;
+  rejectedCount: number;
+  totalRevenue: number;
+}
+
+export interface UseDashboardOptions {
+  shopId?: string;
+  artistId?: string;
+  shopLocationId?: string;
+  startDate?: string;
+  endDate?: string;
+  enabled?: boolean;
 }

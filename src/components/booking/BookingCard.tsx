@@ -8,9 +8,10 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { BookingStatusBadge } from "../badge/BookingStatusBadge";
+import DateDisplay from "../ui/date-display";
 interface BookingCardProps {
   booking: Booking & {
     shop?: Shop;
@@ -22,96 +23,97 @@ interface BookingCardProps {
   onReject?: (bookingId: string) => void;
   onCancel?: (bookingId: string) => void;
 }
-
 const BookingCard: React.FC<BookingCardProps> = ({
   booking,
-  isShopOwner = false,
+  isShopOwner,
   onApprove,
   onReject,
-  onCancel,
 }) => {
+  const navigate = useNavigate();
+
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <div>
-          {isShopOwner && booking.customer && (
-            <p className="font-semibold">{booking.customer.fullName}</p>
-          )}
-          {!isShopOwner && booking.shop && (
-            <p className="font-semibold">{booking.shop.name}</p>
-          )}
+    <Card className="group border-none shadow-[0_4px_20px_rgba(0,0,0,0.03)] rounded-[2rem] overflow-hidden bg-white hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all">
+      <CardContent className="p-5">
+        {/* Top Section: Time & Status */}
+        <div className="flex justify-between items-start mb-4">
+          <div className="bg-slate-50 rounded-2xl p-3 items-center min-w-[60px]">
+            <span className="text-sm font-black text-slate-700">
+              <DateDisplay
+                dateString={booking.scheduledStart}
+                label="Start At"
+                showTime
+              />
+            </span>
+            <span className="text-sm font-black text-slate-700">
+              <DateDisplay
+                dateString={booking.scheduledEnd}
+                label="End At"
+                showTime
+              />
+            </span>
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            <BookingStatusBadge status={booking.status} />
+          </div>
         </div>
-        <BookingStatusBadge status={booking.status} />
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Calendar className="w-4 h-4" />
-            <span>{booking.scheduleStart}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            <span>{booking.scheduleEnd}</span>
+
+        {/* Customer/Artist Info */}
+        <div className="space-y-1 mb-4">
+          <h4 className="font-black text-slate-800 flex items-center gap-2">
+            {isShopOwner ? booking.customerName : booking.shopName}
+          </h4>
+          <div className="flex items-center gap-2 text-[11px] text-slate-400 font-bold">
+            <MapPin className="w-3 h-3 text-[#FFC988]" />
+            <span className="truncate">
+              {booking.address || "Studio Location"}
+            </span>
           </div>
         </div>
 
-        {!isShopOwner && booking.shop?.address && (
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4" />
-            <span>{booking.shop.address}</span>
+        {/* Services Badges */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {booking.items?.map((item) => (
+            <Badge
+              key={item.id}
+              variant="secondary"
+              className="bg-purple-50 text-[#E288F9] border-none text-[9px] font-black px-2 py-0.5 rounded-lg uppercase"
+            >
+              {item.serviceItem?.name}
+            </Badge>
+          ))}
+        </div>
+
+        {/* Footer Actions */}
+        <div className="flex items-center justify-between pt-4 border-t border-slate-50 gap-3">
+          <div className="flex flex-col">
+            <span className="text-[9px] font-black text-slate-300 uppercase leading-none">
+              Total
+            </span>
+            <span className="text-lg font-black text-slate-900 leading-tight">
+              {Number(booking.totalPrice).toLocaleString()}{" "}
+              <span className="text-[10px]">VND</span>
+            </span>
           </div>
-        )}
 
-        {booking.items && booking.items.length > 0 && (
-          <div className="space-y-1">
-            <p className="text-sm font-medium">Services:</p>
-            <div className="flex flex-wrap gap-1">
-              {booking.items.map((item) => (
-                <Badge key={item.id} variant="secondary" className="text-xs">
-                  {item.serviceItem?.name}
-                </Badge>
-              ))}
-            </div>
+          <div className="flex gap-2">
+            {booking.status === 0 && isShopOwner && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onReject?.(booking.id)}
+                className="rounded-xl text-red-400 font-black text-[10px] uppercase hover:bg-red-50"
+              >
+                Reject
+              </Button>
+            )}
+            <Button
+              size="sm"
+              onClick={() => navigate(`/booking/detail/${booking.id}`)}
+              className="rounded-xl bg-slate-900 text-white font-black text-[10px] uppercase px-4 h-9 shadow-lg shadow-slate-200"
+            >
+              Details
+            </Button>
           </div>
-        )}
-
-        {booking.notes && (
-          <p className="text-sm text-muted-foreground italic">
-            "{booking.notes}"
-          </p>
-        )}
-
-        <div className="flex items-center justify-between pt-2 border-t">
-          <p className="font-bold text-lg text-primary">
-            {Number(booking.totalPrice).toLocaleString()} VND
-          </p>
-
-          {booking.status === 2 && (
-            <div className="flex gap-2">
-              {isShopOwner ? (
-                <>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onReject?.(booking.id)}
-                  >
-                    Reject
-                  </Button>
-                  <Button size="sm" onClick={() => onApprove?.(booking.id)}>
-                    Approve
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => onCancel?.(booking.id)}
-                >
-                  Cancel
-                </Button>
-              )}
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>

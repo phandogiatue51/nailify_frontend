@@ -5,10 +5,9 @@ import { withMobileLayout } from "./components/layout/MobileWrapper";
 import App from "./App";
 import Index from "./pages/Index";
 import AuthPage from "./pages/auth/AuthPage";
-import ProfilePage from "./pages/auth/ProfilePage";
-import EditProfilePage from "./pages/auth/EditProfilePage";
+import ProfilePage from "./pages/profile/ProfilePage";
+import EditProfilePage from "./pages/profile/EditProfilePage";
 import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
-import BookingsPage from "./pages/booking/CustomerBookingPage";
 import ExplorePage from "./pages/ExplorePage";
 import NotFound from "./pages/auth/NotFound";
 import VerifyEmail from "./pages/auth/VerifyEmail";
@@ -32,7 +31,9 @@ import NailArtistDashboardPage from "./pages/nailArtist/NailArtistDashboardPage"
 import ArtistDetailPage from "./pages/nailArtist/ArtistDetailPage";
 import MyNailArtistPage from "./pages/nailArtist/MyNailArtistPage";
 import ShopOwnerDashboardPage from "./pages/shop/ShopOwnerDashboardPage";
+
 import { CustomDesignPage } from "./pages/CustomDesignPage";
+
 import CreateServiceItemPage from "./pages/serviceItem/CreateServiceItemPage";
 import EditServiceItemPage from "./pages/serviceItem/EditServiceItemPage";
 import CreateCollectionPage from "./pages/collection/CreateCollectionPage";
@@ -46,11 +47,23 @@ import ConfirmBooking from "./pages/booking/ConfirmBooking";
 import BookingDetail from "./pages/booking/BookingDetail";
 import RescheduleBooking from "./pages/booking/RescheduleBooking";
 
+import CustomerBookingView from "./pages/profile/CustomerBookingView";
+import ErrorBoundary from "./ErrorBoundary";
+import { StaffManagement } from "./pages/staff/StaffManagement";
+import { StaffDetailPage } from "./pages/staff/StaffDetailPage";
+import { CreateStaffPage } from "./pages/staff/CreateStaffPage";
+import { EditStaffPage } from "./pages/staff/EditStaffPage";
+import NailArtistBookingView from "./pages/nailArtist/NailArtistBookingView";
+import ShopBookingView from "./pages/shop/ShopBookingView";
+import StaffBookingView from "./pages/staff/StaffBookingView";
+import StaffDashboardPage from "./pages/staff/StaffDashboardPage";
+
 export const router = createBrowserRouter(
   [
     {
       path: "/",
       element: <App />,
+      errorElement: <ErrorBoundary />,
       children: [
         { index: true, element: withMobileLayout(<Index />) },
 
@@ -65,11 +78,19 @@ export const router = createBrowserRouter(
           element: withMobileLayout(<ChangePasswordPage />),
         },
         {
-          path: "staff-dashboard",
+          path: "profile/bookings",
+          element: withMobileLayout(<CustomerBookingView />),
+        },
+        {
+          path: "shop-dashboard",
           element: withMobileLayout(<ShopOwnerDashboardPage />),
         },
 
         { path: "my-shop", element: withMobileLayout(<MyShopPage />) },
+        {
+          path: "my-shop/bookings",
+          element: withMobileLayout(<ShopBookingView />),
+        },
         {
           path: "my-shop/service-items/create/:type",
           element: withMobileLayout(<CreateServiceItemPage />),
@@ -96,6 +117,10 @@ export const router = createBrowserRouter(
         },
 
         { path: "my-artist", element: withMobileLayout(<MyNailArtistPage />) },
+        {
+          path: "my-artist/bookings",
+          element: withMobileLayout(<NailArtistBookingView />),
+        },
         {
           path: "my-artist/service-items/create/:type",
           element: withMobileLayout(<CreateServiceItemPage />),
@@ -125,7 +150,6 @@ export const router = createBrowserRouter(
         { path: "artist/:id", element: withMobileLayout(<ArtistDetailPage />) },
 
         { path: "schedule", element: withMobileLayout(<SchedulePage />) },
-        { path: "bookings", element: withMobileLayout(<BookingsPage />) },
         { path: "explore", element: withMobileLayout(<ExplorePage />) },
         {
           path: "services/:id",
@@ -172,6 +196,30 @@ export const router = createBrowserRouter(
         {
           path: "/booking/reschedule/:id",
           element: withMobileLayout(<RescheduleBooking />),
+        },
+        {
+          path: "/staff-dashboard",
+          element: withMobileLayout(<StaffDashboardPage />),
+        },
+        {
+          path: "/staff-management",
+          element: withMobileLayout(<StaffManagement />),
+        },
+        {
+          path: "/staff/bookings",
+          element: withMobileLayout(<StaffBookingView />),
+        },
+        {
+          path: "/staff/:id",
+          element: withMobileLayout(<StaffDetailPage />),
+        },
+        {
+          path: "/staff/create",
+          element: withMobileLayout(<CreateStaffPage />),
+        },
+        {
+          path: "/staff/edit/:id",
+          element: withMobileLayout(<EditStaffPage />),
         },
 
         {

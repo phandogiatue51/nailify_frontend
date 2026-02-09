@@ -6,6 +6,7 @@ import {
   CollectionFilterDto,
   ArtistFilterDto,
   BookingFilterDto,
+  StaffFilterDto,
 } from "@/types/filter";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -334,6 +335,13 @@ export const BookingAPI = {
     return apiRequest(url);
   },
 
+  getByLocationAuth: (date?: Date) => {
+    const url = date
+      ? `/Booking/locationAuth?date=${date.toISOString()}`
+      : `/Booking/locationAuth`;
+    return apiRequest(url);
+  },
+
   getAvailableByLocation: (shopLocationId: string, date?: Date) => {
     const url = date
       ? `/Booking/location/available/${shopLocationId}?date=${date.toISOString()}`
@@ -402,13 +410,13 @@ export const BookingAPI = {
     }),
 
   updateBooking: (id: string, formData: FormData) =>
-    apiRequest(`/Booking//${id}`, {
+    apiRequest(`/Booking/${id}`, {
       method: "PUT",
       body: formData,
     }),
 
   cancelBooking: (id: string) =>
-    apiRequest(`/Booking//${id}`, {
+    apiRequest(`/Booking/${id}`, {
       method: "DELETE",
     }),
 
@@ -428,7 +436,8 @@ export const BookingAPI = {
 };
 
 export const LocationAPI = {
-  getByShopAuth: () => apiRequest(`/Location/get-location-auth`),
+  getByShopAuth: () => apiRequest(`/Location/shop`),
+  getByLocationAuth: () => apiRequest(`/Location/auth`),
 
   getById: (id: string) =>
     apiRequest(`/Location/${id}`, {
@@ -436,7 +445,7 @@ export const LocationAPI = {
     }),
 
   getByShop: (id: string) =>
-    apiRequest(`/Location/get-location-from-shop/${id}`, {
+    apiRequest(`/Location/shop/${id}`, {
       method: "GET",
     }),
 
@@ -579,6 +588,42 @@ export const dashboardAPI = {
     const url = queryString
       ? `/Dashboard/customer-filter?${queryString}`
       : "/Dashboard/customer-filter";
+    return apiRequest(url);
+  },
+};
+
+export const staffAPI = {
+  getAll: () => apiRequest("/Staff"),
+
+  getById: (staffId: string) => apiRequest(`/Staff/${staffId}`),
+
+  getByShopId: (shopId: string) => apiRequest(`/Staff/shop/${shopId}`),
+
+  getByLocationId: (locationId: string) =>
+    apiRequest(`/Staff//location${locationId}`),
+
+  getByAuth: () => apiRequest("/Staff/owner"),
+
+  createStaff: (formData: FormData) =>
+    apiRequest("/Staff", {
+      method: "POST",
+      body: formData,
+    }),
+
+  updateStaff: (staffId: string, formData: FormData) =>
+    apiRequest(`/Staff/${staffId}`, {
+      method: "PUT",
+      body: formData,
+    }),
+
+  updateStatus: (staffId: string) =>
+    apiRequest(`/Staff/status/${staffId}`, {
+      method: "PUT",
+    }),
+
+  filter: (filterParams: StaffFilterDto) => {
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Staff/filter?${queryString}` : "/Staff/filter";
     return apiRequest(url);
   },
 };

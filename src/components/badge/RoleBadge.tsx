@@ -12,7 +12,7 @@ const roleMap: Record<number, { label: string; color: string }> = {
     color: "bg-gradient-to-r from-red-100 to-red-300 text-red-900",
   },
   3: {
-    label: "Staff",
+    label: "Manager",
     color: "bg-gradient-to-r from-green-100 to-green-300 text-green-900",
   },
   4: {

@@ -28,11 +28,7 @@ interface ArtistCardProps {
   onArtistUpdated?: () => void;
 }
 
-export const ArtistCard = ({
-  artist,
-  onViewDetails,
-}: ArtistCardProps) => {
-
+export const ArtistCard = ({ artist, onViewDetails }: ArtistCardProps) => {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-4">

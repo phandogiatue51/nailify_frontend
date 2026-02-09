@@ -1,20 +1,53 @@
-const roleMap: Record<number, { label: string; color: string }> = {
-    0: { label: "Pending", color: "bg-orange-100 text-orange-800" },
-    1: { label: "Approved", color: "bg-green-100 text-green-800" },
-    2: { label: "Rejected", color: "bg-red-100 text-red-800" },
-    3: { label: "Completed", color: "bg-teal-100 text-teal-800" },
-    4: { label: "Cancelled", color: "bg-yellow-100 text-yellow-800" },
+import { cn } from "@/lib/utils";
+const roleMap: Record<
+  number,
+  { label: string; dot: string; bg: string; text: string }
+> = {
+  0: {
+    label: "Pending",
+    dot: "bg-orange-400",
+    bg: "bg-orange-50",
+    text: "text-orange-600",
+  },
+  1: {
+    label: "Approved",
+    dot: "bg-green-400",
+    bg: "bg-green-50",
+    text: "text-green-600",
+  },
+  2: {
+    label: "Rejected",
+    dot: "bg-red-400",
+    bg: "bg-red-50",
+    text: "text-red-600",
+  },
+  3: {
+    label: "Completed",
+    dot: "bg-teal-400",
+    bg: "bg-teal-50",
+    text: "text-teal-600",
+  },
+  4: {
+    label: "Cancelled",
+    dot: "bg-slate-400",
+    bg: "bg-slate-50",
+    text: "text-slate-600",
+  },
 };
 
 export const BookingStatusBadge = ({ status }: { status: number }) => {
-    const roleInfo = roleMap[status];
-    if (!roleInfo) return null;
+  const roleInfo = roleMap[status];
+  if (!roleInfo) return null;
 
-    return (
-        <span
-            className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${roleInfo.color}`}
-        >
-            {roleInfo.label}
-        </span>
-    );
+  return (
+    <div
+      className={cn(
+        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider",
+        roleInfo.bg,
+        roleInfo.text,
+      )}
+    >
+      {roleInfo.label}
+    </div>
+  );
 };

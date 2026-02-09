@@ -11,6 +11,7 @@ interface DecodedJWT {
   fullName?: string;
   shopId?: string | null;
   nailArtistId?: string | null;
+  shopLocationId?: string | null;
   exp: number;
 }
 
@@ -38,7 +39,7 @@ const decodeJWT = (token: string): DecodedJWT | null => {
         role = 2;
         break;
       case "3":
-      case "Staff":
+      case "Manager":
         role = 3;
         break;
       case "4":
@@ -64,6 +65,7 @@ const decodeJWT = (token: string): DecodedJWT | null => {
         decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
       shopId: decoded["ShopId"] ?? null,
       nailArtistId: decoded["NailArtistId"] ?? null,
+      shopLocationId: decoded["ShopLocationId"] ?? null,
       exp: decoded.exp,
     };
   } catch (error) {
@@ -131,14 +133,17 @@ export function useAuth() {
         });
         setTimeout(() => {
           if (decoded.role === 1) {
-            navigate("/staff-dashboard");
+            navigate("/shop-dashboard");
           } else if (decoded.role === 2) {
             navigate("/admin");
           } else if (decoded.role === 4) {
             navigate("/artist-dashboard");
-          } else {
-            navigate("/");
           }
+          if (decoded.role === 3) {
+            navigate("/staff-dashboard");
+          }
+
+          navigate("/");
         }, 100);
       }
 

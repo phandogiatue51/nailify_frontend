@@ -28,13 +28,14 @@ const Index = () => {
 
   switch (user.role) {
     case 1:
-      return <Navigate to="/staff-dashboard" replace />;
+      return <Navigate to="/shop-dashboard" replace />;
     case 2:
       return <Navigate to="/admin" replace />;
+    case 3:
+      return <Navigate to="/staff-dashboard" replace />;
     case 4:
       return <Navigate to="/artist-dashboard" replace />;
     case 0:
-    case 3:
     default:
       break;
   }
