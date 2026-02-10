@@ -1,17 +1,18 @@
-import {
-  Booking,
-  BookingItem,
-  ServiceItem,
-  Shop,
-  Profile,
-} from "@/types/database";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BookingStatusBadge } from "../badge/BookingStatusBadge";
 import DateDisplay from "../ui/date-display";
+import {
+  Booking,
+  Shop,
+  Profile,
+  BookingItem,
+  ServiceItem,
+} from "@/types/database";
+
 interface BookingCardProps {
   booking: Booking & {
     shop?: Shop;
@@ -22,19 +23,22 @@ interface BookingCardProps {
   onApprove?: (bookingId: string) => void;
   onReject?: (bookingId: string) => void;
   onCancel?: (bookingId: string) => void;
+  onComplete?: (bookingId: string) => void;
 }
+
 const BookingCard: React.FC<BookingCardProps> = ({
   booking,
   isShopOwner,
   onApprove,
   onReject,
+  onCancel,
+  onComplete,
 }) => {
   const navigate = useNavigate();
 
   return (
     <Card className="group border-none shadow-[0_4px_20px_rgba(0,0,0,0.03)] rounded-[2rem] overflow-hidden bg-white hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all">
       <CardContent className="p-5">
-        {/* Top Section: Time & Status */}
         <div className="flex justify-between items-start mb-4">
           <div className="bg-slate-50 rounded-2xl p-3 items-center min-w-[60px]">
             <span className="text-sm font-black text-slate-700">
@@ -96,16 +100,63 @@ const BookingCard: React.FC<BookingCardProps> = ({
           </div>
 
           <div className="flex gap-2">
-            {booking.status === 0 && isShopOwner && (
+            {isShopOwner && (
+              <>
+                {booking.status === 0 && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onReject?.(booking.id)}
+                      className="rounded-xl text-red-400 font-black text-[10px] uppercase hover:bg-red-50"
+                    >
+                      Reject
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onApprove?.(booking.id)}
+                      className="rounded-xl text-emerald-400 font-black text-[10px] uppercase hover:bg-emerald-50"
+                    >
+                      Approve
+                    </Button>
+                  </>
+                )}
+
+                {booking.status === 1 && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onCancel?.(booking.id)}
+                      className="rounded-xl text-red-400 font-black text-[10px] uppercase hover:bg-red-50"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onComplete?.(booking.id)}
+                      className="rounded-xl text-emerald-400 font-black text-[10px] uppercase hover:bg-emerald-50"
+                    >
+                      Complete
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+
+            {!isShopOwner && (booking.status === 0 || booking.status === 1) && (
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onReject?.(booking.id)}
+                onClick={() => onCancel?.(booking.id)}
                 className="rounded-xl text-red-400 font-black text-[10px] uppercase hover:bg-red-50"
               >
-                Reject
+                Cancel
               </Button>
             )}
+
             <Button
               size="sm"
               onClick={() => navigate(`/booking/detail/${booking.id}`)}

@@ -28,7 +28,23 @@ const NailArtistBookingView: React.FC = () => {
   const [status, setStatus] = useState<BookingStatus | undefined>(undefined);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const auth = useAuth();
-  const { filterBookings } = useBookings();
+  const { filterBookings, updateBookingStatus } = useBookings();
+
+  const handleApprove = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 1 });
+  };
+
+  const handleReject = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 2 });
+  };
+
+  const handleCancel = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 4 });
+  };
+
+  const handleComplete = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 3 });
+  };
 
   useEffect(() => {
     if (auth.user?.nailArtistId) {
@@ -106,6 +122,10 @@ const NailArtistBookingView: React.FC = () => {
               key={booking.id}
               booking={booking}
               isShopOwner={true}
+              onApprove={handleApprove}
+              onReject={handleReject}
+              onCancel={handleCancel}
+              onComplete={handleComplete}
             />
           ))
         )}

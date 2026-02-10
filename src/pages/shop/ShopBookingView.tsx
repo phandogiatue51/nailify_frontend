@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useShopOwnerLocations } from "@/hooks/useLocation";
 import { useBookings } from "@/hooks/useBookings";
 import BookingCard from "@/components/booking/BookingCard";
 import { BookingStatus } from "@/types/database";
@@ -10,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, MapPin } from "lucide-react";
 import { format, endOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
@@ -27,8 +28,31 @@ const STATUS_OPTIONS = [
 const ShopBookingView: React.FC = () => {
   const [status, setStatus] = useState<BookingStatus | undefined>(undefined);
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [selectedLocationId, setSelectedLocationId] = useState<
+    string | undefined
+  >(undefined);
+
   const auth = useAuth();
-  const { filterBookings } = useBookings();
+  const { filterBookings, updateBookingStatus } = useBookings();
+
+  const { locations = [], isLoading: isLoadingLocations } =
+    useShopOwnerLocations();
+
+  const handleApprove = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 1 });
+  };
+
+  const handleReject = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 2 });
+  };
+
+  const handleCancel = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 4 });
+  };
+
+  const handleComplete = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 3 });
+  };
 
   useEffect(() => {
     if (auth.user?.shopId) {
@@ -38,11 +62,24 @@ const ShopBookingView: React.FC = () => {
         ShopId: auth.user.shopId,
         Date: dateToSend,
         Status: status,
+        ShopLocationId: selectedLocationId,
       });
     }
-  }, [status, date, auth.user?.shopId, filterBookings.mutate]);
+  }, [
+    status,
+    date,
+    selectedLocationId,
+    auth.user?.shopId,
+    filterBookings.mutate,
+  ]);
 
-  const { data: bookings, isPending: isLoading } = filterBookings;
+  const { data: bookings, isPending: isLoadingBookings } = filterBookings;
+
+  // Debug log to see what locations we're getting
+  useEffect(() => {
+    console.log("Locations:", locations);
+    console.log("Selected location ID:", selectedLocationId);
+  }, [locations, selectedLocationId]);
 
   return (
     <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen pb-20">
@@ -70,6 +107,43 @@ const ShopBookingView: React.FC = () => {
           </Popover>
         </div>
 
+        {/* Location Filter - Only show if locations exist */}
+        {locations && locations.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 pb-2">
+            <button
+              onClick={() => setSelectedLocationId(undefined)}
+              className={cn(
+                "whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5",
+                !selectedLocationId
+                  ? "bg-[#E288F9] text-white shadow-lg shadow-purple-100"
+                  : "bg-slate-50 text-slate-400 hover:bg-slate-100",
+              )}
+            >
+              <MapPin className="h-3 w-3" />
+              All Locations
+            </button>
+
+            {locations.map((location) => (
+              <button
+                key={location.shopLocationId || location.id}
+                onClick={() =>
+                  setSelectedLocationId(location.shopLocationId || location.id)
+                }
+                className={cn(
+                  "whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                  selectedLocationId ===
+                    (location.shopLocationId || location.id)
+                    ? "bg-[#E288F9] text-white shadow-lg shadow-purple-100"
+                    : "bg-slate-50 text-slate-400 hover:bg-slate-100",
+                )}
+                title={location.address}
+              >
+                {location.address?.split(",")[0] || "Location"}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4">
           {STATUS_OPTIONS.map((opt) => (
             <button
@@ -90,14 +164,16 @@ const ShopBookingView: React.FC = () => {
 
       {/* Main Content */}
       <div className="px-4 space-y-4">
-        {filterBookings.isPending ? (
+        {isLoadingBookings || isLoadingLocations ? (
           <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-slate-200" />
           </div>
         ) : bookings?.length === 0 ? (
           <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100">
             <p className="text-sm font-bold text-slate-400">
-              No bookings found
+              {selectedLocationId
+                ? `No bookings found for this location`
+                : `No bookings found`}
             </p>
           </div>
         ) : (
@@ -106,6 +182,10 @@ const ShopBookingView: React.FC = () => {
               key={booking.id}
               booking={booking}
               isShopOwner={true}
+              onApprove={handleApprove}
+              onReject={handleReject}
+              onCancel={handleCancel}
+              onComplete={handleComplete}
             />
           ))
         )}

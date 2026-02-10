@@ -302,7 +302,6 @@ export const useBookings = () => {
     retry: 1,
   });
 
-  // Mutation for updating booking status
   const updateBookingStatus = useMutation({
     mutationFn: async ({
       bookingId,
@@ -315,17 +314,15 @@ export const useBookings = () => {
     },
     onSuccess: (data, variables) => {
       toast({
-        description: data.message || "Cập nhật trạng thái thành công!",
+        description: data.message,
         variant: "success",
         duration: 3000,
       });
 
-      // Invalidate all booking lists
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
 
-      // Invalidate the specific booking
       queryClient.invalidateQueries({
         queryKey: ["booking", variables.bookingId],
       });
@@ -333,15 +330,13 @@ export const useBookings = () => {
     onError: (error: any) => {
       console.error("Update booking status error:", error);
       toast({
-        description: error?.message || "Có lỗi xảy ra!",
+        description: error?.message,
         variant: "destructive",
         duration: 5000,
       });
     },
     retry: 1,
   });
-
-  // Inside your useBookings function, add these:
 
   const useLocationBookings = (
     shopLocationId: string | undefined,

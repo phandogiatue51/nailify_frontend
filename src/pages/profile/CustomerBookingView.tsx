@@ -28,7 +28,11 @@ const CustomerBookingView: React.FC = () => {
   const [status, setStatus] = useState<BookingStatus | undefined>(undefined);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const auth = useAuth();
-  const { filterBookings } = useBookings();
+  const { filterBookings, updateBookingStatus } = useBookings();
+
+  const handleCancel = (bookingId: string) => {
+    updateBookingStatus.mutate({ bookingId, status: 4 });
+  };
 
   useEffect(() => {
     if (auth.user?.userId) {
@@ -88,7 +92,6 @@ const CustomerBookingView: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="px-4 space-y-4">
         {filterBookings.isPending ? (
           <div className="flex justify-center py-20">
@@ -105,7 +108,8 @@ const CustomerBookingView: React.FC = () => {
             <BookingCard
               key={booking.id}
               booking={booking}
-              isShopOwner={true}
+              isShopOwner={false}
+              onCancel={handleCancel}
             />
           ))
         )}
