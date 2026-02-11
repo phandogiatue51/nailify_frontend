@@ -87,13 +87,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
           ))}
         </div>
 
-        {/* Footer Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-slate-50 gap-3">
           <div className="flex flex-col">
-            <span className="text-[9px] font-black text-slate-300 uppercase leading-none">
+            <span className="text-[9px] font-black uppercase leading-none">
               Total
             </span>
-            <span className="text-lg font-black text-slate-900 leading-tight">
+            <span className="text-lg font-black text-green-500 leading-tight">
               {Number(booking.totalPrice).toLocaleString()}{" "}
               <span className="text-[10px]">VND</span>
             </span>
@@ -108,15 +107,16 @@ const BookingCard: React.FC<BookingCardProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => onReject?.(booking.id)}
-                      className="rounded-xl text-red-400 font-black text-[10px] uppercase hover:bg-red-50"
+                      className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
                     >
                       Reject
                     </Button>
+
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onApprove?.(booking.id)}
-                      className="rounded-xl text-emerald-400 font-black text-[10px] uppercase hover:bg-emerald-50"
+                      className="rounded-xl text-emerald-400 font-black text-[10px] uppercase border border-green-300 hover:bg-green-400 hover:text-white"
                     >
                       Approve
                     </Button>
@@ -129,7 +129,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => onCancel?.(booking.id)}
-                      className="rounded-xl text-red-400 font-black text-[10px] uppercase hover:bg-red-50"
+                      className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
                     >
                       Cancel
                     </Button>
@@ -137,7 +137,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => onComplete?.(booking.id)}
-                      className="rounded-xl text-emerald-400 font-black text-[10px] uppercase hover:bg-emerald-50"
+                      className="rounded-xl text-emerald-400 font-black text-[10px] uppercase border border-green-300 hover:bg-green-400 hover:text-white"
                     >
                       Complete
                     </Button>

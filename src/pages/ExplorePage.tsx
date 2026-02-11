@@ -10,6 +10,8 @@ import ShopCard from "@/components/shop/ShopCard";
 import NailArtistCard from "@/components/nailArtist/NailArtistCard";
 import { ExploreSkeleton } from "@/components/ui/explore-skeleton";
 import { EmptyExploreState } from "@/components/ui/empty-explore-page";
+import { MobilePagination } from "@/components/ui/pagination-mobile";
+
 import Header from "@/components/ui/header";
 const ExplorePage = () => {
   const { user, loading } = useAuthContext();
@@ -17,6 +19,14 @@ const ExplorePage = () => {
   const { data: artists, isLoading: artistsLoading } = useCustomerArtists();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("shops");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 4;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   if (loading) {
     return (
