@@ -215,35 +215,22 @@ export const useBookings = () => {
     retry: 1,
   });
 
-  // Mutation for updating booking
   const updateBooking = useMutation({
     mutationFn: async ({ id, data }: UpdateBookingParams) => {
-      const formData = new FormData();
+      const payload = {
+        collectionId: data.collectionId || null,
+        scheduledStart: data.scheduledStart,
+        notes: data.notes || null,
+        customerName: data.customerName || null,
+        customerPhone: data.customerPhone || null,
+        customerAddress: data.customerAddress || null,
+        bookingItems:
+          data.bookingItems?.map((item) => ({
+            serviceItemId: item.serviceItemId,
+          })) || [],
+      };
 
-      // Append only non-undefined values
-      if (data.collectionId !== undefined)
-        formData.append("collectionId", data.collectionId || "");
-      if (data.scheduledStart)
-        formData.append("scheduledStart", data.scheduledStart);
-      if (data.notes !== undefined) formData.append("notes", data.notes || "");
-      if (data.customerName !== undefined)
-        formData.append("customerName", data.customerName || "");
-      if (data.customerPhone !== undefined)
-        formData.append("customerPhone", data.customerPhone || "");
-      if (data.customerAddress !== undefined)
-        formData.append("customerAddress", data.customerAddress || "");
-
-      // Handle booking items
-      if (data.bookingItems) {
-        data.bookingItems.forEach((item, index) => {
-          formData.append(
-            `bookingItems[${index}].serviceItemId`,
-            item.serviceItemId,
-          );
-        });
-      }
-
-      return await BookingAPI.updateBooking(id, formData);
+      return await BookingAPI.updateBooking(id, payload);
     },
     onSuccess: (data) => {
       toast({
@@ -252,7 +239,6 @@ export const useBookings = () => {
         duration: 3000,
       });
 
-      // Invalidate all booking queries
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });

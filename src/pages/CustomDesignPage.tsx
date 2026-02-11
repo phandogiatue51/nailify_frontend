@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
 import { ArrowLeft, Loader2, AlertCircle, ShoppingBag } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const CustomDesignPage = () => {
   const { shopId, id } = useParams<{
@@ -38,8 +39,14 @@ export const CustomDesignPage = () => {
 
     navigate(`/customer-book`, { state: bookingState });
   };
-
-  // Loading state
+  const toggleItem = (item: ServiceItem) => {
+    const isSelected = selectedItems.some((s) => s.id === item.id);
+    if (isSelected) {
+      setSelectedItems((prev) => prev.filter((i) => i.id !== item.id));
+    } else {
+      setSelectedItems((prev) => [...prev, item]);
+    }
+  };
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
@@ -120,97 +127,117 @@ export const CustomDesignPage = () => {
     );
   }
 
-  // Main content with services
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b px-4 py-3">
-        <div className="flex items-center gap-3 mb-2">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+    <div className="min-h-screen flex flex-col bg-slate-50/30">
+      {/* 1. Header: Fixed and Glassmorphic */}
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 pt-4 pb-3">
+        <div className="flex items-center gap-3 mb-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+            className="rounded-full bg-slate-50"
+          >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-lg font-semibold">Custom Design</h1>
-            <p className="text-sm text-slate-500">
-              Select services to create your custom design
+            <h1 className="text-xl font-black tracking-tight">Custom Design</h1>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              Tap to select services
             </p>
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <Badge variant="secondary">
+        <div className="flex justify-between items-center bg-slate-50 rounded-2xl p-3">
+          <Badge className="bg-[#E288F9] text-white border-none font-black px-3 py-1 text-[10px] uppercase">
             {selectedItems.length}{" "}
-            {selectedItems.length === 1 ? "item" : "items"} selected
+            {selectedItems.length === 1 ? "Item" : "Items"}
           </Badge>
-          <span className="text-sm font-medium">
-            Total:{" "}
-            {selectedItems
-              .reduce((sum, item) => sum + Number(item.price), 0)
-              .toLocaleString()}{" "}
-            VND
-          </span>
+          <div className="flex flex-col items-end">
+            <span className="text-[9px] font-black text-slate-400 uppercase leading-none">
+              Total
+            </span>
+            <span className="text-sm font-black text-slate-900">
+              {selectedItems
+                .reduce((sum, item) => sum + Number(item.price), 0)
+                .toLocaleString()}{" "}
+              VND
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Services list */}
-      <div className="flex-1 p-4 space-y-3 pb-24">
+      {/* 2. Main Content: 2-Column Grid */}
+      <div className="flex-1 p-4 pb-32">
         {allItems.length > 0 ? (
-          allItems.map((item: ServiceItem) => (
-            <Card key={item.id} className="overflow-hidden">
-              <CardContent className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-4 flex-1">
-                  <Checkbox
-                    checked={selectedItems.some(
-                      (selected) => selected.id === item.id,
+          <div className="grid grid-cols-2 gap-4">
+            {allItems.map((item: ServiceItem) => {
+              const isSelected = selectedItems.some((s) => s.id === item.id);
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => toggleItem(item)}
+                  className={cn(
+                    "relative group cursor-pointer rounded-[2rem] transition-all duration-300 border-2 overflow-hidden bg-white",
+                    isSelected
+                      ? "border-[#E288F9] shadow-lg shadow-purple-100 ring-4 ring-purple-50"
+                      : "border-transparent shadow-sm hover:border-slate-100",
+                  )}
+                >
+                  {/* Selection Checkmark Overlay */}
+                  <div
+                    className={cn(
+                      "absolute top-3 right-3 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all",
+                      isSelected
+                        ? "bg-[#E288F9] scale-100"
+                        : "bg-black/10 scale-0 opacity-0",
                     )}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setSelectedItems((prev) => [...prev, item]);
-                      } else {
-                        setSelectedItems((prev) =>
-                          prev.filter((i) => i.id !== item.id),
-                        );
-                      }
-                    }}
-                    className="flex-shrink-0"
-                  />
-                  <div className="flex-1">
+                  >
+                    <div className="w-2 h-2 rounded-full bg-white" />
+                  </div>
+
+                  <div
+                    className={cn(
+                      "transition-opacity duration-300",
+                      isSelected ? "opacity-100" : "opacity-90",
+                    )}
+                  >
                     <ServiceItemCard item={item} />
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))
+              );
+            })}
+          </div>
         ) : (
-          <div className="text-center py-8 text-slate-500">
-            No services found
+          <div className="text-center py-20 bg-white rounded-[3rem] border-2 border-dashed border-slate-100 mx-4">
+            <ShoppingBag className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
+              No services found
+            </p>
           </div>
         )}
       </div>
 
-      {/* Fixed bottom button */}
-      <div className="sticky bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg">
+      {/* 3. Floating Bottom Bar */}
+      <div className="sticky bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white to-transparent">
         <Button
           onClick={handleBookNow}
           disabled={selectedItems.length === 0}
-          className="w-full h-12"
-          size="lg"
+          className={cn(
+            "w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl transition-all active:scale-95",
+            selectedItems.length > 0
+              ? "bg-slate-900 hover:bg-slate-800 text-white shadow-slate-300"
+              : "bg-slate-100 text-slate-400",
+          )}
         >
           {selectedItems.length === 0 ? (
-            "Select services to continue"
+            "Select to Continue"
           ) : (
-            <>
-              {shopId ? "Book Custom Design" : "Request Custom Design"}
-              <Badge variant="secondary" className="ml-2">
-                {selectedItems.length} items
-              </Badge>
-              <span className="ml-auto font-semibold">
-                {selectedItems
-                  .reduce((sum, item) => sum + Number(item.price), 0)
-                  .toLocaleString()}{" "}
-                VND
-              </span>
-            </>
+            <div className="flex justify-between w-full items-center px-2">
+              <span>Continue Booking</span>
+              <div className="h-6 w-[1px] bg-white/20" />
+              <span>Next</span>
+            </div>
           )}
         </Button>
       </div>

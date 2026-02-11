@@ -83,15 +83,16 @@ const ConfirmBooking = () => {
 
     try {
       const createdBooking = await createBooking.mutateAsync(bookingData);
+      console.log("Created booking response:", createdBooking);
 
-      navigate(`/booking/detail/${createdBooking.id}`, {
-        state: {
-          booking: createdBooking,
-          type: isArtistBooking ? "artist" : "shop",
-          id: isArtistBooking ? artistId : shopId,
-          success: true,
-        },
-      });
+      const bookingId = createdBooking?.bookingId;
+
+      if (!bookingId) {
+        console.error("No bookingId in response:", createdBooking);
+        alert("Booking created but no ID returned");
+        return;
+      }
+      navigate(`/booking/detail/${bookingId}`);
     } catch (error) {
       console.error("Booking failed:", error);
       alert("Booking failed. Please try again.");

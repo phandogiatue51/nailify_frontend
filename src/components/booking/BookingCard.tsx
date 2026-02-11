@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { BookingStatusBadge } from "../badge/BookingStatusBadge";
 import DateDisplay from "../ui/date-display";
 import { Loader2 } from "lucide-react";
+import { getStatusConfig } from "../booking-status-config";
+import { ConfirmationDialog } from "../ui/confirmation-dialog";
 import {
   Booking,
   Shop,
@@ -38,6 +40,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   isLoading = false,
 }) => {
   const navigate = useNavigate();
+  const statusConfig = getStatusConfig(booking.status, isShopOwner || false);
 
   return (
     <Card className="group border-none shadow-[0_4px_20px_rgba(0,0,0,0.03)] rounded-[2rem] overflow-hidden bg-white hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all">
@@ -106,74 +109,104 @@ const BookingCard: React.FC<BookingCardProps> = ({
               <>
                 {booking.status === 0 && (
                   <>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onReject?.(booking.id)}
-                      disabled={isLoading}
-                      className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      ) : null}
-                      Reject
-                    </Button>
+                    <ConfirmationDialog
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
+                        >
+                          {isLoading ? (
+                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                          ) : null}
+                          Reject
+                        </Button>
+                      }
+                      {...statusConfig.reject}
+                      onConfirm={() => onReject?.(booking.id)}
+                      isLoading={isLoading}
+                    />
 
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onApprove?.(booking.id)}
-                      disabled={isLoading}
-                      className="rounded-xl text-emerald-400 font-black text-[10px] uppercase border border-green-300 hover:bg-green-400 hover:text-white"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      ) : null}
-                      Approve
-                    </Button>
+                    <ConfirmationDialog
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          className="rounded-xl text-emerald-400 font-black text-[10px] uppercase border border-green-300 hover:bg-green-400 hover:text-white"
+                        >
+                          {isLoading ? (
+                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                          ) : null}
+                          Approve
+                        </Button>
+                      }
+                      {...statusConfig.approve}
+                      onConfirm={() => onApprove?.(booking.id)}
+                      isLoading={isLoading}
+                    />
                   </>
                 )}
 
                 {booking.status === 1 && (
                   <>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onCancel?.(booking.id)}
-                      disabled={isLoading}
-                      className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      ) : null}
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onComplete?.(booking.id)}
-                      disabled={isLoading}
-                      className="rounded-xl text-emerald-400 font-black text-[10px] uppercase border border-green-300 hover:bg-green-400 hover:text-white"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      ) : null}
-                      Complete
-                    </Button>
+                    <ConfirmationDialog
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
+                        >
+                          {isLoading ? (
+                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                          ) : null}
+                          Cancel
+                        </Button>
+                      }
+                      {...statusConfig.cancel}
+                      onConfirm={() => onCancel?.(booking.id)}
+                      isLoading={isLoading}
+                    />
+
+                    <ConfirmationDialog
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          className="rounded-xl text-emerald-400 font-black text-[10px] uppercase border border-green-300 hover:bg-green-400 hover:text-white"
+                        >
+                          {isLoading ? (
+                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                          ) : null}
+                          Complete
+                        </Button>
+                      }
+                      {...statusConfig.complete}
+                      onConfirm={() => onComplete?.(booking.id)}
+                      isLoading={isLoading}
+                    />
                   </>
                 )}
               </>
             )}
 
             {!isShopOwner && booking.status === 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onCancel?.(booking.id)}
-                className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
-              >
-                Cancel
-              </Button>
+              <ConfirmationDialog
+                trigger={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
+                  >
+                    Cancel
+                  </Button>
+                }
+                {...statusConfig.cancel}
+                onConfirm={() => onCancel?.(booking.id)}
+              />
             )}
 
             <Button

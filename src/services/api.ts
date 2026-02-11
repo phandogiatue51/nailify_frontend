@@ -410,10 +410,10 @@ export const BookingAPI = {
       body: dto,
     }),
 
-  updateBooking: (id: string, formData: FormData) =>
+  updateBooking: (id: string, dto: any) =>
     apiRequest(`/Booking/${id}`, {
       method: "PUT",
-      body: formData,
+      body: dto,
     }),
 
   cancelBooking: (id: string) =>

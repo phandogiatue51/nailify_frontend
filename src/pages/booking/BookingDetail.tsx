@@ -14,34 +14,61 @@ import { ServiceItems } from "@/components/booking/detail/ServiceItems";
 import { CustomerInfo } from "@/components/booking/detail/CustomerInfo";
 import { LocationInfo } from "@/components/booking/detail/LocationInfo";
 import { BookingActions } from "@/components/booking/detail/BookingActions";
+import { useAuth } from "@/hooks/use-auth";
+import { BookingStatus } from "@/types/database";
+import { useQueryClient } from "@tanstack/react-query";
 
 const BookingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const location = useLocation();
-  const { useBookingById, cancelBooking } = useBookings();
-  const { data: booking, isLoading, error } = useBookingById(id);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  const { useBookingById, cancelBooking, updateBookingStatus } = useBookings();
+  const { data: booking, isLoading } = useBookingById(id);
   const { data: shopLocation } = useShopOwnerLocationById(
     booking?.shopLocationId,
   );
+  const [updatingBookingId, setUpdatingBookingId] = useState<string | null>(
+    null,
+  );
+
   const { data: nailArtist } = useCustomerArtistById(booking?.nailArtistId);
+  const isShopOwner = user?.role === 1 || user?.role === 3 || user?.role === 4;
 
   useEffect(() => {
     if (location.state?.success) {
-      setShowSuccessMessage(true);
-      setTimeout(() => setShowSuccessMessage(false), 5000);
     }
   }, [location.state]);
 
-  const handleCancelBooking = () => {
-    if (!booking?.id) return;
-    cancelBooking.mutate(booking.id, {
-      onSuccess: () => {
-        navigate(`/booking/detail/${id}`);
+  const handleStatusUpdate = (bookingId: string, status: BookingStatus) => {
+    setUpdatingBookingId(bookingId);
+
+    updateBookingStatus.mutate(
+      { bookingId, status },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["booking", bookingId],
+          });
+          queryClient.invalidateQueries({ queryKey: ["bookings"] });
+        },
+        onSettled: () => {
+          setUpdatingBookingId(null);
+        },
       },
-    });
+    );
   };
+
+  const handleApprove = (bookingId: string) => handleStatusUpdate(bookingId, 1);
+
+  const handleReject = (bookingId: string) => handleStatusUpdate(bookingId, 2);
+
+  const handleCancel = (bookingId: string) => handleStatusUpdate(bookingId, 4);
+
+  const handleComplete = (bookingId: string) =>
+    handleStatusUpdate(bookingId, 3);
 
   const handleReschedule = () => {
     navigate(`/booking/reschedule/${id}`, {
@@ -99,15 +126,21 @@ const BookingDetail = () => {
                 <HelpCard />
               </div>
             </div>
+            <BookingActions
+              booking={booking}
+              onCancel={handleCancel}
+              onReschedule={handleReschedule}
+              onApprove={isShopOwner ? handleApprove : undefined}
+              onReject={isShopOwner ? handleReject : undefined}
+              onComplete={isShopOwner ? handleComplete : undefined}
+              isCancelling={cancelBooking.isPending}
+              isUpdatingStatus={
+                updateBookingStatus.isPending || updatingBookingId !== null
+              }
+              navigate={navigate}
+              isShopOwner={isShopOwner}
+            />
           </div>
-
-          <BookingActions
-            booking={booking}
-            onCancel={handleCancelBooking}
-            onReschedule={handleReschedule}
-            isCancelling={cancelBooking.isPending}
-            navigate={navigate}
-          />
         </>
       ) : null}
     </div>

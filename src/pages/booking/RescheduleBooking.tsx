@@ -15,16 +15,13 @@ const RescheduleBooking = () => {
   const { toast } = useToast();
   const { useBookingById, updateBooking } = useBookings();
 
-  // Get the booking to reschedule
   const { data: booking, isLoading } = useBookingById(id);
   const updateMutation = updateBooking;
 
-  // State for datetime selection
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Set initial values from booking
   useEffect(() => {
     if (booking) {
       const bookingDate = new Date(booking.scheduledStart);
@@ -38,7 +35,6 @@ const RescheduleBooking = () => {
 
   const { useLocationBookings, useArtistBookings } = useBookings();
 
-  // Always call both hooks, but conditionally enable them
   const locationBookingsQuery = useLocationBookings(
     booking?.shopLocationId,
     selectedDate ? new Date(selectedDate) : undefined,
@@ -48,7 +44,6 @@ const RescheduleBooking = () => {
     selectedDate ? new Date(selectedDate) : undefined,
   );
 
-  // Determine which data to use
   const existingBookings = booking?.shopLocationId
     ? locationBookingsQuery.data
     : booking?.nailArtistId
@@ -71,11 +66,9 @@ const RescheduleBooking = () => {
       return;
     }
 
-    // Combine date and time
     const newDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
     const scheduledStart = newDateTime.toISOString();
 
-    // Check if the new time is in the past
     if (newDateTime < new Date()) {
       toast({
         title: "Invalid Time",
@@ -88,12 +81,10 @@ const RescheduleBooking = () => {
     setIsSubmitting(true);
 
     try {
-      // Update only the scheduledStart
       await updateMutation.mutateAsync({
         id: booking.id,
         data: {
           scheduledStart,
-          // Keep all other fields from existing booking
           collectionId: booking.collectionId || null,
           bookingItems: booking.bookingItems.map((item) => ({
             serviceItemId: item.serviceItemId,
@@ -111,8 +102,7 @@ const RescheduleBooking = () => {
         variant: "success",
       });
 
-      // Navigate back to booking details with success state
-      navigate(`/booking/${booking.id}`, {
+      navigate(`/booking/detail/${booking.id}`, {
         state: { success: true },
       });
     } catch (error) {
