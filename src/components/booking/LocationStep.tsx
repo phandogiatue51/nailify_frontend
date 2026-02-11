@@ -25,7 +25,7 @@ export const LocationStep = ({
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-4">
           <MapPin className="w-5 h-5 text-primary" />
-          <h2 className="font-semibold">Select Location</h2>
+          <h2 className="font-black uppercase tracking-tight">Select Location</h2>
           {isLoading && <Loader2 className="w-4 h-4 animate-spin ml-auto" />}
         </div>
 

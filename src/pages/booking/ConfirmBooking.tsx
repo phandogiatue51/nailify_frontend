@@ -10,6 +10,7 @@ import {
   MapPin,
   User,
   Package,
+  CircleDollarSign,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -105,7 +106,9 @@ const ConfirmBooking = () => {
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <h1 className="text-lg font-semibold">Review & Confirm Booking</h1>
+        <h1 className="font-black tracking-tight uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+          Review & Confirm Booking
+        </h1>
       </div>
 
       <div className="p-4 space-y-6">
@@ -113,7 +116,9 @@ const ConfirmBooking = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
               <Package className="w-5 h-5 text-primary" />
-              <h2 className="font-semibold">Selected Services</h2>
+              <h2 className="font-black uppercase tracking-tight">
+                Selected Services
+              </h2>
             </div>
 
             {selectedCollection ? (
@@ -161,7 +166,9 @@ const ConfirmBooking = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
               <Calendar className="w-5 h-5 text-primary" />
-              <h2 className="font-semibold">Date & Time</h2>
+              <h2 className="font-black uppercase tracking-tight">
+                Date & Time
+              </h2>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
@@ -184,48 +191,68 @@ const ConfirmBooking = () => {
               ) : (
                 <MapPin className="w-5 h-5 text-primary" />
               )}
-              <h2 className="font-semibold">
-                {isArtistBooking ? "Artist" : "Location"}
+              <h2 className="text-md font-black uppercase tracking-tight">
+                {isArtistBooking ? "Service Provider" : "Studio Location"}
               </h2>
             </div>
+
             {isArtistBooking ? (
-              <div>
-                <p className="font-medium">Mobile Service</p>
-                {customerAddress && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Service at: {customerAddress}
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-slate-400">
+                  {customerName.charAt(0)}
+                </div>
+                <div>
+                  <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
+                    Mobile Appointment
                   </p>
-                )}
+                  <p className="text-xs font-bold text-slate-400 flex items-center gap-1 mt-1">
+                    <MapPin className="w-3 h-3" />{" "}
+                    {customerAddress || "Address to be provided"}
+                  </p>
+                </div>
               </div>
             ) : selectedLocationObj ? (
-              <div className="space-y-4 font-sans">
-                <h2 className="text-2xl font-semibold text-gray-900">
-                  {selectedLocationObj.shopName}
-                </h2>
-
-                <div className="text-sm text-gray-700 leading-relaxed">
-                  <p>{selectedLocationObj.address}</p>
-                  <p>{selectedLocationObj.city}</p>
-                  <p>{selectedLocationObj.phone}</p>
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900 tracking-tighter uppercase">
+                    {selectedLocationObj.shopName}
+                  </h2>
+                  <div className="flex items-start gap-2 mt-2 text-slate-500">
+                    <p className="text-sm font-medium leading-tight">
+                      {selectedLocationObj.address}, {selectedLocationObj.city}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="text-sm text-gray-700">
-                  <p>Opens: {selectedLocationObj.openingTime}</p>
-                  <p>Closes: {selectedLocationObj.closingTime}</p>
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                    <p className="text-[10px] font-black uppercase text-slate-400 mb-1">
+                      Opens
+                    </p>
+                    <p className="text-sm font-bold text-slate-700">
+                      {selectedLocationObj.openingTime}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                    <p className="text-[10px] font-black uppercase text-slate-400 mb-1">
+                      Closes
+                    </p>
+                    <p className="text-sm font-bold text-slate-700">
+                      {selectedLocationObj.closingTime}
+                    </p>
+                  </div>
                 </div>
               </div>
-            ) : (
-              <p className="text-muted-foreground">
-                Selected location will be confirmed
-              </p>
-            )}
+            ) : null}
           </CardContent>
         </Card>
 
         {isArtistBooking && (
           <Card>
             <CardContent className="p-4">
-              <h2 className="font-semibold mb-4">Your Information</h2>
+              <h2 className="font-black uppercase tracking-tight">
+                Your Information
+              </h2>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Name:</span>
@@ -244,7 +271,9 @@ const ConfirmBooking = () => {
         {notes && (
           <Card>
             <CardContent className="p-4">
-              <h2 className="font-semibold mb-2">Additional Notes</h2>
+              <h2 className="font-black uppercase tracking-tight">
+                Additional Notes
+              </h2>
               <p className="text-muted-foreground">{notes}</p>
             </CardContent>
           </Card>
@@ -253,7 +282,13 @@ const ConfirmBooking = () => {
         {/* Price Summary */}
         <Card>
           <CardContent className="p-4">
-            <h2 className="font-semibold mb-4">Price Summary</h2>
+            <div className="flex items-center gap-2 mb-4">
+              <CircleDollarSign className="w-5 h-5 text-primary" />
+
+              <h2 className="font-black uppercase tracking-tight ">
+                Price Summary
+              </h2>
+            </div>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span>Total Price:</span>
@@ -270,11 +305,15 @@ const ConfirmBooking = () => {
         </Card>
       </div>
 
-      <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-4">
+      <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-4 text-center">
         <Button
           onClick={handleConfirm}
           disabled={createBooking.isPending}
-          className="w-full h-12 text-lg"
+          className="font-black tracking-tight uppercase text-lg"
+          style={{
+            background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+            border: "none",
+          }}
         >
           {createBooking.isPending ? (
             <>

@@ -81,7 +81,7 @@ const CustomerBookingPage = () => {
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-lg font-semibold">
+          <h1 className="font-black tracking-tighter uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
             {isArtistBooking ? "Book with Artist" : "Book Appointment"}
           </h1>
         </div>
@@ -119,14 +119,19 @@ const CustomerBookingPage = () => {
               />
             )}
 
-            <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-4">
+            <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-4 text-center">
               <Button
                 onClick={handleNext}
                 disabled={
                   (isShopBooking && !selectedLocation) ||
                   (isArtistBooking && (!customerName || !customerPhone))
                 }
-                className="w-full h-12 text-lg"
+                style={{
+                  background:
+                    "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                  border: "none",
+                }}
+                className="font-black tracking-tight uppercase text-lg"
               >
                 Next: Select Date & Time
               </Button>

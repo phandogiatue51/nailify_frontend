@@ -7,7 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
-import { ArrowLeft, Loader2, AlertCircle, ShoppingBag } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2,
+  AlertCircle,
+  ShoppingBag,
+  ArrowRight,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const CustomDesignPage = () => {
@@ -80,7 +86,9 @@ export const CustomDesignPage = () => {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="text-lg font-semibold">Custom Design</h1>
+              <h1 className="font-black tracking-tight uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+                Custom Design
+              </h1>
             </div>
           </div>
         </div>
@@ -141,8 +149,10 @@ export const CustomDesignPage = () => {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-xl font-black tracking-tight">Custom Design</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <h1 className="font-black tracking-tight uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+              Custom Design
+            </h1>
+            <p className="text-[10px] font-bold uppercase tracking-widest">
               Tap to select services
             </p>
           </div>
@@ -184,7 +194,6 @@ export const CustomDesignPage = () => {
                       : "border-transparent shadow-sm hover:border-slate-100",
                   )}
                 >
-                  {/* Selection Checkmark Overlay */}
                   <div
                     className={cn(
                       "absolute top-3 right-3 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all",
@@ -218,25 +227,35 @@ export const CustomDesignPage = () => {
         )}
       </div>
 
-      {/* 3. Floating Bottom Bar */}
       <div className="sticky bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white to-transparent">
         <Button
           onClick={handleBookNow}
           disabled={selectedItems.length === 0}
-          className={cn(
-            "w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl transition-all active:scale-95",
+          style={
             selectedItems.length > 0
-              ? "bg-slate-900 hover:bg-slate-800 text-white shadow-slate-300"
-              : "bg-slate-100 text-slate-400",
+              ? {
+                  background:
+                    "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                  border: "none",
+                }
+              : { background: "#0F172A", border: "none" }
+          }
+          className={cn(
+            "w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl transition-all active:scale-95 text-white",
+            selectedItems.length > 0
+              ? "shadow-orange-100"
+              : "cursor-not-allowed",
           )}
         >
           {selectedItems.length === 0 ? (
-            "Select to Continue"
+            <span>Select to Continue</span>
           ) : (
             <div className="flex justify-between w-full items-center px-2">
               <span>Continue Booking</span>
               <div className="h-6 w-[1px] bg-white/20" />
-              <span>Next</span>
+              <span className="flex items-center gap-1">
+                Next <ArrowRight className="w-3 h-3" />
+              </span>
             </div>
           )}
         </Button>

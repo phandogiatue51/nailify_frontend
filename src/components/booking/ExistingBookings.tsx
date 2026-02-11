@@ -1,17 +1,20 @@
 // /src/components/booking/ExistingBookings.tsx
 import { Card, CardContent } from "@/components/ui/card";
-import { Clock, AlertCircle } from "lucide-react";
-
+import { Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Badge } from "../ui/badge";
 interface ExistingBookingsProps {
   bookings: any[];
   isLoading: boolean;
-  currentBookingId?: string; 
+  currentBookingId?: string;
+  isShopOwner?: boolean;
 }
 
 export const ExistingBookings = ({
   bookings,
   isLoading,
   currentBookingId,
+  isShopOwner,
 }: ExistingBookingsProps) => {
   if (isLoading) {
     return (
@@ -32,45 +35,59 @@ export const ExistingBookings = ({
   }
 
   return (
-    <Card className="border-yellow-200 bg-yellow-50">
-      <CardContent className="p-4">
-        <div className="flex items-start gap-2 mb-3">
-          <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
-          <div>
-            <h3 className="font-semibold text-yellow-800">Existing Bookings</h3>
-            <p className="text-sm text-yellow-600">
-              {filteredBookings.length} appointment(s) already scheduled
-            </p>
-          </div>
-        </div>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between px-1">
+        <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+          {isShopOwner ? "Schedule Conflict Check" : "Availability Note"}
+        </h3>
+      </div>
 
-        <div className="space-y-2">
-          {filteredBookings.slice(0, 3).map((booking) => (
-            <div
-              key={booking.id}
-              className="flex items-center justify-between p-2 bg-white rounded border"
-            >
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-gray-500" />
-                <span className="font-medium">
-                  {new Date(booking.scheduledStart).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
-              </div>
-              <span className="text-sm text-gray-600">
-                {booking.durationMinutes} min
+      <div className="grid grid-cols-1 gap-2">
+        {bookings.map((booking) => (
+          <div
+            key={booking.id}
+            className={cn(
+              "flex items-center justify-between p-3 rounded-2xl border transition-all",
+              isShopOwner
+                ? "bg-amber-50 border-amber-100"
+                : "bg-slate-100 border-transparent opacity-60",
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <Clock
+                className={cn(
+                  "w-4 h-4",
+                  isShopOwner ? "text-amber-500" : "text-slate-400",
+                )}
+              />
+              <span className="text-sm font-bold text-slate-700">
+                {new Date(booking.scheduledStart).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </span>
             </div>
-          ))}
-          {filteredBookings.length > 3 && (
-            <p className="text-sm text-yellow-600 text-center">
-              + {filteredBookings.length - 3} more booking(s)
-            </p>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+
+            {isShopOwner ? (
+              <div className="text-right">
+                <p className="text-[10px] font-black text-amber-700 uppercase leading-none">
+                  {booking.customerName || "Busy"}
+                </p>
+                <p className="text-[9px] font-bold text-amber-600/70">
+                  {booking.durationMinutes}m
+                </p>
+              </div>
+            ) : (
+              <Badge
+                variant="outline"
+                className="text-[9px] uppercase border-slate-300 text-slate-500 font-black"
+              >
+                Slot Taken
+              </Badge>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
