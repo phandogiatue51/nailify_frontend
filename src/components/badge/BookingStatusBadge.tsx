@@ -1,29 +1,24 @@
 import { cn } from "@/lib/utils";
-const roleMap: Record<number, { label: string; bg: string; text: string }> = {
+const roleMap: Record<number, { label: string; bg: string }> = {
   0: {
     label: "Pending",
-    bg: "bg-orange-50",
-    text: "text-orange-600",
+    bg: "bg-orange-400",
   },
   1: {
     label: "Approved",
-    bg: "bg-green-50",
-    text: "text-green-600",
+    bg: "bg-blue-400",
   },
   2: {
     label: "Rejected",
-    bg: "bg-red-50",
-    text: "text-red-600",
+    bg: "bg-purple-400",
   },
   3: {
     label: "Completed",
-    bg: "bg-teal-50",
-    text: "text-teal-600",
+    bg: "bg-green-400",
   },
   4: {
     label: "Cancelled",
-    bg: "bg-slate-50",
-    text: "text-slate-600",
+    bg: "bg-red-400",
   },
 };
 
@@ -34,9 +29,8 @@ export const BookingStatusBadge = ({ status }: { status: number }) => {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider",
+        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-white",
         roleInfo.bg,
-        roleInfo.text,
       )}
     >
       {roleInfo.label}

@@ -22,7 +22,6 @@ const BottomNav = () => {
     { href: "/shop-dashboard", icon: Home, label: "Dashboard" },
     { href: "/explore", icon: Search, label: "Explore" },
     { href: "/my-shop/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/my-shop/schedule", icon: Calendar, label: "Schedule" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
@@ -30,7 +29,6 @@ const BottomNav = () => {
     { href: "/staff-dashboard", icon: Home, label: "Dashboard" },
     { href: "/explore", icon: Search, label: "Explore" },
     { href: "/staff/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/staff/schedule", icon: Calendar, label: "Schedule" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
@@ -38,7 +36,6 @@ const BottomNav = () => {
     { href: "/artist-dashboard", icon: Home, label: "Dashboard" },
     { href: "/explore", icon: Search, label: "Explore" },
     { href: "/my-artist/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/my-artist/schedule", icon: Calendar, label: "Schedule" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 

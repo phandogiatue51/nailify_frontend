@@ -8,16 +8,16 @@ import { useAuth } from "@/hooks/use-auth";
 import { Calendar } from "@/components/ui/calendar";
 import { MobilePagination } from "../ui/pagination-mobile";
 import { useShopOwnerLocations } from "@/hooks/useLocation";
+import { CalendarIcon, Loader2, List } from "lucide-react";
+import BookingCalendarView from "./BookingCalendarView";
 import { MapPin } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
 import { format, endOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
 
 const STATUS_OPTIONS = [
   { label: "All", value: undefined },
@@ -46,6 +46,11 @@ const BookingView: React.FC<BookingViewProps> = ({
   const [selectedLocationId, setSelectedLocationId] = useState<
     string | undefined
   >(undefined);
+  const [updatingBookingId, setUpdatingBookingId] = useState<string | null>(
+    null,
+  );
+  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+
   const { locations = [], isLoading: isLoadingLocations } =
     role === "shop"
       ? useShopOwnerLocations()
@@ -58,20 +63,94 @@ const BookingView: React.FC<BookingViewProps> = ({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const refetchFilteredBookings = () => {
+    const dateToSend = date ? endOfDay(date).toISOString() : null;
+    const filters: any = {
+      Date: dateToSend,
+      Status: status,
+    };
+
+    switch (role) {
+      case "customer":
+        if (auth.user?.userId) {
+          filters.CustomerId = auth.user.userId;
+        }
+        break;
+      case "nailArtist":
+        if (auth.user?.nailArtistId) {
+          filters.NailArtistId = auth.user.nailArtistId;
+        }
+        break;
+      case "shop":
+        if (auth.user?.shopId) {
+          filters.ShopId = auth.user.shopId;
+          if (selectedLocationId) {
+            filters.ShopLocationId = selectedLocationId;
+          }
+        }
+        break;
+      case "staff":
+        if (auth.user?.shopLocationId) {
+          filters.ShopLocationId = auth.user.shopLocationId;
+        }
+        break;
+    }
+
+    if (Object.keys(filters).some((key) => filters[key] !== undefined)) {
+      filterBookings.mutate(filters);
+    }
+  };
+
   const handleApprove = (bookingId: string) => {
-    updateBookingStatus.mutate({ bookingId, status: 1 });
+    setUpdatingBookingId(bookingId);
+    updateBookingStatus.mutate(
+      { bookingId, status: 1 },
+      {
+        onSettled: () => {
+          setUpdatingBookingId(null);
+          refetchFilteredBookings();
+        },
+      },
+    );
   };
 
   const handleReject = (bookingId: string) => {
-    updateBookingStatus.mutate({ bookingId, status: 2 });
+    setUpdatingBookingId(bookingId);
+    updateBookingStatus.mutate(
+      { bookingId, status: 2 },
+      {
+        onSettled: () => {
+          setUpdatingBookingId(null);
+          refetchFilteredBookings();
+        },
+      },
+    );
   };
 
   const handleCancel = (bookingId: string) => {
-    updateBookingStatus.mutate({ bookingId, status: 4 });
+    setUpdatingBookingId(bookingId);
+    updateBookingStatus.mutate(
+      { bookingId, status: 4 },
+      {
+        onSettled: () => {
+          setUpdatingBookingId(null);
+          refetchFilteredBookings();
+        },
+      },
+    );
   };
 
   const handleComplete = (bookingId: string) => {
-    updateBookingStatus.mutate({ bookingId, status: 3 });
+    setUpdatingBookingId(bookingId);
+    updateBookingStatus.mutate(
+      { bookingId, status: 3 },
+      {
+        onSettled: () => {
+          setUpdatingBookingId(null);
+          refetchFilteredBookings();
+        },
+      },
+    );
   };
 
   useEffect(() => {
@@ -120,21 +199,47 @@ const BookingView: React.FC<BookingViewProps> = ({
     filterBookings.mutate,
     selectedLocationId,
   ]);
-
-  const { data: bookings, isPending: isLoading } = filterBookings;
-
   const isShopOwner = role !== "customer";
+  const { data: bookings, isPending: isLoading } = filterBookings;
 
   return (
     <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen pb-20">
       <div className="sticky top-0 bg-white/90 backdrop-blur-md z-20 pt-2 pb-4 px-4 border-b border-slate-50 space-y-4">
+        <h2 className="text-xl font-black tracking-tight">{title}</h2>
+
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black tracking-tight">{title}</h2>
+          <div className="flex rounded-xl bg-slate-50 p-1">
+            <button
+              onClick={() => setViewMode("list")}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-md font-bold transition-all flex items-center gap-1.5",
+                viewMode === "list"
+                  ? "bg-white text-[#E288F9] shadow-sm"
+                  : "text-slate-400 hover:text-slate-600",
+              )}
+            >
+              <List className="h-3.5 w-3.5" />
+              List
+            </button>
+            <button
+              onClick={() => setViewMode("calendar")}
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-md font-bold transition-all flex items-center gap-1.5",
+                viewMode === "calendar"
+                  ? "bg-white text-[#E288F9] shadow-sm"
+                  : "text-slate-400 hover:text-slate-600",
+              )}
+            >
+              <CalendarIcon className="h-3.5 w-3.5" />
+              Calendar
+            </button>
+          </div>
+
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-9 rounded-xl bg-slate-50 text-xs font-bold"
+                className="h-9 rounded-xl bg-slate-50 text-xs font-bold text-md"
               >
                 <CalendarIcon className="mr-2 h-3.5 w-3.5 text-[#E288F9]" />
                 {date ? format(date, "MMM dd") : "Pick date"}
@@ -151,16 +256,16 @@ const BookingView: React.FC<BookingViewProps> = ({
           </Popover>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4">
+        <div className="grid grid-cols-3 gap-2 px-4">
           {STATUS_OPTIONS.map((opt) => (
             <button
               key={String(opt.value)}
               onClick={() => setStatus(opt.value)}
               className={cn(
-                "whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                "py-2.5 rounded-xl text-[12px] font-black uppercase  transition-all border-2",
                 status === opt.value
-                  ? "bg-[#E288F9] text-white shadow-lg shadow-purple-100"
-                  : "bg-slate-50 text-slate-400 hover:bg-slate-100",
+                  ? "bg-[#E288F9] border-[#E288F9] text-white shadow-md shadow-purple-100"
+                  : "bg-white border-slate-50 text-slate-400 hover:border-slate-100",
               )}
             >
               {opt.label}
@@ -205,7 +310,8 @@ const BookingView: React.FC<BookingViewProps> = ({
         )}
       </div>
 
-      <div className="px-4 space-y-4">
+      {/* Main Content */}
+      <div className="px-4">
         {filterBookings.isPending || (role === "shop" && isLoadingLocations) ? (
           <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-slate-200" />
@@ -218,19 +324,23 @@ const BookingView: React.FC<BookingViewProps> = ({
                 : `No bookings found`}
             </p>
           </div>
-        ) : (
-          <>
+        ) : viewMode === "list" ? (
+          <div className="space-y-4">
             {bookings
               ?.slice((currentPage - 1) * pageSize, currentPage * pageSize)
               .map((booking) => (
                 <BookingCard
                   key={booking.id}
                   booking={booking}
-                  isShopOwner={true}
-                  onApprove={handleApprove}
-                  onReject={handleReject}
+                  isShopOwner={isShopOwner}
+                  onApprove={isShopOwner ? handleApprove : undefined}
+                  onReject={isShopOwner ? handleReject : undefined}
                   onCancel={handleCancel}
-                  onComplete={handleComplete}
+                  onComplete={isShopOwner ? handleComplete : undefined}
+                  isLoading={
+                    updatingBookingId === booking.id &&
+                    updateBookingStatus.isPending
+                  }
                 />
               ))}
 
@@ -248,7 +358,18 @@ const BookingView: React.FC<BookingViewProps> = ({
                 />
               </div>
             )}
-          </>
+          </div>
+        ) : (
+          <BookingCalendarView
+            bookings={bookings || []}
+            role={role}
+            onApprove={isShopOwner ? handleApprove : undefined}
+            onReject={isShopOwner ? handleReject : undefined}
+            onCancel={handleCancel}
+            onComplete={isShopOwner ? handleComplete : undefined}
+            isLoading={updateBookingStatus.isPending}
+            updatingBookingId={updatingBookingId}
+          />
         )}
       </div>
     </div>

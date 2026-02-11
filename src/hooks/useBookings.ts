@@ -310,7 +310,9 @@ export const useBookings = () => {
       bookingId: string;
       status: BookingStatus;
     }) => {
-      return await BookingAPI.updateStatus(bookingId, { status });
+      console.log("DEBUG: mutationFn called with:", { bookingId, status });
+
+      return await BookingAPI.updateStatus(bookingId, status);
     },
     onSuccess: (data, variables) => {
       toast({

@@ -15,7 +15,6 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import MyShopPage from "./pages/shop/MyShopPage";
 import ShopDetailPage from "./pages/shop/ShopDetailPage";
-import SchedulePage from "./pages/shop/SchedulePage";
 import ServiceItemDetailPage from "./pages/serviceItem/ServiceItemDetailPage";
 import CollectionDetailPage from "./pages/collection/CollectionDetailPage";
 import AdminLayout from "./components/layout/AdminLayout";
@@ -149,7 +148,6 @@ export const router = createBrowserRouter(
         { path: "shop/:shopId", element: withMobileLayout(<ShopDetailPage />) },
         { path: "artist/:id", element: withMobileLayout(<ArtistDetailPage />) },
 
-        { path: "schedule", element: withMobileLayout(<SchedulePage />) },
         { path: "explore", element: withMobileLayout(<ExplorePage />) },
         {
           path: "services/:id",

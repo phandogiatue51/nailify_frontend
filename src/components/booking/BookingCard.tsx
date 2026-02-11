@@ -5,6 +5,7 @@ import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BookingStatusBadge } from "../badge/BookingStatusBadge";
 import DateDisplay from "../ui/date-display";
+import { Loader2 } from "lucide-react";
 import {
   Booking,
   Shop,
@@ -24,6 +25,7 @@ interface BookingCardProps {
   onReject?: (bookingId: string) => void;
   onCancel?: (bookingId: string) => void;
   onComplete?: (bookingId: string) => void;
+  isLoading?: boolean;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
@@ -33,6 +35,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onReject,
   onCancel,
   onComplete,
+  isLoading = false,
 }) => {
   const navigate = useNavigate();
 
@@ -107,8 +110,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => onReject?.(booking.id)}
+                      disabled={isLoading}
                       className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
                     >
+                      {isLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                      ) : null}
                       Reject
                     </Button>
 
@@ -116,8 +123,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => onApprove?.(booking.id)}
+                      disabled={isLoading}
                       className="rounded-xl text-emerald-400 font-black text-[10px] uppercase border border-green-300 hover:bg-green-400 hover:text-white"
                     >
+                      {isLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                      ) : null}
                       Approve
                     </Button>
                   </>
@@ -129,16 +140,24 @@ const BookingCard: React.FC<BookingCardProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={() => onCancel?.(booking.id)}
+                      disabled={isLoading}
                       className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
                     >
+                      {isLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                      ) : null}
                       Cancel
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onComplete?.(booking.id)}
+                      disabled={isLoading}
                       className="rounded-xl text-emerald-400 font-black text-[10px] uppercase border border-green-300 hover:bg-green-400 hover:text-white"
                     >
+                      {isLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                      ) : null}
                       Complete
                     </Button>
                   </>
@@ -146,12 +165,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
               </>
             )}
 
-            {!isShopOwner && (booking.status === 0 || booking.status === 1) && (
+            {!isShopOwner && booking.status === 0 && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onCancel?.(booking.id)}
-                className="rounded-xl text-red-400 font-black text-[10px] uppercase hover:bg-red-50"
+                className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
               >
                 Cancel
               </Button>

@@ -113,11 +113,36 @@ const ExplorePage = () => {
                 {isLoading ? (
                   <ExploreSkeleton />
                 ) : filteredShops.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-4">
-                    {filteredShops.map((shop) => (
-                      <ShopCard key={shop.id} shop={shop} />
-                    ))}
-                  </div>
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      {filteredShops
+                        .slice(
+                          (currentPage - 1) * pageSize,
+                          currentPage * pageSize,
+                        )
+                        .map((shop) => (
+                          <ShopCard key={shop.id} shop={shop} />
+                        ))}
+                    </div>
+
+                    {/* Pagination for shops */}
+                    {filteredShops.length > pageSize && (
+                      <div className="pt-6 mt-6 border-t border-slate-100">
+                        <MobilePagination
+                          currentPage={currentPage}
+                          totalPages={Math.ceil(
+                            filteredShops.length / pageSize,
+                          )}
+                          onPageChange={handlePageChange}
+                          totalItems={filteredShops.length}
+                          visibleItems={Math.min(
+                            pageSize,
+                            filteredShops.length - (currentPage - 1) * pageSize,
+                          )}
+                        />
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <EmptyExploreState query={searchQuery} type="shops" />
                 )}
@@ -127,11 +152,37 @@ const ExplorePage = () => {
                 {isLoading ? (
                   <ExploreSkeleton />
                 ) : filteredArtists.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-4">
-                    {filteredArtists.map((artist) => (
-                      <NailArtistCard key={artist.id} artist={artist} />
-                    ))}
-                  </div>
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      {filteredArtists
+                        .slice(
+                          (currentPage - 1) * pageSize,
+                          currentPage * pageSize,
+                        )
+                        .map((artist) => (
+                          <NailArtistCard key={artist.id} artist={artist} />
+                        ))}
+                    </div>
+
+                    {/* Pagination for artists */}
+                    {filteredArtists.length > pageSize && (
+                      <div className="pt-6 mt-6 border-t border-slate-100">
+                        <MobilePagination
+                          currentPage={currentPage}
+                          totalPages={Math.ceil(
+                            filteredArtists.length / pageSize,
+                          )}
+                          onPageChange={handlePageChange}
+                          totalItems={filteredArtists.length}
+                          visibleItems={Math.min(
+                            pageSize,
+                            filteredArtists.length -
+                              (currentPage - 1) * pageSize,
+                          )}
+                        />
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <EmptyExploreState query={searchQuery} type="artists" />
                 )}

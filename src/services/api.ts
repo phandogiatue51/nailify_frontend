@@ -8,6 +8,7 @@ import {
   BookingFilterDto,
   StaffFilterDto,
 } from "@/types/filter";
+import { BookingStatus } from "@/types/database";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ApiRequestOptions extends RequestInit {
@@ -421,9 +422,8 @@ export const BookingAPI = {
     }),
 
   updateStatus: (id: string, status: any) =>
-    apiRequest(`/Booking/update-status/${id}`, {
+    apiRequest(`/Booking/update-status/${id}?status=${status}`, {
       method: "PUT",
-      body: status,
     }),
 
   filter: (filterParams: BookingFilterDto) => {
