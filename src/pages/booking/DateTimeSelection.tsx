@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { TIME_SLOTS } from "./TimeSlot";
 import { format } from "date-fns";
 import { DateScrollPicker } from "@/components/booking/DateScrollPickerProps";
+import { useShopOwnerLocationById } from "@/hooks/useLocation";
 const DateTimeSelection = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -71,17 +72,28 @@ const DateTimeSelection = () => {
     });
   };
 
-  const isSlotBusy = (slotTimeStr: string, bookings: any[]) => {
-    return bookings.some((booking) => {
-      const start = new Date(booking.scheduledStart);
-      const end = new Date(start.getTime() + booking.durationMinutes * 60000);
+  const { data: locationSettings } = useShopOwnerLocationById(selectedLocation);
 
-      const [hours, minutes] = slotTimeStr.split(":");
-      const slotDate = new Date(start);
-      slotDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+  const isSlotBusy = (slotTimeStr: string, bookings: any[]) => {
+    const maxCapacity = isArtistBooking
+      ? 1
+      : locationSettings?.maxConcurrentBookings || 1;
+    const buffer = locationSettings?.bufferMinutes || 0;
+
+    const [hours, minutes] = slotTimeStr.split(":").map(Number);
+    const slotDate = new Date(selectedDateObj);
+    slotDate.setHours(hours, minutes, 0, 0);
+
+    const overlappingCount = bookings.filter((booking) => {
+      const start = new Date(booking.scheduledStart);
+      const end = new Date(
+        start.getTime() + (booking.durationMinutes + buffer) * 60000,
+      );
 
       return slotDate >= start && slotDate < end;
-    });
+    }).length;
+
+    return overlappingCount >= maxCapacity;
   };
 
   const [selectedDateObj, setSelectedDateObj] = useState<Date>(new Date());
@@ -91,7 +103,7 @@ const DateTimeSelection = () => {
   }, [selectedDateObj]);
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
+    <div className="min-h-screen bg-slate-50">
       <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-5 h-5" />
@@ -141,18 +153,18 @@ const DateTimeSelection = () => {
                       disabled={busy && !isShopOwner}
                       onClick={() => setSelectedTime(slot)}
                       className={cn(
-                        "py-3 rounded-2xl text-xs font-black transition-all border-2",
+                        "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
                         isSelected
-                          ? "bg-[#E288F9] border-[#E288F9] text-white shadow-lg shadow-purple-100 scale-95"
+                          ? "bg-gradient-to-r from-[#f988b3] to-[#FFC988] text-white scale-95"
                           : busy
-                            ? "bg-slate-50 border-transparent text-slate-300 cursor-not-allowed"
-                            : "bg-white border-slate-50 text-slate-600 hover:border-slate-100 active:bg-slate-50",
+                            ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
+                            : "bg-white border-slate-50 text-slate-600 hover:border-slate-200",
                       )}
                     >
                       {slot}
                       {busy && isShopOwner && (
-                        <div className="text-[8px] text-amber-600 opacity-70">
-                          Conflict
+                        <div className="text-[10px] text-amber-600 opacity-70">
+                          Busy
                         </div>
                       )}
                     </button>
@@ -163,20 +175,25 @@ const DateTimeSelection = () => {
           </Card>
         )}
 
-        {selectedDate && (selectedLocation || artistId) && (
-          <ExistingBookings
-            bookings={bookings}
-            isLoading={bookingsLoading}
-            isShopOwner={isShopOwner}
-          />
+        {isShopOwner && selectedDate && (selectedLocation || artistId) && (
+          <div className="mt-4">
+            <h3 className="text-xs font-black uppercase text-slate-400 mb-2 px-2">
+              Existing Bookings
+            </h3>
+            <ExistingBookings
+              bookings={bookings}
+              isLoading={bookingsLoading}
+              isShopOwner={isShopOwner}
+            />
+          </div>
         )}
       </div>
 
-      <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-4 text-center">
+      <div className="sticky bottom-0 left-0 right-0 p-4 text-center">
         <Button
           onClick={handleNext}
           disabled={!selectedDate || !selectedTime}
-          className="font-black tracking-tight uppercase text-lg"
+          className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
           style={{
             background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
             border: "none",

@@ -58,7 +58,7 @@ const ShopOwnerDashboardPage = () => {
     <div>
       <Header title="Nailify" hasNotification={true} />
 
-      <div className="p-6 space-y-8 bg-slate-50/30 min-h-screen pb-24">
+      <div className="p-6 space-y-8 bg-slate-50/30 min-h-screen">
         {/* Header Section */}
         <div className="pt-4 flex justify-between items-end">
           <div className="space-y-1">
@@ -131,7 +131,7 @@ const ShopOwnerDashboardPage = () => {
             variant="link"
             size="sm"
             className="text-primary font-bold"
-            onClick={() => navigate("/bookings")}
+            onClick={() => navigate("/shop/bookings")}
           >
             See All
           </Button>
@@ -166,6 +166,16 @@ const ShopOwnerDashboardPage = () => {
             )}
           </CardContent>
         </Card>
+
+        <Button
+          className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
+          style={{
+            background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+            border: "none",
+          }}
+        >
+          Book an appointment
+        </Button>
       </div>
     </div>
   );

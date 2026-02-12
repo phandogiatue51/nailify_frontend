@@ -95,7 +95,7 @@ const QuickStats = ({
     },
     {
       label: "Revenue",
-      value: `$${stats?.totalRevenue || 0}`,
+      value: `${stats?.totalRevenue.toLocaleString() || 0} VND`,
       icon: DollarSign,
       color: "text-purple-600",
       bg: "bg-purple-50",
@@ -133,7 +133,7 @@ const QuickStats = ({
           className={`rounded-[2rem] border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden ${item.border}`}
         >
           <CardContent className="p-4 md:p-6">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-center">
               <div className={`p-2 rounded-xl ${item.bg}`}>
                 <item.icon className={`w-4 h-4 ${item.color}`} />
               </div>
@@ -141,7 +141,7 @@ const QuickStats = ({
                 {item.label}
               </span>
             </div>
-            <p className="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter mb-2">
+            <p className="text-2xl font-black text-slate-900 tracking-tighter mb-2 text-center">
               {item.value}
             </p>
             <div className={`h-1 w-8 ${item.bg} rounded-full`} />

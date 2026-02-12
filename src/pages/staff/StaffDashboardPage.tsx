@@ -41,7 +41,7 @@ export const StaffDashboardPage = () => {
     <div>
       <Header title="Nailify" hasNotification={true} />
 
-      <div className="min-h-screen bg-slate-50/50 pb-24 px-6 pt-8">
+      <div className="min-h-screen bg-slate-50/50 px-6 pt-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -87,7 +87,7 @@ export const StaffDashboardPage = () => {
               variant="link"
               size="sm"
               className="text-primary font-bold"
-              onClick={() => navigate("/staff/schedule")} // Create staff schedule page
+              onClick={() => navigate("/staff/bookings")}
             >
               See All
             </Button>
@@ -124,25 +124,15 @@ export const StaffDashboardPage = () => {
           </CardContent>
         </Card>
 
-        <div className="mt-8 grid grid-cols-2 gap-3">
-          <Button
-            variant="outline"
-            className="h-16 rounded-2xl flex flex-col items-center justify-center gap-2"
-            onClick={() => navigate("/staff/schedule")}
-          >
-            <Calendar className="w-6 h-6 text-primary" />
-            <span className="text-xs font-bold">Schedule</span>
-          </Button>
-
-          <Button
-            variant="outline"
-            className="h-16 rounded-2xl flex flex-col items-center justify-center gap-2"
-            onClick={() => navigate("/staff/tasks")}
-          >
-            <CheckCircle className="w-6 h-6 text-green-600" />
-            <span className="text-xs font-bold">Tasks</span>
-          </Button>
-        </div>
+        <Button
+          className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
+          style={{
+            background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+            border: "none",
+          }}
+        >
+          Book an appointment
+        </Button>
       </div>
     </div>
   );

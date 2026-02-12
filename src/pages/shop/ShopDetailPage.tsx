@@ -97,7 +97,7 @@ const ShopDetailPage = () => {
                   <Wand2 className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-slate-900">
+                  <h3 className="font-black text-slate-900">
                     Want something unique?
                   </h3>
                   <p className="text-sm text-slate-500">
@@ -107,6 +107,12 @@ const ShopDetailPage = () => {
                 <Button
                   onClick={() => navigate(`/shop/${shopId}/custom`)}
                   size="sm"
+                  className="font-black tracking-tight uppercase rounded-[2rem]"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                    border: "none",
+                  }}
                 >
                   Customize
                 </Button>

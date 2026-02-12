@@ -1,258 +1,251 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useBookings } from "@/hooks/useBookings";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, Clock, AlertCircle } from "lucide-react";
+import { ArrowLeft, Clock, AlertCircle, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { TIME_SLOTS } from "./TimeSlot";
+import { DateScrollPicker } from "@/components/booking/DateScrollPickerProps";
+import { useShopOwnerLocationById } from "@/hooks/useLocation";
+import { useAuth } from "@/hooks/use-auth";
 import { ExistingBookings } from "@/components/booking/ExistingBookings";
 
 const RescheduleBooking = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
   const { toast } = useToast();
-  const { useBookingById, updateBooking } = useBookings();
-
+  const { user } = useAuth();
+  const {
+    useBookingById,
+    updateBooking,
+    useLocationBookings,
+    useArtistBookings,
+  } = useBookings();
   const { data: booking, isLoading } = useBookingById(id);
   const updateMutation = updateBooking;
+  const isShopOwner = user?.role === 1 || user?.role === 3 || user?.role === 4;
 
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedDateObj, setSelectedDateObj] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (booking) {
-      const bookingDate = new Date(booking.scheduledStart);
-      const dateStr = bookingDate.toISOString().split("T")[0];
-      const timeStr = format(bookingDate, "HH:mm");
-
-      setSelectedDate(dateStr);
-      setSelectedTime(timeStr);
+      const start = new Date(booking.scheduledStart);
+      setSelectedDateObj(start);
+      setSelectedTime(format(start, "HH:mm"));
     }
   }, [booking]);
 
-  const { useLocationBookings, useArtistBookings } = useBookings();
-
-  const locationBookingsQuery = useLocationBookings(
+  const selectedDateStr = format(selectedDateObj, "yyyy-MM-dd");
+  const { data: locationData } = useShopOwnerLocationById(
     booking?.shopLocationId,
-    selectedDate ? new Date(selectedDate) : undefined,
   );
+  const { data: conflicts = [], isLoading: conflictsLoading } =
+    booking?.shopLocationId
+      ? useLocationBookings(booking.shopLocationId, selectedDateObj)
+      : useArtistBookings(selectedDateObj);
 
-  const artistBookingsQuery = useArtistBookings(
-    selectedDate ? new Date(selectedDate) : undefined,
-  );
+  const maxCapacity = locationData?.maxConcurrentBookings || 1;
 
-  const existingBookings = booking?.shopLocationId
-    ? locationBookingsQuery.data
-    : booking?.nailArtistId
-      ? artistBookingsQuery.data
-      : [];
+  const isSlotBusy = (slotTimeStr: string) => {
+    const [hours, minutes] = slotTimeStr.split(":").map(Number);
+    const slotStart = new Date(selectedDateObj);
+    slotStart.setHours(hours, minutes, 0, 0);
 
-  const bookingsLoading = booking?.shopLocationId
-    ? locationBookingsQuery.isLoading
-    : booking?.nailArtistId
-      ? artistBookingsQuery.isLoading
-      : false;
+    const buffer = locationData?.bufferMinutes || 0;
+
+    const overlappingBookings = conflicts.filter((b: any) => {
+      if (b.id === id) return false;
+
+      const bStart = new Date(b.scheduledStart);
+      const bEnd = new Date(
+        bStart.getTime() + (b.durationMinutes + buffer) * 60000,
+      );
+
+      return slotStart >= bStart && slotStart < bEnd;
+    });
+
+    return overlappingBookings.length >= maxCapacity;
+  };
 
   const handleReschedule = async () => {
-    if (!selectedDate || !selectedTime || !booking) {
-      toast({
-        title: "Error",
-        description: "Please select both date and time",
-        variant: "destructive",
-      });
-      return;
-    }
+    if (!selectedTime || !booking) return;
 
-    const newDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
-    const scheduledStart = newDateTime.toISOString();
+    const newDateTime = new Date(`${selectedDateStr}T${selectedTime}:00`);
 
     if (newDateTime < new Date()) {
       toast({
         title: "Invalid Time",
-        description: "Cannot schedule booking in the past",
+        description: "Cannot schedule in the past",
         variant: "destructive",
       });
       return;
     }
 
     setIsSubmitting(true);
-
     try {
       await updateMutation.mutateAsync({
         id: booking.id,
-        data: {
-          scheduledStart,
-          collectionId: booking.collectionId || null,
-          bookingItems: booking.bookingItems.map((item) => ({
-            serviceItemId: item.serviceItemId,
-          })),
-          notes: booking.notes || null,
-          customerName: booking.customerName || null,
-          customerPhone: booking.customerPhone || null,
-          customerAddress: booking.customerAddress || null,
-        },
+        data: { scheduledStart: newDateTime.toISOString() },
       });
-
-      toast({
-        title: "Booking Rescheduled",
-        description: "Your appointment has been updated successfully",
-        variant: "success",
-      });
-
-      navigate(`/booking/detail/${booking.id}`, {
-        state: { success: true },
-      });
+      navigate(`/booking/detail/${booking.id}`, { state: { success: true } });
     } catch (error) {
-      console.error("Reschedule error:", error);
-      toast({
-        title: "Reschedule Failed",
-        description: "Failed to update booking. Please try again.",
-        variant: "destructive",
-      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isLoading) {
+  if (isLoading)
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-center">
-          <p>Loading booking details...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center font-black uppercase text-slate-400">
+        Loading...
       </div>
     );
-  }
 
-  if (!booking) {
+  if (!booking)
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <AlertCircle className="w-16 h-16 text-yellow-500 mx-auto" />
-              <h2 className="text-2xl font-bold">Booking Not Found</h2>
-              <p className="text-muted-foreground">
-                Unable to find the booking to reschedule.
-              </p>
-              <Button onClick={() => navigate("/bookings")} className="mt-4">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Bookings
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen p-6 flex flex-col items-center justify-center text-center gap-4">
+        <AlertCircle className="w-12 h-12 text-rose-400" />
+        <h2 className="font-black uppercase tracking-tight text-xl">
+          Booking Not Found
+        </h2>
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outline"
+          className="rounded-2xl"
+        >
+          Go Back
+        </Button>
       </div>
     );
-  }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b px-4 py-4 flex items-center gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate(-1)}
+          className="rounded-xl"
+        >
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-lg font-semibold">Reschedule Booking</h1>
-          <p className="text-sm text-muted-foreground">
-            Update date and time for your appointment
-          </p>
+          <h1 className="font-black tracking-tighter uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+            Reschedule
+          </h1>
         </div>
       </div>
 
       <div className="p-4 space-y-6">
-        {/* Current Booking Info */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="space-y-2">
-              <h3 className="font-semibold">Current Appointment</h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Calendar className="w-4 h-4" />
-                <span>
-                  {format(
-                    new Date(booking.scheduledStart),
-                    "EEEE, MMMM d, yyyy",
-                  )}
-                </span>
-                <Clock className="w-4 h-4 ml-2" />
-                <span>
-                  {format(new Date(booking.scheduledStart), "h:mm a")}
-                </span>
-              </div>
-              <p className="text-sm">
-                {booking.collectionName || "Custom Service"} •{" "}
-                {booking.durationMinutes} min
+        <div className="rounded-[2rem] p-6 shadow-xl shadow-pink-100 bg-gradient-to-br from-[#f988b3] to-[#FFC988] text-white">
+          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">
+            Current Appointment
+          </h3>
+          <div className="flex justify-between items-end">
+            <div>
+              <p className="text-xl font-black tracking-tighter uppercase">
+                {format(new Date(booking.scheduledStart), "MMM do  h:mm a")}
+              </p>
+              <p className="text-xs font-bold opacity-90 italic">
+                {booking.collectionName || "Custom Service"}
               </p>
             </div>
-          </CardContent>
-        </Card>
+            <Calendar className="w-8 h-8 opacity-20" />
+          </div>
+        </div>
 
-        {/* Date Selection */}
-        <Card>
+        <Card className="border-none shadow-sm rounded-[2.5rem] bg-white overflow-hidden">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-5 h-5 text-primary" />
-              <h2 className="font-semibold">Select New Date</h2>
-            </div>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              min={new Date().toISOString().split("T")[0]}
-              className="w-full p-3 border rounded-lg"
+            <DateScrollPicker
+              selectedDate={selectedDateObj}
+              onDateChange={setSelectedDateObj}
             />
           </CardContent>
         </Card>
 
-        {selectedDate && (
-          <>
-            {/* Time Selection */}
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <Clock className="w-5 h-5 text-primary" />
-                  <h2 className="font-semibold">Select New Time</h2>
-                </div>
-                <input
-                  type="time"
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full p-3 border rounded-lg"
-                />
-              </CardContent>
-            </Card>
+        <Card className="border-none shadow-sm rounded-[2.5rem] bg-white overflow-hidden">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="p-2 bg-purple-50 rounded-xl">
+                <Clock className="w-5 h-5 text-[#E288F9]" />
+              </div>
+              <h2 className="text-sm font-black uppercase tracking-tight text-slate-700">
+                Select New Time
+              </h2>
+            </div>
 
-            {/* Show existing bookings for the selected date */}
-            {selectedDate &&
-              (booking.shopLocationId || booking.nailArtistId) && (
-                <ExistingBookings
-                  bookings={existingBookings}
-                  isLoading={bookingsLoading}
-                  currentBookingId={booking.id}
-                />
-              )}
-          </>
-        )}
+            <div className="grid grid-cols-3 gap-2">
+              {TIME_SLOTS.map((slot) => {
+                const busy = isSlotBusy(slot);
+                const isSelected = selectedTime === slot;
+                return (
+                  <button
+                    key={slot}
+                    disabled={busy}
+                    onClick={() => setSelectedTime(slot)}
+                    className={cn(
+                      "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
+                      isSelected
+                        ? "bg-gradient-to-r from-[#f988b3] to-[#FFC988] text-white scale-95"
+                        : busy
+                          ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
+                          : "bg-white border-slate-50 text-slate-600 hover:border-slate-200",
+                    )}
+                  >
+                    {slot}
+                    {busy && (
+                      <span className="text-[8px] uppercase absolute bottom-1">
+                        Busy
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        {isShopOwner &&
+          selectedDateStr &&
+          (booking.shopLocationId || booking.nailArtistId) && (
+            <div className="mt-4 px-2">
+              <h3 className="text-xs font-black uppercase text-slate-400 mb-4 px-2 flex items-center gap-2">
+                <AlertCircle className="w-3 h-3" />
+                Existing Bookings
+              </h3>
+              <ExistingBookings
+                bookings={conflicts}
+                isLoading={conflictsLoading}
+                isShopOwner={isShopOwner}
+              />
+            </div>
+          )}
       </div>
 
-      {/* Bottom Action Bar */}
-      <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-4">
-        <div className="flex gap-3">
+      {/* Action Bar */}
+      <div className="sticky bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white to-transparent z-30">
+        <div className="flex gap-3 max-w-md mx-auto">
           <Button
             variant="outline"
-            onClick={() => navigate(`/booking/${booking.id}`)}
-            className="flex-1"
+            onClick={() => navigate(-1)}
+            className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs border-slate-200 text-slate-400"
           >
             Cancel
           </Button>
           <Button
             onClick={handleReschedule}
-            disabled={!selectedDate || !selectedTime || isSubmitting}
-            className="flex-1 h-12 text-lg"
+            disabled={isSubmitting || !selectedTime}
+            style={{
+              background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+              border: "none",
+            }}
+            className="flex-[2] h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-2xl transition-all active:scale-95 disabled:opacity-50"
           >
             {isSubmitting ? "Updating..." : "Confirm Reschedule"}
           </Button>

@@ -69,7 +69,7 @@ const NailArtistDashboardPage = () => {
     <div>
       <Header title="Nailify" hasNotification={true} />
 
-      <div className="min-h-screen bg-slate-50/50 pb-24 px-6 pt-8 pb-6">
+      <div className="min-h-screen bg-slate-50/50 px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -119,7 +119,7 @@ const NailArtistDashboardPage = () => {
             variant="link"
             size="sm"
             className="text-primary font-bold"
-            onClick={() => navigate("/bookings")}
+            onClick={() => navigate("/my-artist/bookings")}
           >
             See All
           </Button>

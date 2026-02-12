@@ -11,7 +11,7 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
 
   return (
     <Card
-      className="overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.98]"
+      className="overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.98] rounded-[2rem]"
       onClick={() => navigate(`/shop/${shop.id}`)}
     >
       <div className="relative aspect-video bg-muted">
@@ -36,10 +36,7 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
       </div>
       <CardContent className="pt-8 pb-4">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-lg">{shop.name}</h3>
-          {shop.isVerified && (
-            <CircleCheckBig className="w-5 h-5 text-green-500" />
-          )}
+          <h3 className="font-black text-lg">{shop.name}</h3>
         </div>
 
         {shop.description && (

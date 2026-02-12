@@ -36,7 +36,6 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
   const isArtist = !!artist;
 
   const handleBookNow = () => {
- 
     const bookingState: any = {
       type: collection.shopId ? "shop" : "artist",
       selectedCollection: collection,
@@ -83,7 +82,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
         ) : null}
 
         {collection.totalPrice !== undefined && (
-          <p className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
+          <p className="ml-auto text-xl font-black text-green-600 whitespace-nowrap">
             {collection.totalPrice.toLocaleString()} VND
           </p>
         )}
@@ -101,7 +100,14 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           </div>
         </div>
       )}
-      <Button onClick={handleBookNow} className="w-full">
+      <Button
+        onClick={handleBookNow}
+        className="font-black tracking-tight uppercase text-lg w-full rounded-[2rem]"
+        style={{
+          background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+          border: "none",
+        }}
+      >
         Book Now
       </Button>
       <Separator />

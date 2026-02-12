@@ -39,7 +39,7 @@ export const LocationStep = ({
           <LocationSelector
             locations={locations}
             selectedLocation={selectedLocation}
-            onSelectLocation={handleLocationSelect} // Use the wrapper function
+            onSelectLocation={handleLocationSelect} 
           />
         )}
       </CardContent>

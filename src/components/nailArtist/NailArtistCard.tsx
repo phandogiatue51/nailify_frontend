@@ -14,7 +14,7 @@ const NailArtistCard: React.FC<NailArtistCardProps> = ({ artist }) => {
 
   return (
     <Card
-      className="overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.98]"
+      className="overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.98] rounded-[2rem]"
       onClick={() => navigate(`/artist/${artist.id}`)}
     >
       <CardContent className="p-0">
@@ -32,14 +32,12 @@ const NailArtistCard: React.FC<NailArtistCardProps> = ({ artist }) => {
           )}
         </div>
 
-        <div className="p-3 space-y-2">
+        <div className="p-5 space-y-2">
           {/* Name and Rating */}
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-lg">{artist.fullName}</h3>
-              {artist.artistVerified && (
-                <CircleCheckBig className="w-5 h-5 text-green-500" />
-              )}
+              <h3 className="font-black text-lg">{artist.fullName}</h3>
+
             </div>
             {hasRating && (
               <div className="flex items-center gap-1 text-xs">

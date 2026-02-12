@@ -83,6 +83,16 @@ export const BookingActions = ({
               </>
             )}
 
+            {isFuture && (
+              <Button
+                variant="outline"
+                className="flex-1 rounded-2xl font-bold"
+                onClick={() => onReschedule?.(booking.id)}
+              >
+                <Calendar className="w-4 h-4 mr-2" /> Reschedule
+              </Button>
+            )}
+
             {isApproved && (
               <>
                 {/* CANCEL with ConfirmationDialog */}
@@ -106,7 +116,6 @@ export const BookingActions = ({
                   isLoading={isUpdatingStatus || isCancelling}
                 />
 
-                {/* COMPLETE with ConfirmationDialog */}
                 <ConfirmationDialog
                   trigger={
                     <Button
@@ -130,7 +139,6 @@ export const BookingActions = ({
           </>
         )}
 
-        {/* Customer Actions */}
         {!isShopOwner && isPending && (
           <>
             {isFuture && (
@@ -143,7 +151,6 @@ export const BookingActions = ({
               </Button>
             )}
 
-            {/* Customer CANCEL with ConfirmationDialog */}
             <ConfirmationDialog
               trigger={
                 <Button

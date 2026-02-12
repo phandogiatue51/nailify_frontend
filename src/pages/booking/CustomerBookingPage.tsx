@@ -75,8 +75,7 @@ const CustomerBookingPage = () => {
   const isLoading = locationsLoading;
   return (
     <div>
-      <div className="min-h-screen bg-slate-50 pb-24">
-        {/* Header */}
+      <div className="min-h-screen bg-slate-50">
         <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-5 h-5" />
@@ -119,7 +118,7 @@ const CustomerBookingPage = () => {
               />
             )}
 
-            <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-4 text-center">
+            <div className="sticky bottom-0 left-0 right-0 p-4 text-center">
               <Button
                 onClick={handleNext}
                 disabled={
@@ -131,7 +130,7 @@ const CustomerBookingPage = () => {
                     "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
                   border: "none",
                 }}
-                className="font-black tracking-tight uppercase text-lg"
+                className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
               >
                 Next: Select Date & Time
               </Button>

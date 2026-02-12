@@ -100,14 +100,20 @@ const ArtistDetailPage = () => {
         {/* Action Buttons */}
         <div className="px-6 -mt-4 relative z-20">
           <div className="flex gap-3">
-            <Button className="flex-1 h-12 rounded-2xl bg-[#E288F9] shadow-lg shadow-purple-100 font-bold border-none hover:bg-[#d07ae6]">
+            <Button
+              className="font-black tracking-tight uppercase rounded-[2rem] w-full"
+              style={{
+                background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                border: "none",
+              }}
+            >
               <MessageCircle className="w-4 h-4 mr-2" />
               Chat Now
             </Button>
             <Button
               variant="outline"
               size="icon"
-              className="h-12 w-12 rounded-2xl border-slate-100 bg-white shadow-sm"
+              className="h-12 w-12 rounded-[2rem] border border-pink-300 bg-white shadow-sm"
             >
               <Heart className="w-4 h-4 text-pink-500" />
             </Button>
@@ -127,7 +133,7 @@ const ArtistDetailPage = () => {
                     <Sparkles className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-slate-900">
+                    <h3 className="font-black text-slate-900">
                       Have something specific in mind?
                     </h3>
                     <p className="text-sm text-slate-500">
@@ -137,6 +143,12 @@ const ArtistDetailPage = () => {
                   <Button
                     onClick={() => navigate(`/artist/${id}/custom`)}
                     size="sm"
+                    className="font-black tracking-tight uppercase rounded-[2rem]"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                      border: "none",
+                    }}
                   >
                     Request
                   </Button>

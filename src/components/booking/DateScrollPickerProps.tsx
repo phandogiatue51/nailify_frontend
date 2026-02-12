@@ -72,10 +72,10 @@ export const DateScrollPicker: React.FC<DateScrollPickerProps> = ({
               key={day.toString()}
               onClick={() => onDateChange(day)}
               className={cn(
-                "flex flex-col items-center min-w-[50px] flex-1 py-4 rounded-[2rem] transition-all duration-300 border-2",
+                "flex flex-col items-center min-w-[50px] flex-1 p-4 rounded-[2rem] transition-all duration-300 ",
                 isSelected
-                  ? "bg-[#E288F9] border-[#E288F9] text-white shadow-lg shadow-purple-100 scale-105"
-                  : "bg-white border-slate-50 text-slate-400 hover:border-slate-200",
+                  ? "bg-gradient-to-r from-[#f988b3] to-[#FFC988] text-white"
+                  : "bg-white border-slate-50 text-slate-500 hover:border-slate-200",
               )}
             >
               <span
