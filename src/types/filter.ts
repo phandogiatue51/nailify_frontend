@@ -82,3 +82,11 @@ export interface BookingFilterDto {
   Status?: BookingStatus;
   SearchTerm?: string;
 }
+
+export interface RatingFilterDto {
+  NailArtistId?: string;
+  ShopId?: string;
+  ShopLocationId?: string;
+  FromDate?: string;
+  ToDate?: string;
+}

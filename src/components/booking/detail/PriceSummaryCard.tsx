@@ -14,9 +14,9 @@ export const PriceSummaryCard = ({
   durationMinutes,
   totalPrice,
 }: PriceSummaryCardProps) => (
-  <Card className="border-none bg-gradient-to-r from-blue-50 to-purple-50 rounded-[3rem] shadow-sm">
-    <CardContent className="p-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <Card className="border-none bg-gradient-to-r from-blue-50 to-purple-50 rounded-[2rem] shadow-sm">
+    <CardContent className="p-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div className="space-y-2">
           <h3 className="text-xl font-black text-slate-900">
             {collectionName || "Custom Service"}
@@ -29,7 +29,7 @@ export const PriceSummaryCard = ({
           </div>
         </div>
         <div className="text-right">
-          <p className="text-4xl font-black text-[#E288F9]">
+          <p className="text-2xl font-black text-[#E288F9]">
             {totalPrice.toLocaleString()} <span className="text-lg">VND</span>
           </p>
         </div>

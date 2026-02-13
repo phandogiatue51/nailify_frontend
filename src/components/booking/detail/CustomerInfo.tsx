@@ -9,12 +9,12 @@ export const CustomerInfo = ({ name, phone, address }: any) => (
         Customer
       </CardTitle>
     </CardHeader>
-    <CardContent className="space-y-4">
+    <CardContent className="space-y-2">
       <div>
-        <p className="text-[10px] font-black uppercase text-slate-300">
+        <p className="text-sm font-black uppercase text-slate-300">
           Full Name
         </p>
-        <p className="font-bold text-slate-700">{name}</p>
+        <p className="font-bold text-slate-700 text-xl">{name}</p>
       </div>
       <div className="flex items-center gap-3">
         <div className="bg-orange-50 p-2 rounded-xl">

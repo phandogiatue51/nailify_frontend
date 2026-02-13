@@ -7,8 +7,9 @@ import {
   ArtistFilterDto,
   BookingFilterDto,
   StaffFilterDto,
+  RatingFilterDto,
 } from "@/types/filter";
-import { BookingStatus } from "@/types/database";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ApiRequestOptions extends RequestInit {
@@ -624,6 +625,37 @@ export const staffAPI = {
   filter: (filterParams: StaffFilterDto) => {
     const queryString = buildQuery(filterParams);
     const url = queryString ? `/Staff/filter?${queryString}` : "/Staff/filter";
+    return apiRequest(url);
+  },
+};
+
+export const ratingAPI = {
+  getByShopId: (shopId: string) => apiRequest(`/Rating/shop/${shopId}`),
+  getByShopAuth: () => apiRequest(`/Rating/shopAuth`),
+
+  getByLocationId: (locationId: string) =>
+    apiRequest(`/Rating/shopLocation/${locationId}`),
+
+  getByLocationAuth: () => apiRequest(`/Rating/shopLocationAuth`),
+
+  getByArtistId: (artistId: string) => apiRequest(`/Rating/artist/${artistId}`),
+
+  getByArtistAuth: () => apiRequest(`/Rating/artistAuth`),
+
+  createRating: (bookingId: string, formData: FormData) =>
+    apiRequest(`/Rating/${bookingId}`, {
+      method: "POST",
+      body: formData,
+    }),
+
+  deleteRating: (bookingId: string) =>
+    apiRequest(`/Rating/${bookingId}`, {
+      method: "DELETE",
+    }),
+
+  filter: (filterParams: RatingFilterDto) => {
+    const queryString = buildQuery(filterParams);
+    const url = queryString ? `/Rating/admin?${queryString}` : "/Rating/admin";
     return apiRequest(url);
   },
 };

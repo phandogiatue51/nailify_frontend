@@ -10,35 +10,30 @@ export const ServiceItems = ({ items, totalPrice, duration }: any) => (
         Services
       </CardTitle>
     </CardHeader>
-    <CardContent className="space-y-4">
+    <CardContent className="space-y-2">
       {items.map((item: any, index: number) => (
         <div
           key={item.id || index}
           className="flex justify-between items-center"
         >
           <div>
-            <p className="font-bold text-slate-700">{item.serviceItemName}</p>
-            <p className="text-xs text-slate-400 font-bold">
-              {item.estimatedDuration} min
+            <p className="font-bold text-slate-700 text-xl">
+              {item.serviceItemName}
             </p>
           </div>
           <p className="font-black text-slate-900">
-            {item.price?.toLocaleString()}{" "}
-            <span className="text-[10px]">VND</span>
+            {item.price?.toLocaleString()} <span className="text-md">VND</span>
           </p>
         </div>
       ))}
       <Separator className="bg-slate-50" />
-      <div className="flex justify-between items-end pt-2">
+      <div className="flex justify-between items-end">
         <p className="text-xs font-black uppercase text-slate-400">
           Total Value
         </p>
         <div className="text-right">
           <p className="text-xl font-black text-[#E288F9]">
             {totalPrice.toLocaleString()} VND
-          </p>
-          <p className="text-[10px] font-bold text-slate-400">
-            {duration} minutes total
           </p>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { XCircle, Calendar, Loader2, CheckCircle, X } from "lucide-react";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { getStatusConfig } from "@/components/booking-status-config";
-
+import { useNavigate } from "react-router-dom";
 interface BookingActionsProps {
   booking: any;
   onCancel?: (bookingId: string) => void;
@@ -30,7 +30,7 @@ export const BookingActions = ({
   const isPending = booking?.status === 0;
   const isApproved = booking?.status === 1;
   const isFuture = new Date(booking?.scheduledStart) > new Date();
-
+  const navigate = useNavigate();
   const statusConfig = getStatusConfig(booking.status, isShopOwner);
 
   return (
@@ -171,6 +171,17 @@ export const BookingActions = ({
               isLoading={isUpdatingStatus || isCancelling}
             />
           </>
+        )}
+
+        {!isShopOwner && booking.status === 3 && !booking.ratings && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(`/booking/rating/${booking.id}`)}
+            className="rounded-xl text-blue-400 font-black text-[10px] uppercase border border-blue-300 hover:bg-blue-400 hover:text-white"
+          >
+            Rate
+          </Button>
         )}
       </div>
     </footer>

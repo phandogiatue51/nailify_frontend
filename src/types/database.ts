@@ -119,7 +119,8 @@ export interface Booking {
   collectionId: string | null;
   scheduledStart: string;
   scheduledEnd: string;
-  rating: number;
+  ratings: number | null;
+  comment: string | null;
   status: BookingStatus;
   totalPrice: number;
   notes: string | null;
@@ -233,4 +234,36 @@ export interface UseDashboardOptions {
   startDate?: string;
   endDate?: string;
   enabled?: boolean;
+}
+
+export interface RatingSummaryDto {
+  averageRating: number;
+  totalRatings: number;
+  last30DaysRatings: number;
+  last30DaysAverage: number;
+  ratingDistribution: Record<number, number>; // { 1: 0, 2: 0, 3: 0, 4: 0, 5: 1 }
+
+  fiveStarCount: number;
+  fourStarCount: number;
+  threeStarCount: number;
+  twoStarCount: number;
+  oneStarCount: number;
+}
+
+export interface RatingCreateDto {
+  rating: number; // 1-5 scale
+  comment?: string | null;
+}
+
+export interface AdminRatingDashboardDto {
+  entityType: string; // "Shop", "ShopLocation", "NailArtist", "Platform"
+  entityName: string;
+  summary: RatingSummaryDto;
+  period: PeriodDto;
+}
+
+export interface PeriodDto {
+  fromDate: string; // ISO date string from C# DateTime
+  toDate: string; // ISO date string from C# DateTime
+  label: string;
 }

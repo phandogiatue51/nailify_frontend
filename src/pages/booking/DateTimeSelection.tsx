@@ -162,11 +162,6 @@ const DateTimeSelection = () => {
                       )}
                     >
                       {slot}
-                      {busy && isShopOwner && (
-                        <div className="text-[10px] text-amber-600 opacity-70">
-                          Busy
-                        </div>
-                      )}
                     </button>
                   );
                 })}

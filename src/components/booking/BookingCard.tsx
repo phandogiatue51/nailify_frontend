@@ -209,6 +209,17 @@ const BookingCard: React.FC<BookingCardProps> = ({
               />
             )}
 
+            {!isShopOwner && booking.status === 3 && !booking.ratings && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(`/booking/rating/${booking.id}`)}
+                className="rounded-xl text-blue-400 font-black text-[10px] uppercase border border-blue-300 hover:bg-blue-400 hover:text-white"
+              >
+                Rate
+              </Button>
+            )}
+
             <Button
               size="sm"
               onClick={() => navigate(`/booking/detail/${booking.id}`)}

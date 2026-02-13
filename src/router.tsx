@@ -56,6 +56,7 @@ import NailArtistBookingView from "./pages/nailArtist/NailArtistBookingView";
 import ShopBookingView from "./pages/shop/ShopBookingView";
 import StaffBookingView from "./pages/staff/StaffBookingView";
 import StaffDashboardPage from "./pages/staff/StaffDashboardPage";
+import CreateRatingPage from "./pages/booking/RatingPage";
 
 export const router = createBrowserRouter(
   [
@@ -194,6 +195,10 @@ export const router = createBrowserRouter(
         {
           path: "/booking/reschedule/:id",
           element: withMobileLayout(<RescheduleBooking />),
+        },
+        {
+          path: "/booking/rating/:bookingId",
+          element: withMobileLayout(<CreateRatingPage />),
         },
         {
           path: "/staff-dashboard",
