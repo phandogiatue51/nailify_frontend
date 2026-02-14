@@ -17,8 +17,8 @@ export const LocationInfo = ({ shopLocation, nailArtist, booking }: any) => {
           {booking?.shopLocationId ? (
             shopLocation ? (
               <div className="space-y-2">
-                <h2 className="font-black text-slate-900 text-xl tracking-tight uppercase">
-                  {shopLocation.shopName}
+                <h2 className="font-black text-slate-900 text-md tracking-tight uppercase">
+                  Shop: {shopLocation.shopName}
                 </h2>
                 <div className="text-sm text-slate-500 space-y-1">
                   <p className="font-medium">{shopLocation.address}</p>
@@ -33,13 +33,13 @@ export const LocationInfo = ({ shopLocation, nailArtist, booking }: any) => {
               </p>
             )
           ) : (
-            <div className="space-y-1">
-              <p className="font-black text-slate-700 uppercase text-sm">
-                Mobile Service
-              </p>
-              <p className="text-sm text-slate-500 font-medium italic">
-                {booking?.address ?? "Artist will travel to your location"}
-              </p>
+            <div className="space-y-2">
+              <h2 className="font-black text-slate-900 text-md tracking-tight uppercase">
+                Artist: {booking.nailArtistName}
+              </h2>
+              <div className="text-sm text-slate-500 space-y-1">
+                <p className="font-medium">{booking.address}</p>
+              </div>
             </div>
           )}
         </CardContent>

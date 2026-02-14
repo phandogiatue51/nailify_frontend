@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { XCircle, Calendar, Loader2, CheckCircle, X } from "lucide-react";
+import { XCircle, Calendar, Loader2, CheckCircle, X, Star } from "lucide-react";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { getStatusConfig } from "@/components/booking-status-config";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,6 @@ interface BookingActionsProps {
   navigate: any;
   isShopOwner?: boolean;
 }
-
 export const BookingActions = ({
   booking,
   onCancel,
@@ -29,158 +28,132 @@ export const BookingActions = ({
 }: BookingActionsProps) => {
   const isPending = booking?.status === 0;
   const isApproved = booking?.status === 1;
+  const isCompleted = booking?.status === 3;
   const isFuture = new Date(booking?.scheduledStart) > new Date();
   const navigate = useNavigate();
   const statusConfig = getStatusConfig(booking.status, isShopOwner);
 
   return (
-    <footer className="sticky bottom-0 inset-x-0 backdrop-blur-xl border-t border-slate-100 p-6 z-40">
-      <div className="max-w-4xl mx-auto flex gap-3">
+    <footer className="sticky bottom-0 inset-x-0 z-40">
+      <div className="max-w-md mx-auto flex items-center justify-center gap-3">
+        {/* SHOP OWNER ACTIONS */}
         {isShopOwner && (
           <>
             {isPending && (
               <>
-                {/* REJECT with ConfirmationDialog */}
                 <ConfirmationDialog
                   trigger={
                     <Button
                       variant="outline"
                       disabled={isUpdatingStatus}
-                      className="flex-1 rounded-2xl font-bold border-red-200 text-red-600 hover:bg-red-50"
+                      className="h-14 w-14 rounded-2xl border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all"
                     >
                       {isUpdatingStatus ? (
-                        <Loader2 className="animate-spin mr-2" size={16} />
+                        <Loader2 className="animate-spin" />
                       ) : (
-                        <X className="mr-2" size={16} />
+                        <X size={20} />
                       )}
-                      Reject
                     </Button>
                   }
                   {...statusConfig.reject}
                   onConfirm={() => onReject?.(booking.id)}
-                  isLoading={isUpdatingStatus}
                 />
-
-                {/* APPROVE with ConfirmationDialog */}
                 <ConfirmationDialog
                   trigger={
                     <Button
                       disabled={isUpdatingStatus}
-                      className="flex-1 rounded-2xl font-bold bg-green-500 hover:bg-green-600 text-white"
+                      className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-green-100 bg-green-500 hover:bg-green-600 text-white"
                     >
                       {isUpdatingStatus ? (
-                        <Loader2 className="animate-spin mr-2" size={16} />
+                        <Loader2 className="animate-spin mr-2" />
                       ) : (
-                        <CheckCircle className="mr-2" size={16} />
+                        <CheckCircle className="mr-2" size={18} />
                       )}
-                      Approve
+                      Approve Booking
                     </Button>
                   }
                   {...statusConfig.approve}
                   onConfirm={() => onApprove?.(booking.id)}
-                  isLoading={isUpdatingStatus}
                 />
               </>
             )}
 
-            {isFuture && (
-              <Button
-                variant="outline"
-                className="flex-1 rounded-2xl font-bold"
-                onClick={() => onReschedule?.(booking.id)}
-              >
-                <Calendar className="w-4 h-4 mr-2" /> Reschedule
-              </Button>
-            )}
-
             {isApproved && (
               <>
-                {/* CANCEL with ConfirmationDialog */}
                 <ConfirmationDialog
                   trigger={
                     <Button
                       variant="outline"
                       disabled={isUpdatingStatus || isCancelling}
-                      className="flex-1 rounded-2xl font-bold border-red-400 text-red-400 hover:bg-red-400 hover:text-white"
+                      className="h-14 w-14 rounded-2xl border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all"
                     >
-                      {isUpdatingStatus || isCancelling ? (
-                        <Loader2 className="animate-spin mr-2" size={16} />
-                      ) : (
-                        <XCircle className="mr-2" size={16} />
-                      )}
-                      Cancel
+                      <XCircle size={20} />
                     </Button>
                   }
                   {...statusConfig.cancel}
                   onConfirm={() => onCancel?.(booking.id)}
-                  isLoading={isUpdatingStatus || isCancelling}
                 />
-
                 <ConfirmationDialog
                   trigger={
                     <Button
                       disabled={isUpdatingStatus}
-                      className="flex-1 rounded-2xl font-bold border border-green-400 bg-white text-green-400 hover:bg-green-400 hover:text-white"
+                      className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-100 bg-[#88D0F9] hover:bg-[#7bc4ed] text-white"
                     >
                       {isUpdatingStatus ? (
-                        <Loader2 className="animate-spin mr-2" size={16} />
+                        <Loader2 className="animate-spin mr-2" />
                       ) : (
-                        <CheckCircle className="mr-2" size={16} />
+                        <CheckCircle className="mr-2" size={18} />
                       )}
-                      Complete
+                      Mark Complete
                     </Button>
                   }
                   {...statusConfig.complete}
                   onConfirm={() => onComplete?.(booking.id)}
-                  isLoading={isUpdatingStatus}
                 />
               </>
             )}
           </>
         )}
 
+        {/* CUSTOMER ACTIONS */}
         {!isShopOwner && isPending && (
           <>
-            {isFuture && (
-              <Button
-                variant="outline"
-                className="flex-1 rounded-2xl font-bold"
-                onClick={() => onReschedule?.(booking.id)}
-              >
-                <Calendar className="w-4 h-4 mr-2" /> Reschedule
-              </Button>
-            )}
-
             <ConfirmationDialog
               trigger={
                 <Button
                   variant="outline"
                   disabled={isUpdatingStatus || isCancelling}
-                  className="flex-1 rounded-2xl font-bold border-red-400 text-red-400 hover:bg-red-400 hover:text-white"
+                  className="h-14 rounded-2xl border-red-400 text-red-400 hover:text-white hover:bg-red-400"
                 >
-                  {isUpdatingStatus || isCancelling ? (
-                    <Loader2 className="animate-spin mr-2" size={16} />
-                  ) : (
-                    <XCircle className="mr-2" size={16} />
-                  )}
-                  Cancel
+                  <XCircle size={20} />
+                  Cancel Booking
                 </Button>
               }
               {...statusConfig.cancel}
               onConfirm={() => onCancel?.(booking.id)}
-              isLoading={isUpdatingStatus || isCancelling}
             />
+            <Button
+              className="flex h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
+              style={{
+                background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+              }}
+              onClick={() => onReschedule?.(booking.id)}
+            >
+              <Calendar className="w-4 h-4 mr-2" /> Reschedule
+            </Button>
           </>
         )}
 
-        {!isShopOwner && booking.status === 3 && !booking.ratings && (
+        {/* RATE BUTTON FOR COMPLETED */}
+        {!isShopOwner && isCompleted && !booking.ratings && (
           <Button
-            variant="ghost"
-            size="sm"
             onClick={() => navigate(`/booking/rating/${booking.id}`)}
-            className="rounded-xl text-blue-400 font-black text-[10px] uppercase border border-blue-300 hover:bg-blue-400 hover:text-white"
+            className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
+            style={{
+              background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+            }}
           >
-            Rate
+            <Star className="w-4 h-4 mr-2 fill-white" /> Rate Experience
           </Button>
         )}
       </div>

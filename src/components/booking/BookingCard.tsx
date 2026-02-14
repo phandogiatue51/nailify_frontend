@@ -70,8 +70,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
         {/* Customer/Artist Info */}
         <div className="space-y-1 mb-4">
           <h4 className="font-black text-slate-800 flex items-center gap-2">
-            {isShopOwner ? booking.customerName : booking.shopName}
+            {booking.nailArtistName
+              ? `Artist: ${booking.nailArtistName}`
+              : `Shop: ${booking.shopName}`}
           </h4>
+
           <div className="flex items-center gap-2 text-[11px] text-slate-400 font-bold">
             <MapPin className="w-3 h-3 text-[#FFC988]" />
             <span className="truncate">
@@ -199,7 +202,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="rounded-xl text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
+                    className="rounded-[2rem] text-red-400 font-black text-[10px] uppercase border border-red-300 hover:bg-red-400 hover:text-white"
                   >
                     Cancel
                   </Button>
@@ -214,7 +217,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate(`/booking/rating/${booking.id}`)}
-                className="rounded-xl text-blue-400 font-black text-[10px] uppercase border border-blue-300 hover:bg-blue-400 hover:text-white"
+                className="rounded-[2rem] text-blue-400 font-black text-[10px] uppercase border border-blue-300 hover:bg-blue-400 hover:text-white"
               >
                 Rate
               </Button>
@@ -223,7 +226,10 @@ const BookingCard: React.FC<BookingCardProps> = ({
             <Button
               size="sm"
               onClick={() => navigate(`/booking/detail/${booking.id}`)}
-              className="rounded-xl bg-slate-900 text-white font-black text-[10px] uppercase px-4 h-9 shadow-lg shadow-slate-200"
+              className="flex h-9 w-24 rounded-[2rem] font-black uppercase text-[10px] text-white shadow-xl shadow-pink-100"
+              style={{
+                background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+              }}
             >
               Details
             </Button>

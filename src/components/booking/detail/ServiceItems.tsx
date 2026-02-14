@@ -17,7 +17,7 @@ export const ServiceItems = ({ items, totalPrice, duration }: any) => (
           className="flex justify-between items-center"
         >
           <div>
-            <p className="font-bold text-slate-700 text-xl">
+            <p className="font-bold text-slate-700 text-md">
               {item.serviceItemName}
             </p>
           </div>

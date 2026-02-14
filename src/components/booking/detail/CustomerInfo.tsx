@@ -14,7 +14,7 @@ export const CustomerInfo = ({ name, phone, address }: any) => (
         <p className="text-sm font-black uppercase text-slate-300">
           Full Name
         </p>
-        <p className="font-bold text-slate-700 text-xl">{name}</p>
+        <p className="font-bold text-slate-700 text-md">{name}</p>
       </div>
       <div className="flex items-center gap-3">
         <div className="bg-orange-50 p-2 rounded-xl">
