@@ -660,6 +660,83 @@ export const ratingAPI = {
   },
 };
 
+export const chatAPI = {
+  getMyConversation: () => apiRequest(`/Chat/conversations`),
+
+  getConversation: (conversationId: string) =>
+    apiRequest(`/Chat/conversations/${conversationId}`),
+
+  getOrCreateIndividualConversation: (otherProfileId: string) =>
+    apiRequest(`/Chat/conversations/individual/${otherProfileId}`, {
+      method: "POST",
+    }),
+
+  getOrCreateShopCustomerConversation: (shopId: string) =>
+    apiRequest(`/Chat/conversations/shop/${shopId}`, {
+      method: "POST",
+    }),
+
+  createGroupConversation: () =>
+    apiRequest(`/Chat/conversations/group`, {
+      method: "POST",
+    }),
+
+  getMessages: (conversationId: string) =>
+    apiRequest(`/Chat/conversations/${conversationId}/messages`),
+
+  sendMessage: (conversationId: string) =>
+    apiRequest(`/Chat/conversations/${conversationId}/messages`, {
+      method: "POST",
+    }),
+
+  deleteMessage: (messageId: string) =>
+    apiRequest(`/Chat/messages/${messageId}`, {
+      method: "DELETE",
+    }),
+
+  markAsRead: (conversationId: string) =>
+    apiRequest(`/Chat/conversations/${conversationId}/read`, {
+      method: "POST",
+    }),
+
+  getUnreadCount: () => apiRequest(`/Chat/unread`),
+
+  addParticipant: (conversationId: string, formData: FormData) =>
+    apiRequest(`/Chat/conversations/${conversationId}/participants`, {
+      method: "POST",
+      body: formData,
+    }),
+
+  removeParticipant: (conversationId: string, profileIdToRemove: string) =>
+    apiRequest(
+      `/Chat/conversations/${conversationId}/participants/${profileIdToRemove}`,
+      {
+        method: "DELETE",
+      },
+    ),
+
+  leaveConversation: (conversationId: string) =>
+    apiRequest(`/Chat/conversations/${conversationId}/leave`, {
+      method: "DELETE",
+    }),
+
+  resolveConversation: (conversationId: string) =>
+    apiRequest(`/Chat/conversations/${conversationId}/resolve`, {
+      method: "POST",
+    }),
+
+  reopenConversation: (conversationId: string) =>
+    apiRequest(`/Chat/conversations/${conversationId}/reopen`, {
+      method: "POST",
+    }),
+
+  getShopConversations: (shopId: string) =>
+    apiRequest(`/Chat/shop/${shopId}/conversations`),
+
+  getShopUnreadCount: (shopId: string) =>
+    apiRequest(`/Chat/shop/${shopId}/unread`),
+};
+
 function buildQuery(params: Record<string, any>): string {
   const queryParams = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
