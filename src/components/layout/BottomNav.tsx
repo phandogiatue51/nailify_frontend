@@ -1,5 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, Calendar, User, ClipboardCheck } from "lucide-react";
+import {
+  Home,
+  Search,
+  Calendar,
+  User,
+  ClipboardCheck,
+  MessageCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "../../hooks/use-auth";
 
@@ -15,6 +22,7 @@ const BottomNav = () => {
     { href: "/", icon: Home, label: "Home" },
     { href: "/explore", icon: Search, label: "Explore" },
     { href: "/profile/bookings", icon: Calendar, label: "Bookings" },
+    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
@@ -22,6 +30,7 @@ const BottomNav = () => {
     { href: "/shop-dashboard", icon: Home, label: "Dashboard" },
     { href: "/explore", icon: Search, label: "Explore" },
     { href: "/my-shop/bookings", icon: ClipboardCheck, label: "Bookings" },
+    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
@@ -29,6 +38,7 @@ const BottomNav = () => {
     { href: "/staff-dashboard", icon: Home, label: "Dashboard" },
     { href: "/explore", icon: Search, label: "Explore" },
     { href: "/staff/bookings", icon: ClipboardCheck, label: "Bookings" },
+    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
@@ -36,6 +46,7 @@ const BottomNav = () => {
     { href: "/artist-dashboard", icon: Home, label: "Dashboard" },
     { href: "/explore", icon: Search, label: "Explore" },
     { href: "/my-artist/bookings", icon: ClipboardCheck, label: "Bookings" },
+    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 

@@ -23,6 +23,7 @@ export interface Profile {
 
 export interface NailArtist {
   id: string;
+  profileId: string;
   fullName: string;
   email: string;
   phone: string | null;

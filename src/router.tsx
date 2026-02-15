@@ -57,6 +57,9 @@ import ShopBookingView from "./pages/shop/ShopBookingView";
 import StaffBookingView from "./pages/staff/StaffBookingView";
 import StaffDashboardPage from "./pages/staff/StaffDashboardPage";
 import CreateRatingPage from "./pages/booking/RatingPage";
+import DetailChatPage from "./pages/conversation/DetailChatPage";
+import ChatList from "./pages/conversation/ChatList";
+import ProfileInfoPage from "./components/chat/Info";
 
 export const router = createBrowserRouter(
   [
@@ -69,6 +72,19 @@ export const router = createBrowserRouter(
 
         { path: "auth", element: <AuthPage /> },
         { path: "profile", element: withMobileLayout(<ProfilePage />) },
+        {
+          path: "profile/:id/info",
+          element: withMobileLayout(<ProfileInfoPage />),
+        },
+
+        {
+          path: "chat/:id?",
+          element: withMobileLayout(<DetailChatPage />),
+        },
+        {
+          path: "chat/list",
+          element: withMobileLayout(<ChatList />),
+        },
         {
           path: "profile/edit",
           element: withMobileLayout(<EditProfilePage />),
@@ -141,6 +157,7 @@ export const router = createBrowserRouter(
           path: "/shop/:shopId/custom",
           element: withMobileLayout(<CustomDesignPage />),
         },
+
         {
           path: "/artist/:id/custom",
           element: withMobileLayout(<CustomDesignPage />),

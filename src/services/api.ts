@@ -676,17 +676,20 @@ export const chatAPI = {
       method: "POST",
     }),
 
-  createGroupConversation: () =>
+  createGroupConversation: (formData: FormData) =>
     apiRequest(`/Chat/conversations/group`, {
       method: "POST",
+      body: formData,
     }),
 
   getMessages: (conversationId: string) =>
     apiRequest(`/Chat/conversations/${conversationId}/messages`),
 
-  sendMessage: (conversationId: string) =>
+  // sendMessage: send an object so the server receives a JSON body like { content: "..." }
+  sendMessage: (conversationId: string, content: string) =>
     apiRequest(`/Chat/conversations/${conversationId}/messages`, {
       method: "POST",
+      body: { content } as any,
     }),
 
   deleteMessage: (messageId: string) =>
@@ -701,10 +704,10 @@ export const chatAPI = {
 
   getUnreadCount: () => apiRequest(`/Chat/unread`),
 
-  addParticipant: (conversationId: string, formData: FormData) =>
+  addParticipant: (conversationId: string, profileIdToAdd: string) =>
     apiRequest(`/Chat/conversations/${conversationId}/participants`, {
       method: "POST",
-      body: formData,
+      body: profileIdToAdd,
     }),
 
   removeParticipant: (conversationId: string, profileIdToRemove: string) =>

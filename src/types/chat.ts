@@ -18,7 +18,9 @@ export interface ChatConversationDto {
 export interface ConversationDetailDto {
   id: string;
   ConversationType: ConversationType;
+  profileId: string | null;
   title: string;
+  avatarUrl: string | null;
   status: ChatStatus;
   createdAt: string;
   shopId: string | null;
