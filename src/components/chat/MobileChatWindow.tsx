@@ -1,4 +1,3 @@
-// components/chat/MobileChatWindow.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -6,29 +5,60 @@ import { useNavigate } from "react-router-dom";
 import { Send, MoreVertical, ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { MessageDto, ConversationDetailDto } from "@/types/chat";
+import { useAuth } from "@/hooks/use-auth";
 
 interface MobileChatWindowProps {
-  conversationId: string;
-  conversation?: ConversationDetailDto; // Receive from parent
-  messages: MessageDto[]; // Receive from parent
-  onSendMessage: (content: string) => Promise<void>; // Receive from parent
-  isLoading: boolean; // Receive from parent
+  conversationId: string; // This is defined but not being destructured
+  conversation?: ConversationDetailDto;
+  messages: MessageDto[];
+  onSendMessage: (content: string) => Promise<void>;
+  isLoading: boolean;
+  onMarkAsRead?: (conversationId: string) => void;
 }
 
 export const MobileChatWindow = ({
-  conversationId,
+  conversationId, // Add this to destructuring
   conversation,
   messages = [],
   onSendMessage,
   isLoading,
+  onMarkAsRead,
 }: MobileChatWindowProps) => {
+  const { user } = useAuth();
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const isShop = user?.role === 1 || user?.role === 3;
+  // Mark as read when component mounts
+  useEffect(() => {
+    if (conversationId && onMarkAsRead) {
+      onMarkAsRead(conversationId);
+    }
+  }, [conversationId, onMarkAsRead]);
 
-  // REMOVED internal hooks: useConversation, useMessages, useSendMessage, useMarkAsRead
+  // Mark as read when window regains focus
+  useEffect(() => {
+    const handleFocus = () => {
+      if (conversationId && onMarkAsRead) {
+        onMarkAsRead(conversationId);
+      }
+    };
 
-  // Keep only UI logic
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [conversationId, onMarkAsRead]);
+
+  // Mark as read when new messages arrive (optional)
+  useEffect(() => {
+    if (conversationId && onMarkAsRead && messages.length > 0) {
+      // Small delay to ensure messages are rendered
+      const timer = setTimeout(() => {
+        onMarkAsRead(conversationId);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [conversationId, messages.length, onMarkAsRead]);
+
   const handleSend = async () => {
     if (!newMessage.trim()) return;
 
@@ -52,7 +82,6 @@ export const MobileChatWindow = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Rest of your formatting functions and JSX remain the same...
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -98,7 +127,7 @@ export const MobileChatWindow = ({
       <div className="flex flex-col bg-gray-50">
         {/* Conversation header */}
         <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(`/chat/list`)} className="p-1">
+          <button onClick={() => navigate(-1)} className="p-1">
             <ChevronLeft className="w-5 h-5" />
           </button>
 
@@ -108,20 +137,30 @@ export const MobileChatWindow = ({
             </div>
             <div>
               <h2 className="font-medium">{conversation?.title}</h2>
-              {conversation?.shopName ? (
-                <p className="text-xs text-gray-500">{conversation.shopName}</p>
-              ) : (
-                <p className="text-xs text-gray-500">
-                  {conversation?.title ?? "null"}
-                </p>
-              )}
             </div>
           </div>
           <button
             className="p-2 relative z-10"
             onClick={() => {
-              if (conversation?.profileId) {
-                navigate(`/profile/${conversation.profileId}/info`);
+              switch (user?.role) {
+                case 1: // ShopOwner
+                case 4: // NailArtist
+                  navigate(`/profile/${conversation?.profileId}/info`);
+                  break;
+
+                case 0: // Customer
+                  if (conversation?.shopId) {
+                    navigate(`/shop/${conversation.shopId}/info`);
+                  } else {
+                    navigate(`/profile/${conversation?.profileId}/info`);
+                  }
+                  break;
+
+                case 2: // Admin
+                case 3: // Manager
+                default:
+                  navigate(`/profile/${conversation?.profileId}/info`);
+                  break;
               }
             }}
           >
@@ -154,12 +193,9 @@ export const MobileChatWindow = ({
                     <div
                       className={`max-w-[75%] ${msg.isOwn ? "items-end" : "items-start"}`}
                     >
-                      {!msg.isOwn && (
+                      {isShop && (
                         <div className="text-xs text-gray-500 mb-1 ml-1">
                           {msg.senderName}
-                          {msg.isFromShop && (
-                            <span className="ml-1 text-blue-500">• Shop</span>
-                          )}
                         </div>
                       )}
 
@@ -175,12 +211,6 @@ export const MobileChatWindow = ({
                           className={`text-xs mt-1 ${msg.isOwn ? "text-blue-100" : "text-gray-400"}`}
                         >
                           {formatTime(msg.sentAt)}
-                          {msg.isOwn && msg.isRead && (
-                            <span className="ml-1">✓✓</span>
-                          )}
-                          {msg.isOwn && !msg.isRead && (
-                            <span className="ml-1">✓</span>
-                          )}
                         </div>
                       </div>
                     </div>

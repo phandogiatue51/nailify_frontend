@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import CollectionCard from "@/components/collection/CollectionCard";
+import { useStartConversation } from "@/hooks/useChat";
 
 const ShopDetailPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
@@ -26,6 +27,18 @@ const ShopDetailPage = () => {
   const { data: shop, isLoading: shopLoading } = useCustomerShopById(shopId);
   const { data: collections, isLoading: collectionsLoading } =
     useCustomerCollections(shopId);
+  const startConversation = useStartConversation();
+
+  const handleShopChat = async () => {
+    try {
+      await startConversation.mutateAsync({
+        type: "shop",
+        id: shopId,
+      });
+    } catch (error) {
+      console.error("Failed to start shop conversation:", error);
+    }
+  };
 
   if (loading || shopLoading) {
     return (
@@ -100,7 +113,7 @@ const ShopDetailPage = () => {
         <div className="flex gap-3">
           <Button
             className="font-black tracking-tight uppercase rounded-[2rem] w-full"
-            onClick={() => navigate(`/chat?shop=${shopId}`)}
+            onClick={handleShopChat}
             style={{
               background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
               border: "none",

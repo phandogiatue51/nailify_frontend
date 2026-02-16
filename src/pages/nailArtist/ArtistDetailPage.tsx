@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import CollectionCard from "@/components/collection/CollectionCard";
+import { useStartConversation } from "@/hooks/useChat";
 
 const ArtistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +29,7 @@ const ArtistDetailPage = () => {
   const { data: artist, isLoading: artistLoading } = useCustomerArtistById(id);
   const { data: collections, isLoading: collectionsLoading } =
     useCustomerCollections(undefined, id);
+  const startConversation = useStartConversation();
 
   if (loading || artistLoading) {
     return (
@@ -36,6 +38,17 @@ const ArtistDetailPage = () => {
       </div>
     );
   }
+
+  const handleArtistChat = async () => {
+    try {
+      await startConversation.mutateAsync({
+        type: "individual",
+        id: artist.profileId,
+      });
+    } catch (error) {
+      console.error("Failed to start artist conversation:", error);
+    }
+  };
 
   if (!user) return <Navigate to="/auth" replace />;
   if (!artist) return <Navigate to="/explore" replace />;
@@ -97,7 +110,7 @@ const ArtistDetailPage = () => {
         <div className="flex gap-3">
           <Button
             className="font-black tracking-tight uppercase rounded-[2rem] w-full"
-            onClick={() => navigate(`/chat?artist=${artist.profileId}`)}
+            onClick={handleArtistChat}
             style={{
               background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
               border: "none",

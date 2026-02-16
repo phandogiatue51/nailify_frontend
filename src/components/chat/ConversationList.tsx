@@ -111,7 +111,7 @@ export const ConversationList = ({
                 {conv.title}
                 {conv.isCustomerFacing && (
                   <span className="ml-2 text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded">
-                    Shop
+                    Customer
                   </span>
                 )}
               </h3>
@@ -119,27 +119,26 @@ export const ConversationList = ({
                 {formatTime(conv.lastMessageAt)}
               </span>
             </div>
+            <div className="flex justify-between items-center">
+              {conv.lastMessage && (
+                <p className="text-sm text-gray-600 truncate">
+                  {conv.lastMessageSender && (
+                    <span className="text-gray-400">
+                      {conv.lastMessageSender}:{" "}
+                    </span>
+                  )}
+                  {conv.lastMessage}
+                </p>
+              )}
 
-            {/* Last message */}
-            {conv.lastMessage && (
-              <p className="text-sm text-gray-600 truncate">
-                {conv.lastMessageSender && (
-                  <span className="text-gray-400">
-                    {conv.lastMessageSender}:{" "}
+              {conv.unreadCount > 0 && (
+                <div>
+                  <span className="px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full min-w-[20px]">
+                    {conv.unreadCount > 99 ? "99+" : conv.unreadCount}
                   </span>
-                )}
-                {conv.lastMessage}
-              </p>
-            )}
-
-            {/* Unread count */}
-            {conv.unreadCount > 0 && (
-              <div className="mt-1">
-                <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-blue-500 rounded-full min-w-[20px]">
-                  {conv.unreadCount > 99 ? "99+" : conv.unreadCount}
-                </span>
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
         </button>
       ))}

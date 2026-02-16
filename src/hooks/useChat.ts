@@ -167,6 +167,7 @@ export const useStartConversation = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async ({
@@ -179,7 +180,23 @@ export const useStartConversation = () => {
       if (type === "individual") {
         return await chatAPI.getOrCreateIndividualConversation(id);
       } else {
-        return await chatAPI.getOrCreateShopCustomerConversation(id);
+        try {
+          return await chatAPI.getOrCreateShopCustomerConversation(id);
+        } catch (err: any) {
+          // Best-effort fallback: fetch shop conversations and return the one for current user
+          try {
+            const convs: any[] = await chatAPI.getShopConversations(id);
+            const existing = convs.find(
+              (c) =>
+                c.customerId === user?.userId || c.profileId === user?.userId,
+            );
+            if (existing) return existing;
+          } catch (e) {
+            // ignore and rethrow original
+          }
+
+          throw err;
+        }
       }
     },
     onSuccess: (conversation) => {

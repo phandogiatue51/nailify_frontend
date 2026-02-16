@@ -59,7 +59,8 @@ import StaffDashboardPage from "./pages/staff/StaffDashboardPage";
 import CreateRatingPage from "./pages/booking/RatingPage";
 import DetailChatPage from "./pages/conversation/DetailChatPage";
 import ChatList from "./pages/conversation/ChatList";
-import ProfileInfoPage from "./components/chat/Info";
+import ProfileInfoPage from "./components/chat/CustomerInfo";
+import ShopInfoPage from "./components/chat/ShopInfo";
 
 export const router = createBrowserRouter(
   [
@@ -76,7 +77,10 @@ export const router = createBrowserRouter(
           path: "profile/:id/info",
           element: withMobileLayout(<ProfileInfoPage />),
         },
-
+        {
+          path: "shop/:id/info",
+          element: withMobileLayout(<ShopInfoPage />),
+        },
         {
           path: "chat/:id?",
           element: withMobileLayout(<DetailChatPage />),

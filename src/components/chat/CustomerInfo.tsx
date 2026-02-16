@@ -6,12 +6,13 @@ import { Profile } from "@/types/database";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { RoleBadge } from "../badge/RoleBadge";
-
+import { ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 export default function ProfileInfoPage() {
   const { id } = useParams<{ id: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -44,6 +45,9 @@ export default function ProfileInfoPage() {
 
   return (
     <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow-md">
+      <button onClick={() => navigate(-1)} className="mb-4">
+        <ChevronLeft className="w-5 h-5" />
+      </button>
       <div className="flex items-center gap-4 mb-4">
         <img
           src={profile.avatarUrl ?? "/default-avatar.png"}

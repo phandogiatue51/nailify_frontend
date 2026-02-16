@@ -39,7 +39,6 @@ export default function ChatList() {
         <h1 className="text-2xl font-bold">Conversations</h1>
         <button
           onClick={() => {
-            /* Open user selection modal */
           }}
           className="p-2 bg-blue-500 text-white rounded-full"
           disabled={startConversation.isPending}
