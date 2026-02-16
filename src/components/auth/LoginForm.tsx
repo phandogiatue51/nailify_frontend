@@ -75,7 +75,7 @@ export const LoginForm = () => {
       <Button
         type="submit"
         className="w-full h-12 rounded-2xl font-bold hover:bg-pink-700 shadow-lg shadow-pink-200"
-        style={{ background: "#f988b3ff" }}
+        style={{ background: "#950101" }}
         disabled={isLoading}
       >
         {isLoading ? <Loader2 className="animate-spin" /> : "Sign In"}

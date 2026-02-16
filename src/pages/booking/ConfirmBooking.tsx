@@ -44,12 +44,12 @@ const ConfirmBooking = () => {
 
   const calculatedDuration = selectedCollection
     ? selectedCollection.estimatedDuration ||
-      selectedCollection.calculatedDuration ||
-      0
+    selectedCollection.calculatedDuration ||
+    0
     : selectedItems.reduce(
-        (sum, item) => sum + (item.estimatedDuration || 0),
-        0,
-      );
+      (sum, item) => sum + (item.estimatedDuration || 0),
+      0,
+    );
 
   const { createBooking } = useBookings();
 
@@ -106,7 +106,7 @@ const ConfirmBooking = () => {
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <h1 className="font-black tracking-tight uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+        <h1 className="font-black tracking-tighter uppercase text-xl bg-gradient-to-r from-[#950101] to-[#ffcfe9] bg-clip-text text-transparent">
           Review & Confirm Booking
         </h1>
       </div>
@@ -311,7 +311,8 @@ const ConfirmBooking = () => {
           disabled={createBooking.isPending}
           className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
           style={{
-            background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+            background:
+              "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
             border: "none",
           }}
         >

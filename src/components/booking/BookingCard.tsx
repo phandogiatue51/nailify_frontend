@@ -228,7 +228,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
               onClick={() => navigate(`/booking/detail/${booking.id}`)}
               className="flex h-9 w-24 rounded-[2rem] font-black uppercase text-[10px] text-white shadow-xl shadow-pink-100"
               style={{
-                background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                background:
+                  "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
               }}
             >
               Details

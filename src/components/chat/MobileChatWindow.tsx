@@ -6,7 +6,7 @@ import { Send, MoreVertical, ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { MessageDto, ConversationDetailDto } from "@/types/chat";
 import { useAuth } from "@/hooks/use-auth";
-
+import { cn } from "@/lib/utils";
 interface MobileChatWindowProps {
   conversationId: string; // This is defined but not being destructured
   conversation?: ConversationDetailDto;
@@ -121,132 +121,141 @@ export const MobileChatWindow = ({
       </div>
     );
   }
-
   return (
-    <div className="bg-white min-h-screen">
-      <div className="flex flex-col bg-gray-50">
-        {/* Conversation header */}
-        <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1">
-            <ChevronLeft className="w-5 h-5" />
+    <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
+
+      {/* 1. FIXED HEADER */}
+      <header className="flex-shrink-0 bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between z-10 shadow-sm">
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-1 hover:bg-[#FFCFE9]/30 rounded-full transition-colors">
+            <ChevronLeft className="w-6 h-6 text-[#950101]" />
           </button>
 
-          <div className="flex-1 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center text-[#950101] font-black border border-[#950101]/10 shadow-inner">
               {conversation?.title?.charAt(0).toUpperCase() || "?"}
             </div>
             <div>
-              <h2 className="font-medium">{conversation?.title}</h2>
+              <h2 className="font-black text-slate-800 text-md tracking-tight leading-tight">
+                {conversation?.title}
+              </h2>
             </div>
           </div>
-          <button
-            className="p-2 relative z-10"
-            onClick={() => {
-              switch (user?.role) {
-                case 1: // ShopOwner
-                case 4: // NailArtist
-                  navigate(`/profile/${conversation?.profileId}/info`);
-                  break;
+        </div>
 
-                case 0: // Customer
-                  if (conversation?.shopId) {
-                    navigate(`/shop/${conversation.shopId}/info`);
-                  } else {
-                    navigate(`/profile/${conversation?.profileId}/info`);
+        <button className="p-2 text-slate-400"
+          onClick={() => {
+            switch (user?.role) {
+              case 1: // ShopOwner
+              case 3: // Manager
+                // Pass the shopId from user claims
+                navigate(`/profile/${conversation?.profileId}/info`, {
+                  state: {
+                    shopId: user.shopId, // This comes from the decoded JWT
+                    userRole: user.role
                   }
-                  break;
+                });
+                break;
 
-                case 2: // Admin
-                case 3: // Manager
-                default:
+              case 0: // Customer
+                if (conversation?.shopId) {
+                  navigate(`/shop/${conversation.shopId}/info`);
+                } else {
                   navigate(`/profile/${conversation?.profileId}/info`);
-                  break;
-              }
-            }}
+                }
+                break;
+
+              case 2: // Admin
+                navigate(`/profile/${conversation?.profileId}/info`, {
+                  state: {
+                    userRole: user.role
+                  }
+                });
+                break;
+
+              case 4: // NailArtist
+                navigate(`/profile/${conversation?.profileId}/info`, {
+                  state: {
+                    nailArtistId: user.nailArtistId, // This comes from the decoded JWT
+                    userRole: user.role
+                  }
+                });
+                break;
+
+              default:
+                navigate(`/profile/${conversation?.profileId}/info`);
+                break;
+            }
+          }}
+        >
+          <MoreVertical className="w-5 h-5" />
+        </button>
+      </header>
+
+      {/* 2. SCROLLABLE MESSAGE AREA */}
+      {/* Added "scrollbar-thin" and custom styling for a smaller scrollbar */}
+      <main className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth 
+        scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+
+        {(Object.entries(groupedMessages) as [string, MessageDto[]][]).map(
+          ([date, dateMessages]) => (
+            <div key={date} className="space-y-4">
+              <div className="flex justify-center">
+                <span className="text-[10px] font-black bg-slate-200/50 text-slate-500 px-3 py-1 rounded-full uppercase tracking-widest">
+                  {date}
+                </span>
+              </div>
+
+              {dateMessages.map((msg) => (
+                <div key={msg.id} className={cn("flex items-end gap-2", msg.isOwn ? "flex-row-reverse" : "flex-row")}>
+                  {/* Bubble */}
+                  <div className={cn(
+                    "max-w-[80%] rounded-[1.5rem] px-4 py-2.5 shadow-sm text-sm",
+                    msg.isOwn
+                      ? "bg-[#950101] text-white rounded-br-none"
+                      : "bg-white text-slate-700 rounded-bl-none border border-slate-100"
+                  )}>
+                    <p className="font-medium leading-relaxed">{msg.content}</p>
+                    <p className={cn(
+                      "text-[9px] font-bold mt-1 uppercase tracking-tighter opacity-70",
+                      msg.isOwn ? "text-right" : "text-left"
+                    )}>
+                      {formatTime(msg.sentAt)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        )}
+        <div ref={messagesEndRef} className="h-2" />
+      </main>
+
+      {/* 3. FIXED INPUT AREA */}
+      <footer className="flex-shrink-0 bg-white border-t border-slate-100 p-4 pb-8">
+        <div className="max-w-4xl mx-auto flex items-end gap-2 bg-slate-50 rounded-[1.5rem] p-2 pr-3 ring-1 ring-slate-200 focus-within:ring-2 focus-within:ring-[#950101] transition-all">
+          <textarea
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder="Write a message..."
+            rows={1}
+            className="flex-1 max-h-32 resize-none bg-transparent border-0 p-2 text-sm font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0 focus-visible:ring-0"
+          />
+          <button
+            onClick={handleSend}
+            disabled={!newMessage.trim()}
+            className={cn(
+              "p-2.5 rounded-2xl transition-all active:scale-90",
+              !newMessage.trim()
+                ? "bg-slate-200 text-slate-400"
+                : "bg-[#950101] text-white shadow-lg shadow-[#950101]/20"
+            )}
           >
-            <MoreVertical className="w-5 h-5" />
+            <Send className="w-5 h-5" />
           </button>
         </div>
-
-        {/* Messages - your existing JSX remains the same */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {(Object.entries(groupedMessages) as [string, MessageDto[]][]).map(
-            ([date, dateMessages]) => (
-              <div key={date}>
-                <div className="flex justify-center mb-4">
-                  <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
-                    {date}
-                  </span>
-                </div>
-
-                {dateMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${msg.isOwn ? "justify-end" : "justify-start"} mb-2`}
-                  >
-                    {!msg.isOwn && (
-                      <div className="w-6 h-6 rounded-full bg-gray-300 flex-shrink-0 mr-2 mt-1 flex items-center justify-center text-xs">
-                        {msg.senderName?.charAt(0).toUpperCase() || "?"}
-                      </div>
-                    )}
-
-                    <div
-                      className={`max-w-[75%] ${msg.isOwn ? "items-end" : "items-start"}`}
-                    >
-                      {isShop && (
-                        <div className="text-xs text-gray-500 mb-1 ml-1">
-                          {msg.senderName}
-                        </div>
-                      )}
-
-                      <div
-                        className={`rounded-2xl px-4 py-2 ${
-                          msg.isOwn
-                            ? "bg-blue-500 text-white rounded-br-none"
-                            : "bg-white text-gray-800 rounded-bl-none shadow-sm"
-                        } ${msg.isSystemMessage ? "italic bg-gray-100 text-gray-500 text-center" : ""}`}
-                      >
-                        <div className="text-sm break-words">{msg.content}</div>
-                        <div
-                          className={`text-xs mt-1 ${msg.isOwn ? "text-blue-100" : "text-gray-400"}`}
-                        >
-                          {formatTime(msg.sentAt)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ),
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Message input */}
-        <div className="sticky bottom-0 left-0 right-0 p-4 text-center bg-white border-t border-gray-200">
-          <div className="flex items-end gap-2">
-            <textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Type a message..."
-              rows={1}
-              className="flex-1 max-h-32 resize-none border-0 focus:ring-0 p-2 text-sm"
-            />
-            <button
-              onClick={handleSend}
-              disabled={!newMessage.trim()}
-              className={`p-3 rounded-full ${
-                !newMessage.trim()
-                  ? "bg-gray-200 text-gray-400"
-                  : "bg-blue-500 text-white"
-              }`}
-            >
-              <Send className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
+      </footer>
     </div>
   );
 };

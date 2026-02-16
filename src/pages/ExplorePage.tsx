@@ -59,14 +59,14 @@ const ExplorePage = () => {
       <div className="bg-slate-50/50 min-h-screen pb-24">
         <Header title="Nailify" hasNotification={true} />
         <div className="bg-white px-6 pt-8 pb-6 rounded-b-[3rem] shadow-sm">
-          <div className="flex items-center gap-2 text-[#E288F9] mb-2">
+          <div className="flex items-center gap-2 text-[#950101] mb-2">
             <Sparkles className="w-4 h-4" />
             <span className="text-[10px] font-black uppercase tracking-[0.2em]">
               Discover
             </span>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-6">
-            Find your <span className="text-[#FFC988]">Vibe</span>
+          <h1 className="text-3xl font-black text-[#ffcfe9] tracking-tight mb-6">
+            Find your <span className="text-[#950101]">Vibe</span>
           </h1>
 
           <div className="relative group">
@@ -94,14 +94,14 @@ const ExplorePage = () => {
             <TabsList className="grid w-full grid-cols-2 h-14 p-1.5 bg-white rounded-[1.5rem] shadow-sm mb-6 border border-slate-100">
               <TabsTrigger
                 value="shops"
-                className="rounded-xl font-bold data-[state=active]:bg-[#FFC988] data-[state=active]:text-white transition-all"
+                className="rounded-xl font-bold data-[state=active]:bg-[#950101] data-[state=active]:text-white transition-all"
               >
                 <Store className="w-4 h-4 mr-2" />
                 Salons
               </TabsTrigger>
               <TabsTrigger
                 value="artists"
-                className="rounded-xl font-bold data-[state=active]:bg-[#E288F9] data-[state=active]:text-white transition-all"
+                className="rounded-xl font-bold data-[state=active]:bg-[#ffcfe9] data-[state=active]:text-white transition-all"
               >
                 <User className="w-4 h-4 mr-2" />
                 Artists

@@ -37,14 +37,6 @@ export default function ChatList() {
     <div className="bg-white min-h-screen p-8">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Conversations</h1>
-        <button
-          onClick={() => {
-          }}
-          className="p-2 bg-blue-500 text-white rounded-full"
-          disabled={startConversation.isPending}
-        >
-          <Plus className="w-5 h-5" />
-        </button>
       </div>
 
       {isLoading ? (

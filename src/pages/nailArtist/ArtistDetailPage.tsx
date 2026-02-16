@@ -112,7 +112,8 @@ const ArtistDetailPage = () => {
             className="font-black tracking-tight uppercase rounded-[2rem] w-full"
             onClick={handleArtistChat}
             style={{
-              background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+              background:
+                "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
               border: "none",
             }}
           >
@@ -138,7 +139,7 @@ const ArtistDetailPage = () => {
           <Card className="overflow-hidden border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFC988] to-[#E288F9] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#ffcfe9] flex items-center justify-center">
                   <Sparkles className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -155,7 +156,7 @@ const ArtistDetailPage = () => {
                   className="font-black tracking-tight uppercase rounded-[2rem]"
                   style={{
                     background:
-                      "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                      "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
                     border: "none",
                   }}
                 >

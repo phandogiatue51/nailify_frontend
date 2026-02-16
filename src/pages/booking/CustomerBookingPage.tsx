@@ -80,7 +80,7 @@ const CustomerBookingPage = () => {
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="font-black tracking-tighter uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+          <h1 className="font-black tracking-tighter uppercase text-xl bg-gradient-to-r from-[#950101] to-[#ffcfe9] bg-clip-text text-transparent">
             {isArtistBooking ? "Book with Artist" : "Book Appointment"}
           </h1>
         </div>
@@ -127,7 +127,7 @@ const CustomerBookingPage = () => {
                 }
                 style={{
                   background:
-                    "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                    "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
                   border: "none",
                 }}
                 className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"

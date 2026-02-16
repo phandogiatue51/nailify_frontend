@@ -6,7 +6,7 @@ export default function Header({ title = "Nailify", hasNotification = false }) {
         <h1
           className="text-2xl font-black italic tracking-tighter bg-clip-text text-transparent"
           style={{
-            backgroundImage: "linear-gradient(to right, #FFC988, #E288F9)",
+            backgroundImage: "linear-gradient(to right, #950101, #ffcfe9)",
           }}
         >
           {title}

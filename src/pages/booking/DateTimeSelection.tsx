@@ -42,12 +42,12 @@ const DateTimeSelection = () => {
 
   const { data: bookings = [], isLoading: bookingsLoading } = isArtistBooking
     ? useBookings().useArtistBookings(
-        selectedDate ? new Date(selectedDate) : undefined,
-      )
+      selectedDate ? new Date(selectedDate) : undefined,
+    )
     : useBookings().useLocationBookings(
-        selectedLocation,
-        selectedDate ? new Date(selectedDate) : undefined,
-      );
+      selectedLocation,
+      selectedDate ? new Date(selectedDate) : undefined,
+    );
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
@@ -108,7 +108,7 @@ const DateTimeSelection = () => {
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <h1 className="font-black tracking-tight uppercase text-lg text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+        <h1 className="font-black tracking-tighter uppercase text-xl bg-gradient-to-r from-[#950101] to-[#ffcfe9] bg-clip-text text-transparent">
           Select Date & Time
         </h1>
       </div>
@@ -128,8 +128,8 @@ const DateTimeSelection = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 bg-purple-50 rounded-lg">
-                    <Clock className="w-5 h-5 text-[#E288F9]" />
+                  <div className="p-2 bg-red-50 rounded-lg">
+                    <Clock className="w-5 h-5 text-[#950101]" />
                   </div>
                   <h2 className="text-sm font-black uppercase tracking-tight">
                     Select Time Slot
@@ -155,7 +155,7 @@ const DateTimeSelection = () => {
                       className={cn(
                         "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
                         isSelected
-                          ? "bg-gradient-to-r from-[#f988b3] to-[#FFC988] text-white scale-95"
+                          ? "bg-gradient-to-r from-[#950101] to-[#ffcfe9] text-white scale-95"
                           : busy
                             ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
                             : "bg-white border-slate-50 text-slate-600 hover:border-slate-200",
@@ -188,16 +188,17 @@ const DateTimeSelection = () => {
         <Button
           onClick={handleNext}
           disabled={!selectedDate || !selectedTime}
-          className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
           style={{
-            background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+            background:
+              "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
             border: "none",
           }}
+          className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
         >
           Next: Review Booking
         </Button>
       </div>
-    </div>
+    </div >
   );
 };
 

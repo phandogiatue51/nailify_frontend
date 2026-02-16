@@ -104,7 +104,8 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
         onClick={handleBookNow}
         className="font-black tracking-tight uppercase text-lg w-full rounded-[2rem]"
         style={{
-          background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+          background:
+            "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
           border: "none",
         }}
       >

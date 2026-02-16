@@ -242,7 +242,8 @@ const RescheduleBooking = () => {
             onClick={handleReschedule}
             disabled={isSubmitting || !selectedTime}
             style={{
-              background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+              background:
+                "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
               border: "none",
             }}
             className="flex-[2] h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-2xl transition-all active:scale-95 disabled:opacity-50"

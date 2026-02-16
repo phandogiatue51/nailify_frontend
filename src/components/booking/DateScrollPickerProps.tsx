@@ -37,8 +37,8 @@ export const DateScrollPicker: React.FC<DateScrollPickerProps> = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-purple-50 rounded-xl">
-            <CalendarIcon className="w-4 h-4 text-[#E288F9]" />
+          <div className="p-2 bg-red-50 rounded-xl">
+            <CalendarIcon className="w-4 h-4 text-[#950101]" />
           </div>
           <h2 className="text-sm font-black uppercase tracking-tight text-slate-700">
             {format(viewStartDate, "MMMM yyyy")}
@@ -74,7 +74,7 @@ export const DateScrollPicker: React.FC<DateScrollPickerProps> = ({
               className={cn(
                 "flex flex-col items-center min-w-[50px] flex-1 p-4 rounded-[2rem] transition-all duration-300 ",
                 isSelected
-                  ? "bg-gradient-to-r from-[#f988b3] to-[#FFC988] text-white"
+                  ? "bg-gradient-to-r from-[#950101] to-[#ffcfe9] text-white"
                   : "bg-white border-slate-50 text-slate-500 hover:border-slate-200",
               )}
             >

@@ -103,7 +103,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
             ~{collection.calculatedDuration || collection.estimatedDuration}{" "}
             MINS
           </span>
-          <span className="text-sm font-black text-[#FFC988]">
+          <span className="text-sm font-black text-[#950101]">
             {Number(collection.totalPrice).toLocaleString()}đ
           </span>
         </div>

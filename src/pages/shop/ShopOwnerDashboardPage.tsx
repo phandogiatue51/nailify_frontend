@@ -62,12 +62,7 @@ const ShopOwnerDashboardPage = () => {
         {/* Header Section */}
         <div className="pt-4 flex justify-between items-end">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-[#E288F9]">
-              <Sparkles className="w-4 h-4" />
-              <span className="text-[10px] font-black uppercase tracking-widest">
-                Artist Portal
-              </span>
-            </div>
+
             <h1 className="text-3xl font-black text-slate-900 tracking-tight">
               Dashboard
             </h1>
@@ -170,7 +165,7 @@ const ShopOwnerDashboardPage = () => {
         <Button
           className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
           style={{
-            background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+            background: "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
             border: "none",
           }}
         >

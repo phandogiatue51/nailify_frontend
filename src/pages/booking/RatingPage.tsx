@@ -74,7 +74,7 @@ export default function CreateRatingPage() {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="font-black tracking-tighter uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+          <h1 className="font-black tracking-tighter uppercase text-xl bg-gradient-to-r from-[#950101] to-[#ffcfe9] bg-clip-text text-transparent">
             Rate Experience
           </h1>
         </div>
@@ -147,7 +147,8 @@ export default function CreateRatingPage() {
             <Button
               className="flex-[2] h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-lg active:scale-95 disabled:opacity-50"
               style={{
-                background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                background:
+                  "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
                 border: "none",
               }}
               onClick={handleSubmit}

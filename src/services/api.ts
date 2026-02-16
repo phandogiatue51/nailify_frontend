@@ -221,6 +221,7 @@ export const shopAPI = {
   getAll: () => apiRequest("/Shop"),
 
   getById: (id: string) => apiRequest(`/Shop/${id}`),
+  getByProfileId: (id: string) => apiRequest(`/Shop/profile/${id}`),
 
   getMyShops: () => apiRequest("/Shop/owner"),
 
@@ -514,6 +515,7 @@ export const artistAPI = {
   getAll: () => apiRequest("/Artist"),
 
   getById: (artistId: string) => apiRequest(`/Artist/${artistId}`),
+  getByProfileId: (id: string) => apiRequest(`/Artist/profile/${id}`),
 
   getByAuth: () => apiRequest("/Artist/artistAuth"),
 

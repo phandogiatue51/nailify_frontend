@@ -11,11 +11,11 @@ const AuthForm = () => {
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center p-4 overflow-hidden bg-[#fafafa]">
       <div
         className="absolute top-[-5%] right-[-5%] w-[70%] h-[70%] rounded-full blur-[100px] opacity-60 animate-pulse"
-        style={{ backgroundColor: "#FFC988" }}
+        style={{ backgroundColor: "#950101" }}
       />
       <div
         className="absolute bottom-[-5%] left-[-5%] w-[70%] h-[70%] rounded-full blur-[100px] opacity-60 animate-pulse"
-        style={{ backgroundColor: "#E288F9" }}
+        style={{ backgroundColor: "#ffcfe9" }}
       />
 
       <div className="relative w-full max-w-[400px] z-10">
@@ -25,8 +25,7 @@ const AuthForm = () => {
           </div>
 
           <h1
-            className="text-4xl font-black tracking-tight bg-clip-text text-transparent italic"
-            style={{ color: "#f988b3ff" }}
+            className="text-4xl font-black tracking-tight bg-clip-text text-transparent italic text-white"
           >
             Nailify
           </h1>

@@ -135,7 +135,8 @@ export const BookingActions = ({
             <Button
               className="flex h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
               style={{
-                background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+                background:
+                  "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
               }}
               onClick={() => onReschedule?.(booking.id)}
             >
@@ -150,7 +151,8 @@ export const BookingActions = ({
             onClick={() => navigate(`/booking/rating/${booking.id}`)}
             className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
             style={{
-              background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+              background:
+                "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
             }}
           >
             <Star className="w-4 h-4 mr-2 fill-white" /> Rate Experience

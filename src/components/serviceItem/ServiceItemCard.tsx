@@ -93,7 +93,7 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">
             {item.estimatedDuration} MINS
           </p>
-          <p className="text-sm font-black text-[#E288F9]">
+          <p className="text-sm font-black text-[#950101]">
             {Number(item.price).toLocaleString()}đ
           </p>
         </div>

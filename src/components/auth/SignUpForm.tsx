@@ -137,7 +137,7 @@ export const SignupForm = () => {
       <Button
         type="submit"
         className="w-full h-12 rounded-2xl font-boldhover:bg-purple-700 shadow-lg shadow-purple-200"
-        style={{ backgroundColor: "#FFC988" }}
+        style={{ backgroundColor: "#950101" }}
         disabled={isLoading}
       >
         {isLoading ? <Loader2 className="animate-spin" /> : "Create Account"}

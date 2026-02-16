@@ -32,7 +32,7 @@ export const ServiceItems = ({ items, totalPrice, duration }: any) => (
           Total Value
         </p>
         <div className="text-right">
-          <p className="text-xl font-black text-[#E288F9]">
+          <p className="text-xl font-black text-[#950101]">
             {totalPrice.toLocaleString()} VND
           </p>
         </div>

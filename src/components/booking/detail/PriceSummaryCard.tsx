@@ -29,7 +29,7 @@ export const PriceSummaryCard = ({
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-black text-[#E288F9]">
+          <p className="text-2xl font-black text-[#950101]">
             {totalPrice.toLocaleString()} <span className="text-lg">VND</span>
           </p>
         </div>
