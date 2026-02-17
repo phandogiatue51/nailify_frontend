@@ -65,8 +65,16 @@ const ExplorePage = () => {
               Discover
             </span>
           </div>
-          <h1 className="text-3xl font-black text-[#ffcfe9] tracking-tight mb-6">
-            Find your <span className="text-[#950101]">Vibe</span>
+          <h1 className="text-3xl font-black text-black tracking-tight mb-6">
+            Find your {""}
+            <span
+              className="italic text-[#950101]"
+              style={{
+                textShadow: "2px 2px 0px #FFCFE9",
+              }}
+            >
+              Vibe
+            </span>
           </h1>
 
           <div className="relative group">

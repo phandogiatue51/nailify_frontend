@@ -11,9 +11,9 @@ export const HelpCard = () => (
           <p className="text-sm text-blue-600">
             Contact support at{" "}
             <a href="tel:+84123456789" className="underline font-medium">
-              +84 123 456 789
+              +84 101 697 330
             </a>{" "}
-            or email support@nailsalon.com
+            or email togetherlms@gmail.com
           </p>
         </div>
       </div>

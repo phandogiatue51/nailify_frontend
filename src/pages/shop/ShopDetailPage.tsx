@@ -116,7 +116,7 @@ const ShopDetailPage = () => {
             onClick={handleShopChat}
             style={{
               background:
-                "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
+                "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
               border: "none",
             }}
           >
@@ -154,7 +154,7 @@ const ShopDetailPage = () => {
                 className="font-black tracking-tight uppercase rounded-[2rem]"
                 style={{
                   background:
-                    "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
+            "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
                   border: "none",
                 }}
               >

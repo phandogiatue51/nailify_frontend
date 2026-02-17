@@ -157,7 +157,8 @@ const NailArtistDashboardPage = () => {
         <Button
           className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12 mt-6"
           style={{
-            background: "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
+            background:
+            "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
             border: "none",
           }}
         >

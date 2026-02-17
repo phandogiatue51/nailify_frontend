@@ -229,7 +229,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               className="flex h-9 w-24 rounded-[2rem] font-black uppercase text-[10px] text-white shadow-xl shadow-pink-100"
               style={{
                 background:
-                  "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
               }}
             >
               Details

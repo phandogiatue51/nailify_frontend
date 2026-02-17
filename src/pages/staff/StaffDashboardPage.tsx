@@ -127,7 +127,8 @@ export const StaffDashboardPage = () => {
         <Button
           className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
           style={{
-            background: "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
+            background:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
             border: "none",
           }}
         >

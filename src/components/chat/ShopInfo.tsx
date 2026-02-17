@@ -55,7 +55,7 @@ export default function ShopInfoPage() {
         {/* Navigation Back */}
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-6 left-4 p-2 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/40 transition-all"
+          className="absolute top-6 left-4 p-2 bg-black/10 backdrop-blur-md rounded-full text-black hover:bg-black/40 transition-all"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>

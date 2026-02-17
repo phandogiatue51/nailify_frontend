@@ -123,7 +123,7 @@ export const BookingActions = ({
                 <Button
                   variant="outline"
                   disabled={isUpdatingStatus || isCancelling}
-                  className="h-14 rounded-2xl border-red-400 text-red-400 hover:text-white hover:bg-red-400"
+                  className="h-10 rounded-2xl border-red-400 text-red-400 hover:text-white hover:bg-red-400"
                 >
                   <XCircle size={20} />
                   Cancel Booking
@@ -133,10 +133,10 @@ export const BookingActions = ({
               onConfirm={() => onCancel?.(booking.id)}
             />
             <Button
-              className="flex h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
+              className="flex h-10 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
               style={{
                 background:
-                  "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
               }}
               onClick={() => onReschedule?.(booking.id)}
             >
@@ -149,10 +149,10 @@ export const BookingActions = ({
         {!isShopOwner && isCompleted && !booking.ratings && (
           <Button
             onClick={() => navigate(`/booking/rating/${booking.id}`)}
-            className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
+            className="w-full h-10 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
             style={{
               background:
-                "linear-gradient(90deg, #950101 0%, #ffcfe9 100%)",
+                "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
             }}
           >
             <Star className="w-4 h-4 mr-2 fill-white" /> Rate Experience
