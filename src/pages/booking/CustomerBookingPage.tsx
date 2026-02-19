@@ -22,20 +22,19 @@ const CustomerBookingPage = () => {
   const locationState = useLocation();
 
   const shopId = locationState.state?.shopId || paramShopId;
-  const artistId = locationState.state?.id || paramArtistId;
+  const artistId = locationState.state?.artistId || paramArtistId;
 
   const isArtistBooking = !!artistId || searchParams.get("type") === "artist";
   const isShopBooking = !!shopId || searchParams.get("type") === "shop";
 
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [notes] = useState<string>("");
-  const [customerName] = useState<string>("");
-  const [customerPhone] = useState<string>("");
-  const [customerAddress] = useState<string>("");
-
   const { data: locations = [], isLoading: locationsLoading } =
     useLocationsByShop(shopId);
 
+  const customerName = locationState.state?.customerName || "";
+  const customerPhone = locationState.state?.customerPhone || "";
+  const customerAddress = locationState.state?.customerAddress || "";
   const selectedItems = locationState.state?.selectedItems || [];
   const selectedCollection = locationState.state?.selectedCollection;
 
@@ -44,14 +43,10 @@ const CustomerBookingPage = () => {
       setSelectedLocation(locations[0].shopLocationId);
     }
   }, [locations, selectedLocation, isShopBooking]);
+
   const handleNext = () => {
     if (isShopBooking && !selectedLocation) {
       alert("Please select a location");
-      return;
-    }
-
-    if (isArtistBooking && (!customerName || !customerPhone)) {
-      alert("Please provide your name and phone number");
       return;
     }
 
@@ -62,12 +57,10 @@ const CustomerBookingPage = () => {
         shopId,
         artistId,
         selectedLocation,
-        ...(isArtistBooking && {
-          customerName,
-          customerPhone,
-          customerAddress,
-        }),
         notes,
+        customerName,
+        customerPhone,
+        customerAddress,
       },
     });
   };
@@ -128,10 +121,6 @@ const CustomerBookingPage = () => {
             <div className="sticky bottom-0 left-0 right-0 p-4 text-center">
               <Button
                 onClick={handleNext}
-                disabled={
-                  (isShopBooking && !selectedLocation) ||
-                  (isArtistBooking && (!customerName || !customerPhone))
-                }
                 style={{
                   background:
                     "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",

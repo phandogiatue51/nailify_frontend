@@ -11,15 +11,16 @@ import { Button } from "../ui/button";
 import { useCustomerCollections } from "@/hooks/useCustomer";
 import CollectionCard from "@/components/collection/CollectionCard";
 import { Link } from "react-router-dom";
-
+import { useAuth } from "@/hooks/use-auth";
+import { profileAPI } from "@/services/api";
+import { profile } from "console";
+import { useQuery } from "@tanstack/react-query";
 interface CollectionDetailProps {
   collection: Collection;
 }
 
 const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
   const navigate = useNavigate();
-
-  const isArtistCollection = !!collection.nailArtistId && !collection.shopId;
 
   const { data: shop, isLoading: shopLoading } = useCustomerShopById(
     collection.shopId,
@@ -28,6 +29,10 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
     collection.nailArtistId,
   );
 
+  const { data: profile } = useQuery({
+    queryKey: ["profile"],
+    queryFn: () => profileAPI.getProfile(),
+  });
   const { data: collections = [], isLoading: collectionsLoading } =
     useCustomerCollections(collection.shopId, collection.nailArtistId);
 
@@ -40,12 +45,15 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
       type: collection.shopId ? "shop" : "artist",
       selectedCollection: collection,
       collectionId: collection.id,
+      customerName: profile?.fullName,
+      customerPhone: profile?.phone,
+      customerAddress: profile?.address,
     };
 
     if (collection.shopId) {
       bookingState.shopId = collection.shopId;
     } else if (collection.nailArtistId) {
-      bookingState.id = collection.nailArtistId;
+      bookingState.artistId = collection.nailArtistId;
     }
 
     navigate(`/customer-book`, { state: bookingState });

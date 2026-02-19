@@ -11,8 +11,11 @@ import {
   User,
   Package,
   CircleDollarSign,
+  Flower,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { artistAPI } from "@/services/api";
+import { useQuery } from "@tanstack/react-query";
 
 const ConfirmBooking = () => {
   const location = useLocation();
@@ -21,18 +24,23 @@ const ConfirmBooking = () => {
   const {
     selectedItems = [],
     selectedCollection,
-    shopId,
     artistId,
     selectedLocation,
     selectedDate,
     selectedTime,
-    customerName = "",
-    customerPhone = "",
-    customerAddress = "",
-    notes = "",
+    customerName,
+    customerPhone,
+    customerAddress,
+    notes,
   } = location.state || {};
 
   const isArtistBooking = !!artistId;
+
+  const { data: artist, isLoading } = useQuery({
+    queryKey: ["artist", artistId],
+    queryFn: () => artistAPI.getById(artistId),
+    enabled: !!artistId,
+  });
 
   const { data: selectedLocationObj } = useShopOwnerLocationById(
     !isArtistBooking ? selectedLocation : undefined,
@@ -69,22 +77,20 @@ const ConfirmBooking = () => {
       collectionId: selectedCollection?.id || null,
       items: items,
       notes: notes,
+      bookingType: "CustomerBooking",
     };
 
-    if (isArtistBooking) {
-      bookingData.bookingType = "ArtistBooking";
+    if (artistId) {
       bookingData.nailArtistId = artistId;
       bookingData.customerName = customerName;
       bookingData.customerPhone = customerPhone;
       bookingData.customerAddress = customerAddress || null;
-    } else {
-      bookingData.bookingType = "CustomerBooking";
+    } else if (selectedLocation) {
       bookingData.shopLocationId = selectedLocation;
     }
 
     try {
       const createdBooking = await createBooking.mutateAsync(bookingData);
-      console.log("Created booking response:", createdBooking);
 
       const bookingId = createdBooking?.bookingId;
 
@@ -177,14 +183,14 @@ const ConfirmBooking = () => {
                 Date & Time
               </h2>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 font-medium text-slate-900 tracking-tighter text-md">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Date:</span>
-                <span className="font-medium">{selectedDate}</span>
+                <p>Date:</p>
+                <span>{selectedDate}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Time:</span>
-                <span className="font-medium">{selectedTime}</span>
+                <span>Time:</span>
+                <span>{selectedTime}</span>
               </div>
             </div>
           </CardContent>
@@ -194,27 +200,23 @@ const ConfirmBooking = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
               {isArtistBooking ? (
-                <User className="w-5 h-5 text-primary" />
+                <Flower className="w-5 h-5 text-primary" />
               ) : (
                 <MapPin className="w-5 h-5 text-primary" />
               )}
               <h2 className="text-md font-black uppercase tracking-tight">
-                {isArtistBooking ? "Service Provider" : "Studio Location"}
+                {isArtistBooking ? "Artist Info" : "Studio Location"}
               </h2>
             </div>
 
             {isArtistBooking ? (
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-slate-400">
-                  {customerName.charAt(0)}
-                </div>
                 <div>
                   <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
-                    Mobile Appointment
+                    {artist?.fullName ?? "Unknown Artist"}
                   </p>
-                  <p className="text-xs font-bold text-slate-400 flex items-center gap-1 mt-1">
-                    <MapPin className="w-3 h-3" />{" "}
-                    {customerAddress || "Address to be provided"}
+                  <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
+                    {artist?.phone ?? "No phone available"}
                   </p>
                 </div>
               </div>
@@ -257,17 +259,23 @@ const ConfirmBooking = () => {
         {isArtistBooking && (
           <Card>
             <CardContent className="p-4">
-              <h2 className="font-black uppercase tracking-tight">
-                Your Information
-              </h2>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Name:</span>
-                  <span className="font-medium">{customerName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Phone:</span>
-                  <span className="font-medium">{customerPhone}</span>
+              <div className="flex items-center gap-2 mb-4">
+                <User className="w-5 h-5 text-primary" />
+                <h2 className="text-md font-black uppercase tracking-tight">
+                  Your Infomation
+                </h2>
+              </div>
+              <div className="flex items-start gap-4">
+                <div>
+                  <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
+                    {customerName ?? "Unknown Customer"}
+                  </p>
+                  <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
+                    {customerPhone ?? "No phone available"}
+                  </p>
+                  <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
+                    {customerAddress ?? "No address available"}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -296,7 +304,7 @@ const ConfirmBooking = () => {
                 Price Summary
               </h2>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 font-medium text-slate-900 tracking-tighter text-md">
               <div className="flex justify-between items-center">
                 <span>Total Price:</span>
                 <span className="text-2xl font-bold text-green-600">

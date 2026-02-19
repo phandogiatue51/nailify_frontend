@@ -160,6 +160,7 @@ export const useBookings = () => {
         case "ArtistBooking":
           const artistDto = {
             ...baseDto,
+            nailArtistId: params.nailArtistId,
             customerId: params.customerId || null,
             customerName: params.customerName || null,
             customerPhone: params.customerPhone || null,
