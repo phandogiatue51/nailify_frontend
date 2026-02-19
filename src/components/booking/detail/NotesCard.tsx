@@ -17,7 +17,7 @@ export const NotesCard = ({ notes }: NotesCardProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="whitespace-pre-wrap text-slate-700">{notes}</p>
+        <p className="text-sm font-bold text-slate-400">{notes}</p>
       </CardContent>
     </Card>
   );

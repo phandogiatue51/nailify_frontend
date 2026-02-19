@@ -48,6 +48,10 @@ export default function ProfileInfoPage() {
   const handleBookNow = () => {
     const bookingState: any = {
       type: user.shopId ? "shop" : "artist",
+      customerProfileId: profile?.id,
+      customerName: profile?.fullName,
+      customerPhone: profile?.phone,
+      customerAddress: profile?.address,
     };
 
     if (user.shopId) {

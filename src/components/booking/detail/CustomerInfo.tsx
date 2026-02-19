@@ -9,29 +9,16 @@ export const CustomerInfo = ({ name, phone, address }: any) => (
         Customer
       </CardTitle>
     </CardHeader>
-    <CardContent className="space-y-2">
-      <div>
-        <p className="text-sm font-black uppercase text-slate-300">
-          Full Name
-        </p>
-        <p className="font-bold text-slate-700 text-md">{name}</p>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="bg-orange-50 p-2 rounded-xl">
-          <Phone className="w-4 h-4 text-[#FFC988]" />
-        </div>
-        <p className="font-bold text-slate-700">{phone}</p>
-      </div>
-      {address && (
-        <div className="flex items-start gap-3">
-          <div className="bg-slate-50 p-2 rounded-xl">
-            <MapPin className="w-4 h-4 text-slate-400" />
-          </div>
-          <p className="text-sm font-medium text-slate-600 leading-snug">
-            {address}
-          </p>
-        </div>
-      )}
+    <CardContent>
+      <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
+        {name}
+      </p>
+      <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
+        {phone}
+      </p>
+      <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
+        {address}
+      </p>
     </CardContent>
   </Card>
 );

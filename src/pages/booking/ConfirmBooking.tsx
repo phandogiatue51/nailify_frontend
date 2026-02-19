@@ -14,9 +14,9 @@ import {
   Flower,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { artistAPI } from "@/services/api";
+import { artistAPI, profileAPI } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-
+import { useAuth } from "@/hooks/use-auth";
 const ConfirmBooking = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -24,22 +24,37 @@ const ConfirmBooking = () => {
   const {
     selectedItems = [],
     selectedCollection,
-    artistId,
+    nailArtistId,
     selectedLocation,
     selectedDate,
     selectedTime,
+    customerProfileId,
     customerName,
     customerPhone,
     customerAddress,
     notes,
   } = location.state || {};
+  const { user } = useAuth();
+  const isArtistBooking = !!nailArtistId;
+  const isCustomer = user?.role === 2;
 
-  const isArtistBooking = !!artistId;
+  const { data: artist, isLoading: artistLoading } = useQuery({
+    queryKey: ["artist", nailArtistId],
+    queryFn: () => artistAPI.getById(nailArtistId),
+    enabled: !!nailArtistId,
+  });
 
-  const { data: artist, isLoading } = useQuery({
-    queryKey: ["artist", artistId],
-    queryFn: () => artistAPI.getById(artistId),
-    enabled: !!artistId,
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ["profile", customerProfileId],
+    queryFn: () => profileAPI.getById(customerProfileId),
+    enabled: !!customerProfileId,
+  });
+
+  console.log("ConfirmBooking state:", {
+    customerProfileId,
+    customerName,
+    customerPhone,
+    profile: profile?.fullName,
   });
 
   const { data: selectedLocationObj } = useShopOwnerLocationById(
@@ -71,19 +86,30 @@ const ConfirmBooking = () => {
       serviceItemId: item.id,
     }));
 
+    let bookingType;
+
+    if (user?.role === 0) {
+      bookingType = "CustomerBooking";
+    } else if (user?.role === 1 || user?.role === 3) {
+      bookingType = "ShopBooking";
+    } else if (user?.role === 4) {
+      bookingType = "ArtistBooking";
+    }
+
     const bookingData: any = {
       bookingDate: selectedDate,
       bookingTime: selectedTime,
       collectionId: selectedCollection?.id || null,
       items: items,
       notes: notes,
-      bookingType: "CustomerBooking",
+      bookingType: bookingType,
+      customerName: customerName,
+      customerPhone: customerPhone,
+      customerId: customerProfileId || null,
     };
 
-    if (artistId) {
-      bookingData.nailArtistId = artistId;
-      bookingData.customerName = customerName;
-      bookingData.customerPhone = customerPhone;
+    if (nailArtistId) {
+      bookingData.nailArtistId = nailArtistId;
       bookingData.customerAddress = customerAddress || null;
     } else if (selectedLocation) {
       bookingData.shopLocationId = selectedLocation;
@@ -256,31 +282,37 @@ const ConfirmBooking = () => {
           </CardContent>
         </Card>
 
-        {isArtistBooking && (
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <User className="w-5 h-5 text-primary" />
-                <h2 className="text-md font-black uppercase tracking-tight">
-                  Your Infomation
-                </h2>
-              </div>
-              <div className="flex items-start gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-4">
+              <User className="w-5 h-5 text-primary" />
+              <h2 className="text-md font-black uppercase tracking-tight">
+                {isCustomer ? "Your Information" : "Customer Information"}
+              </h2>
+            </div>
+            <div className="flex items-start gap-4">
+              {profileLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
                 <div>
                   <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
-                    {customerName ?? "Unknown Customer"}
+                    {profile?.fullName || customerName || "Unknown Customer"}
                   </p>
                   <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                    {customerPhone ?? "No phone available"}
+                    {profile?.phoneNumber ||
+                      customerPhone ||
+                      "No phone available"}
                   </p>
                   <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                    {customerAddress ?? "No address available"}
+                    {profile?.address ||
+                      customerAddress ||
+                      "No address available"}
                   </p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Notes */}
         {notes && (

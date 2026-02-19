@@ -19,15 +19,16 @@ const DateTimeSelection = () => {
     selectedItems,
     selectedCollection,
     shopId,
-    artistId,
+    nailArtistId,
     selectedLocation,
+    customerProfileId,
     customerName,
     customerPhone,
     customerAddress,
     notes,
   } = location.state || {};
 
-  const isArtistBooking = !!artistId;
+  const isArtistBooking = !!nailArtistId;
 
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
@@ -60,13 +61,14 @@ const DateTimeSelection = () => {
         selectedItems,
         selectedCollection,
         shopId,
-        artistId,
+        nailArtistId,
         selectedLocation,
         selectedDate,
         selectedTime,
         customerName,
         customerPhone,
         customerAddress,
+        customerProfileId,
         notes,
       },
     });
@@ -177,7 +179,7 @@ const DateTimeSelection = () => {
           </Card>
         )}
 
-        {isShopOwner && selectedDate && (selectedLocation || artistId) && (
+        {isShopOwner && selectedDate && (selectedLocation || nailArtistId) && (
           <div className="mt-4">
             <h3 className="text-xs font-black uppercase text-slate-400 mb-2 px-2">
               Existing Bookings

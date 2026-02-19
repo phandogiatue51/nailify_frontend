@@ -53,7 +53,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
     if (collection.shopId) {
       bookingState.shopId = collection.shopId;
     } else if (collection.nailArtistId) {
-      bookingState.artistId = collection.nailArtistId;
+      bookingState.nailArtistId = collection.nailArtistId;
     }
 
     navigate(`/customer-book`, { state: bookingState });

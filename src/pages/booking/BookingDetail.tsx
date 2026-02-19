@@ -16,7 +16,7 @@ import { LocationInfo } from "@/components/booking/detail/LocationInfo";
 import { BookingActions } from "@/components/booking/detail/BookingActions";
 import { useAuth } from "@/hooks/use-auth";
 import { BookingStatus } from "@/types/database";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const BookingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -114,7 +114,7 @@ const BookingDetail = () => {
                 <CustomerInfo
                   name={booking.customerName}
                   phone={booking.customerPhone}
-                  address={booking.customerAddress}
+                  address={booking.address}
                 />
 
                 <LocationInfo

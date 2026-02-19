@@ -21,10 +21,18 @@ const CustomerBookingPage = () => {
   const navigate = useNavigate();
   const locationState = useLocation();
 
-  const shopId = locationState.state?.shopId || paramShopId;
-  const artistId = locationState.state?.artistId || paramArtistId;
+  console.log("CustomerBookingPage received state:", {
+    artistId: locationState.state?.artistId,
+    nailArtistId: locationState.state?.nailArtistId,
+    shopId: locationState.state?.shopId,
+    type: locationState.state?.type,
+  });
 
-  const isArtistBooking = !!artistId || searchParams.get("type") === "artist";
+  const shopId = locationState.state?.shopId || paramShopId;
+  const nailArtistId = locationState.state?.nailArtistId || paramArtistId;
+
+  const isArtistBooking =
+    !!nailArtistId || searchParams.get("type") === "artist";
   const isShopBooking = !!shopId || searchParams.get("type") === "shop";
 
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
@@ -32,6 +40,7 @@ const CustomerBookingPage = () => {
   const { data: locations = [], isLoading: locationsLoading } =
     useLocationsByShop(shopId);
 
+  const customerProfileId = locationState.state?.customerProfileId || null;
   const customerName = locationState.state?.customerName || "";
   const customerPhone = locationState.state?.customerPhone || "";
   const customerAddress = locationState.state?.customerAddress || "";
@@ -55,12 +64,13 @@ const CustomerBookingPage = () => {
         selectedItems,
         selectedCollection,
         shopId,
-        artistId,
+        nailArtistId,
         selectedLocation,
         notes,
         customerName,
         customerPhone,
         customerAddress,
+        customerProfileId,
       },
     });
   };
@@ -96,7 +106,7 @@ const CustomerBookingPage = () => {
                 selectedItems={selectedItems}
                 selectedCollection={selectedCollection}
                 shopLocationId={null}
-                nailArtistId={artistId}
+                nailArtistId={nailArtistId}
               />
             )}
 

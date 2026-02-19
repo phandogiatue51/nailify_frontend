@@ -88,29 +88,30 @@ const CollectionSelectionPage = () => {
     setSelectedTags([]);
   };
 
-  // Count active filters
   const activeFilterCount = selectedTags.length + (searchName ? 1 : 0);
 
-  // Handle collection selection
   const handleSelectCollection = (collection: any) => {
+    const existingState = location.state || {};
+
     const bookingState: any = {
-      type: user?.role === 1 ? "shop" : "artist",
+      ...existingState,
       selectedCollection: collection,
       collectionId: collection.id,
-      customerProfileId: customerProfile?.id,
-      customerName: customerProfile?.fullName,
-      customerPhone: customerProfile?.phone,
-      customerAddress: customerProfile?.address,
     };
 
-    // Add owner ID
-    if (user?.role === 1 && user.shopId) {
+    if (user?.role === 1 || user?.role === 3) {
       bookingState.shopId = user.shopId;
-    } else if (user?.role === 4 && user.nailArtistId) {
-      bookingState.id = user.nailArtistId;
+      bookingState.type = "shop";
+    } else if (user?.role === 4) {
+      bookingState.nailArtistId = user.nailArtistId;
+      bookingState.type = "artist";
     }
-
-    // Navigate to customer booking page
+    console.log("Navigating to customer-book with state:", {
+      nailArtistId: bookingState.nailArtistId,
+      type: bookingState.type,
+      role: user?.role,
+      collectionId: collection.id,
+    });
     navigate("/customer-book", { state: bookingState });
   };
 
