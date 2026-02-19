@@ -7,11 +7,11 @@ export enum UserRole {
 }
 
 export enum ComponentType {
-  Form,
   Base,
   Shape,
   Polish,
   Design,
+  Gem,
 }
 
 export enum TagCategory {
@@ -60,7 +60,7 @@ export interface CollectionFilterDto {
   ArtistId?: string;
   Name?: string;
   Category?: TagCategory;
-  TagId?: string;
+  TagIds?: string[];
   isActive?: boolean;
 }
 

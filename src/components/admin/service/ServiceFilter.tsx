@@ -32,11 +32,11 @@ export const ServiceFilter = ({
 
   const componentTypeOptions = [
     { value: "all", label: "All Types" },
-    { value: ComponentType.Form.toString(), label: "Form" },
-    { value: ComponentType.Base.toString(), label: "Base" },
-    { value: ComponentType.Shape.toString(), label: "Shape" },
-    { value: ComponentType.Polish.toString(), label: "Polish" },
-    { value: ComponentType.Design.toString(), label: "Design" },
+    { value: ComponentType.Form.toString(), label: "Base" },
+    { value: ComponentType.Base.toString(), label: "Shape" },
+    { value: ComponentType.Shape.toString(), label: "Polish" },
+    { value: ComponentType.Polish.toString(), label: "Design" },
+    { value: ComponentType.Design.toString(), label: "Gem" },
   ];
 
   return (

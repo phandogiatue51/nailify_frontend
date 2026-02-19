@@ -61,6 +61,7 @@ import DetailChatPage from "./pages/conversation/DetailChatPage";
 import ChatList from "./pages/conversation/ChatList";
 import ProfileInfoPage from "./components/chat/CustomerInfo";
 import ShopInfoPage from "./components/chat/ShopInfo";
+import CollectionSelectionPage from "./pages/booking/CollectionSelectionPage";
 
 export const router = createBrowserRouter(
   [
@@ -199,6 +200,11 @@ export const router = createBrowserRouter(
         {
           path: "/customer-book",
           element: withMobileLayout(<CustomerBookingPage />),
+        },
+
+        {
+          path: "/booking/collection-selection",
+          element: withMobileLayout(<CollectionSelectionPage />),
         },
 
         {

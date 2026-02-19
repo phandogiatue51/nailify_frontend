@@ -108,11 +108,11 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
   };
 
   const typeLabels: Record<ComponentType, string> = {
-    0: "Form",
-    1: "Base",
-    2: "Shape",
-    3: "Polish",
-    4: "Design",
+    0: "Base",
+    1: "Shape",
+    2: "Polish",
+    3: "Design",
+    4: "Gem",
   };
 
   return (

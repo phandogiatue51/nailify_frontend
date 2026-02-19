@@ -6,6 +6,7 @@ import {
   artistAPI,
 } from "@/services/api";
 import { ServiceItem, ComponentType } from "@/types/database";
+import { CollectionFilterDto } from "@/types/filter";
 
 export const useCustomerShops = (options?: { enabled?: boolean }) => {
   return useQuery({
@@ -168,14 +169,22 @@ export const useAllCustomerServiceItems = (options?: { enabled?: boolean }) => {
   });
 };
 
-export const useAllCustomerCollections = (options?: { enabled?: boolean }) => {
+export const useAllCustomerCollections = (
+  filterParams?: CollectionFilterDto,
+  options?: { enabled?: boolean },
+) => {
+
   return useQuery({
-    queryKey: ["all-customer-collections"],
+    queryKey: ["all-customer-collections", filterParams],
     queryFn: async () => {
       try {
-        return await collectionAPI.getAll();
+        const response = await collectionAPI.customerFilter(filterParams);
+        if (Array.isArray(response)) {
+          return response;
+        }
+
+        return [];
       } catch (error: any) {
-        console.error("Error fetching all collections:", error);
         return [];
       }
     },

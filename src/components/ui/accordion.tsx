@@ -1,5 +1,5 @@
 export type UserRole = 'customer' | 'shop_owner';
-export type ComponentType = 'form' | 'base' | 'shape' | 'polish' | 'design';
+export type ComponentType = 'base' | 'shape' | 'polish' | 'design' | 'gem';
 export type BookingStatus = 'pending' | 'approved' | 'rejected' | 'completed' | 'cancelled';
 
 export interface Profile {

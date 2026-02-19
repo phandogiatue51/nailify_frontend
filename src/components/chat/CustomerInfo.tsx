@@ -16,7 +16,7 @@ import { Button } from "../ui/button";
 
 export default function ProfileInfoPage() {
   const { id } = useParams<{ id: string }>();
-  const location = useLocation(); // Add this to get navigation state
+  const location = useLocation();
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -44,6 +44,20 @@ export default function ProfileInfoPage() {
       }
     }
   }, [location.state]);
+
+  const handleBookNow = () => {
+    const bookingState: any = {
+      type: user.shopId ? "shop" : "artist",
+    };
+
+    if (user.shopId) {
+      bookingState.shopId = user.shopId;
+    } else if (user.nailArtistId) {
+      bookingState.nailArtistId = user.nailArtistId;
+    }
+
+    navigate(`/booking/collection-selection`, { state: bookingState });
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -103,7 +117,14 @@ export default function ProfileInfoPage() {
     if (profile?.id) {
       fetchBookings();
     }
-  }, [profile?.id, shopId, nailArtistId, user?.role, user?.shopId, user?.nailArtistId]);
+  }, [
+    profile?.id,
+    shopId,
+    nailArtistId,
+    user?.role,
+    user?.shopId,
+    user?.nailArtistId,
+  ]);
 
   // Update paginated bookings when bookings or currentPage changes
   useEffect(() => {
@@ -111,10 +132,6 @@ export default function ProfileInfoPage() {
     const endIndex = startIndex + itemsPerPage;
     setPaginatedBookings(bookings.slice(startIndex, endIndex));
   }, [bookings, currentPage]);
-
-  const filterBookingsByStatus = (status: number) => {
-    return bookings.filter(booking => booking.status === status);
-  };
 
   const handleCancelBooking = async (bookingId: string) => {
     try {
@@ -124,7 +141,7 @@ export default function ProfileInfoPage() {
         const filterParams: BookingFilterDto = {
           CustomerId: profile.id,
           ...(shopId && { ShopId: shopId }),
-          ...(nailArtistId && { NailArtistId: nailArtistId })
+          ...(nailArtistId && { NailArtistId: nailArtistId }),
         };
         const updatedBookings = await BookingAPI.filter(filterParams);
         setBookings(updatedBookings);
@@ -192,16 +209,31 @@ export default function ProfileInfoPage() {
             <p className="text-[#950101] font-bold text-xs uppercase tracking-widest mt-1 opacity-70">
               {profile.email}
             </p>
+            <Button
+              onClick={handleBookNow}
+              className="font-black tracking-tight text-md w-50 rounded-[2rem] mt-4"
+              style={{
+                background:
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                border: "none",
+              }}
+            >
+              Book for this Customer
+            </Button>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-50 grid grid-cols-1 gap-4">
+          <div className="mt-4 border-t border-slate-50 grid grid-cols-1 gap-4">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-[#FFCFE9]/50 flex items-center justify-center">
                 <Store className="w-4 h-4 text-[#950101]" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone</p>
-                <p className="text-sm font-bold text-slate-700">{profile.phone ?? "Not provided"}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  Phone
+                </p>
+                <p className="text-sm font-bold text-slate-700">
+                  {profile.phone ?? "Not provided"}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -209,8 +241,12 @@ export default function ProfileInfoPage() {
                 <Calendar className="w-4 h-4 text-[#950101]" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Address</p>
-                <p className="text-sm font-bold text-slate-700 truncate">{profile.address ?? "No address on file"}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  Address
+                </p>
+                <p className="text-sm font-bold text-slate-700 truncate">
+                  {profile.address ?? "No address on file"}
+                </p>
               </div>
             </div>
           </div>
@@ -252,11 +288,15 @@ export default function ProfileInfoPage() {
             {bookingsLoading ? (
               <div className="flex flex-col items-center py-12 space-y-3">
                 <div className="w-10 h-10 border-4 border-[#FFCFE9] border-t-[#950101] rounded-full animate-spin" />
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Loading Records...</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                  Loading Records...
+                </p>
               </div>
             ) : bookings.length === 0 ? (
               <div className="bg-white rounded-[2rem] p-10 text-center border-2 border-dashed border-slate-100">
-                <p className="text-slate-400 font-bold text-sm">No bookings found yet.</p>
+                <p className="text-slate-400 font-bold text-sm">
+                  No bookings found yet.
+                </p>
               </div>
             ) : (
               <Tabs defaultValue="all" className="w-full">
@@ -278,7 +318,9 @@ export default function ProfileInfoPage() {
                         key={booking.id}
                         booking={booking}
                         isShopOwner={user?.role === 1 || user?.role === 3}
-                        onCancel={user?.role === 0 ? handleCancelBooking : undefined}
+                        onCancel={
+                          user?.role === 0 ? handleCancelBooking : undefined
+                        }
                       />
                     ))}
                   </TabsContent>

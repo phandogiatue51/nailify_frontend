@@ -10,7 +10,7 @@ export const CollectionsTab = ({ collections, isLoading, onDelete }) => {
     <div className="space-y-6 animate-in fade-in duration-500">
       <Button
         onClick={() => navigate("/my-shop/collections/create")}
-        className="w-full h-14 rounded-[1.5rem] bg-gradient-to-r from-[#FFC988] to-[#E288F9] text-white font-black border-none shadow-lg shadow-purple-100 active:scale-95 transition-all"
+        className="w-full h-14 rounded-[1.5rem] bg-gradient-to-r from-[#950101] to-[#D81B60] text-white font-black border-none shadow-lg shadow-purple-100 active:scale-95 transition-all"
       >
         <Plus className="w-5 h-5 mr-2" />
         CREATE NEW COLLECTION

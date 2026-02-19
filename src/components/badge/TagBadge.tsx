@@ -1,4 +1,5 @@
 // components/tags/TagBadge.tsx
+import { cn } from "@/lib/utils";
 import { TagDto } from "@/types/type";
 
 interface TagBadgeProps {
@@ -6,6 +7,7 @@ interface TagBadgeProps {
   size?: "sm" | "md" | "lg";
   removable?: boolean;
   onRemove?: (tagId: string) => void;
+  selected?: boolean; // New prop
 }
 
 export const TagBadge = ({
@@ -13,6 +15,7 @@ export const TagBadge = ({
   size = "md",
   removable = false,
   onRemove,
+  selected = false, // Default to false
 }: TagBadgeProps) => {
   const sizeClasses = {
     sm: "px-1.5 py-0.5 text-xs",
@@ -62,18 +65,25 @@ export const TagBadge = ({
 
   return (
     <span
-      className={`
-        ${sizeClasses[size]} 
-        ${colorClass}
-        rounded-full font-medium inline-flex items-center gap-1
-        shadow-sm
-      `}
+      className={cn(
+        sizeClasses[size],
+        colorClass,
+        "rounded-full font-bold inline-flex items-center gap-1 transition-all duration-200",
+        // When selected, we add a solid Garnet border and lift it up
+        selected
+          ? "ring-2 ring-[#950101] ring-offset-2 scale-105 shadow-md"
+          : "opacity-80 grayscale-[20%]",
+      )}
     >
+      {selected && <span className="text-[10px]">✓</span>}
       {tag.name}
       {removable && (
         <button
           type="button"
-          onClick={() => onRemove?.(tag.id)}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent toggling selection when clicking X
+            onRemove?.(tag.id);
+          }}
           className="ml-1 hover:opacity-70"
         >
           ×

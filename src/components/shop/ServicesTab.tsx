@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
 import { useNavigate } from "react-router-dom";
 import { EmptyTabState } from "../ui/EmptyTabState";
+
 const COMPONENT_TYPES = [
-  { value: 0, label: "Forms" },
-  { value: 1, label: "Bases" },
-  { value: 2, label: "Shapes" },
-  { value: 3, label: "Polish" },
-  { value: 4, label: "Designs" },
+  { value: 0, label: "Base" },
+  { value: 1, label: "Shape" },
+  { value: 2, label: "Polish" },
+  { value: 3, label: "Design" },
+  { value: 4, label: "Gem" },
 ];
 
 export const ServicesTab = ({

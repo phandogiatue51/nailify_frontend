@@ -1,8 +1,9 @@
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import {
   useCustomerArtistById,
-  useCustomerCollections,
+  useAllCustomerCollections,
 } from "@/hooks/useCustomer";
 import {
   ArrowLeft,
@@ -14,30 +15,95 @@ import {
   Palette,
   Sparkles,
   MessageCircle,
+  Search,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import CollectionCard from "@/components/collection/CollectionCard";
 import { useStartConversation } from "@/hooks/useChat";
+import { useQuery } from "@tanstack/react-query";
+import { tagAPI } from "@/services/api";
+import { TagDto } from "@/types/type";
+import { TagCategory } from "@/types/filter";
+import { CollectionFilterDto } from "@/types/filter";
+import { TagBadge } from "@/components/badge/TagBadge";
 
 const ArtistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading } = useAuthContext();
 
+  // Filter states
+  const [searchName, setSearchName] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
   const { data: artist, isLoading: artistLoading } = useCustomerArtistById(id);
-  const { data: collections, isLoading: collectionsLoading } =
-    useCustomerCollections(undefined, id);
   const startConversation = useStartConversation();
 
-  if (loading || artistLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <Loader2 className="w-8 h-8 animate-spin text-[#E288F9]" />
-      </div>
+  // Fetch all tags for filter options
+  const { data: allTags = [] } = useQuery<TagDto[]>({
+    queryKey: ["tags"],
+    queryFn: () => tagAPI.getAllTags(),
+  });
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchName);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchName]);
+
+  // Build filter params with artistId
+  const filterParams = useMemo(() => {
+    if (!id) return undefined;
+
+    const params: CollectionFilterDto = {
+      ArtistId: id,
+    };
+
+    if (debouncedSearch) {
+      params.Name = debouncedSearch;
+    }
+
+    if (selectedTags.length > 0) {
+      params.TagIds = selectedTags;
+    }
+
+    return params;
+  }, [id, debouncedSearch, selectedTags]);
+
+  // Fetch collections with filters
+  const { data: collections = [], isLoading: collectionsLoading } =
+    useAllCustomerCollections(filterParams);
+
+  // Handle tag selection
+  const toggleTag = (tagId: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tagId)
+        ? prev.filter((id) => id !== tagId)
+        : [...prev, tagId],
     );
-  }
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchName("");
+    setSelectedTags([]);
+  };
+
+  // Count active filters
+  const activeFilterCount = selectedTags.length + (searchName ? 1 : 0);
 
   const handleArtistChat = async () => {
     try {
@@ -49,6 +115,14 @@ const ArtistDetailPage = () => {
       console.error("Failed to start artist conversation:", error);
     }
   };
+
+  if (loading || artistLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-8 h-8 animate-spin text-[#E288F9]" />
+      </div>
+    );
+  }
 
   if (!user) return <Navigate to="/auth" replace />;
   if (!artist) return <Navigate to="/explore" replace />;
@@ -113,7 +187,7 @@ const ArtistDetailPage = () => {
             onClick={handleArtistChat}
             style={{
               background:
-            "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
               border: "none",
             }}
           >
@@ -130,78 +204,139 @@ const ArtistDetailPage = () => {
         </div>
       </div>
 
-      <div className="p-4 mt-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-black text-slate-900">Portfolio</h2>
-        </div>
-
-        <div className="px-4 mt-6 pb-6">
-          <Card className="overflow-hidden border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#ffcfe9] flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-black text-slate-900">
-                    Have something specific in mind?
-                  </h3>
-                  <p className="text-sm text-slate-500">
-                    Request a custom design
-                  </p>
-                </div>
-                <Button
-                  onClick={() => navigate(`/artist/${id}/custom`)}
-                  size="sm"
-                  className="font-black tracking-tight uppercase rounded-[2rem]"
-                  style={{
-                    background:
-            "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
-                    border: "none",
-                  }}
-                >
-                  Request
-                </Button>
+      <div className="p-4 space-y-6">
+        {/* 1. Featured Custom Request Card */}
+        <Card className="overflow-hidden border-0 shadow-2xl shadow-[#950101]/10 bg-white rounded-[2rem] relative">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFCFE9]/30 blur-3xl rounded-full -mr-16 -mt-16" />
+          <CardContent className="p-6 relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#950101] to-[#D81B60] flex items-center justify-center shadow-lg shadow-[#950101]/20 shrink-0">
+                <Sparkles className="w-7 h-7 text-white" />
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex-1">
+                <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm">
+                  Unique Vision?
+                </h3>
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
+                  Request a custom design
+                </p>
+              </div>
+              <Button
+                onClick={() => navigate(`/artist/${id}/custom`)}
+                className="h-10 px-6 font-black tracking-widest uppercase text-[10px] rounded-xl text-white transition-all active:scale-95 shadow-md shadow-[#950101]/20 border-none"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #950101 0%, #D81B60 100%)",
+                }}
+              >
+                Request
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 2. Portfolio Header & Search */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-end px-1">
+            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
+              Portfolio
+            </h2>
+            {collections?.length > 0 && (
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                {collections.length} Masterpieces
+              </span>
+            )}
+          </div>
+
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[#950101] transition-colors" />
+            <Input
+              type="text"
+              placeholder="Search styles..."
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              className="pl-11 pr-4 h-12 w-full bg-white border-none rounded-2xl shadow-xl shadow-[#950101]/5 focus-visible:ring-2 focus-visible:ring-[#FFCFE9] text-sm font-medium"
+            />
+          </div>
         </div>
 
-        {collectionsLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-[#E288F9]" />
+        {/* 3. High-End Tag Filter */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Techniques & Styles
+            </p>
+            {activeFilterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="text-[10px] font-black text-[#950101] uppercase tracking-widest underline decoration-2 underline-offset-4"
+              >
+                Reset
+              </button>
+            )}
           </div>
-        ) : collections && collections.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3">
+
+          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 pt-2">
+            {allTags.map((tag) => (
+              <button
+                key={tag.id}
+                onClick={() => toggleTag(tag.id)}
+                className="shrink-0 transition-all active:scale-90"
+              >
+                <TagBadge
+                  tag={tag}
+                  size="md"
+                  selected={selectedTags.includes(tag.id)}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 4. Portfolio Results */}
+        {collectionsLoading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-4">
+              Developing photos...
+            </p>
+          </div>
+        ) : collections?.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {collections.map((collection) => (
               <div
                 key={collection.id}
-                className="cursor-pointer"
+                className="cursor-pointer group relative"
                 onClick={() => navigate(`/collections/${collection.id}`)}
               >
-                <CollectionCard collection={collection} />
+                <div className="transition-all duration-300 group-active:scale-95 group-hover:-translate-y-1">
+                  <CollectionCard collection={collection} />
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <Card>
-            <CardContent className="py-8 text-center">
-              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-[#FFC988]/20 to-[#E288F9]/20 flex items-center justify-center mb-4">
-                <Palette className="w-8 h-8 text-[#E288F9]" />
+          /* Empty State for Artists */
+          <Card className="border-dashed border-2 bg-white/50 rounded-[2rem]">
+            <CardContent className="py-12 text-center">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 grayscale opacity-50">
+                <Palette className="w-8 h-8 text-slate-400" />
               </div>
-              <h3 className="font-semibold text-slate-800 mb-2">
-                Portfolio coming soon
+              <h3 className="font-black text-slate-800 uppercase tracking-tight text-sm">
+                {activeFilterCount > 0
+                  ? "No matches found"
+                  : "Portfolio Under Construction"}
               </h3>
-              <p className="text-sm text-slate-500 mb-4">
-                {artist.fullName.split(" ")[0]} is building their portfolio. You
-                can still book a custom appointment.
+              <p className="text-[11px] font-medium text-slate-500 mt-2 mb-6 max-w-[200px] mx-auto leading-relaxed">
+                {activeFilterCount > 0
+                  ? "Try picking different styles or search terms."
+                  : `${artist.fullName.split(" ")[0]} is still curating their best work.`}
               </p>
               <Button
-                onClick={() => navigate(`/artists/${id}/custom`)}
-                className="w-full"
+                onClick={() => navigate(`/artist/${id}/custom`)}
+                className="w-full h-12 bg-[#950101] text-white rounded-xl font-black uppercase tracking-widest text-[10px]"
               >
-                <Wand2 className="w-4 h-4 mr-2" />
-                Book Custom Appointment
+                <Wand2 className="w-4 h-4 mr-2" /> Book a Custom Set
               </Button>
             </CardContent>
           </Card>

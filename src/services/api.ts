@@ -208,7 +208,7 @@ export const collectionAPI = {
     return apiRequest(url);
   },
 
-  customerFilter: (filterParams: CollectionFilterDto) => {
+  customerFilter: (filterParams?: CollectionFilterDto) => {
     const queryString = buildQuery(filterParams);
     const url = queryString
       ? `/Collection/customer-filter?${queryString}`
@@ -742,14 +742,30 @@ export const chatAPI = {
     apiRequest(`/Chat/shop/${shopId}/unread`),
 };
 
-function buildQuery(params: Record<string, any>): string {
-  const queryParams = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
-      queryParams.append(key, value.toString());
-    }
-  });
-  return queryParams.toString();
-}
+// In api.ts
+export const buildQuery = (params?: Record<string, any>): string => {
+  if (!params) return "";
 
+  try {
+    return Object.entries(params)
+      .filter(
+        ([_, value]) => value !== undefined && value !== null && value !== "",
+      )
+      .map(([key, value]) => {
+        if (Array.isArray(value)) {
+          return value
+            .map(
+              (item) =>
+                `${encodeURIComponent(key)}=${encodeURIComponent(item)}`,
+            )
+            .join("&");
+        }
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      })
+      .join("&");
+  } catch (error) {
+    console.error("Error building query string:", error);
+    return "";
+  }
+};
 export default apiRequest;
