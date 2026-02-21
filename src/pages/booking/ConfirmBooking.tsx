@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { artistAPI, profileAPI } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
+
 const ConfirmBooking = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const ConfirmBooking = () => {
     customerAddress,
     notes,
   } = location.state || {};
+
   const { user } = useAuth();
   const isArtistBooking = !!nailArtistId;
   const isCustomer = user?.role === 2;
@@ -50,6 +52,15 @@ const ConfirmBooking = () => {
     enabled: !!customerProfileId,
   });
 
+  const { data: selectedLocationObj, isLoading: locationLoading } =
+    useShopOwnerLocationById(!isArtistBooking ? selectedLocation : undefined);
+
+  // Determine if we're still loading data
+  const isLoading =
+    (isArtistBooking && artistLoading) ||
+    (!!customerProfileId && profileLoading) ||
+    (!isArtistBooking && !!selectedLocation && locationLoading);
+
   console.log("ConfirmBooking state:", {
     customerProfileId,
     customerName,
@@ -57,22 +68,18 @@ const ConfirmBooking = () => {
     profile: profile?.fullName,
   });
 
-  const { data: selectedLocationObj } = useShopOwnerLocationById(
-    !isArtistBooking ? selectedLocation : undefined,
-  );
-
   const calculatedPrice = selectedCollection
     ? selectedCollection.totalPrice || 0
     : selectedItems.reduce((sum, item) => sum + Number(item.price), 0);
 
   const calculatedDuration = selectedCollection
     ? selectedCollection.estimatedDuration ||
-      selectedCollection.calculatedDuration ||
-      0
+    selectedCollection.calculatedDuration ||
+    0
     : selectedItems.reduce(
-        (sum, item) => sum + (item.estimatedDuration || 0),
-        0,
-      );
+      (sum, item) => sum + (item.estimatedDuration || 0),
+      0,
+    );
 
   const { createBooking } = useBookings();
 
@@ -117,7 +124,6 @@ const ConfirmBooking = () => {
 
     try {
       const createdBooking = await createBooking.mutateAsync(bookingData);
-
       const bookingId = createdBooking?.bookingId;
 
       if (!bookingId) {
@@ -131,6 +137,41 @@ const ConfirmBooking = () => {
       alert("Booking failed. Please try again.");
     }
   };
+
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col">
+        <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <h1
+            className="font-black tracking-tight uppercase text-xl bg-clip-text text-transparent pb-1"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+              WebkitBackgroundClip: "text",
+            }}
+          >
+            Review & Confirm Booking
+          </h1>
+        </div>
+
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
+            <p className="text-lg font-medium text-slate-600">
+              Loading booking details...
+            </p>
+            <p className="text-sm text-slate-400">
+              Please wait while we fetch the information
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -187,7 +228,7 @@ const ConfirmBooking = () => {
                 {selectedItems.map((item: any) => (
                   <div
                     key={item.id}
-                    className="flex justify-between py-2 border-b"
+                    className="flex justify-between py-2 border-b font-medium text-slate-900 tracking-tight"
                   >
                     <span>{item.name}</span>
                     <span>{item.price?.toLocaleString()} VND</span>
@@ -239,7 +280,7 @@ const ConfirmBooking = () => {
               <div className="flex items-start gap-4">
                 <div>
                   <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
-                    {artist?.fullName ?? "Unknown Artist"}
+                    {artist?.fullName}
                   </p>
                   <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
                     {artist?.phone ?? "No phone available"}
@@ -291,25 +332,17 @@ const ConfirmBooking = () => {
               </h2>
             </div>
             <div className="flex items-start gap-4">
-              {profileLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <div>
-                  <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
-                    {profile?.fullName || customerName || "Unknown Customer"}
-                  </p>
-                  <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                    {profile?.phoneNumber ||
-                      customerPhone ||
-                      "No phone available"}
-                  </p>
-                  <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                    {profile?.address ||
-                      customerAddress ||
-                      "No address available"}
-                  </p>
-                </div>
-              )}
+              <div>
+                <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
+                  {profile?.fullName || customerName}
+                </p>
+                <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
+                  {profile?.phone || customerPhone || "No phone available"}
+                </p>
+                <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
+                  {profile?.address || customerAddress || ""}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -331,8 +364,7 @@ const ConfirmBooking = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
               <CircleDollarSign className="w-5 h-5 text-primary" />
-
-              <h2 className="font-black uppercase tracking-tight ">
+              <h2 className="font-black uppercase tracking-tight">
                 Price Summary
               </h2>
             </div>

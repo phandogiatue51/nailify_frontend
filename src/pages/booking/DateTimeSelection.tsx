@@ -34,7 +34,7 @@ const DateTimeSelection = () => {
   const [selectedTime, setSelectedTime] = useState<string>("");
   const { user } = useAuth();
 
-  const isShopOwner = user?.role === 1 || user?.role === 3 || user?.role === 4;
+  const isShopOwner = user?.role !== 0;
 
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
@@ -43,12 +43,12 @@ const DateTimeSelection = () => {
 
   const { data: bookings = [], isLoading: bookingsLoading } = isArtistBooking
     ? useBookings().useArtistBookings(
-        selectedDate ? new Date(selectedDate) : undefined,
-      )
+      selectedDate ? new Date(selectedDate) : undefined,
+    )
     : useBookings().useLocationBookings(
-        selectedLocation,
-        selectedDate ? new Date(selectedDate) : undefined,
-      );
+      selectedLocation,
+      selectedDate ? new Date(selectedDate) : undefined,
+    );
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
@@ -179,7 +179,7 @@ const DateTimeSelection = () => {
           </Card>
         )}
 
-        {isShopOwner && selectedDate && (selectedLocation || nailArtistId) && (
+        {isShopOwner && (
           <div className="mt-4">
             <h3 className="text-xs font-black uppercase text-slate-400 mb-2 px-2">
               Existing Bookings

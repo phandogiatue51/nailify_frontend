@@ -4,8 +4,7 @@ import { useCustomerServiceItems } from "@/hooks/useCustomer";
 import { ServiceItem } from "@/types/database";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/hooks/use-auth";
 import ServiceItemCard from "@/components/serviceItem/ServiceItemCard";
 import {
   ArrowLeft,
@@ -21,6 +20,7 @@ export const CustomDesignPage = () => {
     shopId?: string;
     id?: string;
   }>();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const { groupedItems, serviceItems, isLoading } = useCustomerServiceItems(
@@ -35,16 +35,18 @@ export const CustomDesignPage = () => {
     const bookingState: any = {
       selectedItems,
       type: shopId ? "shop" : "artist",
+      customerProfileId: user?.userId,
     };
 
     if (shopId) {
       bookingState.shopId = shopId;
     } else if (id) {
-      bookingState.id = id;
+      bookingState.nailArtistId = id;
     }
 
     navigate(`/customer-book`, { state: bookingState });
   };
+  
   const toggleItem = (item: ServiceItem) => {
     const isSelected = selectedItems.some((s) => s.id === item.id);
     if (isSelected) {
@@ -86,7 +88,14 @@ export const CustomDesignPage = () => {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="font-black tracking-tight uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+              <h1
+                className="font-black tracking-tight uppercase text-xl bg-clip-text text-transparent pb-1"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                  WebkitBackgroundClip: "text",
+                }}
+              >
                 Custom Design
               </h1>
             </div>
@@ -149,7 +158,14 @@ export const CustomDesignPage = () => {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="font-black tracking-tight uppercase text-xl bg-gradient-to-r from-[#f988b3] to-[#FFC988] bg-clip-text text-transparent">
+            <h1
+              className="font-black tracking-tight uppercase text-xl bg-clip-text text-transparent pb-1"
+              style={{
+                backgroundImage:
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                WebkitBackgroundClip: "text",
+              }}
+            >
               Custom Design
             </h1>
             <p className="text-[10px] font-bold uppercase tracking-widest">
@@ -159,7 +175,7 @@ export const CustomDesignPage = () => {
         </div>
 
         <div className="flex justify-between items-center bg-slate-50 rounded-2xl p-3">
-          <Badge className="bg-[#E288F9] text-white border-none font-black px-3 py-1 text-[10px] uppercase">
+          <Badge className="bg-[#950101] text-white border-none font-black px-3 py-1 text-[10px] uppercase">
             {selectedItems.length}{" "}
             {selectedItems.length === 1 ? "Item" : "Items"}
           </Badge>
@@ -190,7 +206,7 @@ export const CustomDesignPage = () => {
                   className={cn(
                     "relative group cursor-pointer rounded-[2rem] transition-all duration-300 border-2 overflow-hidden bg-white",
                     isSelected
-                      ? "border-[#E288F9] shadow-lg shadow-purple-100 ring-4 ring-purple-50"
+                      ? "border-[#950101] shadow-lg ring-4 ring-[#950101]/50"
                       : "border-transparent shadow-sm hover:border-slate-100",
                   )}
                 >
@@ -198,7 +214,7 @@ export const CustomDesignPage = () => {
                     className={cn(
                       "absolute top-3 right-3 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all",
                       isSelected
-                        ? "bg-[#E288F9] scale-100"
+                        ? "bg-[#950101] scale-100"
                         : "bg-black/10 scale-0 opacity-0",
                     )}
                   >
@@ -234,10 +250,10 @@ export const CustomDesignPage = () => {
           style={
             selectedItems.length > 0
               ? {
-                  background:
-                    "linear-gradient(90deg, #FFC988 0%, #f988b3 100%)",
-                  border: "none",
-                }
+                background:
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                border: "none",
+              }
               : { background: "#0F172A", border: "none" }
           }
           className={cn(

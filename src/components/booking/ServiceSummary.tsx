@@ -76,14 +76,14 @@ export const ServiceSummary = ({
             </div>
           </div>
         ) : selectedItems.length > 0 ? (
-          <div>
+          <div className="font-medium tracking-tight">
             {selectedItems.map((item) => (
-              <div key={item.id} className="flex justify-between py-2 border-b">
+              <div key={item.id} className="flex justify-between py-2 border-b ">
                 <span>{item.name}</span>
                 <span>{Number(item.price).toLocaleString()} VND</span>
               </div>
             ))}
-            <div className="flex justify-between font-bold pt-2">
+            <div className="flex justify-between font-black pt-2 text-lg text-green-400">
               <span>Total</span>
               <span>{localTotalPrice.toLocaleString()} VND</span>
             </div>

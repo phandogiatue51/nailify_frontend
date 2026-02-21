@@ -106,12 +106,7 @@ const CollectionSelectionPage = () => {
       bookingState.nailArtistId = user.nailArtistId;
       bookingState.type = "artist";
     }
-    console.log("Navigating to customer-book with state:", {
-      nailArtistId: bookingState.nailArtistId,
-      type: bookingState.type,
-      role: user?.role,
-      collectionId: collection.id,
-    });
+    
     navigate("/customer-book", { state: bookingState });
   };
 

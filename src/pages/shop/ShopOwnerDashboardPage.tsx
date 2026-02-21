@@ -169,6 +169,7 @@ const ShopOwnerDashboardPage = () => {
             "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
             border: "none",
           }}
+          onClick={() => navigate("/booking/guest")}
         >
           Book an appointment
         </Button>

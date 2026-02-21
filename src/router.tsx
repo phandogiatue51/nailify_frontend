@@ -31,7 +31,7 @@ import ArtistDetailPage from "./pages/nailArtist/ArtistDetailPage";
 import MyNailArtistPage from "./pages/nailArtist/MyNailArtistPage";
 import ShopOwnerDashboardPage from "./pages/shop/ShopOwnerDashboardPage";
 
-import { CustomDesignPage } from "./pages/CustomDesignPage";
+import { CustomDesignPage } from "./pages/booking/CustomDesignPage";
 
 import CreateServiceItemPage from "./pages/serviceItem/CreateServiceItemPage";
 import EditServiceItemPage from "./pages/serviceItem/EditServiceItemPage";
@@ -62,6 +62,7 @@ import ChatList from "./pages/conversation/ChatList";
 import ProfileInfoPage from "./components/chat/CustomerInfo";
 import ShopInfoPage from "./components/chat/ShopInfo";
 import CollectionSelectionPage from "./pages/booking/CollectionSelectionPage";
+import { GuestBookingPage } from "./pages/booking/GuestBookingPage";
 
 export const router = createBrowserRouter(
   [
@@ -226,6 +227,10 @@ export const router = createBrowserRouter(
         {
           path: "/booking/rating/:bookingId",
           element: withMobileLayout(<CreateRatingPage />),
+        },
+        {
+          path: "/booking/guest",
+          element: withMobileLayout(<GuestBookingPage />),
         },
         {
           path: "/staff-dashboard",

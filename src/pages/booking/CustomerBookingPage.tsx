@@ -21,13 +21,6 @@ const CustomerBookingPage = () => {
   const navigate = useNavigate();
   const locationState = useLocation();
 
-  console.log("CustomerBookingPage received state:", {
-    artistId: locationState.state?.artistId,
-    nailArtistId: locationState.state?.nailArtistId,
-    shopId: locationState.state?.shopId,
-    type: locationState.state?.type,
-  });
-
   const shopId = locationState.state?.shopId || paramShopId;
   const nailArtistId = locationState.state?.nailArtistId || paramArtistId;
 

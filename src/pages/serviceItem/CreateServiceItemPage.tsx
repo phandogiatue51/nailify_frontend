@@ -26,7 +26,7 @@ const CreateServiceItemPage = () => {
       </div>
     );
   }
-  
+
   if (redirect) return redirect;
 
   const isArtist = user.role === 4;
@@ -43,7 +43,7 @@ const CreateServiceItemPage = () => {
     }
   };
 
-  const componentLabels = ["Form", "Base", "Shape", "Polish", "Design"];
+  const componentLabels = ["Base", "Shape", "Polish", "Design", "Gem"];
 
   return (
     <div>
