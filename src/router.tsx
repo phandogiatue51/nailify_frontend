@@ -63,6 +63,7 @@ import ProfileInfoPage from "./components/chat/CustomerInfo";
 import ShopInfoPage from "./components/chat/ShopInfo";
 import CollectionSelectionPage from "./pages/booking/CollectionSelectionPage";
 import { GuestBookingPage } from "./pages/booking/GuestBookingPage";
+import { UpdateGuestPage } from "./pages/booking/UpdateGuestPage";
 
 export const router = createBrowserRouter(
   [
@@ -231,6 +232,10 @@ export const router = createBrowserRouter(
         {
           path: "/booking/guest",
           element: withMobileLayout(<GuestBookingPage />),
+        },
+        {
+          path: "/booking/update-guest/:bookingId",
+          element: withMobileLayout(<UpdateGuestPage />),
         },
         {
           path: "/staff-dashboard",

@@ -36,7 +36,7 @@ const BookingDetail = () => {
 
   const { data: nailArtist } = useCustomerArtistById(booking?.nailArtistId);
   const isShopOwner = user?.role === 1 || user?.role === 3 || user?.role === 4;
-
+  const isShopBooking = booking?.shopLocationId;
   useEffect(() => {
     if (location.state?.success) {
     }
@@ -111,11 +111,17 @@ const BookingDetail = () => {
               </div>
 
               <div className="space-y-6">
-                <CustomerInfo
+                {isShopBooking ? (
+                  <CustomerInfo
+                    name={booking.customerName}
+                    phone={booking.customerPhone}
+                  />
+                ) : <CustomerInfo
                   name={booking.customerName}
                   phone={booking.customerPhone}
                   address={booking.address}
                 />
+                }
 
                 <LocationInfo
                   shopLocation={shopLocation}

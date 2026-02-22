@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { XCircle, Calendar, Loader2, CheckCircle, X, Star } from "lucide-react";
+import { XCircle, Calendar, Loader2, CheckCircle, X, Star, UserCog } from "lucide-react";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { getStatusConfig } from "@/components/booking-status-config";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +36,6 @@ export const BookingActions = ({
   return (
     <footer className="sticky bottom-0 inset-x-0 z-40">
       <div className="max-w-md mx-auto flex items-center justify-center gap-3">
-        {/* SHOP OWNER ACTIONS */}
         {isShopOwner && (
           <>
             {isPending && (
@@ -79,25 +78,13 @@ export const BookingActions = ({
             )}
 
             {isApproved && (
-              <>
-                <ConfirmationDialog
-                  trigger={
-                    <Button
-                      variant="outline"
-                      disabled={isUpdatingStatus || isCancelling}
-                      className="h-14 w-14 rounded-2xl border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all"
-                    >
-                      <XCircle size={20} />
-                    </Button>
-                  }
-                  {...statusConfig.cancel}
-                  onConfirm={() => onCancel?.(booking.id)}
-                />
+              <div className="flex flex-col gap-3 w-full">
+                {/* 1. The Primary Success Action */}
                 <ConfirmationDialog
                   trigger={
                     <Button
                       disabled={isUpdatingStatus}
-                      className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-100 bg-[#88D0F9] hover:bg-[#7bc4ed] text-white"
+                      className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-green-100 bg-green-300 hover:bg-green-500 text-white flex items-center justify-center transition-all active:scale-[0.98]"
                     >
                       {isUpdatingStatus ? (
                         <Loader2 className="animate-spin mr-2" />
@@ -110,7 +97,37 @@ export const BookingActions = ({
                   {...statusConfig.complete}
                   onConfirm={() => onComplete?.(booking.id)}
                 />
-              </>
+
+                {/* 2. Secondary Utility Row */}
+                <div className="flex gap-3">
+                  <ConfirmationDialog
+                    trigger={
+                      <Button
+                        variant="outline"
+                        disabled={isUpdatingStatus || isCancelling}
+                        className="flex-1 h-12 rounded-xl border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] text-rose-300 border-rose-300 hover:bg-rose-400 hover:text-white"
+                      >
+                        <XCircle className="mr-2" size={14} />
+                        Cancel Booking
+                      </Button>
+                    }
+                    {...statusConfig.cancel}
+                    onConfirm={() => onCancel?.(booking.id)}
+                  />
+
+                  {!booking.customerId && (
+                    <Button
+                      variant="outline"
+                      disabled={isUpdatingStatus}
+                      onClick={() => navigate(`/booking/update-guest/${booking.id}`)}
+                      className="flex-1 h-12 rounded-xl border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] text-blue-300 border-blue-300 hover:bg-blue-400 hover:text-white"
+                    >
+                      <UserCog className="mr-2" size={14} />
+                      Edit Guest Info
+                    </Button>
+                  )}
+                </div>
+              </div>
             )}
           </>
         )}
