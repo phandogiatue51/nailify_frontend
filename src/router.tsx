@@ -64,6 +64,10 @@ import ShopInfoPage from "./components/chat/ShopInfo";
 import CollectionSelectionPage from "./pages/booking/CollectionSelectionPage";
 import { GuestBookingPage } from "./pages/booking/GuestBookingPage";
 import { UpdateGuestPage } from "./pages/booking/UpdateGuestPage";
+import { CreateBlogPostPage } from "./pages/blogPost/CreateBlogPostPage";
+import { BlogListPage } from "./pages/blogPost/BlogListPage";
+import { EditBlogPostPage } from "./pages/blogPost/EditBlogPostPage";
+import { BlogPostDetailPage } from "./pages/blogPost/BlogPostDetailPage";
 
 export const router = createBrowserRouter(
   [
@@ -104,6 +108,24 @@ export const router = createBrowserRouter(
           path: "profile/bookings",
           element: withMobileLayout(<CustomerBookingView />),
         },
+
+        {
+          path: "/blog/",
+          element: withMobileLayout(<BlogListPage />),
+        },
+        {
+          path: "/blog/create",
+          element: withMobileLayout(<CreateBlogPostPage />),
+        },
+        {
+          path: "/blog/edit/:id",
+          element: withMobileLayout(<EditBlogPostPage />),
+        },
+        {
+          path: "/blog/detail/:id",
+          element: withMobileLayout(<BlogPostDetailPage />),
+        },
+
         {
           path: "shop-dashboard",
           element: withMobileLayout(<ShopOwnerDashboardPage />),

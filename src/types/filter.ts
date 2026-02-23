@@ -90,3 +90,10 @@ export interface RatingFilterDto {
   FromDate?: string;
   ToDate?: string;
 }
+
+export interface BlogPostFilterDto {
+  ShopId?: string;
+  NailArtistId?: string;
+  SearchTerm?: string;
+  Recently?: boolean;
+}

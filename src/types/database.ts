@@ -1,6 +1,8 @@
 export type UserRole = 0 | 1 | 2 | 3 | 4; // 0: Customer, 1: Shop Owner, 2: Admin, 3: Staff, 4: Nail Artist
 export type ComponentType = 0 | 1 | 2 | 3 | 4; // 0: Form, 1: Base, 2: Shape, 3: Polish, 4: Design
 export type BookingStatus = 0 | 1 | 2 | 3 | 4; // 0: Pending, 1: Approved, 2: Rejected, 3: Completed, 4: Cancelled
+export type ReactionType = 0 | 1 | 2 | 3 | 4 | 5; // 0: Like, 1: Love, 2: Care, 3: Wow, 4: Sad, 5: Angry
+
 import { TagDto } from "./type";
 
 export interface Profile {
@@ -267,4 +269,42 @@ export interface PeriodDto {
   fromDate: string; // ISO date string from C# DateTime
   toDate: string; // ISO date string from C# DateTime
   label: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string | null;
+  profileId: string;
+  authorName: string;
+  authorAvatarUrl: string | null;
+  imageUrls: string[];
+  comments: Comment[];
+  reactions: Reaction[];
+  totalReactions: number;
+  totalComments: number;
+}
+
+export interface Comment {
+  id: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string | null;
+  profileId: string;
+  authorName: string;
+  authorAvatarUrl: string | null;
+  parentCommentId: string | null;
+  reactions: Reaction[];
+  replies: Comment[];
+}
+
+export interface Reaction {
+  id: string;
+  profileId: string;
+  reactorName: string;
+  reactorAvatarUrl: string | null;
+  type: ReactionType;
+  reactedAt: string;
 }

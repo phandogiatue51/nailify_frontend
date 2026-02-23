@@ -8,7 +8,9 @@ import {
   BookingFilterDto,
   StaffFilterDto,
   RatingFilterDto,
+  BlogPostFilterDto,
 } from "@/types/filter";
+import { get } from "http";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -740,6 +742,84 @@ export const chatAPI = {
 
   getShopUnreadCount: (shopId: string) =>
     apiRequest(`/Chat/shop/${shopId}/unread`),
+};
+
+export const blogAPI = {
+  getById: (id: string) => apiRequest(`/BlogPost/${id}`),
+  getByShop: (id: string) => apiRequest(`/BlogPost/shop/${id}`),
+  getByShopAuth: () => apiRequest(`/BlogPost/shopAuth`),
+  getByArtistId: (artistId: string) =>
+    apiRequest(`/BlogPost/artist/${artistId}`),
+  getByArtistAuth: () => apiRequest(`/BlogPost/artistAuth`),
+
+  createBlogPost: (formData: FormData) =>
+    apiRequest(`/BlogPost/`, {
+      method: "POST",
+      body: formData,
+    }),
+
+  updateBlogPost: (id: string, formData: FormData) =>
+    apiRequest(`/BlogPost/${id}`, {
+      method: "PUT",
+      body: formData,
+    }),
+
+  deleteBlogPost: (id: string) =>
+    apiRequest(`/BlogPost/${id}`, {
+      method: "DELETE",
+    }),
+
+  filter: (filterParams: BlogPostFilterDto) => {
+    const queryString = buildQuery(filterParams);
+    const url = queryString
+      ? `/BlogPost/filter?${queryString}`
+      : "/BlogPost/filter";
+    return apiRequest(url);
+  },
+};
+
+export const commentAPI = {
+  getById: (id: string) => apiRequest(`/Comment/${id}`),
+  getByPost: (id: string) => apiRequest(`/Comment/post/${id}`),
+  createComment: (id: string, formData: FormData) =>
+    apiRequest(`/Comment/post/${id}`, {
+      method: "POST",
+      body: formData,
+    }),
+
+  createReply: (id: string, formData: FormData) =>
+    apiRequest(`/Comment/reply/${id}`, {
+      method: "POST",
+      body: formData,
+    }),
+
+  updateComment: (id: string, formData: FormData) =>
+    apiRequest(`/Comment/${id}`, {
+      method: "PUT",
+      body: formData,
+    }),
+
+  deleteComment: (id: string) =>
+    apiRequest(`/Comment/${id}`, {
+      method: "DELETE",
+    }),
+};
+
+export const reactionAPI = {
+  getByPost: (id: string) => apiRequest(`/Reaction/post/${id}`),
+  getByPostAuth: (id: string) => apiRequest(`/Reaction/post/auth/${id}`),
+  getByComment: (id: string) => apiRequest(`/Reaction/comment/${id}`),
+  getByCommentAuth: (id: string) => apiRequest(`/Reaction/comment/auth/${id}`),
+
+  togglePostReaction: (id: string, status: any) =>
+    apiRequest(`/Reaction/post/${id}?status=${status}`, {
+      method: "POST",
+    }),
+
+  toggleCommentReaction: (id: string, status: any) =>
+    apiRequest(`/Reaction/comment/${id}?status=${status}`, {
+      method: "POST",
+    }),
 };
 
 // In api.ts

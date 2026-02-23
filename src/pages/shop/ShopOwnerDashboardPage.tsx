@@ -110,7 +110,7 @@ const ShopOwnerDashboardPage = () => {
                 </div>
                 <div className="text-left">
                   <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
-                    Manage staffs
+                    Manage Managers
                   </p>
                 </div>
               </div>
