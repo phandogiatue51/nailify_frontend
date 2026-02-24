@@ -12,6 +12,8 @@ import {
   Briefcase,
   ChevronRight,
   LayoutDashboard,
+  Globe,
+  HeartHandshake,
 } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { BookingStatusBadge } from "@/components/badge/BookingStatusBadge";
@@ -69,8 +71,8 @@ const NailArtistDashboardPage = () => {
     <div>
       <Header title="Nailify" hasNotification={true} />
 
-      <div className="min-h-screen bg-slate-50/50 px-6 pt-8 pb-6">
-        <div className="flex items-center justify-between mb-2">
+      <div className="min-h-screen bg-slate-50/50 px-6 pt-8">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="relative">
               {myArtist.avatarUrl ? (
@@ -111,20 +113,58 @@ const NailArtistDashboardPage = () => {
           <QuickStats compact artistId={myArtist?.id} period="today" />
         </div>
 
-        <div className="flex items-center justify-between mb-4 mt-4 px-1">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-            Upcoming Appointments
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 mt-4">
+            Management
           </h3>
-          <Button
-            variant="link"
-            size="sm"
-            className="text-primary font-bold"
-            onClick={() => navigate("/my-artist/bookings")}
-          >
-            See All
-          </Button>
-        </div>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => navigate("/blog/my-blog")}
+              className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-blue-400 transition-colors">
+                  <Globe className="w-6 h-6 text-blue-500 group-hover:text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
+                    Posts
+                  </p>
+                </div>
+              </div>
+            </button>
 
+            <button
+              onClick={() => navigate("/subscription/my-subscription")}
+              className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                  <HeartHandshake className="w-6 h-6 text-red-500 group-hover:text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
+                    Package
+                  </p>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between mb-4 mt-4 px-1">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+              Upcoming Appointments
+            </h3>
+            <Button
+              variant="link"
+              size="sm"
+              className="text-primary font-bold"
+              onClick={() => navigate("/my-artist/bookings")}
+            >
+              See All
+            </Button>
+          </div>
+        </div>
         <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden">
           <CardContent className="p-0 divide-y">
             {bookings && bookings.length > 0 ? (
@@ -158,7 +198,7 @@ const NailArtistDashboardPage = () => {
           className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12 mt-6"
           style={{
             background:
-            "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
             border: "none",
           }}
           onClick={() => navigate("/booking/guest")}

@@ -1,19 +1,35 @@
-// pages/blog/BlogListPage.tsx
+// pages/blog/MyBlogPage.tsx
 import { useEffect, useState } from "react";
 import { blogAPI, reactionAPI } from "@/services/api";
-import { Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { BlogPostCard } from "@/components/blogPost/BlogPostCard";
 import { BlogPost, ReactionType } from "@/types/database";
 import { useAuth } from "@/hooks/use-auth";
-
-export const BlogListPage = () => {
+import { BlogPostFilterDto } from "@/types/filter";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+export const MyBlogPage = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const isShop = user?.shopId;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user) {
+      loadPosts();
+    }
+  }, [user]);
 
   const loadPosts = async () => {
     try {
-      const data = await blogAPI.filter({});
+      const filterParams: BlogPostFilterDto = {};
+      if (isShop) {
+        filterParams.ShopId = user?.shopId;
+      } else {
+        filterParams.NailArtistId = user?.nailArtistId;
+      }
+
+      const data = await blogAPI.filter(filterParams);
       setPosts(data);
     } catch (error) {
       console.error("Failed to load posts:", error);
@@ -86,6 +102,24 @@ export const BlogListPage = () => {
 
   return (
     <div className="space-y-6">
+      <button
+        onClick={() => navigate(-1)}
+        className="p-2 hover:bg-[#FFCFE9]/30 rounded-full transition-colors"
+      >
+        <ChevronLeft className="w-6 h-6 text-[#950101]" />
+      </button>
+      <Button
+        onClick={() => navigate(`/blog/create/`)}
+        className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-1/2 h-12 mt-4 text-center"
+        style={{
+          background:
+            "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+          border: "none",
+        }}
+      >
+        Create a Post
+      </Button>
+
       {posts.map((post) => (
         <BlogPostCard
           key={post.id}

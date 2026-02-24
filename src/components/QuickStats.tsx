@@ -10,6 +10,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface QuickStatsProps {
   shopId?: string;
@@ -70,7 +71,7 @@ const QuickStats = ({
 
   const statItems = [
     {
-      label: "Total Bookings",
+      label: "Bookings",
       value: stats?.totalBookings || 0,
       icon: Calendar,
       color: "text-blue-600",
@@ -130,21 +131,32 @@ const QuickStats = ({
       {statItems.map((item, index) => (
         <Card
           key={index}
-          className={`rounded-[2rem] border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden ${item.border}`}
+          className={cn(
+            "rounded-[2rem] border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden bg-white",
+            item.border,
+          )}
         >
-          <CardContent className="p-4 md:p-6">
-            <div className="flex items-center justify-center">
-              <div className={`p-2 rounded-xl ${item.bg}`}>
-                <item.icon className={`w-4 h-4 ${item.color}`} />
+          <CardContent className="p-5">
+            {/* Top Row: Icon (Left) and Label (Right) */}
+            <div className="flex items-center justify-between mb-4">
+              <div className={cn("p-2 rounded-xl shrink-0", item.bg)}>
+                <item.icon className={cn("w-4 h-4", item.color)} />
               </div>
-              <span className="text-[12px] font-black uppercase tracking-widest text-slate-400">
+
+              <span className="text-[13px] font-black uppercase tracking-widest text-slate-400">
                 {item.label}
               </span>
             </div>
-            <p className="text-2xl font-black text-slate-900 tracking-tighter mb-2 text-center">
-              {item.value}
-            </p>
-            <div className={`h-1 w-8 ${item.bg} rounded-full`} />
+
+            {/* Value Section */}
+            <div className="space-y-1">
+              <p className="text-2xl font-black text-slate-900 tracking-tighter text-center">
+                {item.value}
+              </p>
+
+              {/* Decorative bar - now left-aligned to match the value and icon start */}
+              <div className={cn("h-1 w-8 rounded-full", item.bg)} />
+            </div>
           </CardContent>
         </Card>
       ))}

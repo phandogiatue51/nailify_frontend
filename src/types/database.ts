@@ -282,10 +282,8 @@ export interface BlogPost {
   authorAvatarUrl: string | null;
   totalReactions: number;
   totalComments: number;
-  reactions?: Array<{
-    type: number;
-    reactorName: string;
-  }>;
+  myReaction?: Reaction | null;
+  reactions?: Reaction[];
 }
 
 export interface Comment {

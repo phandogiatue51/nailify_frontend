@@ -68,6 +68,7 @@ import { CreateBlogPostPage } from "./pages/blogPost/CreateBlogPostPage";
 import { BlogListPage } from "./pages/blogPost/BlogListPage";
 import { EditBlogPostPage } from "./pages/blogPost/EditBlogPostPage";
 import { BlogPostDetailPage } from "./pages/blogPost/BlogPostDetailPage";
+import { MyBlogPage } from "./pages/blogPost/MyBlogPage";
 
 export const router = createBrowserRouter(
   [
@@ -112,6 +113,10 @@ export const router = createBrowserRouter(
         {
           path: "/blog/",
           element: withMobileLayout(<BlogListPage />),
+        },
+        {
+          path: "/blog/my-blog",
+          element: withMobileLayout(<MyBlogPage />),
         },
         {
           path: "/blog/create",
