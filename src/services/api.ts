@@ -811,14 +811,16 @@ export const reactionAPI = {
   getByComment: (id: string) => apiRequest(`/Reaction/comment/${id}`),
   getByCommentAuth: (id: string) => apiRequest(`/Reaction/comment/auth/${id}`),
 
-  togglePostReaction: (id: string, status: any) =>
-    apiRequest(`/Reaction/post/${id}?status=${status}`, {
+  togglePostReaction: (id: string, formData: FormData) =>
+    apiRequest(`/Reaction/post/${id}`, {
       method: "POST",
+      body: formData,
     }),
 
-  toggleCommentReaction: (id: string, status: any) =>
-    apiRequest(`/Reaction/comment/${id}?status=${status}`, {
+  toggleCommentReaction: (id: string, formData: FormData) =>
+    apiRequest(`/Reaction/comment/${id}`, {
       method: "POST",
+      body: formData,
     }),
 };
 

@@ -30,3 +30,22 @@ export const reactionOptions = [
     label: "Angry",
   },
 ];
+
+export const getReactionTextColor = (type: number) => {
+  switch (type) {
+    case 0:
+      return "text-blue-600"; // Like
+    case 1:
+      return "text-pink-600"; // Love (or use pink for FcLike)
+    case 2:
+      return "text-orange-600"; // Haha
+    case 3:
+      return "text-amber-600"; // Wow
+    case 4:
+      return "text-slate-600"; // Sad
+    case 5:
+      return "text-red-600"; // Angry
+    default:
+      return "text-gray-500";
+  }
+};
