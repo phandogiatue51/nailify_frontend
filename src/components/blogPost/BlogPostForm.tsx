@@ -197,7 +197,30 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
 // Simple view component
 export const BlogPostView: React.FC<{ post: any }> = ({ post }) => {
   return (
-    <div className="border rounded p-4">
+    <div className="p-4">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center">
+          {post.authorAvatarUrl ? (
+            <img
+              src={post.authorAvatarUrl}
+              alt="avatar"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-xs font-bold text-[#950101]">
+              {post.authorName?.charAt(0) || "U"}
+            </span>
+          )}
+        </div>
+        <div>
+          <p className="font-medium text-md">
+            {post.authorName || "Unknown"}
+          </p>
+          <p className="text-xs text-slate-500">
+            {new Date(post.createdAt).toLocaleDateString("vi-VN")}
+          </p>
+        </div>
+      </div>
       <h2 className="text-xl font-bold mb-2">{post.title}</h2>
       <p className="mb-4">{post.content}</p>
 
@@ -213,10 +236,6 @@ export const BlogPostView: React.FC<{ post: any }> = ({ post }) => {
           ))}
         </div>
       )}
-
-      <div className="text-sm text-gray-500 mt-4">
-        Ngày đăng: {new Date(post.createdAt).toLocaleDateString("vi-VN")}
-      </div>
     </div>
   );
 };

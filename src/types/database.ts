@@ -275,16 +275,17 @@ export interface BlogPost {
   id: string;
   title: string;
   content: string;
+  imageUrls?: string[];
   createdAt: string;
-  updatedAt: string | null;
   profileId: string;
   authorName: string;
   authorAvatarUrl: string | null;
-  imageUrls: string[];
-  comments: Comment[];
-  reactions: Reaction[];
   totalReactions: number;
   totalComments: number;
+  reactions?: Array<{
+    type: number;
+    reactorName: string;
+  }>;
 }
 
 export interface Comment {

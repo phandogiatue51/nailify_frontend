@@ -3,23 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { blogAPI } from "@/services/api";
 import { Loader2, MessageCircle, Heart } from "lucide-react";
 import { ReactionBadge } from "@/components/badge/ReactionBadge";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  imageUrls?: string[];
-  createdAt: string;
-  profileId: string;
-  authorName: string;
-  authorAvatarUrl: string | null;
-  totalReactions: number;
-  totalComments: number;
-  reactions?: Array<{
-    type: number;
-    reactorName: string;
-  }>;
-}
+import { BlogPost } from "@/types/database";
 
 export const BlogListPage = () => {
   const navigate = useNavigate();
@@ -72,7 +56,7 @@ export const BlogListPage = () => {
     <div className="space-y-4">
       {posts.map((post) => {
         const uniqueReactions = getUniqueReactions(post.reactions);
-        
+
         return (
           <div
             key={post.id}
