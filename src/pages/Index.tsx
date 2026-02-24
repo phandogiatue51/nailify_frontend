@@ -101,7 +101,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa] pb-20">
+    <div className="min-h-screen bg-[#fafafa]">
       {/* 1. BRANDED HEADER */}
       <Header title="Nailify" hasNotification={true} />
 

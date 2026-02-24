@@ -27,7 +27,7 @@ export default function DetailChatPage() {
   };
 
   return (
-    <div className="relative bg-slate-50/30 min-h-screen">
+    <div className="bg-slate-50/30">
       <MobileChatWindow
         conversationId={id!}
         conversation={conversation}

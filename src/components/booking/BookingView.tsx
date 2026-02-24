@@ -203,7 +203,7 @@ const BookingView: React.FC<BookingViewProps> = ({
   const { data: bookings, isPending: isLoading } = filterBookings;
 
   return (
-    <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen pb-20">
+    <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
       <div className="sticky top-0 bg-white/90 backdrop-blur-md z-20 pt-2 pb-4 px-4 border-b border-slate-50 space-y-4">
         <h2 className="text-xl font-black tracking-tight">{title}</h2>
 

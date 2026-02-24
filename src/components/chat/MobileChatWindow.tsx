@@ -121,18 +121,22 @@ export const MobileChatWindow = ({
       </div>
     );
   }
-  return (
-    <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
 
-      {/* 1. FIXED HEADER */}
-      <header className="flex-shrink-0 bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between z-10 shadow-sm">
+  return (
+    // Change h-screen to fixed inset-0 to prevent body bounce/double scroll
+    <div className="fixed inset-0 flex flex-col bg-slate-50 overflow-hidden">
+      {/* HEADER: No changes needed to logic, just ensure it's relative/sticky within flex */}
+      <header className="flex-shrink-0 bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between z-20 shadow-sm">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1 hover:bg-[#FFCFE9]/30 rounded-full transition-colors">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-1 hover:bg-[#FFCFE9]/30 rounded-full transition-colors"
+          >
             <ChevronLeft className="w-6 h-6 text-[#950101]" />
           </button>
 
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center text-[#950101] font-black border border-[#950101]/10 shadow-inner">
+            <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center text-[#950101] font-black border border-[#950101]/10 shadow-inner text-sm">
               {conversation?.title?.charAt(0).toUpperCase() || "?"}
             </div>
             <div>
@@ -142,19 +146,23 @@ export const MobileChatWindow = ({
             </div>
           </div>
         </div>
-
-        <button className="p-2 text-slate-400"
+        <button
+          className="p-2 text-slate-400"
           onClick={() => {
             switch (user?.role) {
               case 1: // ShopOwner
+
               case 3: // Manager
                 // Pass the shopId from user claims
+
                 navigate(`/profile/${conversation?.profileId}/info`, {
                   state: {
                     shopId: user.shopId, // This comes from the decoded JWT
-                    userRole: user.role
-                  }
+
+                    userRole: user.role,
+                  },
                 });
+
                 break;
 
               case 0: // Customer
@@ -163,27 +171,32 @@ export const MobileChatWindow = ({
                 } else {
                   navigate(`/profile/${conversation?.profileId}/info`);
                 }
+
                 break;
 
               case 2: // Admin
                 navigate(`/profile/${conversation?.profileId}/info`, {
                   state: {
-                    userRole: user.role
-                  }
+                    userRole: user.role,
+                  },
                 });
+
                 break;
 
               case 4: // NailArtist
                 navigate(`/profile/${conversation?.profileId}/info`, {
                   state: {
                     nailArtistId: user.nailArtistId, // This comes from the decoded JWT
-                    userRole: user.role
-                  }
+
+                    userRole: user.role,
+                  },
                 });
+
                 break;
 
               default:
                 navigate(`/profile/${conversation?.profileId}/info`);
+
                 break;
             }
           }}
@@ -192,11 +205,8 @@ export const MobileChatWindow = ({
         </button>
       </header>
 
-      {/* 2. SCROLLABLE MESSAGE AREA */}
-      {/* Added "scrollbar-thin" and custom styling for a smaller scrollbar */}
-      <main className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth 
-        scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-
+      {/* MESSAGES AREA: flex-1 makes this take all available middle space */}
+      <main className="flex-1 overflow-y-auto p-4 scroll-smooth">
         {(Object.entries(groupedMessages) as [string, MessageDto[]][]).map(
           ([date, dateMessages]) => (
             <div key={date} className="space-y-4">
@@ -207,32 +217,41 @@ export const MobileChatWindow = ({
               </div>
 
               {dateMessages.map((msg) => (
-                <div key={msg.id} className={cn("flex items-end gap-2", msg.isOwn ? "flex-row-reverse" : "flex-row")}>
-                  {/* Bubble */}
-                  <div className={cn(
-                    "max-w-[80%] rounded-[1.5rem] px-4 py-2.5 shadow-sm text-sm",
-                    msg.isOwn
-                      ? "bg-[#950101] text-white rounded-br-none"
-                      : "bg-white text-slate-700 rounded-bl-none border border-slate-100"
-                  )}>
+                <div
+                  key={msg.id}
+                  className={cn(
+                    "flex items-end",
+                    msg.isOwn ? "flex-row-reverse" : "flex-row",
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "max-w-[80%] rounded-[1.5rem] px-4 py-2 shadow-sm text-sm",
+                      msg.isOwn
+                        ? "bg-[#950101] text-white rounded-br-none"
+                        : "bg-white text-slate-700 rounded-bl-none border border-slate-100",
+                    )}
+                  >
                     <p className="font-medium leading-relaxed">{msg.content}</p>
-                    <p className={cn(
-                      "text-[9px] font-bold mt-1 uppercase tracking-tighter opacity-70",
-                      msg.isOwn ? "text-right" : "text-left"
-                    )}>
+                    <p
+                      className={cn(
+                        "text-[9px] font-bold uppercase tracking-tighter opacity-70",
+                        msg.isOwn ? "text-right" : "text-left",
+                      )}
+                    >
                       {formatTime(msg.sentAt)}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
-          )
+          ),
         )}
-        <div ref={messagesEndRef} className="h-2" />
+        <div ref={messagesEndRef} className="h-4" />
       </main>
 
-      {/* 3. FIXED INPUT AREA */}
-      <footer className="flex-shrink-0 bg-white border-t border-slate-100 p-4 pb-8">
+      {/* FOOTER: Flex-shrink-0 ensures it stays at the bottom */}
+      <footer className="flex-shrink-0 bg-white border-t border-slate-100 p-4 pb-6">
         <div className="max-w-4xl mx-auto flex items-end gap-2 bg-slate-50 rounded-[1.5rem] p-2 pr-3 ring-1 ring-slate-200 focus-within:ring-2 focus-within:ring-[#950101] transition-all">
           <textarea
             value={newMessage}
@@ -240,22 +259,23 @@ export const MobileChatWindow = ({
             onKeyDown={handleKeyPress}
             placeholder="Write a message..."
             rows={1}
-            className="flex-1 max-h-32 resize-none bg-transparent border-0 p-2 text-sm font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0 focus-visible:ring-0"
+            className="flex-1 max-h-32 resize-none bg-transparent border-0 p-2 text-sm font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0"
           />
           <button
             onClick={handleSend}
             disabled={!newMessage.trim()}
             className={cn(
-              "p-2.5 rounded-2xl transition-all active:scale-90",
+              "p-2.5 rounded-2xl transition-all active:scale-90 shrink-0",
               !newMessage.trim()
                 ? "bg-slate-200 text-slate-400"
-                : "bg-[#950101] text-white shadow-lg shadow-[#950101]/20"
+                : "bg-[#950101] text-white shadow-lg shadow-[#950101]/20",
             )}
           >
             <Send className="w-5 h-5" />
           </button>
         </div>
       </footer>
+      <div className="h-16 flex-shrink-0" />
     </div>
   );
 };

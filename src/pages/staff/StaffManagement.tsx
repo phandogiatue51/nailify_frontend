@@ -35,7 +35,7 @@ export const StaffManagement = () => {
   };
 
   return (
-    <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen pb-20">
+    <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
       <div className="flex items-center justify-between p-4">
         <div>
           <div className="flex items-center gap-2 mb-1">

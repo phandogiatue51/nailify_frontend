@@ -40,7 +40,9 @@ export default function ChatList() {
       </div>
 
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="h-full flex items-center justify-center">
+          <div className="text-gray-400">Loading messages...</div>
+        </div>
       ) : (
         <ConversationList onSelectConversation={handleSelectConversation} />
       )}
