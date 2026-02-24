@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { blogAPI } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { ConfirmationDialog } from "../ui/confirmation-dialog";
 interface BlogPostFormProps {
   mode: "create" | "update";
   initialData?: {
@@ -41,6 +42,29 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
 
   const removeNewImage = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
+  };
+
+  const handleDelete = async () => {
+    if (!initialData?.id) return;
+    setLoading(true);
+    try {
+      const response = await blogAPI.deleteBlogPost(initialData.id);
+      toast({
+        description: response.message,
+        variant: "success",
+        duration: 3000,
+      });
+      navigate("/blog/my-blog"); // redirect after delete
+      if (onSuccess) onSuccess();
+    } catch (error: any) {
+      toast({
+        description: error?.message || "Có lỗi xảy ra!",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,148 +118,143 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
       setLoading(false);
     }
   };
-
+  
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block mb-1">Tiêu đề</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-        />
+    <form onSubmit={handleSubmit} className="space-y-10">
+      {/* 1. Styled Inputs */}
+      <div className="space-y-6">
+        <div className="group">
+          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 group-focus-within:text-[#950101] transition-colors">
+            Tiêu đề bài viết
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full bg-slate-50 border-none rounded-2xl p-4 text-lg font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-[#950101]/5 transition-all"
+            placeholder="Đặt một cái tên thật ấn tượng..."
+            required
+          />
+        </div>
+
+        <div className="group">
+          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 group-focus-within:text-[#950101] transition-colors">
+            Câu chuyện của bạn
+          </label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full bg-slate-50 border-none rounded-[2rem] p-6 h-48 text-slate-700 leading-relaxed placeholder:text-slate-300 focus:ring-2 focus:ring-[#950101]/5 transition-all resize-none"
+            placeholder="Viết nội dung bài viết tại đây..."
+            required
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block mb-1">Nội dung</label>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="w-full p-2 border rounded h-32"
-          required
-        />
-      </div>
+      {/* 2. Visual Media Section */}
+      <div className="space-y-4">
+        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+          Hình ảnh bộ sưu tập
+        </label>
 
-      <div>
-        <label className="block mb-1">Hình ảnh</label>
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={handleImageChange}
-          className="w-full p-2 border rounded"
-        />
-      </div>
+        <div className="relative group">
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+          />
+          <div className="border-2 border-dashed border-slate-100 rounded-[2rem] p-8 flex flex-col items-center justify-center bg-white group-hover:bg-slate-50 group-hover:border-[#FFCFE9] transition-all">
+            <div className="w-12 h-12 rounded-full bg-[#FFCFE9]/30 flex items-center justify-center mb-3">
+              <span className="text-[#950101] text-xl">+</span>
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Thêm ảnh mới</p>
+          </div>
+        </div>
 
-      {/* Existing images (update mode) */}
-      {existingImages.length > 0 && (
-        <div>
-          <p className="mb-2">Ảnh hiện tại:</p>
-          <div className="flex gap-2 flex-wrap">
+        {/* Combined Image Previews */}
+        {(existingImages.length > 0 || images.length > 0) && (
+          <div className="grid grid-cols-3 gap-3 mt-4">
+            {/* Existing */}
             {existingImages.map((url, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={url}
-                  alt="preview"
-                  className="w-20 h-20 object-cover rounded"
-                />
+              <div key={`existing-${index}`} className="relative group aspect-square rounded-2xl overflow-hidden border border-slate-100">
+                <img src={url} className="w-full h-full object-cover" alt="" />
                 <button
                   type="button"
                   onClick={() => removeExistingImage(url)}
-                  className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5"
+                  className="absolute top-1 right-1 bg-white/90 backdrop-blur-md text-red-500 rounded-full w-6 h-6 flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  ×
+                  <span className="text-lg leading-none">×</span>
                 </button>
               </div>
             ))}
-          </div>
-        </div>
-      )}
-
-      {/* New images preview */}
-      {images.length > 0 && (
-        <div>
-          <p className="mb-2">Ảnh mới:</p>
-          <div className="flex gap-2 flex-wrap">
+            {/* New */}
             {images.map((image, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt="preview"
-                  className="w-20 h-20 object-cover rounded"
-                />
+              <div key={`new-${index}`} className="relative group aspect-square rounded-2xl overflow-hidden border-2 border-[#FFCFE9]">
+                <img src={URL.createObjectURL(image)} className="w-full h-full object-cover" alt="" />
                 <button
                   type="button"
                   onClick={() => removeNewImage(index)}
-                  className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5"
+                  className="absolute top-1 right-1 bg-white/90 backdrop-blur-md text-red-500 rounded-full w-6 h-6 flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  ×
+                  <span className="text-lg leading-none">×</span>
                 </button>
+                <div className="absolute bottom-1 left-1 bg-[#950101] text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Mới</div>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
-      >
-        {loading
-          ? "Đang xử lý..."
-          : mode === "create"
-            ? "Tạo bài viết"
-            : "Cập nhật"}
-      </button>
+      {/* 3. Action Footer */}
+      <div className="pt-10 border-t border-slate-100 space-y-6">
+        {/* The Primary "Gold Standard" Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.3em] text-white transition-all active:scale-[0.98] shadow-2xl shadow-[#950101]/30 disabled:grayscale disabled:opacity-50"
+          style={{
+            background: "linear-gradient(135deg, #950101 0%, #D81B60 50%, #3D0101 100%)",
+          }}
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              Đang xử lý...
+            </span>
+          ) : mode === "create" ? (
+            "Tạo bài viết"
+          ) : (
+            "Lưu thay đổi"
+          )}
+        </button>
+
+        {/* The Sophisticated "Destructive" Button */}
+        {mode === "update" && (
+          <div className="flex justify-center pt-2">
+            <ConfirmationDialog
+              onConfirm={handleDelete}
+              title="Xác nhận xóa"
+              description="Hành động này sẽ gỡ bỏ vĩnh viễn bài viết khỏi bộ sưu tập của bạn."
+              confirmText="Xóa vĩnh viễn"
+              cancelText="Quay lại"
+              variant="destructive"
+              trigger={
+                <button
+                  type="button"
+                  className="w-full py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.3em] text-white transition-all active:scale-[0.98] shadow-2xl shadow-[#950101]/30 disabled:grayscale disabled:opacity-50"
+                >
+                  <div className="w-1 h-1 rounded-full bg-slate-300 group-hover:bg-red-400 transition-colors" />
+                  <span className="font-black text-md uppercase tracking-[0.25em] text-slate-400 group-hover:text-red-500">
+                    Gỡ bỏ bài viết
+                  </span>
+                </button>
+              }
+            />
+          </div>
+        )}
+      </div>
     </form>
   );
-};
-
-// Simple view component
-export const BlogPostView: React.FC<{ post: any }> = ({ post }) => {
-  return (
-    <div className="p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center">
-          {post.authorAvatarUrl ? (
-            <img
-              src={post.authorAvatarUrl}
-              alt="avatar"
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          ) : (
-            <span className="text-xs font-bold text-[#950101]">
-              {post.authorName?.charAt(0) || "U"}
-            </span>
-          )}
-        </div>
-        <div>
-          <p className="font-medium text-md">
-            {post.authorName || "Unknown"}
-          </p>
-          <p className="text-xs text-slate-500">
-            {new Date(post.createdAt).toLocaleDateString("vi-VN")}
-          </p>
-        </div>
-      </div>
-      <h2 className="text-xl font-bold mb-2">{post.title}</h2>
-      <p className="mb-4">{post.content}</p>
-
-      {post.imageUrls && post.imageUrls.length > 0 && (
-        <div className="flex gap-2 flex-wrap">
-          {post.imageUrls.map((url: string, index: number) => (
-            <img
-              key={index}
-              src={url}
-              alt={`blog-${index}`}
-              className="w-32 h-32 object-cover rounded"
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+}

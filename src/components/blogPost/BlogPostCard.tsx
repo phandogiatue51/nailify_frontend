@@ -30,6 +30,14 @@ export const BlogPostCard = ({
     navigate(`/blog/detail/${post.id}`);
   };
 
+  const handleClick = () => {
+    if (post.shopId) {
+      navigate(`/shop/${post.shopId}`);
+    } else if (post.nailArtistId) {
+      navigate(`/artist/${post.nailArtistId}`);
+    }
+  };
+
   const getUniqueReactions = (reactions?: Array<{ type: number }>) => {
     if (!reactions || reactions.length === 0) return [];
     const uniqueTypes = Array.from(new Set(reactions.map((r) => r.type)));
@@ -41,11 +49,11 @@ export const BlogPostCard = ({
       {/* Header: Author & Edit */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#FFCFE9]/50 flex items-center justify-center border border-[#FFCFE9]">
+          <div className="w-10 h-10 rounded-full bg-[#FFCFE9]/50 flex items-center justify-center border border-[#FFCFE9]">
             {post.authorAvatarUrl ? (
               <img
                 src={post.authorAvatarUrl}
-                className="w-full h-full rounded-2xl object-cover"
+                className="w-full h-full rounded-full object-cover"
                 alt=""
               />
             ) : (
@@ -55,7 +63,9 @@ export const BlogPostCard = ({
             )}
           </div>
           <div>
-            <h4 className="text-sm font-black text-slate-800 leading-none mb-1">
+            <h4
+              onClick={handleClick}
+              className="text-sm font-black text-slate-800 leading-none mb-1 cursor-pointer hover:underline" >
               {post.authorName}
             </h4>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">

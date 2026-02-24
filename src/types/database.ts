@@ -277,6 +277,8 @@ export interface BlogPost {
   content: string;
   imageUrls?: string[];
   createdAt: string;
+  nailArtistId?: string;
+  shopId?: string;
   profileId: string;
   authorName: string;
   authorAvatarUrl: string | null;
@@ -284,6 +286,7 @@ export interface BlogPost {
   totalComments: number;
   myReaction?: Reaction | null;
   reactions?: Reaction[];
+  comments?: Comment[];
 }
 
 export interface Comment {

@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { blogAPI, reactionAPI } from "@/services/api";
-import { BlogPostView } from "@/components/blogPost/BlogPostForm";
+import { BlogPostView } from "@/components/blogPost/BlogPostView";
 import { ArrowLeft, Loader2, MessageCircle } from "lucide-react";
 import { ReactionBadge } from "@/components/badge/ReactionBadge";
 import { BiSolidLike } from "react-icons/bi";
 import { getReactionTextColor, reactionOptions } from "./reactionOptions";
 import { CommentSection } from "./CommentSection";
+import { cn } from "@/lib/utils";
 
 export const BlogPostDetailPage = () => {
   const { id } = useParams();
@@ -87,70 +88,81 @@ export const BlogPostDetailPage = () => {
   if (!post) return <div className="p-4">Post not found</div>;
 
   const uniqueReactions = getUniqueReactions(post.reactions);
-
   return (
-    <div className="max-w-3xl mx-auto p-4 pb-24">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-4 flex items-center gap-2 text-[#950101]"
-      >
-        <ArrowLeft className="w-6 h-6" />
-      </button>
-
-      <BlogPostView post={post} />
-
-      {/* Reactions and Comments Stats */}
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-200">
-        <div className="flex items-center gap-1">
-          {uniqueReactions.map((type, index) => (
-            <ReactionBadge key={index} type={type} />
-          ))}
-          {post.totalReactions > 0 && (
-            <span className="text-xs text-slate-600 ml-1">
-              {post.totalReactions}
-            </span>
-          )}
+    <div className="min-h-screen bg-white">
+      {/* 1. Boutique Sticky Header */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-50 px-6 py-4 flex items-center justify-between">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 -ml-2 text-[#950101] hover:bg-slate-50 rounded-full transition-all active:scale-90"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+        <div className="flex flex-col items-center">
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Journal Entry</span>
+          <div className="h-0.5 w-4 bg-[#950101] mt-1" />
         </div>
+        <div className="w-10" /> {/* Symmetry Spacer */}
+      </nav>
 
-        <div className="flex items-center gap-1.5">
-          <MessageCircle className="w-4 h-4 text-slate-400" />
-          <span className="text-xs text-slate-600">
-            {post.totalComments || 0}
-          </span>
-        </div>
-      </div>
+      <div className="max-w-2xl mx-auto px-6">
+        {/* 2. Main Content View */}
+        <BlogPostView post={post} />
 
-      {/* Two Column Action Buttons */}
-      <div className="grid grid-cols-2 gap-3 my-4 mt-3 pt-3 border-t border-slate-200">
-        {/* Like Button with Reaction Popup */}
-        <div className="relative" ref={reactionRef}>
-          <button
-            onClick={() => {
-              const reactionTypeToSend = myReaction ? myReaction.type : 0;
-              handleReaction(reactionTypeToSend);
-            }}
-            onMouseEnter={() => setShowReactions(true)}
-            className={`w-full py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 font-medium hover:bg-gray-200 ${
-              myReaction
-                ? `${getReactionTextColor(myReaction.type)}` // Active state with colored text
-                : "text-gray-500" // Inactive state
-            }`}
-          >
-            {myReaction ? (
-              reactionOptions.find((r) => r.type === myReaction.type)?.icon || (
-                <BiSolidLike className="w-5 h-5" />
-              )
-            ) : (
-              <BiSolidLike className="w-5 h-5" />
+        {/* 3. Interaction Stats Bar */}
+        <div className="flex items-center justify-between mt-4 py-6 border-t border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
+              {uniqueReactions.map((type, index) => (
+                <div key={index} className="ring-4 ring-white rounded-full">
+                  <ReactionBadge type={type} />
+                </div>
+              ))}
+            </div>
+            {post.totalReactions > 0 && (
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                {post.totalReactions} Reactions
+              </span>
             )}
-            {myReaction
-              ? reactionOptions.find((r) => r.type === myReaction.type)?.label
-              : "Like"}
-          </button>
+          </div>
 
-          {showReactions && (
-            <div className="absolute bottom-full left-0 mb-2 bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-50">
-              <div className="flex gap-1">
+          <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full">
+            <MessageCircle size={12} className="text-slate-400" />
+            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+              {post.totalComments || 0} Comments
+            </span>
+          </div>
+        </div>
+
+        {/* 4. Luxury Action Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Like Button & Glass-morphism Picker */}
+          <div className="relative" ref={reactionRef}>
+            <button
+              onClick={() => {
+                const reactionTypeToSend = myReaction ? myReaction.type : 0;
+                handleReaction(reactionTypeToSend);
+              }}
+              onMouseEnter={() => setShowReactions(true)}
+              className={cn(
+                "w-full py-5 rounded-[1.5rem] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-sm",
+                myReaction
+                  ? `${getReactionTextColor(myReaction.type)}` // Active state with colored text
+                  : "text-gray-500" // Inactive state
+              )}
+            >
+              {myReaction ? (
+                reactionOptions.find((r) => r.type === myReaction.type)?.icon
+              ) : (
+                <BiSolidLike className="w-5 h-5" />
+              )}
+              {myReaction
+                ? reactionOptions.find((r) => r.type === myReaction.type)?.label
+                : "React"}
+            </button>
+
+            {showReactions && (
+              <div className="absolute bottom-full left-0 mb-4 p-2 bg-white/90 backdrop-blur-md rounded-full shadow-2xl border border-white flex gap-2 animate-in fade-in slide-in-from-bottom-3 z-50">
                 {reactionOptions.map((reaction) => (
                   <button
                     key={reaction.type}
@@ -158,43 +170,44 @@ export const BlogPostDetailPage = () => {
                       e.stopPropagation();
                       handleReaction(reaction.type);
                     }}
-                    className={`p-2 hover:bg-gray-100 rounded-full transition-all hover:scale-110 ${
-                      myReaction?.type === reaction.type
-                        ? "bg-gray-100 scale-110"
-                        : ""
-                    }`}
-                    title={reaction.label}
+                    className={cn(
+                      "p-3 rounded-full transition-all hover:scale-150 duration-300 origin-bottom",
+                      myReaction?.type === reaction.type ? "bg-white shadow-md" : "hover:bg-white/50"
+                    )}
                   >
-                    {reaction.icon}
+                    <span className="text-2xl">{reaction.icon}</span>
                   </button>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* Comment Button */}
+          <button
+            onClick={() => {
+              const commentSection = document.getElementById("comment-section");
+              if (commentSection) {
+                commentSection.scrollIntoView({ behavior: "smooth" });
+                const event = new CustomEvent("openCommentBox");
+                window.dispatchEvent(event);
+              }
+            }}
+            className="w-full py-5 bg-slate-50 text-slate-400 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-100 transition-all active:scale-95 flex items-center justify-center gap-3"
+          >
+            <MessageCircle className="w-5 h-5" />
+            Comment
+          </button>
         </div>
 
-        {/* Comment Button */}
-        <button
-          onClick={() => {
-            const commentSection = document.getElementById("comment-section");
-            if (commentSection) {
-              commentSection.scrollIntoView({ behavior: "smooth" });
-              const event = new CustomEvent("openCommentBox");
-              window.dispatchEvent(event);
-            }
-          }}
-          className="w-full py-3 px-4 text-gray-500 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 font-medium"
-        >
-          <MessageCircle className="w-5 h-5" />
-          Comment
-        </button>
+        {/* 5. Discussion Section */}
+        <div id="comment-section" className="pt-4 border-t-4 border-slate-50">
+          <CommentSection
+            postId={id!}
+            initialComments={post.comments}
+            onCommentAdded={loadPost}
+          />
+        </div>
       </div>
-
-      <CommentSection
-        postId={id!}
-        initialComments={post.comments}
-        onCommentAdded={loadPost}
-      />
     </div>
   );
-};
+}

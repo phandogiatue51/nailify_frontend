@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MessageCircle, X } from "lucide-react";
+import { MessageCircle, Send, X } from "lucide-react";
 import { commentAPI } from "@/services/api";
 
 interface Comment {
@@ -71,85 +71,91 @@ export const CommentSection = ({
   };
 
   return (
-    <div id="comment-section">
-      {/* Comment Box - Show on top */}
+    <div id="comment-section" className="space-y-10">
+      {/* 1. Dynamic Comment Input */}
       {showCommentBox && (
-        <div className="mb-6 animate-in slide-in-from-top-2 duration-300">
-          <form onSubmit={handleComment} className="relative">
+        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+          <form onSubmit={handleComment} className="relative group">
             <textarea
+              id="comment-input"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="w-full p-3 pr-12 border rounded-xl focus:ring-2 focus:ring-[#E288F9]/20 focus:border-[#E288F9] transition-all"
-              placeholder="Write a comment..."
-              rows={3}
+              className="w-full p-6 pb-16 bg-slate-50 border-none rounded-[2rem] focus:ring-2 focus:ring-[#950101]/5 text-slate-800 placeholder:text-slate-300 transition-all resize-none"
+              placeholder="Join the conversation..."
+              rows={4}
               autoFocus
               disabled={loading}
             />
-            <button
-              type="button"
-              onClick={() => setShowCommentBox(false)}
-              className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-full"
-            >
-              <X className="w-4 h-4 text-gray-500" />
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-2 px-4 py-2 bg-[#950101] text-white rounded-xl font-medium hover:bg-[#7a0101] transition-colors disabled:bg-gray-400"
-            >
-              {loading ? "Posting..." : "Post Comment"}
-            </button>
+
+            <div className="absolute bottom-4 right-4 left-4 flex justify-between items-center">
+              <button
+                type="button"
+                onClick={() => setShowCommentBox(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <X size={20} />
+              </button>
+
+              <button
+                type="submit"
+                disabled={loading || !newComment.trim()}
+                className="flex items-center gap-2 px-6 py-2.5 bg-[#950101] text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#950101]/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale"
+              >
+                {loading ? "Sending..." : "Comment"}
+                {!loading && <Send size={12} />}
+              </button>
+            </div>
           </form>
         </div>
       )}
 
-      {/* Comments List */}
-      <h3 className="text-xl font-bold mb-4">Comments ({comments.length})</h3>
-      <div className="space-y-4">
+      {/* 2. Comments List */}
+      <div className="space-y-8">
         {comments.length === 0 ? (
-          <div className="text-center py-8 bg-slate-50 rounded-xl">
-            <MessageCircle className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-            <p className="text-slate-500">
-              No comments yet. Be the first to comment!
+          <div className="text-center py-16 border-2 border-dashed border-slate-100 rounded-[2.5rem]">
+            <MessageCircle className="w-10 h-10 text-slate-200 mx-auto mb-4" />
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">
+              No entries yet
             </p>
           </div>
         ) : (
-          <>
+          <div className="divide-y divide-slate-50">
             {comments.map((comment) => (
-              <div key={comment.id} className="bg-slate-50 rounded-xl p-4">
-                <div className="flex items-start gap-2">
-                  <div className="w-8 h-8 rounded-full bg-[#FFCFE9] flex items-center justify-center overflow-hidden shrink-0">
+              <div key={comment.id} className="py-4 first:pt-0">
+                <div className="flex items-center gap-4">
+                  {/* Avatar with Boutique Border */}
+                  <div className="w-10 h-10 rounded-full bg-[#FFCFE9]/30 border border-[#FFCFE9]/50 flex items-center justify-center overflow-hidden shrink-0">
                     {comment.authorAvatarUrl ? (
                       <img
                         src={comment.authorAvatarUrl}
-                        alt="avatar"
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="w-full h-full object-cover"
+                        alt=""
                       />
                     ) : (
-                      <span className="text-xs font-bold text-[#950101]">
-                        {comment.authorName?.charAt(0) || "U"}
+                      <span className="text-xs font-black text-[#950101]">
+                        {comment.authorName?.charAt(0)}
                       </span>
                     )}
                   </div>
+
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="font-medium text-sm truncate">
+                    <div className="flex items-baseline justify-between mb-2 text-md">
+                      <h4 className="font-black text-slate-900 tracking-tight">
                         {comment.authorName}
-                      </p>
-                      <small className="text-xs text-slate-500 shrink-0">
-                        {new Date(comment.createdAt).toLocaleDateString(
-                          "vi-VN",
-                        )}
-                      </small>
+                      </h4>
+                      <span className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">
+                        {new Date(comment.createdAt).toLocaleDateString("vi-VN")}
+                      </span>
                     </div>
-                    <p className="text-sm text-slate-700 mt-1">
+                    <p className="text-slate-600 leading-relaxed font-medium">
                       {comment.content}
                     </p>
                   </div>
                 </div>
+
               </div>
             ))}
-          </>
+          </div>
         )}
       </div>
     </div>

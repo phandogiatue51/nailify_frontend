@@ -37,13 +37,13 @@ export const BlogListPage = () => {
         const tempMyReaction = isRemoving
           ? null
           : {
-              id: `temp-${Date.now()}`,
-              profileId: user?.userId || "",
-              reactorName: user?.fullName || "You",
-              reactorAvatarUrl: null,
-              type: type as ReactionType,
-              reactedAt: new Date().toISOString(),
-            };
+            id: `temp-${Date.now()}`,
+            profileId: user?.userId || "",
+            reactorName: user?.fullName || "You",
+            reactorAvatarUrl: null,
+            type: type as ReactionType,
+            reactedAt: new Date().toISOString(),
+          };
 
         let newTotal = prevTotal;
         if (isRemoving) {
@@ -65,15 +65,17 @@ export const BlogListPage = () => {
     try {
       const formData = new FormData();
       formData.append("type", type.toString());
-      await reactionAPI.togglePostReaction(postId, formData);
 
-      // 2. SYNC WITH SERVER: Get the official data
-      const updatedPost = await blogAPI.getById(postId);
-      setPosts((prev) => prev.map((p) => (p.id === postId ? updatedPost : p)));
+      const response = await reactionAPI.togglePostReaction(postId, formData);
+
+      if (response.data?.post) {
+        setPosts((prev) => prev.map((p) =>
+          p.id === postId ? response.data.post : p
+        ));
+      }
     } catch (error) {
       console.error("React failed", error);
-      // 3. REVERT ON ERROR: Reload posts
-      await loadPosts();
+      await loadPosts(); // Revert on error
     }
   };
 
