@@ -19,6 +19,14 @@ export const StaffManagement = () => {
   const { locations } = useShopOwnerLocations();
   const { staffList, isStaffListLoading, updateStaffStatus, useFilteredStaff } =
     useStaff();
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const handleToggleStatus = (staffId: string) => {
+    setUpdatingId(staffId);
+    updateStaffStatus.mutate(staffId, {
+      onSettled: () => setUpdatingId(null),
+    });
+  };
 
   const hasActiveFilters = Object.values(filters).some(
     (value) => value !== "" && value !== undefined,
@@ -50,7 +58,11 @@ export const StaffManagement = () => {
         </div>
         <Button
           onClick={() => navigate("/staff/create")}
-          className="bg-[#E288F9] hover:bg-[#d07ae6] rounded-2xl shadow-lg shadow-purple-100 h-12 px-4"
+          className="font-black tracking-tight uppercase rounded-[2rem] w-30 h-10"
+          style={{
+            background:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)"
+          }}
         >
           <Plus className="w-5 h-5 mr-1" />
           <span className="font-bold">Add Staff</span>
@@ -76,8 +88,10 @@ export const StaffManagement = () => {
         <StaffList
           staff={displayStaff}
           isLoading={isStaffListLoading}
-          onToggleStatus={(id) => updateStaffStatus.mutateAsync(id)}
+          onToggleStatus={handleToggleStatus}
+          updatingId={updatingId}
         />
+
       </div>
     </div>
   );

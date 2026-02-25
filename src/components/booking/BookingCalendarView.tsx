@@ -91,7 +91,7 @@ const BookingCalendarView: React.FC<BookingCalendarViewProps> = ({
               className={cn(
                 "flex flex-col items-center min-w-[55px] py-4 rounded-[2rem] transition-all duration-300",
                 isSelected
-                  ? "bg-[#E288F9] text-white shadow-xl shadow-purple-200 scale-110"
+                  ? "bg-[#D81B60] text-white shadow-xl shadow-red-200 scale-110"
                   : "bg-white text-slate-400 border border-slate-50",
               )}
             >
@@ -105,7 +105,7 @@ const BookingCalendarView: React.FC<BookingCalendarViewProps> = ({
                 <div
                   className={cn(
                     "w-1 h-1 rounded-full mt-1",
-                    isSelected ? "bg-white" : "bg-[#E288F9]",
+                    isSelected ? "bg-white" : "bg-[#D81B60]",
                   )}
                 />
               )}
@@ -116,7 +116,7 @@ const BookingCalendarView: React.FC<BookingCalendarViewProps> = ({
 
       <div className="flex-1 space-y-4 mt-4">
         <div className="flex items-center gap-2 mb-2">
-          <CalendarIcon className="w-4 h-4 text-[#FFC988]" />
+          <CalendarIcon className="w-4 h-4 text-[#D81B60]" />
           <span className="text-[12px] font-black uppercase tracking-widest text-slate-500">
             {format(selectedDate, "eeee, MMM do")}
           </span>
@@ -126,7 +126,7 @@ const BookingCalendarView: React.FC<BookingCalendarViewProps> = ({
           <div className="relative border-l-2 border-dashed border-slate-100 pl-6 space-y-6">
             {dailyBookings.map((booking) => (
               <div key={booking.id} className="relative">
-                <div className="absolute -left-[31px] top-4 w-4 h-4 rounded-full border-4 border-[#FDFCFD] bg-[#E288F9]" />
+                <div className="absolute -left-[31px] top-4 w-4 h-4 rounded-full border-4 border-[#D81B60] bg-[#D81B60]" />
 
                 <div className="text-[10px] font-black text-slate-400 uppercase mb-2">
                   {format(new Date(booking.scheduledStart), "p")}

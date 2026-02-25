@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Phone, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ConfirmationDialog } from "../ui/confirmation-dialog";
 
 interface StaffCardProps {
   staff: StaffViewDto;
   onToggleStatus: () => void;
+  isUpdating?: boolean;
 }
 
-export const StaffCard = ({ staff, onToggleStatus }: StaffCardProps) => {
+export const StaffCard = ({ staff, onToggleStatus, isUpdating }: StaffCardProps) => {
   return (
     <Card className="group overflow-hidden border shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 rounded-[2rem] bg-white">
       <CardContent className="p-5">
@@ -76,21 +78,32 @@ export const StaffCard = ({ staff, onToggleStatus }: StaffCardProps) => {
             </Button>
           </Link>
 
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              onToggleStatus();
-            }}
-            variant="ghost"
-            className={cn(
-              "flex-1 h-10 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all shadow-sm",
+          <ConfirmationDialog
+            onConfirm={() => onToggleStatus()}
+            title={staff.isActive ? "Xác nhận vô hiệu hóa" : "Xác nhận kích hoạt"}
+            description={
               staff.isActive
-                ? "text-red-400 hover:bg-red-100 hover:text-red-500 border border-red-300"
-                : "text-green-500 hover:bg-green-100 hover:text-green-600 border border-green-300",
-            )}
-          >
-            {staff.isActive ? "Disable" : "Enable"}
-          </Button>
+                ? `Hành động này sẽ vô hiệu hóa tài khoản nhân viên ${staff.fullName}.`
+                : `Hành động này sẽ kích hoạt lại tài khoản nhân viên ${staff.fullName}.`
+            }
+            confirmText={staff.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
+            cancelText="Quay lại"
+            variant={staff.isActive ? "destructive" : "default"}
+            trigger={
+              <Button
+                disabled={isUpdating}
+                variant="ghost"
+                className={cn(
+                  "flex-1 h-10 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all shadow-sm",
+                  staff.isActive
+                    ? "text-red-400 hover:bg-red-100 hover:text-red-500 border border-red-300"
+                    : "text-green-500 hover:bg-green-100 hover:text-green-600 border border-green-300",
+                )}
+              >
+                {isUpdating ? "Updating..." : staff.isActive ? "Disable" : "Enable"}
+              </Button>
+            }
+          />
         </div>
       </CardContent>
     </Card>

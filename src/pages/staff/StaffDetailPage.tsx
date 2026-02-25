@@ -15,12 +15,14 @@ import {
   Edit3,
   Power,
 } from "lucide-react";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 export const StaffDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { useStaffById, updateStaffStatus } = useStaff();
   const { data: staff, isLoading } = useStaffById(id || "");
+  const { mutateAsync, isPending } = updateStaffStatus;
 
   if (isLoading)
     return (
@@ -28,6 +30,7 @@ export const StaffDetailPage = () => {
         <Power className="animate-spin text-[#E288F9]" />
       </div>
     );
+
   if (!staff)
     return (
       <MobileLayout>
@@ -77,7 +80,7 @@ export const StaffDetailPage = () => {
           <div
             className={cn(
               "absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white",
-              staff.IsActive ? "bg-green-500" : "bg-red-400",
+              staff.isActive ? "bg-green-500" : "bg-red-400",
             )}
           />
         </div>
@@ -87,12 +90,12 @@ export const StaffDetailPage = () => {
         <Badge
           className={cn(
             "mt-2 border-none font-bold",
-            staff.IsActive
+            staff.isActive
               ? "bg-green-100 text-green-700"
               : "bg-red-100 text-red-700",
           )}
         >
-          {staff.IsActive ? "Active Member" : "Inactive"}
+          {staff.isActive ? "Active Member" : "Inactive"}
         </Badge>
       </div>
 
@@ -163,19 +166,32 @@ export const StaffDetailPage = () => {
           </div>
         </div>
 
-        <Button
-          onClick={() => updateStaffStatus.mutateAsync(id!)}
-          variant="outline"
-          className={cn(
-            "w-full h-14 rounded-2xl font-black uppercase text-xs tracking-widest border-2",
-            staff.IsActive
-              ? "border-red-100 text-red-500 hover:bg-red-50"
-              : "border-green-100 text-green-600 hover:bg-green-50",
-          )}
-        >
-          <Power className="w-4 h-4 mr-2" />
-          {staff.IsActive ? "Deactivate Account" : "Activate Account"}
-        </Button>
+        <ConfirmationDialog
+          onConfirm={() => mutateAsync(id!)}
+          title={staff.isActive ? "Xác nhận vô hiệu hóa" : "Xác nhận kích hoạt"}
+          description={
+            staff.isActive
+              ? `Hành động này sẽ vô hiệu hóa tài khoản nhân viên ${staff.fullName}.`
+              : `Hành động này sẽ kích hoạt lại tài khoản nhân viên ${staff.fullName}.`
+          }
+          confirmText={staff.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
+          cancelText="Quay lại"
+          variant={staff.isActive ? "destructive" : "default"}
+          trigger={
+            <Button
+              disabled={isPending}
+              variant="ghost"
+              className={cn(
+                "flex-1 h-10 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all shadow-sm w-full",
+                staff.isActive
+                  ? "text-red-400 hover:bg-red-100 hover:text-red-500 border border-red-300"
+                  : "text-green-500 hover:bg-green-100 hover:text-green-600 border border-green-300",
+              )}
+            >
+              {isPending ? "Updating..." : staff.isActive ? "Disable" : "Enable"}
+            </Button>
+          }
+        />
       </div>
     </div>
   );

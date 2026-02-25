@@ -29,7 +29,6 @@ export const MobileChatWindow = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const isShop = user?.role === 1 || user?.role === 3;
-  // Mark as read when component mounts
   useEffect(() => {
     if (conversationId && onMarkAsRead) {
       onMarkAsRead(conversationId);
@@ -224,23 +223,31 @@ export const MobileChatWindow = ({
                     msg.isOwn ? "flex-row-reverse" : "flex-row",
                   )}
                 >
-                  <div
-                    className={cn(
-                      "max-w-[80%] rounded-[1.5rem] px-4 py-2 shadow-sm text-sm",
-                      msg.isOwn
-                        ? "bg-[#950101] text-white rounded-br-none"
-                        : "bg-white text-slate-700 rounded-bl-none border border-slate-100",
+                  <div className="flex flex-col max-w-[80%]">
+                    {isShop && !msg.isOwn && (
+                      <p className="text-[12px] font-bold text-slate-400 mb-1 ml-3">
+                        {msg.senderName}
+                      </p>
                     )}
-                  >
-                    <p className="font-medium leading-relaxed">{msg.content}</p>
-                    <p
+
+                    <div
                       className={cn(
-                        "text-[9px] font-bold uppercase tracking-tighter opacity-70",
-                        msg.isOwn ? "text-right" : "text-left",
+                        "rounded-[1.5rem] px-4 py-2 shadow-sm text-sm",
+                        msg.isOwn
+                          ? "bg-[#950101] text-white rounded-br-none"
+                          : "bg-white text-slate-700 rounded-bl-none border border-slate-100",
                       )}
                     >
-                      {formatTime(msg.sentAt)}
-                    </p>
+                      <p className="font-medium leading-relaxed">{msg.content}</p>
+                      <p
+                        className={cn(
+                          "text-[9px] font-bold uppercase tracking-tighter opacity-70",
+                          msg.isOwn ? "text-right" : "text-left",
+                        )}
+                      >
+                        {formatTime(msg.sentAt)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}

@@ -1,3 +1,4 @@
+// types/chat.ts - Keep only one version, use your actual DTOs
 export type ChatStatus = 0 | 1 | 2; // 0: Active, 1: Resolved, 2: Closed
 export type ConversationType = 0 | 1 | 2 | 3; // 0: Individual, 1: Group, 2: ShopCustomer, 3: System
 export type ParticipantRole = 0 | 1 | 2 | 3 | 4 | 5; // 0: Owner, 1: Member, 2: Customer, 3: Staff, 4: Artist, 5: Support
@@ -57,46 +58,41 @@ export interface ParticipantDto {
   lastReadAt: string | null;
 }
 
+// SignalR Event Types
 export interface NewMessageEvent {
   conversationId: string;
-  message: MessageDto;
-  type?: "shop" | "customer" | "staff";
+  message: MessageDto;  // Use your actual MessageDto
+  type?: "shop" | "customer" | "staff" | "user";
   shopName?: string;
   sentBy?: string;
 }
 
 export interface TypingIndicatorEvent {
   conversationId: string;
+  isTyping: boolean;
   userId?: string;
   userName?: string;
   staffId?: string;
   staffName?: string;
-  isTyping: boolean;
-  type?: "shop" | "customer" | "staff";
+  type?: "shop" | "customer" | "staff" | "user";
 }
 
 export interface UserPresenceEvent {
   userId: string;
-  connectionId: string;
+  connectionId?: string;
   isOnline?: boolean;
 }
 
 export interface ReadReceiptEvent {
   conversationId: string;
   userId: string;
-  messageIds?: string[];
+  messageIds?: string[];  // Make optional since server might not always send
   readAt: string;
 }
 
 export interface ConversationEvent {
   conversationId: string;
-  type:
-    | "joined"
-    | "left"
-    | "resolved"
-    | "reopened"
-    | "participantAdded"
-    | "participantRemoved";
+  type: "joined" | "left" | "resolved" | "reopened" | "participantAdded" | "participantRemoved";
   userId?: string;
   userName?: string;
   resolvedBy?: string;
@@ -105,9 +101,9 @@ export interface ConversationEvent {
   reopenedByName?: string;
   addedBy?: string;
   addedByName?: string;
+  newParticipantId?: string;
   removedBy?: string;
   removedByName?: string;
-  newParticipantId?: string;
   removedParticipantId?: string;
   resolvedAt?: string;
   reopenedAt?: string;
@@ -130,6 +126,6 @@ export interface UserLeftEvent {
 export interface NotificationEvent {
   conversationId: string;
   conversationTitle: string;
-  message: MessageDto;
+  message: MessageDto;  // Use your actual MessageDto
   fromName: string;
 }

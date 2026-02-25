@@ -174,7 +174,7 @@ export const StaffForm = ({
               <User className="w-10 h-10 text-slate-300" />
             )}
           </div>
-          <label className="absolute bottom-0 right-0 bg-[#E288F9] text-white p-2.5 rounded-2xl shadow-lg cursor-pointer hover:scale-110 transition-transform active:scale-95">
+          <label className="absolute bottom-0 right-0 bg-[#D81B60] text-white p-2.5 rounded-2xl shadow-lg cursor-pointer hover:scale-110 transition-transform active:scale-95">
             <Camera className="w-4 h-4" />
             <input
               type="file"
@@ -287,10 +287,10 @@ export const StaffForm = ({
 
         {/* Security Group (Create Only) */}
         {mode === "create" && (
-          <div className="bg-purple-50/30 rounded-[2rem] p-6 border border-purple-100/50 space-y-5">
+          <div className="bg-red-50/30 rounded-[2rem] p-6 border border-red-100/50 space-y-5">
             <div className="flex items-center gap-2 mb-2">
-              <Lock className="w-3 h-3 text-[#E288F9]" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#E288F9]">
+              <Lock className="w-3 h-3 text-[#D81B60]" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#D81B60]">
                 Security
               </span>
             </div>
@@ -314,17 +314,24 @@ export const StaffForm = ({
         )}
       </div>
 
-      <Button
-        type="submit"
-        disabled={isLoading}
-        className="w-full h-14 rounded-2xl bg-[#E288F9] hover:bg-[#d07ae6] shadow-xl shadow-purple-100 font-black uppercase tracking-widest"
-      >
-        {isLoading
-          ? "Syncing..."
-          : mode === "create"
-            ? "Create Staff"
-            : "Save Profile"}
-      </Button>
+      <div className="flex justify-center">
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="font-black tracking-tight uppercase rounded-[2rem] w-1/2 h-10 text-lg"
+          style={{
+            background:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)"
+          }}
+        >
+          {isLoading
+            ? "Syncing..."
+            : mode === "create"
+              ? "Create Staff"
+              : "Save Profile"}
+        </Button>
+      </div>
+
     </form>
   );
 };

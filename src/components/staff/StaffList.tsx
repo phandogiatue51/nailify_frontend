@@ -6,12 +6,14 @@ interface StaffListProps {
   staff: StaffViewDto[];
   isLoading: boolean;
   onToggleStatus: (staffId: string) => void;
+  updatingId?: string | null;
 }
 
 export const StaffList = ({
   staff,
   isLoading,
   onToggleStatus,
+  updatingId
 }: StaffListProps) => {
   if (isLoading) {
     return (
@@ -49,6 +51,7 @@ export const StaffList = ({
               key={staffMember.staffId}
               staff={staffMember}
               onToggleStatus={() => onToggleStatus(staffMember.staffId)}
+              isUpdating={updatingId === staffMember.staffId}
             />
           ))}
         </div>

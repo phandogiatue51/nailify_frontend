@@ -13,55 +13,51 @@ import {
   ReadReceiptEvent,
   ConversationEvent,
   NotificationEvent,
-  UserJoinedEvent,
-  UserLeftEvent,
 } from "@/types/chat";
+
 export const useSignalR = () => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const connectionRef = useRef<HubConnection | null>(null);
 
-  // Event handlers state with proper types
-  const [messageHandlers, setMessageHandlers] = useState<
-    ((data: NewMessageEvent) => void)[]
-  >([]);
-  const [typingHandlers, setTypingHandlers] = useState<
-    ((data: TypingIndicatorEvent) => void)[]
-  >([]);
-  const [presenceHandlers, setPresenceHandlers] = useState<
-    ((data: UserPresenceEvent & { isOnline: boolean }) => void)[]
-  >([]);
-  const [readReceiptHandlers, setReadReceiptHandlers] = useState<
-    ((data: ReadReceiptEvent) => void)[]
-  >([]);
-  const [conversationEventHandlers, setConversationEventHandlers] = useState<
-    ((data: ConversationEvent) => void)[]
-  >([]);
-  const [notificationHandlers, setNotificationHandlers] = useState<
-    ((data: NotificationEvent) => void)[]
-  >([]);
+  // Refs for handlers
+  const messageHandlersRef = useRef<((data: NewMessageEvent) => void)[]>([]);
+  const typingHandlersRef = useRef<((data: TypingIndicatorEvent) => void)[]>([]);
+  const presenceHandlersRef = useRef<((data: UserPresenceEvent & { isOnline: boolean }) => void)[]>([]);
+  const readReceiptHandlersRef = useRef<((data: ReadReceiptEvent) => void)[]>([]);
+  const conversationEventHandlersRef = useRef<((data: ConversationEvent) => void)[]>([]);
+  const notificationHandlersRef = useRef<((data: NotificationEvent) => void)[]>([]);
 
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
-  // Function to get token directly from storage
   const getToken = useCallback(() => {
     return (
       localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken")
     );
   }, []);
 
-  // Initialize connection
   useEffect(() => {
     const token = getToken();
-    if (!token || !isAuthenticated()) return;
+    if (!token || !isAuthenticated()) {
+      console.log("SignalR: No token or not authenticated");
+      return;
+    }
+
+    console.log("SignalR: Initializing connection with token");
+
+    // Use VITE_SIGNALR_URL or fallback to base URL without /api
+    const signalrBaseUrl = import.meta.env.VITE_SIGNALR_URL;
+
+    const hubUrl = `${signalrBaseUrl}/chatHub`;
+    console.log("SignalR: Connecting to:", hubUrl);
 
     const newConnection = new HubConnectionBuilder()
-      .withUrl(`${import.meta.env.VITE_API_URL}/chatHub`, {
+      .withUrl(hubUrl, {
         accessTokenFactory: () => token,
       })
       .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
-      .configureLogging(LogLevel.Information)
+      .configureLogging(LogLevel.Debug)
       .build();
 
     connectionRef.current = newConnection;
@@ -82,158 +78,283 @@ export const useSignalR = () => {
       try {
         await connection.start();
         setIsConnected(true);
-        console.log("SignalR Connected");
+        console.log("✅ SignalR Connected successfully");
+        console.log("Connection ID:", connection.connectionId);
       } catch (err) {
-        console.error("SignalR Connection Error:", err);
+        console.error("❌ SignalR Connection Error:", err);
+        // Log more details about the error
+        if (err instanceof Error) {
+          console.error("Error name:", err.name);
+          console.error("Error message:", err.message);
+          console.error("Error stack:", err.stack);
+        }
         setTimeout(startConnection, 5000);
       }
     };
 
     startConnection();
 
-    // Message events
-    connection.on("NewMessage", (data: NewMessageEvent) => {
-      messageHandlers.forEach((handler) => handler(data));
-    });
+    // ============ MESSAGE EVENTS ============
 
-    connection.on("NewShopMessage", (data: NewMessageEvent) => {
-      messageHandlers.forEach((handler) => handler({ ...data, type: "shop" }));
-    });
-
-    connection.on("NewCustomerMessage", (data: NewMessageEvent) => {
-      messageHandlers.forEach((handler) =>
-        handler({ ...data, type: "customer" }),
+    // Individual/Group chat messages
+    connection.on("NewMessage", (data: any) => {
+      console.log("📨 NewMessage received:", data);
+      messageHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          message: data.message,
+          type: "user"
+        })
       );
     });
 
-    connection.on("NewStaffMessage", (data: NewMessageEvent) => {
-      messageHandlers.forEach((handler) => handler({ ...data, type: "staff" }));
-    });
-
-    // Typing indicators
-    connection.on("UserTyping", (data: TypingIndicatorEvent) => {
-      typingHandlers.forEach((handler) => handler(data));
-    });
-
-    connection.on("ShopTyping", (data: TypingIndicatorEvent) => {
-      typingHandlers.forEach((handler) => handler({ ...data, type: "shop" }));
-    });
-
-    connection.on("CustomerTyping", (data: TypingIndicatorEvent) => {
-      typingHandlers.forEach((handler) =>
-        handler({ ...data, type: "customer" }),
+    // Shop messages (from staff to customer)
+    connection.on("NewShopMessage", (data: any) => {
+      console.log("🏪 NewShopMessage received:", data);
+      messageHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          message: data.message,
+          type: "shop",
+          shopName: data.shopName
+        })
       );
     });
 
-    connection.on("StaffTyping", (data: TypingIndicatorEvent) => {
-      typingHandlers.forEach((handler) => handler({ ...data, type: "staff" }));
-    });
-
-    // Presence
-    connection.on("UserOnline", (data: UserPresenceEvent) => {
-      setOnlineUsers((prev) => new Set(prev).add(data.userId));
-      presenceHandlers.forEach((handler) =>
-        handler({ ...data, isOnline: true }),
+    // Customer messages (to staff)
+    connection.on("NewCustomerMessage", (data: any) => {
+      console.log("👤 NewCustomerMessage received:", data);
+      messageHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          message: data.message,
+          type: "customer"
+        })
       );
     });
 
-    connection.on("UserOffline", (data: UserPresenceEvent) => {
+    // Staff messages (to other staff)
+    connection.on("NewStaffMessage", (data: any) => {
+      console.log("👥 NewStaffMessage received:", data);
+      messageHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          message: data.message,
+          type: "staff",
+          sentBy: data.sentBy
+        })
+      );
+    });
+
+    // ============ TYPING INDICATORS ============
+
+    // Staff typing (notifies other staff and customers)
+    connection.on("StaffTyping", (data: any) => {
+      console.log("✏️ StaffTyping received:", data);
+      typingHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          isTyping: data.isTyping,
+          staffName: data.staffName,
+          staffId: data.staffId,
+          type: "staff"
+        })
+      );
+    });
+
+    // Customer typing (notifies staff)
+    connection.on("CustomerTyping", (data: any) => {
+      console.log("✏️ CustomerTyping received:", data);
+      typingHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          isTyping: data.isTyping,
+          type: "customer"
+        })
+      );
+    });
+
+    // Shop typing (notifies customer when staff is typing)
+    connection.on("ShopTyping", (data: any) => {
+      console.log("✏️ ShopTyping received:", data);
+      typingHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          isTyping: data.isTyping,
+          type: "shop"
+        })
+      );
+    });
+
+    // User typing (for individual/group chats)
+    connection.on("UserTyping", (data: any) => {
+      console.log("✏️ UserTyping received:", data);
+      typingHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          isTyping: data.isTyping,
+          userId: data.userId,
+          userName: data.userName,
+          type: "user"
+        })
+      );
+    });
+
+    // ============ PRESENCE EVENTS ============
+
+    connection.on("UserOnline", (data: any) => {
+      console.log("🟢 UserOnline received:", data);
+      setOnlineUsers((prev) => new Set(prev).add(data.userId.toString()));
+      presenceHandlersRef.current.forEach((handler) =>
+        handler({ ...data, isOnline: true })
+      );
+    });
+
+    connection.on("UserOffline", (data: any) => {
+      console.log("🔴 UserOffline received:", data);
       setOnlineUsers((prev) => {
         const newSet = new Set(prev);
-        newSet.delete(data.userId);
+        newSet.delete(data.userId.toString());
         return newSet;
       });
-      presenceHandlers.forEach((handler) =>
-        handler({ ...data, isOnline: false }),
+      presenceHandlersRef.current.forEach((handler) =>
+        handler({ ...data, isOnline: false })
       );
     });
 
-    // Read receipts
-    connection.on("MessagesRead", (data: ReadReceiptEvent) => {
-      readReceiptHandlers.forEach((handler) => handler(data));
+    // ============ READ RECEIPTS ============
+
+    connection.on("MessagesRead", (data: any) => {
+      console.log("✓ MessagesRead received:", data);
+      readReceiptHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          userId: data.userId,
+          messageIds: data.messageIds,
+          readAt: data.readAt
+        })
+      );
     });
 
-    // Conversation events
-    connection.on("UserJoined", (data: UserJoinedEvent) => {
-      conversationEventHandlers.forEach((handler) =>
+    // ============ CONVERSATION EVENTS ============
+
+    connection.on("UserJoined", (data: any) => {
+      console.log("👋 UserJoined received:", data);
+      conversationEventHandlersRef.current.forEach((handler) =>
         handler({
-          ...data,
+          conversationId: data.conversationId,
           type: "joined",
-          userId: data.userId,
-        }),
+          userId: data.userId
+        })
       );
     });
 
-    connection.on("UserLeft", (data: UserLeftEvent) => {
-      conversationEventHandlers.forEach((handler) =>
+    connection.on("UserLeft", (data: any) => {
+      console.log("👋 UserLeft received:", data);
+      conversationEventHandlersRef.current.forEach((handler) =>
         handler({
-          ...data,
+          conversationId: data.conversationId,
           type: "left",
-          userId: data.userId,
-        }),
+          userId: data.userId
+        })
       );
     });
 
     connection.on("ConversationResolved", (data: any) => {
-      conversationEventHandlers.forEach((handler) =>
+      console.log("✅ ConversationResolved received:", data);
+      conversationEventHandlersRef.current.forEach((handler) =>
         handler({
-          ...data,
+          conversationId: data.conversationId,
           type: "resolved",
-        }),
+          resolvedBy: data.resolvedBy,
+          resolvedByName: data.resolvedByName,
+          resolvedAt: data.resolvedAt
+        })
       );
     });
 
     connection.on("ConversationReopened", (data: any) => {
-      conversationEventHandlers.forEach((handler) =>
+      console.log("🔄 ConversationReopened received:", data);
+      conversationEventHandlersRef.current.forEach((handler) =>
         handler({
-          ...data,
+          conversationId: data.conversationId,
           type: "reopened",
-        }),
+          reopenedBy: data.reopenedBy,
+          reopenedByName: data.reopenedByName,
+          reopenedAt: data.reopenedAt
+        })
       );
     });
 
     connection.on("ParticipantAdded", (data: any) => {
-      conversationEventHandlers.forEach((handler) =>
+      console.log("➕ ParticipantAdded received:", data);
+      conversationEventHandlersRef.current.forEach((handler) =>
         handler({
-          ...data,
+          conversationId: data.conversationId,
           type: "participantAdded",
-        }),
+          addedBy: data.addedBy,
+          addedByName: data.addedByName,
+          newParticipantId: data.newParticipantId,
+          addedAt: data.addedAt
+        })
       );
     });
 
     connection.on("ParticipantRemoved", (data: any) => {
-      conversationEventHandlers.forEach((handler) =>
+      console.log("➖ ParticipantRemoved received:", data);
+      conversationEventHandlersRef.current.forEach((handler) =>
         handler({
-          ...data,
+          conversationId: data.conversationId,
           type: "participantRemoved",
-        }),
+          removedBy: data.removedBy,
+          removedByName: data.removedByName,
+          removedParticipantId: data.removedParticipantId,
+          removedAt: data.removedAt
+        })
       );
     });
 
-    // Notifications
-    connection.on("NewMessageNotification", (data: NotificationEvent) => {
-      notificationHandlers.forEach((handler) => handler(data));
+    // ============ NOTIFICATIONS ============
+
+    connection.on("NewMessageNotification", (data: any) => {
+      console.log("🔔 NewMessageNotification received:", data);
+      notificationHandlersRef.current.forEach((handler) =>
+        handler({
+          conversationId: data.conversationId,
+          conversationTitle: data.conversationTitle,
+          message: data.message,
+          fromName: data.fromName
+        })
+      );
     });
+
+    // ============ CONNECTION STATE ============
 
     connection.onreconnecting(() => {
       setIsConnected(false);
-      console.log("SignalR Reconnecting...");
+      console.log("🔄 SignalR Reconnecting...");
     });
 
     connection.onreconnected(() => {
       setIsConnected(true);
-      console.log("SignalR Reconnected");
+      console.log("✅ SignalR Reconnected");
     });
 
+    connection.onclose((error) => {
+      setIsConnected(false);
+      console.log("🔌 SignalR Connection closed", error);
+    });
+
+    // Cleanup
     return () => {
       connection.off("NewMessage");
       connection.off("NewShopMessage");
       connection.off("NewCustomerMessage");
       connection.off("NewStaffMessage");
-      connection.off("UserTyping");
-      connection.off("ShopTyping");
-      connection.off("CustomerTyping");
       connection.off("StaffTyping");
+      connection.off("CustomerTyping");
+      connection.off("ShopTyping");
+      connection.off("UserTyping");
       connection.off("UserOnline");
       connection.off("UserOffline");
       connection.off("MessagesRead");
@@ -245,17 +366,52 @@ export const useSignalR = () => {
       connection.off("ParticipantRemoved");
       connection.off("NewMessageNotification");
     };
-  }, [
-    connection,
-    messageHandlers,
-    typingHandlers,
-    presenceHandlers,
-    readReceiptHandlers,
-    conversationEventHandlers,
-    notificationHandlers,
-  ]);
+  }, [connection]);
 
-  // Join/Leave conversations
+  // Event registration methods
+  const onMessage = useCallback((handler: (data: NewMessageEvent) => void) => {
+    messageHandlersRef.current = [...messageHandlersRef.current, handler];
+    return () => {
+      messageHandlersRef.current = messageHandlersRef.current.filter((h) => h !== handler);
+    };
+  }, []);
+
+  const onTyping = useCallback((handler: (data: TypingIndicatorEvent) => void) => {
+    typingHandlersRef.current = [...typingHandlersRef.current, handler];
+    return () => {
+      typingHandlersRef.current = typingHandlersRef.current.filter((h) => h !== handler);
+    };
+  }, []);
+
+  const onPresence = useCallback((handler: (data: UserPresenceEvent & { isOnline: boolean }) => void) => {
+    presenceHandlersRef.current = [...presenceHandlersRef.current, handler];
+    return () => {
+      presenceHandlersRef.current = presenceHandlersRef.current.filter((h) => h !== handler);
+    };
+  }, []);
+
+  const onReadReceipt = useCallback((handler: (data: ReadReceiptEvent) => void) => {
+    readReceiptHandlersRef.current = [...readReceiptHandlersRef.current, handler];
+    return () => {
+      readReceiptHandlersRef.current = readReceiptHandlersRef.current.filter((h) => h !== handler);
+    };
+  }, []);
+
+  const onConversationEvent = useCallback((handler: (data: ConversationEvent) => void) => {
+    conversationEventHandlersRef.current = [...conversationEventHandlersRef.current, handler];
+    return () => {
+      conversationEventHandlersRef.current = conversationEventHandlersRef.current.filter((h) => h !== handler);
+    };
+  }, []);
+
+  const onNotification = useCallback((handler: (data: NotificationEvent) => void) => {
+    notificationHandlersRef.current = [...notificationHandlersRef.current, handler];
+    return () => {
+      notificationHandlersRef.current = notificationHandlersRef.current.filter((h) => h !== handler);
+    };
+  }, []);
+
+  // Invoke methods (updated to match server signatures)
   const joinConversation = useCallback(
     async (conversationId: string) => {
       if (connection?.state === HubConnectionState.Connected) {
@@ -274,7 +430,6 @@ export const useSignalR = () => {
     [connection],
   );
 
-  // Typing indicators
   const startTyping = useCallback(
     async (conversationId: string) => {
       if (connection?.state === HubConnectionState.Connected) {
@@ -293,17 +448,17 @@ export const useSignalR = () => {
     [connection],
   );
 
-  // Mark as read
   const markAsRead = useCallback(
     async (conversationId: string, messageIds: string[]) => {
       if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("MarkAsRead", conversationId, messageIds);
+        // Convert string[] to Guid[] if needed
+        const guidMessageIds = messageIds.map(id => id);
+        await connection.invoke("MarkAsRead", conversationId, guidMessageIds);
       }
     },
     [connection],
   );
 
-  // Notify new message
   const notifyNewMessage = useCallback(
     async (conversationId: string, messageId: string) => {
       if (connection?.state === HubConnectionState.Connected) {
@@ -313,7 +468,6 @@ export const useSignalR = () => {
     [connection],
   );
 
-  // Conversation status
   const resolveConversation = useCallback(
     async (conversationId: string) => {
       if (connection?.state === HubConnectionState.Connected) {
@@ -332,15 +486,10 @@ export const useSignalR = () => {
     [connection],
   );
 
-  // Participant management
   const participantAdded = useCallback(
     async (conversationId: string, newParticipantId: string) => {
       if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke(
-          "ParticipantAdded",
-          conversationId,
-          newParticipantId,
-        );
+        await connection.invoke("ParticipantAdded", conversationId, newParticipantId);
       }
     },
     [connection],
@@ -349,69 +498,24 @@ export const useSignalR = () => {
   const participantRemoved = useCallback(
     async (conversationId: string, removedParticipantId: string) => {
       if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke(
-          "ParticipantRemoved",
-          conversationId,
-          removedParticipantId,
-        );
+        await connection.invoke("ParticipantRemoved", conversationId, removedParticipantId);
       }
     },
     [connection],
   );
 
-  // Event registration methods with proper types
-  const onMessage = useCallback((handler: (data: NewMessageEvent) => void) => {
-    setMessageHandlers((prev) => [...prev, handler]);
-    return () =>
-      setMessageHandlers((prev) => prev.filter((h) => h !== handler));
-  }, []);
-
-  const onTyping = useCallback(
-    (handler: (data: TypingIndicatorEvent) => void) => {
-      setTypingHandlers((prev) => [...prev, handler]);
-      return () =>
-        setTypingHandlers((prev) => prev.filter((h) => h !== handler));
-    },
-    [],
-  );
-
-  const onPresence = useCallback(
-    (handler: (data: UserPresenceEvent & { isOnline: boolean }) => void) => {
-      setPresenceHandlers((prev) => [...prev, handler]);
-      return () =>
-        setPresenceHandlers((prev) => prev.filter((h) => h !== handler));
-    },
-    [],
-  );
-
-  const onReadReceipt = useCallback(
-    (handler: (data: ReadReceiptEvent) => void) => {
-      setReadReceiptHandlers((prev) => [...prev, handler]);
-      return () =>
-        setReadReceiptHandlers((prev) => prev.filter((h) => h !== handler));
-    },
-    [],
-  );
-
-  const onConversationEvent = useCallback(
-    (handler: (data: ConversationEvent) => void) => {
-      setConversationEventHandlers((prev) => [...prev, handler]);
-      return () =>
-        setConversationEventHandlers((prev) =>
-          prev.filter((h) => h !== handler),
-        );
-    },
-    [],
-  );
-
-  const onNotification = useCallback(
-    (handler: (data: NotificationEvent) => void) => {
-      setNotificationHandlers((prev) => [...prev, handler]);
-      return () =>
-        setNotificationHandlers((prev) => prev.filter((h) => h !== handler));
-    },
-    [],
-  );
+  // Debug helper
+  const debug = useCallback(() => {
+    console.log({
+      isConnected,
+      connectionState: connection?.state,
+      connectionId: connection?.connectionId,
+      onlineUsers: Array.from(onlineUsers),
+      messageHandlers: messageHandlersRef.current.length,
+      typingHandlers: typingHandlersRef.current.length,
+      presenceHandlers: presenceHandlersRef.current.length,
+    });
+  }, [connection, isConnected, onlineUsers]);
 
   return {
     // State
@@ -443,5 +547,8 @@ export const useSignalR = () => {
       (userId: string) => onlineUsers.has(userId),
       [onlineUsers],
     ),
+
+    // Debug
+    debug,
   };
 };

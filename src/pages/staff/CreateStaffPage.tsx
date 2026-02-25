@@ -23,7 +23,7 @@ export const CreateStaffPage = () => {
   }
 
   return (
-    <div className="pb-10">
+    <div>
       <div className="flex items-center mb-6">
         <Button
           variant="ghost"

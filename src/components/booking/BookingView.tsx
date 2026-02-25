@@ -214,7 +214,7 @@ const BookingView: React.FC<BookingViewProps> = ({
               className={cn(
                 "px-3 py-1.5 rounded-lg text-md font-bold transition-all flex items-center gap-1.5",
                 viewMode === "list"
-                  ? "bg-white text-[#E288F9] shadow-sm"
+                  ? "bg-white text-[#D81B60] shadow-sm"
                   : "text-slate-400 hover:text-slate-600",
               )}
             >
@@ -226,7 +226,7 @@ const BookingView: React.FC<BookingViewProps> = ({
               className={cn(
                 "px-3 py-1.5 rounded-lg text-md font-bold transition-all flex items-center gap-1.5",
                 viewMode === "calendar"
-                  ? "bg-white text-[#E288F9] shadow-sm"
+                  ? "bg-white text-[#D81B60] shadow-sm"
                   : "text-slate-400 hover:text-slate-600",
               )}
             >
@@ -241,7 +241,7 @@ const BookingView: React.FC<BookingViewProps> = ({
                 variant="ghost"
                 className="h-9 rounded-xl bg-slate-50 text-xs font-bold text-md"
               >
-                <CalendarIcon className="mr-2 h-3.5 w-3.5 text-[#E288F9]" />
+                <CalendarIcon className="mr-2 h-3.5 w-3.5 text-[#D81B60]" />
                 {date ? format(date, "MMM dd") : "Pick date"}
               </Button>
             </PopoverTrigger>
@@ -264,7 +264,7 @@ const BookingView: React.FC<BookingViewProps> = ({
               className={cn(
                 "py-2.5 rounded-xl text-[12px] font-black uppercase  transition-all border-2",
                 status === opt.value
-                  ? "bg-[#E288F9] border-[#E288F9] text-white shadow-md shadow-purple-100"
+                  ? "bg-[#D81B60] border-[#D81B60] text-white shadow-md shadow-red-100"
                   : "bg-white border-slate-50 text-slate-400 hover:border-slate-100",
               )}
             >

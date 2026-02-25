@@ -5,24 +5,6 @@ import { useToast } from "./use-toast";
 import { StaffViewDto } from "@/types/database";
 import { StaffFilterDto } from "@/types/filter";
 
-export interface StaffCreateFormData {
-  Email: string;
-  Password: string;
-  FullName: string;
-  Phone?: string;
-  ShopLocationId: string;
-  avatar?: File;
-}
-
-export interface StaffUpdateFormData {
-  FullName?: string;
-  Email?: string;
-  Phone?: string;
-  Address?: string;
-  ShopLocationId?: string;
-  avatar?: File;
-}
-
 export const useStaff = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -176,32 +158,24 @@ export const useStaff = () => {
       return await staffAPI.updateStatus(staffId);
     },
     onSuccess: (data, staffId) => {
-      // Optimistically update the cache
-      queryClient.setQueryData(
-        ["staff", staffId],
-        (old: StaffViewDto | undefined) => {
-          if (!old) return old;
-          return { ...old, IsActive: !old.isActive };
-        },
-      );
+      // Update cache with returned staff object
+      queryClient.setQueryData(["staff", staffId], data);
 
+      // Refresh lists
       queryClient.invalidateQueries({ queryKey: ["staff-list"] });
       queryClient.invalidateQueries({ queryKey: ["current-staff"] });
       queryClient.invalidateQueries({ queryKey: ["staff-filter"] });
 
       toast({
-        description: data.message,
+        description: "Trạng thái nhân viên đã được cập nhật",
         variant: "success",
         duration: 3000,
       });
-      return data;
     },
     onError: (error: any, staffId) => {
       queryClient.invalidateQueries({ queryKey: ["staff", staffId] });
-
-      console.error("Error updating staff status:", error);
       toast({
-        description: error?.message,
+        description: error?.message || "Không thể cập nhật trạng thái",
         variant: "destructive",
         duration: 5000,
       });
