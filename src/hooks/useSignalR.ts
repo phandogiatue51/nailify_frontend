@@ -72,7 +72,6 @@ export const useSignalR = () => {
     const newConnection = new HubConnectionBuilder()
       .withUrl(hubUrl, {
         accessTokenFactory: () => token,
-        skipNegotiation: true,
         transport: 4,
       })
       .build();
