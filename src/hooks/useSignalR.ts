@@ -69,16 +69,14 @@ export const useSignalR = () => {
     const signalrBaseUrl = import.meta.env.VITE_SIGNALR_URL;
     const hubUrl = `${signalrBaseUrl}/chatHub`;
 
-    // Do NOT enable automatic reconnect here. We will try a single connect attempt
-    // and then stop to avoid endless network retries when the backend is down.
     const newConnection = new HubConnectionBuilder()
       .withUrl(hubUrl, {
         accessTokenFactory: () => token,
+        skipNegotiation: true,
+        transport: 4,
       })
-      .configureLogging(LogLevel.Debug)
       .build();
 
-    // Set up connection state handlers
     newConnection.onreconnecting((error) => {
       console.log("🔄 SignalR Reconnecting...", error);
       setIsConnected(false);
