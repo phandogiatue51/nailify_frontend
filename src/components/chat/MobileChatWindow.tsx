@@ -8,7 +8,7 @@ import { MessageDto, ConversationDetailDto } from "@/types/chat";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 interface MobileChatWindowProps {
-  conversationId: string; // This is defined but not being destructured
+  conversationId: string;
   conversation?: ConversationDetailDto;
   messages: MessageDto[];
   onSendMessage: (content: string) => Promise<void>;
@@ -17,7 +17,7 @@ interface MobileChatWindowProps {
 }
 
 export const MobileChatWindow = ({
-  conversationId, // Add this to destructuring
+  conversationId,
   conversation,
   messages = [],
   onSendMessage,
@@ -29,40 +29,24 @@ export const MobileChatWindow = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const isShop = user?.role === 1 || user?.role === 3;
+
   useEffect(() => {
-    if (conversationId && onMarkAsRead) {
+    if (!conversationId || !onMarkAsRead) return;
+
+    // Use a debounce to prevent multiple rapid calls
+    const timeoutId = setTimeout(() => {
       onMarkAsRead(conversationId);
-    }
-  }, [conversationId, onMarkAsRead]);
+    }, 5000); 
 
-  // Mark as read when window regains focus
-  useEffect(() => {
-    const handleFocus = () => {
-      if (conversationId && onMarkAsRead) {
-        onMarkAsRead(conversationId);
-      }
-    };
-
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
-  }, [conversationId, onMarkAsRead]);
-
-  // Mark as read when new messages arrive (optional)
-  useEffect(() => {
-    if (conversationId && onMarkAsRead && messages.length > 0) {
-      // Small delay to ensure messages are rendered
-      const timer = setTimeout(() => {
-        onMarkAsRead(conversationId);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [conversationId, messages.length, onMarkAsRead]);
+    return () => clearTimeout(timeoutId);
+  }, [conversationId, onMarkAsRead, messages.length]);
 
   const handleSend = async () => {
-    if (!newMessage.trim()) return;
+    const trimmed = newMessage.trim();
+    if (!trimmed) return;
 
     try {
-      await onSendMessage(newMessage);
+      await onSendMessage(trimmed);
       setNewMessage("");
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -238,7 +222,9 @@ export const MobileChatWindow = ({
                           : "bg-white text-slate-700 rounded-bl-none border border-slate-100",
                       )}
                     >
-                      <p className="font-medium leading-relaxed">{msg.content}</p>
+                      <p className="font-medium leading-relaxed">
+                        {msg.content}
+                      </p>
                       <p
                         className={cn(
                           "text-[9px] font-bold uppercase tracking-tighter opacity-70",

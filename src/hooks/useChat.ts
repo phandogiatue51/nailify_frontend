@@ -95,11 +95,14 @@ export const useMessages = (conversationId: string | undefined) => {
     enabled: !!user && !!conversationId,
   });
 
-  // Function to add a message to the cache (for real-time updates)
   const addMessage = (newMessage: MessageDto) => {
     queryClient.setQueryData(
       chatKeys.messages(conversationId!),
-      (old: MessageDto[] = []) => [...old, newMessage],
+      (old: MessageDto[] = []) => {
+        // Prevent duplicates
+        if (old.some((m) => m.id === newMessage.id)) return old;
+        return [...old, newMessage];
+      },
     );
   };
 
@@ -122,7 +125,7 @@ export const useSendMessage = (conversationId: string | undefined) => {
       return await chatAPI.sendMessage(conversationId, content);
     },
     onSuccess: (newMessage) => {
-      // Normalize the returned message so it's treated as 'own' when sent by current user.
+      // Normalize the returned message
       const normalized: MessageDto = {
         ...newMessage,
         isOwn: newMessage.senderId
@@ -131,10 +134,14 @@ export const useSendMessage = (conversationId: string | undefined) => {
         senderName: newMessage.senderName || user?.fullName || "You",
       } as MessageDto;
 
-      // Add message to cache
+      // Add message to cache (with duplicate check)
       queryClient.setQueryData(
         chatKeys.messages(conversationId!),
-        (old: MessageDto[] = []) => [...old, normalized],
+        (old: MessageDto[] = []) => {
+          // Prevent duplicate if SignalR already added it
+          if (old.some((m) => m.id === normalized.id)) return old;
+          return [...old, normalized];
+        },
       );
 
       // Update last message in conversation list

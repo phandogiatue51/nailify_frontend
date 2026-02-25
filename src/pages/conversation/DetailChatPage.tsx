@@ -1,4 +1,3 @@
-// pages/chat/[id].tsx
 import { useParams } from "react-router-dom";
 import {
   useConversation,
@@ -11,6 +10,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useSignalR } from "@/hooks/useSignalR";
 import { useQueryClient } from "@tanstack/react-query";
 import { chatKeys } from "@/hooks/useChat";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function DetailChatPage() {
   const { id } = useParams();
@@ -20,8 +20,25 @@ export default function DetailChatPage() {
   const sendMessage = useSendMessage(id);
   const markAsRead = useMarkAsRead();
   const [isJoined, setIsJoined] = useState(false);
-  const processedMessageIds = useRef<Set<string>>(new Set());
-  const hasMarkedAsRead = useRef(false); // Track if we've already marked as read
+
+  // Refs for tracking
+  const hasMarkedAsRead = useRef<Record<string, boolean>>({});
+  const lastMarkedAtRef = useRef<Record<string, number>>({});
+  const lastProcessedMessageIdRef = useRef<string | null>(null);
+  const MARK_AS_READ_INTERVAL = 5 * 1000; // 5 seconds
+
+  const hasLoggedAuth = useRef(false);
+  const { user, isAuthenticated } = useAuth();
+  const token =
+    localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
+
+  const processedMessageIds = useRef<{
+    ids: Set<string>;
+    timestamps: Map<string, number>;
+  }>({
+    ids: new Set(),
+    timestamps: new Map(),
+  });
 
   // Get SignalR hook
   const {
@@ -33,7 +50,31 @@ export default function DetailChatPage() {
     markAsRead: markAsReadSignalR,
   } = useSignalR();
 
-  // Join conversation when component mounts and connection is ready
+  // ============ CLEANUP ============
+  useEffect(() => {
+    console.log("✅ COMPONENT MOUNTED");
+    return () => {
+      console.log("❌ COMPONENT UNMOUNTED");
+      processedMessageIds.current.ids.clear();
+      processedMessageIds.current.timestamps.clear();
+      if (id) delete hasMarkedAsRead.current[id];
+    };
+  }, [id]);
+
+  // ============ AUTH LOG ============
+  useEffect(() => {
+    if (!hasLoggedAuth.current) {
+      console.log("🔐 Auth State:", {
+        isAuthenticated: isAuthenticated(),
+        user: user,
+        hasToken: !!token,
+        tokenPreview: token ? token.substring(0, 20) + "..." : null,
+      });
+      hasLoggedAuth.current = true;
+    }
+  }, []);
+
+  // ============ JOIN CONVERSATION ============
   useEffect(() => {
     if (!id || !signalRConnected) return;
 
@@ -50,82 +91,143 @@ export default function DetailChatPage() {
     };
   }, [id, signalRConnected, joinConversation, leaveConversation]);
 
-  // Listen for new messages
+  // ============ CLEANUP PROCESSED MESSAGES ============
+  const cleanupProcessedMessages = useCallback(() => {
+    const now = Date.now();
+    const maxAge = 5 * 60 * 1000; // 5 minutes
+    const maxSize = 100;
+
+    const { ids, timestamps } = processedMessageIds.current;
+
+    timestamps.forEach((timestamp, id) => {
+      if (now - timestamp > maxAge) {
+        ids.delete(id);
+        timestamps.delete(id);
+      }
+    });
+
+    if (ids.size > maxSize) {
+      const sortedEntries = Array.from(timestamps.entries()).sort(
+        (a, b) => a[1] - b[1],
+      );
+      const toRemove = sortedEntries.slice(0, ids.size - maxSize);
+      toRemove.forEach(([id]) => {
+        ids.delete(id);
+        timestamps.delete(id);
+      });
+    }
+  }, []);
+
+  // ============ RECEIVE NEW MESSAGES ============
   useEffect(() => {
     if (!isJoined || !id) return;
 
     console.log("📡 Setting up message listener for conversation:", id);
 
     const unsubscribe = onMessage((data) => {
-      console.log("📨 New message received in real-time:", data);
+      if (data.conversationId !== id) return;
 
-      if (data.conversationId === id) {
-        // Check if we've already processed this message
-        if (processedMessageIds.current.has(data.message.id)) {
-          console.log("⚠️ Message already processed, skipping:", data.message.id);
-          return;
-        }
-
-        // Mark as processed
-        processedMessageIds.current.add(data.message.id);
-
-        // Add message to cache
-        addMessage(data.message);
-
-        // Update conversation list
-        queryClient.setQueryData(
-          chatKeys.conversations(),
-          (old: any[] = []) => {
-            return old.map((conv) =>
-              conv.id === id
-                ? {
-                  ...conv,
-                  lastMessage: data.message.content,
-                  lastMessageAt: data.message.sentAt,
-                  lastMessageSender: data.message.senderName,
-                  unreadCount: data.message.isOwn ? conv.unreadCount : (conv.unreadCount || 0) + 1,
-                }
-                : conv
-            );
-          }
-        );
+      // Run cleanup occasionally
+      if (processedMessageIds.current.ids.size % 20 === 0) {
+        cleanupProcessedMessages();
       }
+
+      // Deduplicate
+      if (processedMessageIds.current.ids.has(data.message.id)) {
+        console.log("⚠️ Message already processed, skipping:", data.message.id);
+        return;
+      }
+
+      // Mark as processed
+      processedMessageIds.current.ids.add(data.message.id);
+      processedMessageIds.current.timestamps.set(data.message.id, Date.now());
+
+      // Add to cache
+      addMessage(data.message);
+
+      // Update conversation list
+      queryClient.setQueryData(chatKeys.conversations(), (old: any[] = []) =>
+        old.map((conv) =>
+          conv.id === id
+            ? {
+                ...conv,
+                lastMessage: data.message.content,
+                lastMessageAt: data.message.sentAt,
+                lastMessageSender: data.message.senderName,
+                unreadCount: data.message.isOwn
+                  ? conv.unreadCount
+                  : (conv.unreadCount || 0) + 1,
+              }
+            : conv,
+        ),
+      );
     });
 
     return () => {
       console.log("📡 Cleaning up message listener");
       unsubscribe();
     };
-  }, [id, isJoined, onMessage, addMessage, queryClient]);
+  }, [
+    id,
+    isJoined,
+    onMessage,
+    addMessage,
+    queryClient,
+    cleanupProcessedMessages,
+  ]);
 
-  // Mark as read ONLY ONCE when component mounts
-  useEffect(() => {
-    if (!id || !messages || messages.length === 0) return;
-    if (hasMarkedAsRead.current) return; // Only run once
+  // ============ SINGLE SOURCE OF TRUTH FOR MARK AS READ ============
+  const markConversationAsRead = useCallback(() => {
+    if (!id || !messages?.length || !isJoined) return;
 
-    console.log("📖 Marking conversation as read on mount:", id);
+    // Throttle: once per 5 seconds
+    const now = Date.now();
+    const lastMarked = lastMarkedAtRef.current[id] || 0;
+    if (now - lastMarked < MARK_AS_READ_INTERVAL) return;
+
+    // Find unread messages
+    const unreadMessageIds = messages
+      .filter((m) => !m.isRead && !m.isOwn)
+      .map((m) => m.id);
+
+    if (unreadMessageIds.length === 0) return;
+
+    // Don't mark if we already marked these messages
+    const latestMessageId = messages[messages.length - 1]?.id;
+    if (lastProcessedMessageIdRef.current === latestMessageId) return;
+
+    console.log("📖 Marking conversation as read:", id);
+    lastMarkedAtRef.current[id] = now;
+    lastProcessedMessageIdRef.current = latestMessageId;
+    hasMarkedAsRead.current[id] = true;
+
+    // API call
     markAsRead.mutate(id, {
-      onSuccess: () => {
-        hasMarkedAsRead.current = true;
-      }
+      onError: () => {
+        // Reset on error so we can retry
+        lastMarkedAtRef.current[id] = 0;
+        lastProcessedMessageIdRef.current = null;
+      },
     });
 
-    // Also mark via SignalR if connected
-    if (signalRConnected) {
-      const unreadMessageIds = messages
-        .filter(m => !m.isRead && !m.isOwn)
-        .map(m => m.id);
-
-      if (unreadMessageIds.length > 0) {
-        markAsReadSignalR(id, unreadMessageIds);
-      }
+    // SignalR notification
+    if (signalRConnected && unreadMessageIds.length > 0) {
+      markAsReadSignalR(id, unreadMessageIds).catch(() => {});
     }
-  }, [id]); // Only depend on id, not messages or signalRConnected
+  }, [id, messages, isJoined, signalRConnected, markAsRead, markAsReadSignalR]);
 
+  // Trigger mark as read when:
+  // 1. Component mounts
+  // 2. New messages arrive
+  // 3. User joins conversation
+  useEffect(() => {
+    markConversationAsRead();
+  }, [markConversationAsRead, messages, isJoined]);
+
+  // ============ SEND MESSAGE ============
   const handleSend = async (content: string) => {
     try {
       const result = await sendMessage.mutateAsync(content);
-
       if (signalRConnected && result?.id) {
         await notifyNewMessage(id!, result.id);
       }
@@ -134,25 +236,20 @@ export default function DetailChatPage() {
     }
   };
 
-  const handleMarkAsRead = useCallback((conversationId: string) => {
-    // Only mark as read when user explicitly views/scrolls
-    markAsRead.mutate(conversationId);
+  // ============ HANDLE MARK AS READ (FROM UI) ============
+  const handleMarkAsRead = useCallback(() => {
+    if (!id) return;
+    markConversationAsRead();
+  }, [id, markConversationAsRead]);
 
-    if (signalRConnected && messages) {
-      const unreadMessageIds = messages
-        .filter(m => !m.isRead && !m.isOwn)
-        .map(m => m.id);
-
-      if (unreadMessageIds.length > 0) {
-        markAsReadSignalR(conversationId, unreadMessageIds);
-      }
-    }
-  }, [markAsRead, signalRConnected, markAsReadSignalR, messages]);
-
-  // Debug connection
+  // ============ DEBUG ============
   useEffect(() => {
-    console.log("🔌 SignalR Connection Status:", signalRConnected ? "Connected" : "Disconnected");
-    console.log("📱 Joined Status:", isJoined ? "Joined" : "Not Joined");
+    console.log(
+      "🔌 SignalR:",
+      signalRConnected ? "Connected" : "Disconnected",
+      "| Joined:",
+      isJoined ? "Yes" : "No",
+    );
   }, [signalRConnected, isJoined]);
 
   return (
@@ -168,11 +265,19 @@ export default function DetailChatPage() {
       {/* Connection status indicator */}
       <div className="fixed bottom-4 right-4 flex gap-2 text-xs bg-white p-2 rounded shadow z-50">
         <div className="flex items-center gap-1">
-          <span className={`w-2 h-2 rounded-full ${signalRConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+          <span
+            className={`w-2 h-2 rounded-full ${
+              signalRConnected ? "bg-green-500" : "bg-red-500"
+            }`}
+          />
           <span>SignalR</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className={`w-2 h-2 rounded-full ${isJoined ? 'bg-green-500' : 'bg-yellow-500'}`} />
+          <span
+            className={`w-2 h-2 rounded-full ${
+              isJoined ? "bg-green-500" : "bg-yellow-500"
+            }`}
+          />
           <span>Conversation</span>
         </div>
       </div>

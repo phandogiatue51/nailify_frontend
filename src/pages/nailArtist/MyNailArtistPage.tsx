@@ -70,14 +70,6 @@ const MyNailArtistPage = () => {
               {myArtist?.bio || "Expert Nail Technician"}
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-2xl bg-white shadow-sm border border-slate-100"
-            onClick={() => navigate("/my-artist/edit")}
-          >
-            <Edit className="w-4 h-4 text-slate-600" />
-          </Button>
         </header>
 
         <Tabs defaultValue="services" className="w-full">

@@ -125,12 +125,13 @@ export const StaffDashboardPage = () => {
         </Card>
 
         <Button
-          className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
+          className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12 mt-12"
           style={{
             background:
               "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
             border: "none",
           }}
+          onClick={() => navigate("/booking/guest")}
         >
           Book an appointment
         </Button>

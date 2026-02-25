@@ -273,7 +273,7 @@ export interface PeriodDto {
 
 export interface BlogPost {
   id: string;
-  title: string;
+  title?: string;
   content: string;
   imageUrls?: string[];
   createdAt: string;

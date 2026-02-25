@@ -118,7 +118,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
       setLoading(false);
     }
   };
-  
+
   return (
     <form onSubmit={handleSubmit} className="space-y-10">
       {/* 1. Styled Inputs */}
@@ -133,7 +133,6 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
             onChange={(e) => setTitle(e.target.value)}
             className="w-full bg-slate-50 border-none rounded-2xl p-4 text-lg font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-[#950101]/5 transition-all"
             placeholder="Đặt một cái tên thật ấn tượng..."
-            required
           />
         </div>
 
@@ -169,7 +168,9 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
             <div className="w-12 h-12 rounded-full bg-[#FFCFE9]/30 flex items-center justify-center mb-3">
               <span className="text-[#950101] text-xl">+</span>
             </div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Thêm ảnh mới</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+              Thêm ảnh mới
+            </p>
           </div>
         </div>
 
@@ -178,7 +179,10 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
           <div className="grid grid-cols-3 gap-3 mt-4">
             {/* Existing */}
             {existingImages.map((url, index) => (
-              <div key={`existing-${index}`} className="relative group aspect-square rounded-2xl overflow-hidden border border-slate-100">
+              <div
+                key={`existing-${index}`}
+                className="relative group aspect-square rounded-2xl overflow-hidden border border-slate-100"
+              >
                 <img src={url} className="w-full h-full object-cover" alt="" />
                 <button
                   type="button"
@@ -191,8 +195,15 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
             ))}
             {/* New */}
             {images.map((image, index) => (
-              <div key={`new-${index}`} className="relative group aspect-square rounded-2xl overflow-hidden border-2 border-[#FFCFE9]">
-                <img src={URL.createObjectURL(image)} className="w-full h-full object-cover" alt="" />
+              <div
+                key={`new-${index}`}
+                className="relative group aspect-square rounded-2xl overflow-hidden border-2 border-[#FFCFE9]"
+              >
+                <img
+                  src={URL.createObjectURL(image)}
+                  className="w-full h-full object-cover"
+                  alt=""
+                />
                 <button
                   type="button"
                   onClick={() => removeNewImage(index)}
@@ -200,7 +211,9 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
                 >
                   <span className="text-lg leading-none">×</span>
                 </button>
-                <div className="absolute bottom-1 left-1 bg-[#950101] text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Mới</div>
+                <div className="absolute bottom-1 left-1 bg-[#950101] text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase">
+                  Mới
+                </div>
               </div>
             ))}
           </div>
@@ -215,7 +228,8 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
           disabled={loading}
           className="w-full py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.3em] text-white transition-all active:scale-[0.98] shadow-2xl shadow-[#950101]/30 disabled:grayscale disabled:opacity-50"
           style={{
-            background: "linear-gradient(135deg, #950101 0%, #D81B60 50%, #3D0101 100%)",
+            background:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #3D0101 100%)",
           }}
         >
           {loading ? (
@@ -257,4 +271,4 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
       </div>
     </form>
   );
-}
+};

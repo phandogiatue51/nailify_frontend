@@ -45,13 +45,14 @@ export const BookingActions = ({
                     <Button
                       variant="outline"
                       disabled={isUpdatingStatus}
-                      className="h-14 w-14 rounded-2xl border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all"
+                      className="flex-1 h-14 rounded-2xl border-red-300 text-red-300 hover:bg-red-400 hover:text-white font-black uppercase transition-all"
                     >
                       {isUpdatingStatus ? (
                         <Loader2 className="animate-spin" />
                       ) : (
                         <X size={20} />
                       )}
+                      Cancel Booking
                     </Button>
                   }
                   {...statusConfig.reject}
@@ -61,7 +62,7 @@ export const BookingActions = ({
                   trigger={
                     <Button
                       disabled={isUpdatingStatus}
-                      className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-green-100 bg-green-500 hover:bg-green-600 text-white"
+                      className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-green-100 bg-green-300 hover:bg-green-600 text-white"
                     >
                       {isUpdatingStatus ? (
                         <Loader2 className="animate-spin mr-2" />

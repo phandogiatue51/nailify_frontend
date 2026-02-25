@@ -20,14 +20,29 @@ export const useSignalR = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const connectionRef = useRef<HubConnection | null>(null);
+  const [reconnectFailed, setReconnectFailed] = useState(false); // New state
+  const reconnectAttemptsRef = useRef(0);
+  const maxReconnectAttempts = 5; // Stop after 5 attempts
+  const lastAuthFailRef = useRef<number | null>(null);
+  const AUTH_FAILURE_COOLDOWN = 60 * 1000; // 1 minute
 
   // Refs for handlers
   const messageHandlersRef = useRef<((data: NewMessageEvent) => void)[]>([]);
-  const typingHandlersRef = useRef<((data: TypingIndicatorEvent) => void)[]>([]);
-  const presenceHandlersRef = useRef<((data: UserPresenceEvent & { isOnline: boolean }) => void)[]>([]);
-  const readReceiptHandlersRef = useRef<((data: ReadReceiptEvent) => void)[]>([]);
-  const conversationEventHandlersRef = useRef<((data: ConversationEvent) => void)[]>([]);
-  const notificationHandlersRef = useRef<((data: NotificationEvent) => void)[]>([]);
+  const typingHandlersRef = useRef<((data: TypingIndicatorEvent) => void)[]>(
+    [],
+  );
+  const presenceHandlersRef = useRef<
+    ((data: UserPresenceEvent & { isOnline: boolean }) => void)[]
+  >([]);
+  const readReceiptHandlersRef = useRef<((data: ReadReceiptEvent) => void)[]>(
+    [],
+  );
+  const conversationEventHandlersRef = useRef<
+    ((data: ConversationEvent) => void)[]
+  >([]);
+  const notificationHandlersRef = useRef<((data: NotificationEvent) => void)[]>(
+    [],
+  );
 
   const { isAuthenticated } = useAuth();
 
@@ -37,64 +52,118 @@ export const useSignalR = () => {
     );
   }, []);
 
+  // Add this right after setting up the connection in the first useEffect
   useEffect(() => {
+    if (connectionRef.current) return;
+
     const token = getToken();
     if (!token || !isAuthenticated()) {
       console.log("SignalR: No token or not authenticated");
       return;
     }
 
-    console.log("SignalR: Initializing connection with token");
+    // Reset reconnect state when creating new connection
+    reconnectAttemptsRef.current = 0;
+    setReconnectFailed(false);
 
-    // Use VITE_SIGNALR_URL or fallback to base URL without /api
     const signalrBaseUrl = import.meta.env.VITE_SIGNALR_URL;
-
     const hubUrl = `${signalrBaseUrl}/chatHub`;
-    console.log("SignalR: Connecting to:", hubUrl);
 
+    // Do NOT enable automatic reconnect here. We will try a single connect attempt
+    // and then stop to avoid endless network retries when the backend is down.
     const newConnection = new HubConnectionBuilder()
       .withUrl(hubUrl, {
         accessTokenFactory: () => token,
       })
-      .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
       .configureLogging(LogLevel.Debug)
       .build();
 
-    connectionRef.current = newConnection;
-    setConnection(newConnection);
+    // Set up connection state handlers
+    newConnection.onreconnecting((error) => {
+      console.log("🔄 SignalR Reconnecting...", error);
+      setIsConnected(false);
+    });
 
-    return () => {
-      if (connectionRef.current?.state === HubConnectionState.Connected) {
-        connectionRef.current.stop();
+    newConnection.onreconnected((connectionId) => {
+      console.log("✅ SignalR Reconnected with ID:", connectionId);
+      setIsConnected(true);
+      setReconnectFailed(false); // Reset failed state on successful reconnect
+      reconnectAttemptsRef.current = 0; // Reset attempts on success
+    });
+
+    newConnection.onclose((error) => {
+      console.log("🔌 SignalR Connection closed", error);
+      setIsConnected(false);
+
+      // Check if we've exceeded max attempts
+      if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
+        console.log("❌ Max reconnection attempts reached, giving up");
+        setReconnectFailed(true);
       }
-    };
-  }, [getToken, isAuthenticated]);
+    });
 
-  // Set up event listeners
-  useEffect(() => {
-    if (!connection) return;
-
+    // Start connection
     const startConnection = async () => {
+      // Single attempt to start the connection. If it fails, mark reconnectFailed
+      // and do NOT schedule further attempts. This prevents endless fetch loops
+      // when the backend is down.
       try {
-        await connection.start();
+        await newConnection.start();
+        console.log("✅ SignalR Connected successfully!");
         setIsConnected(true);
-        console.log("✅ SignalR Connected successfully");
-        console.log("Connection ID:", connection.connectionId);
+        setReconnectFailed(false);
+        reconnectAttemptsRef.current = 0;
+        lastAuthFailRef.current = null;
       } catch (err) {
         console.error("❌ SignalR Connection Error:", err);
-        // Log more details about the error
-        if (err instanceof Error) {
-          console.error("Error name:", err.name);
-          console.error("Error message:", err.message);
-          console.error("Error stack:", err.stack);
+        // Record whether this was an auth failure for visibility
+        const msg =
+          err && typeof err === "object" && "message" in err
+            ? (err as any).message
+            : String(err);
+        if (/401|Unauthorized|authentication/i.test(msg)) {
+          lastAuthFailRef.current = Date.now();
         }
-        setTimeout(startConnection, 5000);
+
+        // Immediately give up - no retries
+        setReconnectFailed(true);
+        setIsConnected(false);
       }
     };
 
     startConnection();
 
-    // ============ MESSAGE EVENTS ============
+    connectionRef.current = newConnection;
+    setConnection(newConnection);
+
+    return () => {
+      try {
+        // Best-effort stop
+        connectionRef.current?.stop().catch(() => {});
+      } finally {
+        connectionRef.current = null;
+        setConnection(null);
+      }
+    };
+  }, [getToken, isAuthenticated]);
+
+  // Expose a stop method so consumers can explicitly stop attempts and the
+  // connection. Calling this will prevent any further connection activity
+  // managed by this hook.
+  const stop = useCallback(async () => {
+    try {
+      await connectionRef.current?.stop();
+    } catch (e) {
+      console.warn("SignalR: error while stopping connection", e);
+    }
+    connectionRef.current = null;
+    setConnection(null);
+    setIsConnected(false);
+    setReconnectFailed(true);
+  }, []);
+
+  useEffect(() => {
+    if (!connection) return;
 
     // Individual/Group chat messages
     connection.on("NewMessage", (data: any) => {
@@ -103,8 +172,8 @@ export const useSignalR = () => {
         handler({
           conversationId: data.conversationId,
           message: data.message,
-          type: "user"
-        })
+          type: "user",
+        }),
       );
     });
 
@@ -116,8 +185,8 @@ export const useSignalR = () => {
           conversationId: data.conversationId,
           message: data.message,
           type: "shop",
-          shopName: data.shopName
-        })
+          shopName: data.shopName,
+        }),
       );
     });
 
@@ -128,8 +197,8 @@ export const useSignalR = () => {
         handler({
           conversationId: data.conversationId,
           message: data.message,
-          type: "customer"
-        })
+          type: "customer",
+        }),
       );
     });
 
@@ -141,8 +210,8 @@ export const useSignalR = () => {
           conversationId: data.conversationId,
           message: data.message,
           type: "staff",
-          sentBy: data.sentBy
-        })
+          sentBy: data.sentBy,
+        }),
       );
     });
 
@@ -157,8 +226,8 @@ export const useSignalR = () => {
           isTyping: data.isTyping,
           staffName: data.staffName,
           staffId: data.staffId,
-          type: "staff"
-        })
+          type: "staff",
+        }),
       );
     });
 
@@ -169,8 +238,8 @@ export const useSignalR = () => {
         handler({
           conversationId: data.conversationId,
           isTyping: data.isTyping,
-          type: "customer"
-        })
+          type: "customer",
+        }),
       );
     });
 
@@ -181,8 +250,8 @@ export const useSignalR = () => {
         handler({
           conversationId: data.conversationId,
           isTyping: data.isTyping,
-          type: "shop"
-        })
+          type: "shop",
+        }),
       );
     });
 
@@ -195,8 +264,8 @@ export const useSignalR = () => {
           isTyping: data.isTyping,
           userId: data.userId,
           userName: data.userName,
-          type: "user"
-        })
+          type: "user",
+        }),
       );
     });
 
@@ -206,7 +275,7 @@ export const useSignalR = () => {
       console.log("🟢 UserOnline received:", data);
       setOnlineUsers((prev) => new Set(prev).add(data.userId.toString()));
       presenceHandlersRef.current.forEach((handler) =>
-        handler({ ...data, isOnline: true })
+        handler({ ...data, isOnline: true }),
       );
     });
 
@@ -218,7 +287,7 @@ export const useSignalR = () => {
         return newSet;
       });
       presenceHandlersRef.current.forEach((handler) =>
-        handler({ ...data, isOnline: false })
+        handler({ ...data, isOnline: false }),
       );
     });
 
@@ -231,8 +300,8 @@ export const useSignalR = () => {
           conversationId: data.conversationId,
           userId: data.userId,
           messageIds: data.messageIds,
-          readAt: data.readAt
-        })
+          readAt: data.readAt,
+        }),
       );
     });
 
@@ -244,8 +313,8 @@ export const useSignalR = () => {
         handler({
           conversationId: data.conversationId,
           type: "joined",
-          userId: data.userId
-        })
+          userId: data.userId,
+        }),
       );
     });
 
@@ -255,8 +324,8 @@ export const useSignalR = () => {
         handler({
           conversationId: data.conversationId,
           type: "left",
-          userId: data.userId
-        })
+          userId: data.userId,
+        }),
       );
     });
 
@@ -268,8 +337,8 @@ export const useSignalR = () => {
           type: "resolved",
           resolvedBy: data.resolvedBy,
           resolvedByName: data.resolvedByName,
-          resolvedAt: data.resolvedAt
-        })
+          resolvedAt: data.resolvedAt,
+        }),
       );
     });
 
@@ -281,8 +350,8 @@ export const useSignalR = () => {
           type: "reopened",
           reopenedBy: data.reopenedBy,
           reopenedByName: data.reopenedByName,
-          reopenedAt: data.reopenedAt
-        })
+          reopenedAt: data.reopenedAt,
+        }),
       );
     });
 
@@ -295,8 +364,8 @@ export const useSignalR = () => {
           addedBy: data.addedBy,
           addedByName: data.addedByName,
           newParticipantId: data.newParticipantId,
-          addedAt: data.addedAt
-        })
+          addedAt: data.addedAt,
+        }),
       );
     });
 
@@ -309,8 +378,8 @@ export const useSignalR = () => {
           removedBy: data.removedBy,
           removedByName: data.removedByName,
           removedParticipantId: data.removedParticipantId,
-          removedAt: data.removedAt
-        })
+          removedAt: data.removedAt,
+        }),
       );
     });
 
@@ -323,8 +392,8 @@ export const useSignalR = () => {
           conversationId: data.conversationId,
           conversationTitle: data.conversationTitle,
           message: data.message,
-          fromName: data.fromName
-        })
+          fromName: data.fromName,
+        }),
       );
     });
 
@@ -372,156 +441,188 @@ export const useSignalR = () => {
   const onMessage = useCallback((handler: (data: NewMessageEvent) => void) => {
     messageHandlersRef.current = [...messageHandlersRef.current, handler];
     return () => {
-      messageHandlersRef.current = messageHandlersRef.current.filter((h) => h !== handler);
+      messageHandlersRef.current = messageHandlersRef.current.filter(
+        (h) => h !== handler,
+      );
     };
   }, []);
 
-  const onTyping = useCallback((handler: (data: TypingIndicatorEvent) => void) => {
-    typingHandlersRef.current = [...typingHandlersRef.current, handler];
-    return () => {
-      typingHandlersRef.current = typingHandlersRef.current.filter((h) => h !== handler);
-    };
-  }, []);
+  const onTyping = useCallback(
+    (handler: (data: TypingIndicatorEvent) => void) => {
+      typingHandlersRef.current = [...typingHandlersRef.current, handler];
+      return () => {
+        typingHandlersRef.current = typingHandlersRef.current.filter(
+          (h) => h !== handler,
+        );
+      };
+    },
+    [],
+  );
 
-  const onPresence = useCallback((handler: (data: UserPresenceEvent & { isOnline: boolean }) => void) => {
-    presenceHandlersRef.current = [...presenceHandlersRef.current, handler];
-    return () => {
-      presenceHandlersRef.current = presenceHandlersRef.current.filter((h) => h !== handler);
-    };
-  }, []);
+  const onPresence = useCallback(
+    (handler: (data: UserPresenceEvent & { isOnline: boolean }) => void) => {
+      presenceHandlersRef.current = [...presenceHandlersRef.current, handler];
+      return () => {
+        presenceHandlersRef.current = presenceHandlersRef.current.filter(
+          (h) => h !== handler,
+        );
+      };
+    },
+    [],
+  );
 
-  const onReadReceipt = useCallback((handler: (data: ReadReceiptEvent) => void) => {
-    readReceiptHandlersRef.current = [...readReceiptHandlersRef.current, handler];
-    return () => {
-      readReceiptHandlersRef.current = readReceiptHandlersRef.current.filter((h) => h !== handler);
-    };
-  }, []);
+  const onReadReceipt = useCallback(
+    (handler: (data: ReadReceiptEvent) => void) => {
+      readReceiptHandlersRef.current = [
+        ...readReceiptHandlersRef.current,
+        handler,
+      ];
+      return () => {
+        readReceiptHandlersRef.current = readReceiptHandlersRef.current.filter(
+          (h) => h !== handler,
+        );
+      };
+    },
+    [],
+  );
 
-  const onConversationEvent = useCallback((handler: (data: ConversationEvent) => void) => {
-    conversationEventHandlersRef.current = [...conversationEventHandlersRef.current, handler];
-    return () => {
-      conversationEventHandlersRef.current = conversationEventHandlersRef.current.filter((h) => h !== handler);
-    };
-  }, []);
+  const onConversationEvent = useCallback(
+    (handler: (data: ConversationEvent) => void) => {
+      conversationEventHandlersRef.current = [
+        ...conversationEventHandlersRef.current,
+        handler,
+      ];
+      return () => {
+        conversationEventHandlersRef.current =
+          conversationEventHandlersRef.current.filter((h) => h !== handler);
+      };
+    },
+    [],
+  );
 
-  const onNotification = useCallback((handler: (data: NotificationEvent) => void) => {
-    notificationHandlersRef.current = [...notificationHandlersRef.current, handler];
-    return () => {
-      notificationHandlersRef.current = notificationHandlersRef.current.filter((h) => h !== handler);
-    };
-  }, []);
+  const onNotification = useCallback(
+    (handler: (data: NotificationEvent) => void) => {
+      notificationHandlersRef.current = [
+        ...notificationHandlersRef.current,
+        handler,
+      ];
+      return () => {
+        notificationHandlersRef.current =
+          notificationHandlersRef.current.filter((h) => h !== handler);
+      };
+    },
+    [],
+  );
 
   // Invoke methods (updated to match server signatures)
-  const joinConversation = useCallback(
-    async (conversationId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("JoinConversation", conversationId);
-      }
-    },
-    [connection],
-  );
+  // Use connectionRef.current inside callbacks so these functions are stable
+  // and won't change identity when `connection` state object changes.
+  const joinConversation = useCallback(async (conversationId: string) => {
+    const conn = connectionRef.current;
+    if (conn?.state === HubConnectionState.Connected) {
+      await conn.invoke("JoinConversation", conversationId);
+    }
+  }, []);
 
-  const leaveConversation = useCallback(
-    async (conversationId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("LeaveConversation", conversationId);
-      }
-    },
-    [connection],
-  );
+  const leaveConversation = useCallback(async (conversationId: string) => {
+    const conn = connectionRef.current;
+    if (conn?.state === HubConnectionState.Connected) {
+      await conn.invoke("LeaveConversation", conversationId);
+    }
+  }, []);
 
-  const startTyping = useCallback(
-    async (conversationId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("StartTyping", conversationId);
-      }
-    },
-    [connection],
-  );
+  const startTyping = useCallback(async (conversationId: string) => {
+    const conn = connectionRef.current;
+    if (conn?.state === HubConnectionState.Connected) {
+      await conn.invoke("StartTyping", conversationId);
+    }
+  }, []);
 
-  const stopTyping = useCallback(
-    async (conversationId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("StopTyping", conversationId);
-      }
-    },
-    [connection],
-  );
+  const stopTyping = useCallback(async (conversationId: string) => {
+    const conn = connectionRef.current;
+    if (conn?.state === HubConnectionState.Connected) {
+      await conn.invoke("StopTyping", conversationId);
+    }
+  }, []);
 
   const markAsRead = useCallback(
     async (conversationId: string, messageIds: string[]) => {
-      if (connection?.state === HubConnectionState.Connected) {
+      const conn = connectionRef.current;
+      if (conn?.state === HubConnectionState.Connected) {
         // Convert string[] to Guid[] if needed
-        const guidMessageIds = messageIds.map(id => id);
-        await connection.invoke("MarkAsRead", conversationId, guidMessageIds);
+        const guidMessageIds = messageIds.map((id) => id);
+        await conn.invoke("MarkAsRead", conversationId, guidMessageIds);
       }
     },
-    [connection],
+    [],
   );
 
   const notifyNewMessage = useCallback(
     async (conversationId: string, messageId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("NotifyNewMessage", conversationId, messageId);
+      const conn = connectionRef.current;
+      if (conn?.state === HubConnectionState.Connected) {
+        await conn.invoke("NotifyNewMessage", conversationId, messageId);
       }
     },
-    [connection],
+    [],
   );
 
-  const resolveConversation = useCallback(
-    async (conversationId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("ConversationResolved", conversationId);
-      }
-    },
-    [connection],
-  );
+  const resolveConversation = useCallback(async (conversationId: string) => {
+    const conn = connectionRef.current;
+    if (conn?.state === HubConnectionState.Connected) {
+      await conn.invoke("ConversationResolved", conversationId);
+    }
+  }, []);
 
-  const reopenConversation = useCallback(
-    async (conversationId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("ConversationReopened", conversationId);
-      }
-    },
-    [connection],
-  );
+  const reopenConversation = useCallback(async (conversationId: string) => {
+    const conn = connectionRef.current;
+    if (conn?.state === HubConnectionState.Connected) {
+      await conn.invoke("ConversationReopened", conversationId);
+    }
+  }, []);
 
   const participantAdded = useCallback(
     async (conversationId: string, newParticipantId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("ParticipantAdded", conversationId, newParticipantId);
+      const conn = connectionRef.current;
+      if (conn?.state === HubConnectionState.Connected) {
+        await conn.invoke("ParticipantAdded", conversationId, newParticipantId);
       }
     },
-    [connection],
+    [],
   );
 
   const participantRemoved = useCallback(
     async (conversationId: string, removedParticipantId: string) => {
-      if (connection?.state === HubConnectionState.Connected) {
-        await connection.invoke("ParticipantRemoved", conversationId, removedParticipantId);
+      const conn = connectionRef.current;
+      if (conn?.state === HubConnectionState.Connected) {
+        await conn.invoke(
+          "ParticipantRemoved",
+          conversationId,
+          removedParticipantId,
+        );
       }
     },
-    [connection],
+    [],
   );
 
   // Debug helper
   const debug = useCallback(() => {
     console.log({
       isConnected,
-      connectionState: connection?.state,
-      connectionId: connection?.connectionId,
+      connectionState: connectionRef.current?.state,
+      connectionId: connectionRef.current?.connectionId,
       onlineUsers: Array.from(onlineUsers),
       messageHandlers: messageHandlersRef.current.length,
       typingHandlers: typingHandlersRef.current.length,
       presenceHandlers: presenceHandlersRef.current.length,
     });
-  }, [connection, isConnected, onlineUsers]);
+  }, [isConnected, onlineUsers]);
 
   return {
     // State
     isConnected,
     onlineUsers,
-
+    reconnectFailed,
     // Core methods
     joinConversation,
     leaveConversation,
