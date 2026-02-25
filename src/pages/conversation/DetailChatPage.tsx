@@ -40,7 +40,6 @@ export default function DetailChatPage() {
     timestamps: new Map(),
   });
 
-  // Get SignalR hook
   const {
     isConnected: signalRConnected,
     onMessage,
@@ -50,7 +49,6 @@ export default function DetailChatPage() {
     markAsRead: markAsReadSignalR,
   } = useSignalR();
 
-  // ============ CLEANUP ============
   useEffect(() => {
     console.log("✅ COMPONENT MOUNTED");
     return () => {
@@ -61,7 +59,6 @@ export default function DetailChatPage() {
     };
   }, [id]);
 
-  // ============ AUTH LOG ============
   useEffect(() => {
     if (!hasLoggedAuth.current) {
       console.log("🔐 Auth State:", {
@@ -74,7 +71,6 @@ export default function DetailChatPage() {
     }
   }, []);
 
-  // ============ JOIN CONVERSATION ============
   useEffect(() => {
     if (!id || !signalRConnected) return;
 
@@ -91,7 +87,6 @@ export default function DetailChatPage() {
     };
   }, [id, signalRConnected, joinConversation, leaveConversation]);
 
-  // ============ CLEANUP PROCESSED MESSAGES ============
   const cleanupProcessedMessages = useCallback(() => {
     const now = Date.now();
     const maxAge = 5 * 60 * 1000; // 5 minutes
@@ -118,7 +113,6 @@ export default function DetailChatPage() {
     }
   }, []);
 
-  // ============ RECEIVE NEW MESSAGES ============
   useEffect(() => {
     if (!isJoined || !id) return;
 
@@ -132,20 +126,35 @@ export default function DetailChatPage() {
         cleanupProcessedMessages();
       }
 
-      // Deduplicate
       if (processedMessageIds.current.ids.has(data.message.id)) {
         console.log("⚠️ Message already processed, skipping:", data.message.id);
         return;
       }
 
-      // Mark as processed
       processedMessageIds.current.ids.add(data.message.id);
       processedMessageIds.current.timestamps.set(data.message.id, Date.now());
 
-      // Add to cache
-      addMessage(data.message);
+      // CRITICAL FIX: Determine if this message is from the current user
+      const isOwnMessage = data.message.senderId === user?.userId;
 
-      // Update conversation list
+      console.log("📨 Received message:", {
+        messageId: data.message.id,
+        senderId: data.message.senderId,
+        currentUserId: user?.userId,
+        isOwn: isOwnMessage,
+        content: data.message.content,
+      });
+
+      // Create message with correct ownership flag
+      const messageWithOwnership = {
+        ...data.message,
+        isOwn: isOwnMessage, // This is the key fix!
+      };
+
+      // Add the message to the cache
+      addMessage(messageWithOwnership);
+
+      // Update conversation list with correct unread count
       queryClient.setQueryData(chatKeys.conversations(), (old: any[] = []) =>
         old.map((conv) =>
           conv.id === id
@@ -154,7 +163,8 @@ export default function DetailChatPage() {
                 lastMessage: data.message.content,
                 lastMessageAt: data.message.sentAt,
                 lastMessageSender: data.message.senderName,
-                unreadCount: data.message.isOwn
+                // Only increment unread if message is NOT from current user
+                unreadCount: isOwnMessage
                   ? conv.unreadCount
                   : (conv.unreadCount || 0) + 1,
               }
@@ -174,25 +184,23 @@ export default function DetailChatPage() {
     addMessage,
     queryClient,
     cleanupProcessedMessages,
+    user?.userId,
   ]);
 
-  // ============ SINGLE SOURCE OF TRUTH FOR MARK AS READ ============
   const markConversationAsRead = useCallback(() => {
     if (!id || !messages?.length || !isJoined) return;
 
-    // Throttle: once per 5 seconds
     const now = Date.now();
     const lastMarked = lastMarkedAtRef.current[id] || 0;
     if (now - lastMarked < MARK_AS_READ_INTERVAL) return;
 
-    // Find unread messages
+    // Use the same logic to determine unread messages
     const unreadMessageIds = messages
-      .filter((m) => !m.isRead && !m.isOwn)
+      .filter((m) => !m.isRead && m.senderId !== user?.userId) // Changed from !m.isOwn
       .map((m) => m.id);
 
     if (unreadMessageIds.length === 0) return;
 
-    // Don't mark if we already marked these messages
     const latestMessageId = messages[messages.length - 1]?.id;
     if (lastProcessedMessageIdRef.current === latestMessageId) return;
 
@@ -201,30 +209,30 @@ export default function DetailChatPage() {
     lastProcessedMessageIdRef.current = latestMessageId;
     hasMarkedAsRead.current[id] = true;
 
-    // API call
     markAsRead.mutate(id, {
       onError: () => {
-        // Reset on error so we can retry
         lastMarkedAtRef.current[id] = 0;
         lastProcessedMessageIdRef.current = null;
       },
     });
 
-    // SignalR notification
     if (signalRConnected && unreadMessageIds.length > 0) {
       markAsReadSignalR(id, unreadMessageIds).catch(() => {});
     }
-  }, [id, messages, isJoined, signalRConnected, markAsRead, markAsReadSignalR]);
+  }, [
+    id,
+    messages,
+    isJoined,
+    signalRConnected,
+    markAsRead,
+    markAsReadSignalR,
+    user?.userId,
+  ]);
 
-  // Trigger mark as read when:
-  // 1. Component mounts
-  // 2. New messages arrive
-  // 3. User joins conversation
   useEffect(() => {
     markConversationAsRead();
   }, [markConversationAsRead, messages, isJoined]);
 
-  // ============ SEND MESSAGE ============
   const handleSend = async (content: string) => {
     try {
       const result = await sendMessage.mutateAsync(content);
@@ -236,13 +244,11 @@ export default function DetailChatPage() {
     }
   };
 
-  // ============ HANDLE MARK AS READ (FROM UI) ============
   const handleMarkAsRead = useCallback(() => {
     if (!id) return;
     markConversationAsRead();
   }, [id, markConversationAsRead]);
 
-  // ============ DEBUG ============
   useEffect(() => {
     console.log(
       "🔌 SignalR:",
@@ -253,7 +259,7 @@ export default function DetailChatPage() {
   }, [signalRConnected, isJoined]);
 
   return (
-    <div className="bg-slate-50/30">
+    <div className="bg-white min-h-screen">
       <MobileChatWindow
         conversationId={id!}
         conversation={conversation}

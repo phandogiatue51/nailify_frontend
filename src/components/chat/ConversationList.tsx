@@ -22,10 +22,6 @@ export const ConversationList = ({
   // Use the React Query hook instead of internal state
   const { conversations, isLoading } = useConversations(filter?.type);
 
-  const getAvatarText = (title: string) => {
-    return title.charAt(0).toUpperCase();
-  };
-
   const formatTime = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -80,7 +76,7 @@ export const ConversationList = ({
   }
 
   return (
-    <div className="space-y-2 p-1">
+    <div>
       {conversations.map((conv) => {
         const isSelected = selectedId === conv.id;
         const hasUnread = conv.unreadCount > 0;
@@ -93,18 +89,24 @@ export const ConversationList = ({
               "w-full p-4 flex items-center gap-4 transition-all duration-300 rounded-[2rem]",
               isSelected
                 ? "bg-white shadow-xl shadow-[#950101]/5 scale-[1.02] ring-1 ring-[#FFCFE9]"
-                : "hover:bg-[#FFCFE9]/20 bg-transparent"
+                : "hover:bg-[#FFCFE9]/20 bg-transparent",
             )}
           >
             {/* Avatar Section */}
             <div className="relative flex-shrink-0">
-              <div className={cn(
-                "p-0.5 rounded-full transition-colors",
-                hasUnread ? "bg-[#950101]" : "bg-slate-200"
-              )}>
+              <div
+                className={cn(
+                  "p-0.5 rounded-full transition-colors",
+                  hasUnread ? "bg-[#950101]" : "bg-slate-200",
+                )}
+              >
                 <div className="bg-white rounded-full p-0.5">
                   {conv.avatarUrl ? (
-                    <img src={conv.avatarUrl} className="w-12 h-12 rounded-full object-cover" alt="" />
+                    <img
+                      src={conv.avatarUrl}
+                      className="w-12 h-12 rounded-full object-cover"
+                      alt=""
+                    />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-[#FFCFE9] flex items-center justify-center text-[#950101] font-black">
                       {conv.title.charAt(0).toUpperCase()}
@@ -120,10 +122,14 @@ export const ConversationList = ({
             {/* Text Content */}
             <div className="flex-1 min-w-0 text-left">
               <div className="flex justify-between items-baseline mb-0.5">
-                <h3 className={cn(
-                  "font-black tracking-tight uppercase text-sm truncate transition-colors",
-                  isSelected || hasUnread ? "text-[#950101]" : "text-slate-800"
-                )}>
+                <h3
+                  className={cn(
+                    "font-black tracking-tight uppercase text-sm truncate transition-colors",
+                    isSelected || hasUnread
+                      ? "text-[#950101]"
+                      : "text-slate-800",
+                  )}
+                >
                   {conv.title}
                 </h3>
                 <span className="text-[10px] font-bold text-slate-400 uppercase">
@@ -132,10 +138,14 @@ export const ConversationList = ({
               </div>
 
               <div className="flex justify-between items-center gap-2">
-                <p className={cn(
-                  "text-xs truncate transition-all",
-                  hasUnread ? "text-slate-900 font-bold" : "text-slate-500 font-medium"
-                )}>
+                <p
+                  className={cn(
+                    "text-xs truncate transition-all",
+                    hasUnread
+                      ? "text-slate-900 font-bold"
+                      : "text-slate-500 font-medium",
+                  )}
+                >
                   {conv.lastMessage || "Click to start chatting..."}
                 </p>
 

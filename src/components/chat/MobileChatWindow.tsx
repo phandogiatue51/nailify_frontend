@@ -244,7 +244,7 @@ export const MobileChatWindow = ({
       </main>
 
       {/* FOOTER: Flex-shrink-0 ensures it stays at the bottom */}
-      <footer className="flex-shrink-0 bg-white border-t border-slate-100 p-4 pb-6">
+      <footer className="flex-shrink-0 bg-white border-t border-slate-100 p-4 pb-4">
         <div className="max-w-4xl mx-auto flex items-end gap-2 bg-slate-50 rounded-[1.5rem] p-2 pr-3 ring-1 ring-slate-200 focus-within:ring-2 focus-within:ring-[#950101] transition-all">
           <textarea
             value={newMessage}

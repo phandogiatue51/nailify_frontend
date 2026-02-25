@@ -15,16 +15,34 @@ import {
   NotificationEvent,
 } from "@/types/chat";
 
+// Simple utility functions outside React to avoid dependency issues
+const getTokenDirect = () => {
+  return localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
+};
+
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+    return Math.floor(Date.now() / 1000) >= decoded.exp;
+  } catch {
+    return true;
+  }
+};
+
+const isAuthenticatedDirect = () => {
+  const token = getTokenDirect();
+  return !!(token && !isTokenExpired(token));
+};
+
 export const useSignalR = () => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const connectionRef = useRef<HubConnection | null>(null);
-  const [reconnectFailed, setReconnectFailed] = useState(false); // New state
+  const [reconnectFailed, setReconnectFailed] = useState(false);
   const reconnectAttemptsRef = useRef(0);
-  const maxReconnectAttempts = 5; // Stop after 5 attempts
   const lastAuthFailRef = useRef<number | null>(null);
-  const AUTH_FAILURE_COOLDOWN = 60 * 1000; // 1 minute
 
   // Refs for handlers
   const messageHandlersRef = useRef<((data: NewMessageEvent) => void)[]>([]);
@@ -46,18 +64,13 @@ export const useSignalR = () => {
 
   const { isAuthenticated } = useAuth();
 
-  const getToken = useCallback(() => {
-    return (
-      localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken")
-    );
-  }, []);
-
-  // Add this right after setting up the connection in the first useEffect
+  // Initialize connection - FIXED: Empty deps array, use direct functions
   useEffect(() => {
     if (connectionRef.current) return;
 
-    const token = getToken();
-    if (!token || !isAuthenticated()) {
+    // Use direct functions instead of props from useAuth
+    const token = getTokenDirect();
+    if (!token || !isAuthenticatedDirect()) {
       console.log("SignalR: No token or not authenticated");
       return;
     }
@@ -74,6 +87,7 @@ export const useSignalR = () => {
         accessTokenFactory: () => token,
         transport: 4,
       })
+      .withAutomaticReconnect() // Let SignalR handle reconnection
       .build();
 
     newConnection.onreconnecting((error) => {
@@ -84,26 +98,17 @@ export const useSignalR = () => {
     newConnection.onreconnected((connectionId) => {
       console.log("✅ SignalR Reconnected with ID:", connectionId);
       setIsConnected(true);
-      setReconnectFailed(false); // Reset failed state on successful reconnect
-      reconnectAttemptsRef.current = 0; // Reset attempts on success
+      setReconnectFailed(false);
+      reconnectAttemptsRef.current = 0;
     });
 
     newConnection.onclose((error) => {
       console.log("🔌 SignalR Connection closed", error);
       setIsConnected(false);
-
-      // Check if we've exceeded max attempts
-      if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
-        console.log("❌ Max reconnection attempts reached, giving up");
-        setReconnectFailed(true);
-      }
     });
 
     // Start connection
     const startConnection = async () => {
-      // Single attempt to start the connection. If it fails, mark reconnectFailed
-      // and do NOT schedule further attempts. This prevents endless fetch loops
-      // when the backend is down.
       try {
         await newConnection.start();
         console.log("✅ SignalR Connected successfully!");
@@ -113,7 +118,6 @@ export const useSignalR = () => {
         lastAuthFailRef.current = null;
       } catch (err) {
         console.error("❌ SignalR Connection Error:", err);
-        // Record whether this was an auth failure for visibility
         const msg =
           err && typeof err === "object" && "message" in err
             ? (err as any).message
@@ -122,7 +126,6 @@ export const useSignalR = () => {
           lastAuthFailRef.current = Date.now();
         }
 
-        // Immediately give up - no retries
         setReconnectFailed(true);
         setIsConnected(false);
       }
@@ -135,18 +138,33 @@ export const useSignalR = () => {
 
     return () => {
       try {
-        // Best-effort stop
         connectionRef.current?.stop().catch(() => {});
       } finally {
         connectionRef.current = null;
         setConnection(null);
       }
     };
-  }, [getToken, isAuthenticated]);
+  }, []); // ⚠️ Empty dependency array - only runs once on mount
 
-  // Expose a stop method so consumers can explicitly stop attempts and the
-  // connection. Calling this will prevent any further connection activity
-  // managed by this hook.
+  // Optional: Reconnect when auth state changes
+  useEffect(() => {
+    const isAuth = isAuthenticated();
+    const token = getTokenDirect();
+
+    // If we're not connected but should be, and we're authenticated
+    if (!isConnected && isAuth && token && !connectionRef.current) {
+      console.log("🔄 Auth state changed, reconnecting SignalR...");
+      // Force reconnect by cleaning up and letting the first effect run
+      if (connectionRef.current) {
+        connectionRef.current.stop().catch(() => {});
+        connectionRef.current = null;
+        setConnection(null);
+      }
+      // The first effect will run again because connectionRef.current is null
+    }
+  }, [isAuthenticated]); // Only depend on isAuthenticated
+
+  // Expose a stop method
   const stop = useCallback(async () => {
     try {
       await connectionRef.current?.stop();
@@ -158,6 +176,9 @@ export const useSignalR = () => {
     setIsConnected(false);
     setReconnectFailed(true);
   }, []);
+
+  // Rest of the hook remains exactly the same...
+  // (all the connection.on handlers and registration methods)
 
   useEffect(() => {
     if (!connection) return;
@@ -174,7 +195,6 @@ export const useSignalR = () => {
       );
     });
 
-    // Shop messages (from staff to customer)
     connection.on("NewShopMessage", (data: any) => {
       console.log("🏪 NewShopMessage received:", data);
       messageHandlersRef.current.forEach((handler) =>
@@ -187,7 +207,6 @@ export const useSignalR = () => {
       );
     });
 
-    // Customer messages (to staff)
     connection.on("NewCustomerMessage", (data: any) => {
       console.log("👤 NewCustomerMessage received:", data);
       messageHandlersRef.current.forEach((handler) =>
@@ -199,7 +218,6 @@ export const useSignalR = () => {
       );
     });
 
-    // Staff messages (to other staff)
     connection.on("NewStaffMessage", (data: any) => {
       console.log("👥 NewStaffMessage received:", data);
       messageHandlersRef.current.forEach((handler) =>
@@ -214,7 +232,6 @@ export const useSignalR = () => {
 
     // ============ TYPING INDICATORS ============
 
-    // Staff typing (notifies other staff and customers)
     connection.on("StaffTyping", (data: any) => {
       console.log("✏️ StaffTyping received:", data);
       typingHandlersRef.current.forEach((handler) =>
@@ -228,7 +245,6 @@ export const useSignalR = () => {
       );
     });
 
-    // Customer typing (notifies staff)
     connection.on("CustomerTyping", (data: any) => {
       console.log("✏️ CustomerTyping received:", data);
       typingHandlersRef.current.forEach((handler) =>
@@ -240,7 +256,6 @@ export const useSignalR = () => {
       );
     });
 
-    // Shop typing (notifies customer when staff is typing)
     connection.on("ShopTyping", (data: any) => {
       console.log("✏️ ShopTyping received:", data);
       typingHandlersRef.current.forEach((handler) =>
@@ -252,7 +267,6 @@ export const useSignalR = () => {
       );
     });
 
-    // User typing (for individual/group chats)
     connection.on("UserTyping", (data: any) => {
       console.log("✏️ UserTyping received:", data);
       typingHandlersRef.current.forEach((handler) =>
@@ -511,9 +525,7 @@ export const useSignalR = () => {
     [],
   );
 
-  // Invoke methods (updated to match server signatures)
-  // Use connectionRef.current inside callbacks so these functions are stable
-  // and won't change identity when `connection` state object changes.
+  // Invoke methods
   const joinConversation = useCallback(async (conversationId: string) => {
     const conn = connectionRef.current;
     if (conn?.state === HubConnectionState.Connected) {
@@ -546,7 +558,6 @@ export const useSignalR = () => {
     async (conversationId: string, messageIds: string[]) => {
       const conn = connectionRef.current;
       if (conn?.state === HubConnectionState.Connected) {
-        // Convert string[] to Guid[] if needed
         const guidMessageIds = messageIds.map((id) => id);
         await conn.invoke("MarkAsRead", conversationId, guidMessageIds);
       }
@@ -631,6 +642,7 @@ export const useSignalR = () => {
     reopenConversation,
     participantAdded,
     participantRemoved,
+    stop,
 
     // Event listeners
     onMessage,
