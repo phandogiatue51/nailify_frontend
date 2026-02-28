@@ -141,7 +141,7 @@ export const BookingActions = ({
                 <Button
                   variant="outline"
                   disabled={isUpdatingStatus || isCancelling}
-                  className="h-10 rounded-2xl border-red-400 text-red-400 hover:text-white hover:bg-red-400"
+                  className="h-10 rounded-2xl border-red-400 text-red-400 hover:text-white hover:bg-red-400 font-black uppercase tracking-widest text-xs shadow-xl"
                 >
                   <XCircle size={20} />
                   Cancel Booking
@@ -150,16 +150,18 @@ export const BookingActions = ({
               {...statusConfig.cancel}
               onConfirm={() => onCancel?.(booking.id)}
             />
-            <Button
-              className="flex h-10 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
-              style={{
-                background:
-                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
-              }}
-              onClick={() => onReschedule?.(booking.id)}
-            >
-              <Calendar className="w-4 h-4 mr-2" /> Reschedule
-            </Button>
+            {isFuture && (
+              <Button
+                className="flex h-10 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-xl shadow-pink-100"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                }}
+                onClick={() => onReschedule?.(booking.id)}
+              >
+                <Calendar className="w-4 h-4 mr-2" /> Reschedule
+              </Button>
+            )}
           </>
         )}
 

@@ -36,7 +36,7 @@ export const MobileChatWindow = ({
     // Use a debounce to prevent multiple rapid calls
     const timeoutId = setTimeout(() => {
       onMarkAsRead(conversationId);
-    }, 5000); 
+    }, 5000);
 
     return () => clearTimeout(timeoutId);
   }, [conversationId, onMarkAsRead, messages.length]);
@@ -119,8 +119,12 @@ export const MobileChatWindow = ({
           </button>
 
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center text-[#950101] font-black border border-[#950101]/10 shadow-inner text-sm">
-              {conversation?.title?.charAt(0).toUpperCase() || "?"}
+            <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center border border-[#950101]/10 shadow-inner">
+              <img
+                src={conversation?.avatarUrl}
+                alt="avatar"
+                className="w-10 h-10 rounded-full object-cover"
+              />
             </div>
             <div>
               <h2 className="font-black text-slate-800 text-md tracking-tight leading-tight">
@@ -128,6 +132,7 @@ export const MobileChatWindow = ({
               </h2>
             </div>
           </div>
+
         </div>
         <button
           className="p-2 text-slate-400"
