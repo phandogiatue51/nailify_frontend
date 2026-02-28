@@ -34,13 +34,20 @@ export const ArtistCard = ({ artist, onViewDetails }: ArtistCardProps) => {
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-start gap-3">
-            {artist.avatarUrl && (
+            {artist.avatarUrl ? (
               <img
                 src={artist.avatarUrl}
                 alt={artist.fullName}
                 className="w-12 h-12 rounded-full object-cover border"
               />
+            ) : (
+              <div className="w-12 h-12 rounded-full border flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                <span className="text-sm font-bold text-white uppercase">
+                  {artist.fullName?.[0] || "U"}
+                </span>
+              </div>
             )}
+
             <div>
               <h3 className="font-semibold text-lg">{artist.fullName}</h3>
               <div className="flex items-center gap-2 mt-1">

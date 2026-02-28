@@ -40,9 +40,14 @@ export const CollectionCard = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-pink-200 to-purple-200" />
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-500">
+              <span className="text-2xl font-bold text-white uppercase">
+                {collection.name?.[0] || "U"}
+              </span>
+            </div>
           )}
         </div>
+
         <div className="absolute top-2 right-2">
           <Badge variant={collection.isActive ? "default" : "destructive"}>
             {collection.isActive ? "Active" : "Inactive"}

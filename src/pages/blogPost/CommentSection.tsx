@@ -132,9 +132,11 @@ export const CommentSection = ({
                         alt=""
                       />
                     ) : (
-                      <span className="text-xs font-black text-[#950101]">
-                        {comment.authorName?.charAt(0)}
-                      </span>
+                      <div className="w-full h-full object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                        <span className="text-2xl font-bold text-white uppercase">
+                          {comment.authorAvatarUrl?.[0] || "U"}
+                        </span>
+                      </div>
                     )}
                   </div>
 
@@ -144,7 +146,9 @@ export const CommentSection = ({
                         {comment.authorName}
                       </h4>
                       <span className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">
-                        {new Date(comment.createdAt).toLocaleDateString("vi-VN")}
+                        {new Date(comment.createdAt).toLocaleDateString(
+                          "vi-VN",
+                        )}
                       </span>
                     </div>
                     <p className="text-slate-600 leading-relaxed font-medium">
@@ -152,7 +156,6 @@ export const CommentSection = ({
                     </p>
                   </div>
                 </div>
-
               </div>
             ))}
           </div>

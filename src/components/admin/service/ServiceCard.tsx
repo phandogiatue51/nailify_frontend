@@ -34,13 +34,22 @@ export const ServiceCard = ({
   return (
     <Card className="hover:shadow-md transition-shadow overflow-hidden">
       {/* Service Image */}
-      {service.imageUrl && (
-        <div className="relative h-40">
+      {service.imageUrl ? (
+        <div className="relative h-40 rounded-lg overflow-hidden">
           <img
             src={service.imageUrl}
             alt={service.name}
             className="w-full h-full object-cover"
           />
+          <div className="absolute top-2 right-2">
+            <ComponentBadge role={service.componentType} />
+          </div>
+        </div>
+      ) : (
+        <div className="relative h-40 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+          <span className="text-2xl font-bold text-white uppercase">
+            {service.name?.[0] || "U"}
+          </span>
           <div className="absolute top-2 right-2">
             <ComponentBadge role={service.componentType} />
           </div>

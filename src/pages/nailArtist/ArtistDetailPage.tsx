@@ -131,11 +131,20 @@ const ArtistDetailPage = () => {
     <div className="relative bg-slate-50/30 min-h-screen">
       {/* Artist Hero */}
       <div className="relative h-80">
-        <img
-          src={artist.avatarUrl || "/placeholder-artist.jpg"}
-          className="w-full h-full object-cover"
-          alt={artist.fullName}
-        />
+        {artist.avatarUrl ? (
+          <img
+            src={artist.avatarUrl}
+            alt={artist.fullName}
+            className="w-16 h-16 rounded-lg object-cover"
+          />
+        ) : (
+          <div className="w-16 h-16 rounded-lg object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+            <span className="text-xl font-bold text-white uppercase">
+              {artist.fullName?.[0] || "U"}
+            </span>
+          </div>
+        )}
+
         <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-black/10" />
 
         {/* Back and Share buttons */}

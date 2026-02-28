@@ -66,23 +66,10 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
-          <div className="w-full h-full grid grid-cols-2 gap-1 p-1">
-            {collection.items?.slice(0, 4).map((item, index) => (
-              <div key={index} className="rounded-lg overflow-hidden">
-                {item.serviceItemImageUrl ? (
-                  <img
-                    src={item.serviceItemImageUrl}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-white bg-gradient-to-br from-pink-200 to-purple-200">
-                    <span className="text-[8px] font-bold uppercase tracking-widest">
-                      Nailify
-                    </span>
-                  </div>
-                )}
-              </div>
-            ))}
+          <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+            <span className="text-2xl font-bold text-white uppercase">
+              {collection.name?.[0] || "U"}
+            </span>
           </div>
         )}
 

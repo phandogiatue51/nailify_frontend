@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 interface BlogPostCardProps {
   post: BlogPost;
   myReaction?: any;
-  onReaction: (postId: string, type: number) => void;
+  onReaction?: (postId: string, type: number) => void;
 }
 
 export const BlogPostCard = ({
@@ -26,8 +26,13 @@ export const BlogPostCard = ({
   const navigate = useNavigate();
   const [showReactions, setShowReactions] = useState(false);
   const { user } = useAuth();
+  const isAdmin = user?.role === 2;
   const handlePostClick = () => {
-    navigate(`/blog/detail/${post.id}`);
+    if (isAdmin) {
+      navigate(`/admin/blogs/${post.id}`);
+    } else {
+      navigate(`/blog/detail/${post.id}`);
+    }
   };
 
   const handleClick = () => {
@@ -45,8 +50,7 @@ export const BlogPostCard = ({
   };
 
   return (
-    <div className="bg-white rounded-[2rem] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-50 transition-all active:scale-[0.99]">
-      {/* Header: Author & Edit */}
+    <div className="bg-white rounded-[2rem] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-50 transition-all active:scale-[0.99] h-96 overflow-hidden">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#FFCFE9]/50 flex items-center justify-center border border-[#FFCFE9]">
@@ -57,15 +61,18 @@ export const BlogPostCard = ({
                 alt=""
               />
             ) : (
-              <span className="text-sm font-black text-[#950101]">
-                {post.authorName?.charAt(0)}
-              </span>
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                <span className="text-2xl font-bold text-white uppercase">
+                  {post.authorName?.[0] || "U"}
+                </span>
+              </div>
             )}
           </div>
           <div>
             <h4
               onClick={handleClick}
-              className="text-sm font-black text-slate-800 leading-none mb-1 cursor-pointer hover:underline" >
+              className="text-sm font-black text-slate-800 leading-none mb-1 cursor-pointer hover:underline"
+            >
               {post.authorName}
             </h4>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -79,7 +86,11 @@ export const BlogPostCard = ({
             variant="ghost"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/blog/edit/${post.id}`);
+              if (isAdmin) {
+                navigate(`/admin/blogs/edit/${post.id}`);
+              } else {
+                navigate(`/blog/edit/${post.id}`);
+              }
             }}
             className="h-8 rounded-full bg-slate-50 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:bg-[#FFCFE9]/20 hover:text-[#950101]"
           >
@@ -124,32 +135,18 @@ export const BlogPostCard = ({
       </div>
 
       {/* Interaction Stats */}
-      <div className="flex items-center justify-between py-3 border-t border-slate-100">
-        <div className="flex items-center">
-          <div className="flex -space-x-2">
-            {getUniqueReactions(post.reactions).map((type, i) => (
-              <div key={i} className="ring-2 ring-white rounded-full">
-                <ReactionBadge type={type} />
-              </div>
-            ))}
-          </div>
-          {post.totalReactions > 0 && (
-            <span className="ml-3 text-[10px] font-black text-slate-400 tracking-widest uppercase">
-              {post.totalReactions} Reactions
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1 opacity-50">
-          <MessageCircle size={14} className="text-slate-900" />
-          <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">
-            {post.totalComments || 0}
-          </span>
+      <div className="flex items-center justify-between">
+        <div className="flex -space-x-2">
+          {getUniqueReactions(post.reactions).map((type, i) => (
+            <div key={i} className="ring-2 ring-white rounded-full">
+              <ReactionBadge type={type} />
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-2 gap-2 pt-2">
+      <div className="grid grid-cols-2 gap-2">
         <div className="relative">
           <button
             onClick={(e) => {

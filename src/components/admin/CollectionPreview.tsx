@@ -152,7 +152,7 @@ export const CollectionPreview = ({
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="flex items-start gap-3">
-                          {collection.imageUrl && (
+                          {collection.imageUrl ? (
                             <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0">
                               <img
                                 src={collection.imageUrl}
@@ -160,7 +160,14 @@ export const CollectionPreview = ({
                                 className="w-full h-full object-cover"
                               />
                             </div>
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                              <span className="text-2xl font-bold text-white uppercase">
+                                {collection.name?.[0] || "U"}
+                              </span>
+                            </div>
                           )}
+
                           <div className="flex-1">
                             <h4 className="font-medium">{collection.name}</h4>
                             {collection.description && (
@@ -202,8 +209,8 @@ export const CollectionPreview = ({
                           </Badge>
                         ))}
                         {collection.tags.length > 3 && (
-                          <Badge variant="outline">
-                            +{collection.tags.length - 3}
+                          <Badge key="more-tags" variant="outline">
+                            {collection.tags.length - 3}
                           </Badge>
                         )}
                       </div>

@@ -3,6 +3,7 @@ import { blogAPI } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { ConfirmationDialog } from "../ui/confirmation-dialog";
+import { useAuth } from "@/hooks/use-auth";
 interface BlogPostFormProps {
   mode: "create" | "update";
   initialData?: {
@@ -34,6 +35,8 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
       setImages([...images, ...Array.from(e.target.files)]);
     }
   };
+  const { user } = useAuth();
+  const isAdmin = user?.role === 2;
 
   const removeExistingImage = (url: string) => {
     setExistingImages(existingImages.filter((img) => img !== url));
@@ -54,7 +57,11 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
         variant: "success",
         duration: 3000,
       });
-      navigate("/blog/my-blog"); // redirect after delete
+      if (isAdmin) {
+        navigate(`admin/blogs/`);
+      } else {
+        navigate(`/my-blog`);
+      }
       if (onSuccess) onSuccess();
     } catch (error: any) {
       toast({
@@ -96,7 +103,11 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
           variant: "success",
           duration: 3000,
         });
-        navigate(`/blog/detail/${response.id}`);
+        if (isAdmin) {
+          navigate(`/admin/blogs/${response.id}`);
+        } else {
+          navigate(`/blog/detail/${response.id}`);
+        }
       } else {
         response = await blogAPI.updateBlogPost(initialData?.id!, formData);
         toast({
@@ -104,7 +115,11 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
           variant: "success",
           duration: 3000,
         });
-        navigate(`/blog/detail/${initialData?.id}`);
+        if (isAdmin) {
+          navigate(`/admin/blogs/${initialData?.id}`);
+        } else {
+          navigate(`/blog/detail/${initialData?.id}`);
+        }
       }
 
       if (onSuccess) onSuccess();

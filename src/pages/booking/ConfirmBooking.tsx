@@ -74,12 +74,12 @@ const ConfirmBooking = () => {
 
   const calculatedDuration = selectedCollection
     ? selectedCollection.estimatedDuration ||
-    selectedCollection.calculatedDuration ||
-    0
+      selectedCollection.calculatedDuration ||
+      0
     : selectedItems.reduce(
-      (sum, item) => sum + (item.estimatedDuration || 0),
-      0,
-    );
+        (sum, item) => sum + (item.estimatedDuration || 0),
+        0,
+      );
 
   const { createBooking } = useBookings();
 
@@ -205,12 +205,18 @@ const ConfirmBooking = () => {
               <div className="space-y-3">
                 <div className="p-3 bg-slate-50 rounded-lg">
                   <div className="flex items-center gap-3 mb-2">
-                    {selectedCollection.imageUrl && (
+                    {selectedCollection.imageUrl ? (
                       <img
                         src={selectedCollection.imageUrl}
                         alt={selectedCollection.name}
                         className="w-16 h-16 rounded-lg object-cover"
                       />
+                    ) : (
+                      <div className="w-16 h-16 rounded-lg object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                        <span className="text-xl font-bold text-white uppercase">
+                          {selectedCollection.name?.[0] || "U"}
+                        </span>
+                      </div>
                     )}
                     <div>
                       <h3 className="font-semibold">

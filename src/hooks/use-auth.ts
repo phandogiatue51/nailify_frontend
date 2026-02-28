@@ -95,7 +95,7 @@ export function useAuth() {
 
   useEffect(() => {
     const token =
-      localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
+      sessionStorage.getItem("jwtToken");
     if (token && !isTokenExpired(token)) {
       const decoded = decodeJWT(token);
       if (decoded) {
@@ -108,7 +108,6 @@ export function useAuth() {
   const login = async (
     email: string,
     password: string,
-    rememberMe?: boolean,
   ) => {
     if (!isMounted.current) return;
 
@@ -118,7 +117,7 @@ export function useAuth() {
 
       if (!response.token) throw new Error("No token received");
 
-      const storage = rememberMe ? localStorage : sessionStorage;
+      const storage = sessionStorage;
       storage.setItem("jwtToken", response.token);
 
       const decoded = decodeJWT(response.token);
@@ -204,7 +203,6 @@ export function useAuth() {
     (redirect: boolean = true) => {
       if (!isMounted.current) return;
 
-      localStorage.removeItem("jwtToken");
       sessionStorage.removeItem("jwtToken");
       setUser(null);
 
@@ -223,7 +221,7 @@ export function useAuth() {
 
   const getAuthHeader = useCallback(() => {
     const token =
-      localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
+      sessionStorage.getItem("jwtToken");
 
     if (!token) {
       return {};
@@ -239,7 +237,7 @@ export function useAuth() {
 
   const isAuthenticated = useCallback(() => {
     const token =
-      localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
+      sessionStorage.getItem("jwtToken");
     return !!(token && !isTokenExpired(token));
   }, []);
 

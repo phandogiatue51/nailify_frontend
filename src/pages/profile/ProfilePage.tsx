@@ -69,7 +69,7 @@ const ProfilePage = () => {
       <div className="pb-20">
         <div className="bg-gradient-to-b from-slate-50 to-white px-6 pt-10 pb-6 text-center">
           <div className="relative mx-auto w-24 h-24 mb-4">
-            <div className="w-full h-full rounded-full overflow-hidden ring-4 ring-white shadow-md bg-primary/10 flex items-center justify-center">
+            <div className="w-full h-full rounded-full overflow-hidden ring-4 ring-white shadow-md flex items-center justify-center">
               {profile.avatarUrl ? (
                 <img
                   src={profile.avatarUrl}
@@ -77,7 +77,7 @@ const ProfilePage = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-3xl font-bold text-primary">
+                <span className="text-2xl font-bold text-white uppercase bg-gradient-to-br from-[#950101] to-[#FFCFE9] w-full h-full flex items-center justify-center rounded-full">
                   {profile.fullName?.[0] || "U"}
                 </span>
               )}

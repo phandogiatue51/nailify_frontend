@@ -22,15 +22,23 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-pink-200 to-purple-200" />
+          <span className="text-2xl font-bold text-primary">
+            {shop.name?.[0]}
+          </span>
         )}
-        {shop.logoUrl && (
+        {shop.logoUrl ? (
           <div className="absolute -bottom-6 left-4 w-14 h-14 rounded-xl border-4 border-background overflow-hidden bg-background">
             <img
               src={shop.logoUrl}
               alt={`${shop.name} logo`}
               className="w-full h-full object-cover"
             />
+          </div>
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+            <span className="text-2xl font-bold text-white uppercase">
+              {shop.name?.[0] || "U"}
+            </span>
           </div>
         )}
       </div>

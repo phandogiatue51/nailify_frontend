@@ -56,8 +56,10 @@ export const UserCard = ({
                 className="w-12 h-12 rounded-full object-cover border"
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                <UserIcon className="w-6 h-6 text-muted-foreground" />
+              <div className="w-12 h-12 rounded-full object-cover border flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                <span className="text-2xl font-bold text-white uppercase">
+                  {user.fullName?.[0] || "U"}
+                </span>
               </div>
             )}
             <div>

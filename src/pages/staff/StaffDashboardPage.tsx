@@ -52,8 +52,10 @@ export const StaffDashboardPage = () => {
                   className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/10"
                 />
               ) : (
-                <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                  <User className="w-7 h-7" />
+                <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                  <span className="text-xl font-bold text-white uppercase">
+                    {currentStaff.fullName?.[0] || "U"}
+                  </span>
                 </div>
               )}
               <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white" />

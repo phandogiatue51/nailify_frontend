@@ -100,10 +100,13 @@ export const CollectionDetailModal = ({
                       className="w-16 h-16 rounded-lg object-cover border"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
-                      <Layers className="w-8 h-8 text-muted-foreground" />
+                    <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                      <span className="text-xl font-bold text-white uppercase">
+                        {collection.name?.[0] || "U"}
+                      </span>
                     </div>
                   )}
+
                   <div>
                     <DialogTitle className="text-2xl">
                       {collection.name}
@@ -118,15 +121,21 @@ export const CollectionDetailModal = ({
 
             <div className="space-y-6">
               {/* Collection Image (Large) */}
-              {collection.imageUrl && (
-                <div className="relative h-64 rounded-lg overflow-hidden">
+              <div className="relative h-64 rounded-lg overflow-hidden">
+                {collection.imageUrl ? (
                   <img
                     src={collection.imageUrl}
                     alt={collection.name}
                     className="w-full h-full object-cover"
                   />
-                </div>
-              )}
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                    <span className="text-2xl font-bold text-white uppercase">
+                      {collection.name?.[0] || "U"}
+                    </span>
+                  </div>
+                )}
+              </div>
 
               {/* Description */}
               {collection.description && (
@@ -273,13 +282,20 @@ export const CollectionDetailModal = ({
                         className="border rounded-lg p-4 hover:bg-muted/30 transition-colors"
                       >
                         <div className="flex items-start gap-3">
-                          {item.serviceItemImageUrl && (
+                          {item.serviceItemImageUrl ? (
                             <img
                               src={item.serviceItemImageUrl}
                               alt={item.serviceItemName}
                               className="w-12 h-12 rounded object-cover"
                             />
+                          ) : (
+                            <div className="w-12 h-12 rounded flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                              <span className="text-sm font-bold text-white uppercase">
+                                {item.serviceItemName?.[0] || "U"}
+                              </span>
+                            </div>
                           )}
+
                           <div className="flex-1">
                             <h5 className="font-medium">
                               {item.serviceItemName || "Unnamed Service"}

@@ -4,21 +4,7 @@ import { CollectionPreview } from "../CollectionPreview";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  CheckCircle,
-  XCircle,
-  Eye,
-  MapPin,
-  Phone,
-  Calendar,
-  MoreVertical,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { CheckCircle, Eye, Phone } from "lucide-react";
 import DateDisplay from "@/components/ui/date-display";
 interface ShopCardProps {
   shop: Shop;
@@ -26,7 +12,6 @@ interface ShopCardProps {
 }
 
 export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
-
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-4">
@@ -34,12 +19,18 @@ export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
             <div className="flex items-start gap-3">
-              {shop.logoUrl && (
+              {shop.logoUrl ? (
                 <img
                   src={shop.logoUrl}
                   alt={shop.name}
                   className="w-12 h-12 rounded-lg object-cover border"
                 />
+              ) : (
+                <div className="w-12 h-12 object-cover border rounded-lg flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                  <span className="text-xl font-bold text-white uppercase">
+                    {shop.name?.[0] || "U"}
+                  </span>
+                </div>
               )}
               <div>
                 <h3 className="font-semibold text-lg">{shop.name}</h3>

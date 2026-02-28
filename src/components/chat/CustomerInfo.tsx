@@ -166,11 +166,20 @@ function ProfileCard({
 
       <div className="flex flex-col items-center text-center">
         <div className="relative">
-          <img
-            src={profile.avatarUrl ?? "/default-avatar.png"}
-            alt={profile.fullName}
-            className="w-24 h-24 rounded-full object-cover border-4 border-[#FFCFE9] shadow-md"
-          />
+          {profile.avatarUrl ? (
+            <img
+              src={profile.avatarUrl}
+              alt={profile.fullName}
+              className="w-12 h-12 rounded-full object-cover border"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+              <span className="text-xl font-bold text-white uppercase">
+                {profile.fullName?.[0] || "U"}
+              </span>
+            </div>
+          )}
+
           <div className="absolute bottom-0 right-0">
             <RoleBadge role={profile.role} />
           </div>

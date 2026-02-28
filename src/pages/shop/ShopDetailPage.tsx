@@ -138,8 +138,9 @@ const ShopDetailPage = () => {
         {shop.coverUrl ? (
           <img src={shop.coverUrl} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#FFC988] to-[#E288F9]" />
+          <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center" />
         )}
+
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute top-6 left-4 right-4 flex justify-between items-center">
           <Button
@@ -164,21 +165,26 @@ const ShopDetailPage = () => {
       {/* Shop Info Card */}
       <div className="px-6 -mt-16 relative z-10">
         <div className="bg-white rounded-[2.5rem] p-6 shadow-xl shadow-slate-200/50 border border-white">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-black tracking-tight text-slate-900">
-                {shop.name}
-              </h1>
-            </div>
-            {shop.logoUrl && (
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-black tracking-tight text-slate-900">
+              {shop.name}
+            </h1>
+
+            {shop.logoUrl ? (
               <img
                 src={shop.logoUrl}
-                className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-50 shadow-sm"
+                className="w-16 h-16 rounded-full object-cover border-2 border-slate-50 shadow-sm"
               />
+            ) : (
+              <div className="w-16 h-16 rounded-full border-2 border-slate-50 shadow-sm bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                <span className="text-xl font-bold text-white uppercase">
+                  {shop.name?.[0] || "U"}
+                </span>
+              </div>
             )}
           </div>
 
-          <p className="text-sm text-slate-400 leading-relaxed italic">
+          <p className="text-sm text-slate-400 leading-relaxed italic mt-3">
             "{shop.description || "Welcome to our studio."}"
           </p>
         </div>

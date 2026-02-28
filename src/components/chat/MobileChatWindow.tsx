@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Send, MoreVertical, ChevronLeft } from "lucide-react";
+import { Send, MoreVertical, ChevronLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { MessageDto, ConversationDetailDto } from "@/types/chat";
 import { useAuth } from "@/hooks/use-auth";
@@ -99,8 +99,9 @@ export const MobileChatWindow = ({
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="text-gray-400">Loading messages...</div>
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading messages...</p>
       </div>
     );
   }
@@ -120,19 +121,27 @@ export const MobileChatWindow = ({
 
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center border border-[#950101]/10 shadow-inner">
-              <img
-                src={conversation?.avatarUrl}
-                alt="avatar"
-                className="w-10 h-10 rounded-full object-cover"
-              />
+              {conversation.avatarUrl ? (
+                <img
+                  src={conversation.avatarUrl}
+                  alt={conversation.title}
+                  className="w-12 h-12 rounded-full object-cover border"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                  <span className="text-xl font-bold text-white uppercase">
+                    {conversation.title?.[0] || "U"}
+                  </span>
+                </div>
+              )}
             </div>
+
             <div>
               <h2 className="font-black text-slate-800 text-md tracking-tight leading-tight">
                 {conversation?.title}
               </h2>
             </div>
           </div>
-
         </div>
         <button
           className="p-2 text-slate-400"

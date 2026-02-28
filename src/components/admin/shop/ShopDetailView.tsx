@@ -191,7 +191,7 @@ export const ShopDetailView = ({
 
       {/* Shop Images */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {shop.coverUrl && (
+        {shop.coverUrl ? (
           <div className="space-y-2">
             <h4 className="font-medium flex items-center gap-2">
               <Globe className="w-4 h-4" />
@@ -203,8 +203,14 @@ export const ShopDetailView = ({
               className="w-full h-48 object-cover rounded-lg"
             />
           </div>
+        ) : (
+          <div className="w-full h-48 object-cover rounded-lg flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+            <span className="text-2xl font-bold text-white uppercase">
+              {shop.name?.[0] || "U"}
+            </span>
+          </div>
         )}
-        {shop.logoUrl && (
+        {shop.logoUrl ? (
           <div className="space-y-2">
             <h4 className="font-medium flex items-center gap-2">
               <Building className="w-4 h-4" />
@@ -215,6 +221,12 @@ export const ShopDetailView = ({
               alt="Logo"
               className="w-32 h-32 object-cover rounded-lg"
             />
+          </div>
+        ) : (
+          <div className="w-32 h-32 object-cover rounded-lg flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+            <span className="text-2xl font-bold text-white uppercase">
+              {shop.name?.[0] || "U"}
+            </span>
           </div>
         )}
       </div>
@@ -233,27 +245,44 @@ export const ShopDetailView = ({
           <h4 className="font-medium">Contact Information</h4>
 
           <div className="space-y-3">
-            {shop.address && (
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">Address</p>
-                  <p className="text-sm text-muted-foreground">
-                    {shop.address}
-                  </p>
-                </div>
-              </div>
-            )}
-
+            {/* Shop phone (top-level) */}
             {shop.phone && (
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-muted-foreground" />
                 <div>
-                  <p className="font-medium">Phone</p>
+                  <p className="font-medium">Shop Phone</p>
                   <p className="text-sm text-muted-foreground">{shop.phone}</p>
                 </div>
               </div>
             )}
+
+            {/* Locations */}
+            {shop.locations?.map((location) => (
+              <div key={location.id} className="space-y-2">
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">Address</p>
+                      <p className="text-sm text-muted-foreground">
+                        {location.address}, {location.city}
+                      </p>
+                    </div>
+                  </div>
+                  {location.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">Location Phone</p>
+                        <p className="text-sm text-muted-foreground">
+                          {location.phone}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

@@ -108,8 +108,10 @@ export const ConversationList = ({
                       alt=""
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-[#FFCFE9] flex items-center justify-center text-[#950101] font-black">
-                      {conv.title.charAt(0).toUpperCase()}
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                      <span className="text-xl font-bold text-white uppercase">
+                        {conv.title?.[0] || "U"}
+                      </span>
                     </div>
                   )}
                 </div>

@@ -57,6 +57,44 @@ export interface Shop {
   isVerified: boolean;
   createdAt: string;
   updatedAt: string;
+  locations: Location[];
+}
+
+export interface Location {
+  id: string;
+  address: string;
+  city?: string | null;
+  phone?: string | null;
+  openingTime?: string | null;
+  closingTime?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  maxConcurrentBookings?: number | null;
+  bufferMinutes?: number | null;
+  bookingLeadTimeMinutes?: number | null;
+  bookingWindowDays?: number | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
+}
+
+export interface ShopLocation {
+  shopLocationId: string;
+  shopName: string | null;
+  address: string;
+  city?: string | null;
+  phone?: string | null;
+  openingTime?: string | null;
+  closingTime?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  maxConcurrentBookings?: number | null;
+  bufferMinutes?: number | null;
+  bookingLeadTimeMinutes?: number | null;
+  bookingWindowDays?: number | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
 }
 
 export interface ServiceItem {
@@ -141,25 +179,6 @@ export interface BookingItem {
   price: number;
   createdAt: string;
   serviceItem?: ServiceItem;
-}
-
-export interface ShopLocation {
-  shopLocationId: string;
-  shopName: string | null;
-  address: string;
-  city?: string | null;
-  phone?: string | null;
-  openingTime?: string | null;
-  closingTime?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
-  maxConcurrentBookings?: number | null;
-  bufferMinutes?: number | null;
-  bookingLeadTimeMinutes?: number | null;
-  bookingWindowDays?: number | null;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt?: string | null;
 }
 
 export interface ShopLocationCreateDto {

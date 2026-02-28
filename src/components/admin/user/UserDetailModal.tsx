@@ -115,8 +115,10 @@ export const UserDetailModal = ({
                       className="w-16 h-16 rounded-full object-cover border"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                      <UserIcon className="w-8 h-8 text-muted-foreground" />
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                      <span className="text-xl font-bold text-white uppercase">
+                        {user.fullName?.[0] || "U"}
+                      </span>
                     </div>
                   )}
                   <div>
@@ -283,7 +285,7 @@ export const UserDetailModal = ({
                     </div>
                   )}
                 </div>
-              </div>              
+              </div>
             </div>
           </>
         )}

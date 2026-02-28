@@ -206,7 +206,8 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
           <Label>Select Services</Label>
           {selectedItems.length > 0 && (
             <Badge variant="secondary">
-              {selectedItems.length} selected · {totalPrice.toFixed(3)} VND · {calculatedDuration} minutes
+              {selectedItems.length} selected · {totalPrice.toFixed(3)} VND ·{" "}
+              {calculatedDuration} minutes
             </Badge>
           )}
         </div>
@@ -227,12 +228,18 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
                     onCheckedChange={() => toggleItem(item.id)}
                   />
                   <div className="flex-1 flex items-center gap-2">
-                    {item.imageUrl && (
+                    {item.imageUrl ? (
                       <img
                         src={item.imageUrl}
                         alt={item.name}
                         className="w-10 h-10 rounded object-cover"
                       />
+                    ) : (
+                      <div className="w-10 h-10 rounded object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                        <span className="text-4xl font-bold text-white uppercase">
+                          {item.name?.[0] || "U"}
+                        </span>
+                      </div>
                     )}
                     <div className="flex-1">
                       <p className="text-sm font-medium">{item.name}</p>

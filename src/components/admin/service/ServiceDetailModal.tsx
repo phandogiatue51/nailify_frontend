@@ -120,10 +120,13 @@ export const ServiceDetailModal = ({
                       className="w-16 h-16 rounded-lg object-cover border"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
-                      <Package className="w-8 h-8 text-muted-foreground" />
+                    <div className="w-16 h-16 rounded-lg border flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                      <span className="text-xl font-bold text-white uppercase">
+                        {service.name?.[0] || "U"}
+                      </span>
                     </div>
                   )}
+
                   <div>
                     <DialogTitle className="text-2xl">
                       {service.name}
@@ -145,15 +148,21 @@ export const ServiceDetailModal = ({
 
             <div className="space-y-6">
               {/* Service Image (Large) */}
-              {service.imageUrl && (
-                <div className="relative h-48 rounded-lg overflow-hidden">
+              <div className="relative h-48 rounded-lg overflow-hidden">
+                {service.imageUrl ? (
                   <img
                     src={service.imageUrl}
                     alt={service.name}
                     className="w-full h-full object-cover"
                   />
-                </div>
-              )}
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                    <span className="text-2xl font-bold text-white uppercase">
+                      {service.name?.[0] || "U"}
+                    </span>
+                  </div>
+                )}
+              </div>
 
               {/* Description */}
               {service.description && (

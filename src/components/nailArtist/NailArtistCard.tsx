@@ -26,8 +26,10 @@ const NailArtistCard: React.FC<NailArtistCardProps> = ({ artist }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-muted flex items-center justify-center">
-              <User className="w-12 h-12 text-muted-foreground" />
+            <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+              <span className="text-2xl font-bold text-white uppercase">
+                {artist.fullName?.[0] || "U"}
+              </span>
             </div>
           )}
         </div>
@@ -37,7 +39,6 @@ const NailArtistCard: React.FC<NailArtistCardProps> = ({ artist }) => {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
               <h3 className="font-black text-lg">{artist.fullName}</h3>
-
             </div>
             {hasRating && (
               <div className="flex items-center gap-1 text-xs">

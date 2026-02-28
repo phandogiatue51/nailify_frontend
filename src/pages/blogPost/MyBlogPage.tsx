@@ -15,9 +15,8 @@ export const MyBlogPage = () => {
   const isShop = user?.shopId;
   const navigate = useNavigate();
   useEffect(() => {
-    if (user) {
-      loadPosts();
-    }
+    if (!user) return;
+    loadPosts();
   }, [user]);
 
   const loadPosts = async () => {
@@ -38,10 +37,6 @@ export const MyBlogPage = () => {
     }
   };
 
-  useEffect(() => {
-    loadPosts();
-  }, []);
-
   const handleReaction = async (postId: string, type: number) => {
     setPosts((prev) =>
       prev.map((post) => {
@@ -53,13 +48,13 @@ export const MyBlogPage = () => {
         const tempMyReaction = isRemoving
           ? null
           : {
-            id: `temp-${Date.now()}`,
-            profileId: user?.userId || "",
-            reactorName: user?.fullName || "You",
-            reactorAvatarUrl: null,
-            type: type as ReactionType,
-            reactedAt: new Date().toISOString(),
-          };
+              id: `temp-${Date.now()}`,
+              profileId: user?.userId || "",
+              reactorName: user?.fullName || "You",
+              reactorAvatarUrl: null,
+              type: type as ReactionType,
+              reactedAt: new Date().toISOString(),
+            };
 
         let newTotal = prevTotal;
         if (isRemoving) {
@@ -85,9 +80,9 @@ export const MyBlogPage = () => {
       const response = await reactionAPI.togglePostReaction(postId, formData);
 
       if (response.data?.post) {
-        setPosts((prev) => prev.map((p) =>
-          p.id === postId ? response.data.post : p
-        ));
+        setPosts((prev) =>
+          prev.map((p) => (p.id === postId ? response.data.post : p)),
+        );
       }
     } catch (error) {
       console.error("React failed", error);
@@ -111,12 +106,12 @@ export const MyBlogPage = () => {
         >
           <ChevronLeft className="w-7 h-7" />
         </button>
-
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">The Collection</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+            The Collection
+          </span>
           <div className="h-0.5 w-6 bg-[#950101] mt-1" />
         </div>
-
         <div className="w-10" /> {/* Symmetry Spacer */}
       </header>
 
@@ -126,7 +121,8 @@ export const MyBlogPage = () => {
           onClick={() => navigate(`/blog/create/`)}
           className="group relative overflow-hidden font-black tracking-[0.1em] uppercase text-sm rounded-[1.5rem] w-1/2 max-w-md h-14 transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-[#950101]/20 border-none"
           style={{
-            background: "linear-gradient(135deg, #950101 0%, #D81B60 50%, #3D0101 100%)",
+            background:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #3D0101 100%)",
           }}
         >
           {/* Subtle Shine Effect */}
@@ -148,7 +144,10 @@ export const MyBlogPage = () => {
           </div>
         ) : (
           posts.map((post) => (
-            <div key={post.id} className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+            <div
+              key={post.id}
+              className="animate-in fade-in slide-in-from-bottom-6 duration-700"
+            >
               <BlogPostCard
                 post={post}
                 myReaction={post.myReaction}
@@ -160,4 +159,4 @@ export const MyBlogPage = () => {
       </div>
     </div>
   );
-}
+};

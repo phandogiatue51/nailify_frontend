@@ -173,7 +173,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="city">Booking Lead Time Minutes</Label>
+          <Label htmlFor="city">Lead Time Minutes</Label>
           <Input
             id="bookingLeadTimeMinutes"
             name="bookingLeadTimeMinutes"

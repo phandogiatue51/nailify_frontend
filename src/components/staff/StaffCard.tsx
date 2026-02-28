@@ -13,18 +13,28 @@ interface StaffCardProps {
   isUpdating?: boolean;
 }
 
-export const StaffCard = ({ staff, onToggleStatus, isUpdating }: StaffCardProps) => {
+export const StaffCard = ({
+  staff,
+  onToggleStatus,
+  isUpdating,
+}: StaffCardProps) => {
   return (
     <Card className="group overflow-hidden border shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 rounded-[2rem] bg-white">
       <CardContent className="p-5">
         <div className="grid grid-cols-[auto,1fr] gap-4 mb-4">
           <div className="w-24 h-28 rounded-2xl bg-[#FFC988]/20 flex items-center justify-center text-xl border-2 border-white shadow-sm overflow-hidden">
-            {staff.avatarUrl && (
+            {staff.avatarUrl ? (
               <img
                 src={staff.avatarUrl}
                 className="w-full h-full object-cover"
                 alt=""
               />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                <span className="text-2xl font-bold text-white uppercase">
+                  {staff.fullName?.[0] || "U"}
+                </span>
+              </div>
             )}
           </div>
 
@@ -80,7 +90,9 @@ export const StaffCard = ({ staff, onToggleStatus, isUpdating }: StaffCardProps)
 
           <ConfirmationDialog
             onConfirm={() => onToggleStatus()}
-            title={staff.isActive ? "Xác nhận vô hiệu hóa" : "Xác nhận kích hoạt"}
+            title={
+              staff.isActive ? "Xác nhận vô hiệu hóa" : "Xác nhận kích hoạt"
+            }
             description={
               staff.isActive
                 ? `Hành động này sẽ vô hiệu hóa tài khoản nhân viên ${staff.fullName}.`
@@ -100,7 +112,11 @@ export const StaffCard = ({ staff, onToggleStatus, isUpdating }: StaffCardProps)
                     : "text-green-500 hover:bg-green-100 hover:text-green-600 border border-green-300",
                 )}
               >
-                {isUpdating ? "Updating..." : staff.isActive ? "Disable" : "Enable"}
+                {isUpdating
+                  ? "Updating..."
+                  : staff.isActive
+                    ? "Disable"
+                    : "Enable"}
               </Button>
             }
           />

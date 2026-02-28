@@ -72,8 +72,10 @@ export const StaffDetailPage = () => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-3xl">
-                👤
+              <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                <span className="text-xl font-bold text-white uppercase">
+                  {staff.fullName?.[0] || "U"}
+                </span>
               </div>
             )}
           </div>
@@ -188,7 +190,11 @@ export const StaffDetailPage = () => {
                   : "text-green-500 hover:bg-green-100 hover:text-green-600 border border-green-300",
               )}
             >
-              {isPending ? "Updating..." : staff.isActive ? "Disable" : "Enable"}
+              {isPending
+                ? "Updating..."
+                : staff.isActive
+                  ? "Disable"
+                  : "Enable"}
             </Button>
           }
         />

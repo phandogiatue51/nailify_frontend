@@ -61,13 +61,19 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
 
   return (
     <div className="space-y-6">
-      {collection.imageUrl && (
+      {collection.imageUrl ? (
         <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
           <img
             src={collection.imageUrl}
             alt={collection.name}
             className="w-full h-full object-cover"
           />
+        </div>
+      ) : (
+        <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+          <span className="text-2xl font-bold text-white uppercase">
+            {collection.name?.[0] || "U"}
+          </span>
         </div>
       )}
 
@@ -134,12 +140,10 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                {isArtist ? (
-                  <User className="w-5 h-5 text-muted-foreground" />
-                ) : (
-                  <MapPin className="w-5 h-5 text-muted-foreground" />
-                )}
+              <div className="w-10 h-10 rounded-full object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                <span className="text-xl font-bold text-white uppercase">
+                  {owner?.name?.[0] || artist?.fullName?.[0]}
+                </span>
               </div>
             )}
 

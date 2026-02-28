@@ -4,7 +4,7 @@ import { blogAPI } from "@/services/api";
 import { BlogPostForm } from "@/components/blogPost/BlogPostForm";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-export const EditBlogPostPage = () => {
+export const EditBlogPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState<any>(null);
@@ -20,7 +20,7 @@ export const EditBlogPostPage = () => {
       setPost(data);
     } catch (error) {
       console.error("Failed to load post:", error);
-      navigate("/blog");
+      navigate("/admin/blogs");
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ export const EditBlogPostPage = () => {
     );
 
   return (
-    <div className="min-h-screen bg-white pb-10">
+    <div className="bg-white">
       {/* Editorial Header */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-50 px-6 py-4 flex items-center justify-between">
         <button

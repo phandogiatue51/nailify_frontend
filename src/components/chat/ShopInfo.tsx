@@ -11,6 +11,8 @@ import {
   ShieldCheck,
   MapPin,
   Info,
+  Globe,
+  Building,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -47,13 +49,23 @@ export default function ShopInfoPage() {
       <div className="relative min-h-full w-full max-w-[100%] overflow-x-hidden flex flex-col">
         <div className="relative h-64 w-full overflow-hidden">
           {shop.coverUrl ? (
-            <img
-              src={shop.coverUrl}
-              className="w-full h-full object-cover"
-              alt="Cover"
-            />
+            <div className="space-y-2">
+              <h4 className="font-medium flex items-center gap-2">
+                <Globe className="w-4 h-4" />
+                Cover Image
+              </h4>
+              <img
+                src={shop.coverUrl}
+                alt="Cover"
+                className="w-full h-48 object-cover rounded-lg"
+              />
+            </div>
           ) : (
-            <div className="w-full h-full bg-gradient-to-b from-[#950101] to-[#7a0101]" />
+            <div className="w-full h-48 bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+              <span className="text-2xl font-bold text-white uppercase">
+                {shop.name?.[0] || "U"}
+              </span>
+            </div>
           )}
 
           {/* Overlay Gradient */}
@@ -72,11 +84,25 @@ export default function ShopInfoPage() {
           <div className="bg-white rounded-[2.5rem] p-6 shadow-xl shadow-[#950101]/5 border border-slate-50">
             <div className="flex flex-col items-center text-center">
               <div className="p-1 bg-white rounded-full shadow-lg -mt-20">
-                <img
-                  src={shop.logoUrl ?? "/default-shop.png"}
-                  alt={shop.name}
-                  className="w-28 h-28 rounded-full object-cover border-4 border-[#FFCFE9]"
-                />
+                {shop.logoUrl ? (
+                  <div className="space-y-2">
+                    <h4 className="font-medium flex items-center gap-2">
+                      <Building className="w-4 h-4" />
+                      Logo
+                    </h4>
+                    <img
+                      src={shop.logoUrl}
+                      alt="Logo"
+                      className="w-32 h-32 object-cover rounded-lg"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-32 h-32 bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                    <span className="text-2xl font-bold text-white uppercase">
+                      {shop.name?.[0] || "U"}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 flex items-center gap-2">

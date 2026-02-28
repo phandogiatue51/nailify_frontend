@@ -14,26 +14,27 @@ export const ServiceSummary = ({
   selectedItems,
   selectedCollection,
 }: ServiceSummaryProps) => {
-
   const localTotalPrice = selectedCollection
     ? selectedCollection.totalPrice || 0
     : selectedItems.reduce((sum, item) => sum + Number(item.price), 0);
 
   const localTotalDuration = selectedCollection
     ? selectedCollection.estimatedDuration ||
-    selectedCollection.calculatedDuration ||
-    0
+      selectedCollection.calculatedDuration ||
+      0
     : selectedItems.reduce(
-      (sum, item) => sum + (item.estimatedDuration || 0),
-      0,
-    );
+        (sum, item) => sum + (item.estimatedDuration || 0),
+        0,
+      );
 
   return (
     <Card>
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-4">
           <Package className="w-5 h-5 text-primary" />
-          <h2 className="font-black uppercase tracking-tight">Selected Services</h2>
+          <h2 className="font-black uppercase tracking-tight">
+            Selected Services
+          </h2>
         </div>
 
         {selectedCollection ? (
@@ -41,12 +42,18 @@ export const ServiceSummary = ({
             {/* Collection info */}
             <div className="p-3 bg-slate-50 rounded-lg">
               <div className="flex items-center gap-3 mb-2">
-                {selectedCollection.imageUrl && (
+                {selectedCollection.imageUrl ? (
                   <img
                     src={selectedCollection.imageUrl}
                     alt={selectedCollection.name}
                     className="w-16 h-16 rounded-lg object-cover"
                   />
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                    <span className="text-xl font-bold text-white uppercase">
+                      {selectedCollection.name?.[0] || "U"}
+                    </span>
+                  </div>
                 )}
                 <div>
                   <h3 className="font-semibold">{selectedCollection.name}</h3>
@@ -78,7 +85,10 @@ export const ServiceSummary = ({
         ) : selectedItems.length > 0 ? (
           <div className="font-medium tracking-tight">
             {selectedItems.map((item) => (
-              <div key={item.id} className="flex justify-between py-2 border-b ">
+              <div
+                key={item.id}
+                className="flex justify-between py-2 border-b "
+              >
                 <span>{item.name}</span>
                 <span>{Number(item.price).toLocaleString()} VND</span>
               </div>

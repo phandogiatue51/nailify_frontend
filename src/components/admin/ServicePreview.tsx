@@ -172,13 +172,19 @@ export const ServicePreview = ({
                         >
                           {service.isActive ? "Active" : "Inactive"}
                         </Badge>
-                        {service.imageUrl && (
+                        {service.imageUrl ? (
                           <div className="w-12 h-12 rounded overflow-hidden">
                             <img
                               src={service.imageUrl}
                               alt={service.name}
                               className="w-full h-full object-cover"
                             />
+                          </div>
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                            <span className="text-2xl font-bold text-white uppercase">
+                              {service.name?.[0] || "U"}
+                            </span>
                           </div>
                         )}
                       </div>

@@ -69,6 +69,11 @@ import { BlogListPage } from "./pages/blogPost/BlogListPage";
 import { EditBlogPostPage } from "./pages/blogPost/EditBlogPostPage";
 import { BlogPostDetailPage } from "./pages/blogPost/BlogPostDetailPage";
 import { MyBlogPage } from "./pages/blogPost/MyBlogPage";
+import RatingManagement from "./pages/admin/RatingManagement";
+import InvoiceManagement from "./pages/admin/InvoiceManagement";
+import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
+import BlogPostManagement from "./pages/admin/BlogPostManagement";
+import { BlogPostDetailModal } from "./components/admin/posts/BlogPostDetailModal";
 
 export const router = createBrowserRouter(
   [
@@ -125,6 +130,15 @@ export const router = createBrowserRouter(
         {
           path: "/blog/edit/:id",
           element: withMobileLayout(<EditBlogPostPage />),
+        },
+
+        {
+          path: "admin/blogs/create",
+          element: (<CreateBlogPostPage />),
+        },
+        {
+          path: "admin/blogs/edit/:id",
+          element: (<EditBlogPostPage />),
         },
         {
           path: "/blog/detail/:id",
@@ -300,6 +314,12 @@ export const router = createBrowserRouter(
             { path: "artists", element: <ArtistsManagement /> },
             { path: "artists/:artistId", element: <AdminArtistDetailPage /> },
             { path: "services", element: <ServicesManagement /> },
+            { path: "ratings", element: <RatingManagement /> },
+            { path: "blogs", element: <BlogPostManagement /> },
+            { path: "blogs/:id", element: <BlogPostDetailModal /> },
+
+            { path: "invoices", element: <InvoiceManagement /> },
+            { path: "subscriptions", element: <SubscriptionManagement /> },
             { path: "collections", element: <CollectionsManagement /> },
           ],
         },

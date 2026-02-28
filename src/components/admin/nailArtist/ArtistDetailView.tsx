@@ -119,13 +119,20 @@ export const ArtistDetailView = ({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          {artist.avatarUrl && (
+          {artist.avatarUrl ? (
             <img
               src={artist.avatarUrl}
               alt={artist.fullName}
-              className="w-16 h-16 rounded-full object-cover border"
+              className="w-12 h-12 rounded-full object-cover border"
             />
+          ) : (
+            <div className="w-12 h-12 rounded-full border flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+              <span className="text-sm font-bold text-white uppercase">
+                {artist.fullName?.[0] || "U"}
+              </span>
+            </div>
           )}
+
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2">
               {artist.fullName}

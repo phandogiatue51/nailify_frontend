@@ -11,7 +11,6 @@ const COMPONENT_TYPES = [
   { value: 3, label: "Design" },
   { value: 4, label: "Gem" },
 ];
-
 export const ServicesTab = ({
   groupedItems,
   serviceItems,
@@ -26,7 +25,7 @@ export const ServicesTab = ({
       <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4">
         {COMPONENT_TYPES.map((type) => (
           <Button
-            key={type.value}
+            key={`type-btn-${type.value}`} // Make sure key is unique
             variant="outline"
             size="sm"
             onClick={() =>
@@ -37,7 +36,10 @@ export const ServicesTab = ({
             <Plus className="w-3 h-3 mr-2 text-[#FFC988]" />
             {type.label}
             {groupedItems?.[type.value]?.length > 0 && (
-              <span className="ml-2 text-[#E288F9] bg-purple-50 px-2 py-0.5 rounded-lg text-[10px]">
+              <span
+                key={`count-${type.value}`} // Add key here too
+                className="ml-2 text-[#E288F9] bg-purple-50 px-2 py-0.5 rounded-lg text-[10px]"
+              >
                 {groupedItems[type.value].length}
               </span>
             )}
@@ -46,14 +48,20 @@ export const ServicesTab = ({
       </div>
 
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20">
+        <div
+          key="loading-state" // Add key
+          className="flex flex-col items-center justify-center py-20"
+        >
           <Loader2 className="w-8 h-8 animate-spin text-[#E288F9]" />
         </div>
       ) : serviceItems?.length > 0 ? (
-        <div className="grid grid-cols-2 gap-4">
+        <div
+          key="items-grid" // Add key
+          className="grid grid-cols-2 gap-4"
+        >
           {serviceItems.map((item) => (
             <ServiceItemCard
-              key={item.id}
+              key={`service-item-${item.id}`} // More explicit key
               item={item}
               showActions
               onEdit={() => navigate(`/my-shop/service-items/edit/${item.id}`)}
@@ -62,11 +70,15 @@ export const ServicesTab = ({
           ))}
         </div>
       ) : (
-        <EmptyTabState
-          title="No services yet"
-          desc="Add your first nail service to start booking."
-          onAction={() => navigate("/my-shop/service-items/create/0")}
-        />
+        <div key="empty-state">
+          {" "}
+          {/* Add key */}
+          <EmptyTabState
+            title="No services yet"
+            desc="Add your first nail service to start booking."
+            onAction={() => navigate("/my-shop/service-items/create/0")}
+          />
+        </div>
       )}
     </div>
   );
