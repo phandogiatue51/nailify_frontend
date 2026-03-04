@@ -120,17 +120,17 @@ export const MobileChatWindow = ({
           </button>
 
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-[#FFCFE9] flex items-center justify-center border border-[#950101]/10 shadow-inner">
-              {conversation.avatarUrl ? (
+            <div>
+              {conversation?.avatarUrl ? (
                 <img
                   src={conversation.avatarUrl}
                   alt={conversation.title}
-                  className="w-12 h-12 rounded-full object-cover border"
+                  className="w-10 h-10 rounded-full object-cover border"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
                   <span className="text-xl font-bold text-white uppercase">
-                    {conversation.title?.[0] || "U"}
+                    {conversation?.title?.[0] || "U"}
                   </span>
                 </div>
               )}

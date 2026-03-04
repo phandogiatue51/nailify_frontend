@@ -101,16 +101,16 @@ export const ConversationList = ({
                 )}
               >
                 <div className="bg-white rounded-full p-0.5">
-                  {conv.avatarUrl ? (
+                  {conv?.avatarUrl ? (
                     <img
                       src={conv.avatarUrl}
                       className="w-12 h-12 rounded-full object-cover"
                       alt=""
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
                       <span className="text-xl font-bold text-white uppercase">
-                        {conv.title?.[0] || "U"}
+                        {conv?.title?.[0] ?? "U"}
                       </span>
                     </div>
                   )}

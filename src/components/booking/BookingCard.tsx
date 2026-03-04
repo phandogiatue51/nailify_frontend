@@ -1,11 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BookingStatusBadge } from "../badge/BookingStatusBadge";
 import DateDisplay from "../ui/date-display";
-import { Loader2 } from "lucide-react";
 import { getStatusConfig } from "../booking-status-config";
 import { ConfirmationDialog } from "../ui/confirmation-dialog";
 import {
@@ -75,7 +73,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
             </h4>
           )}
 
-          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-bold italic mt-2">
+          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-bold italic mt-2 mb-4">
             <MapPin className="w-3 h-3 text-[#FFCFE9]" />
             <span className="truncate">
               {booking.address || "Studio Location"}

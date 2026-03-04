@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useBookings } from "@/hooks/useBookings";
 import BookingCard from "@/components/booking/BookingCard";
-import { BookingStatus } from "@/types/database";
+import { Booking, BookingStatus } from "@/types/database";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { Calendar } from "@/components/ui/calendar";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/popover";
 import { format, endOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 const STATUS_OPTIONS = [
   { label: "All", value: undefined },
@@ -50,6 +51,8 @@ const BookingView: React.FC<BookingViewProps> = ({
     null,
   );
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  const queryClient = useQueryClient(); // Add this
+  const [currentFilters, setCurrentFilters] = useState<any>(null); // Add this
 
   const { locations = [], isLoading: isLoadingLocations } =
     role === "shop"
@@ -58,13 +61,9 @@ const BookingView: React.FC<BookingViewProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 2;
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const refetchFilteredBookings = () => {
+  useEffect(() => {
     const dateToSend = date ? endOfDay(date).toISOString() : null;
+
     const filters: any = {
       Date: dateToSend,
       Status: status,
@@ -96,9 +95,24 @@ const BookingView: React.FC<BookingViewProps> = ({
         break;
     }
 
-    if (Object.keys(filters).some((key) => filters[key] !== undefined)) {
+    if (Object.keys(filters).length > 0) {
+      setCurrentFilters(filters); // Store current filters
       filterBookings.mutate(filters);
     }
+  }, [
+    status,
+    date,
+    auth.user?.userId,
+    auth.user?.nailArtistId,
+    auth.user?.shopId,
+    auth.user?.shopLocationId,
+    role,
+    selectedLocationId,
+  ]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleApprove = (bookingId: string) => {
@@ -108,7 +122,6 @@ const BookingView: React.FC<BookingViewProps> = ({
       {
         onSettled: () => {
           setUpdatingBookingId(null);
-          refetchFilteredBookings();
         },
       },
     );
@@ -121,7 +134,6 @@ const BookingView: React.FC<BookingViewProps> = ({
       {
         onSettled: () => {
           setUpdatingBookingId(null);
-          refetchFilteredBookings();
         },
       },
     );
@@ -134,7 +146,6 @@ const BookingView: React.FC<BookingViewProps> = ({
       {
         onSettled: () => {
           setUpdatingBookingId(null);
-          refetchFilteredBookings();
         },
       },
     );
@@ -147,60 +158,17 @@ const BookingView: React.FC<BookingViewProps> = ({
       {
         onSettled: () => {
           setUpdatingBookingId(null);
-          refetchFilteredBookings();
         },
       },
     );
   };
 
-  useEffect(() => {
-    const dateToSend = date ? endOfDay(date).toISOString() : null;
-    setCurrentPage(1);
-
-    const filters: any = {
-      Date: dateToSend,
-      Status: status,
-    };
-
-    switch (role) {
-      case "customer":
-        if (auth.user?.userId) {
-          filters.CustomerId = auth.user.userId;
-          filterBookings.mutate(filters);
-        }
-        break;
-      case "nailArtist":
-        if (auth.user?.nailArtistId) {
-          filters.NailArtistId = auth.user.nailArtistId;
-          filterBookings.mutate(filters);
-        }
-        break;
-      case "shop":
-        if (auth.user?.shopId) {
-          filters.ShopId = auth.user.shopId;
-          if (selectedLocationId) {
-            filters.ShopLocationId = selectedLocationId;
-          }
-          filterBookings.mutate(filters);
-        }
-        break;
-      case "staff":
-        if (auth.user?.shopLocationId) {
-          filters.ShopLocationId = auth.user.shopLocationId;
-          filterBookings.mutate(filters);
-        }
-        break;
-    }
-  }, [
-    status,
-    date,
-    auth.user,
-    role,
-    filterBookings.mutate,
-    selectedLocationId,
-  ]);
   const isShopOwner = role !== "customer";
-  const { data: bookings, isPending: isLoading } = filterBookings;
+
+  const bookings = currentFilters
+    ? queryClient.getQueryData<Booking[]>(["filteredBookings", currentFilters])
+    : [];
+  const isLoading = filterBookings.isPending;
 
   return (
     <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
@@ -312,7 +280,7 @@ const BookingView: React.FC<BookingViewProps> = ({
 
       {/* Main Content */}
       <div className="px-4">
-        {filterBookings.isPending || (role === "shop" && isLoadingLocations) ? (
+        {isLoading || (role === "shop" && isLoadingLocations) ? (
           <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-slate-200" />
           </div>

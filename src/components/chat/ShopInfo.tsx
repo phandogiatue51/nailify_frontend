@@ -50,22 +50,14 @@ export default function ShopInfoPage() {
         <div className="relative h-64 w-full overflow-hidden">
           {shop.coverUrl ? (
             <div className="space-y-2">
-              <h4 className="font-medium flex items-center gap-2">
-                <Globe className="w-4 h-4" />
-                Cover Image
-              </h4>
               <img
                 src={shop.coverUrl}
                 alt="Cover"
-                className="w-full h-48 object-cover rounded-lg"
+                className="w-full h-full object-cover rounded-lg"
               />
             </div>
           ) : (
-            <div className="w-full h-48 bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-              <span className="text-2xl font-bold text-white uppercase">
-                {shop.name?.[0] || "U"}
-              </span>
-            </div>
+            <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center" />
           )}
 
           {/* Overlay Gradient */}
@@ -74,9 +66,9 @@ export default function ShopInfoPage() {
           {/* Navigation Back */}
           <button
             onClick={() => navigate(-1)}
-            className="absolute top-6 left-4 p-2 bg-black/10 backdrop-blur-md rounded-full text-black hover:bg-black/40 transition-all"
+            className="absolute top-6 left-4 p-2 bg-black/10 backdrop-blur-md rounded-full text-white hover:bg-black/40 transition-all"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-10 h-10" />
           </button>
         </div>
         <div className="w-full mx-auto px-4 -mt-16 relative z-10">
@@ -86,19 +78,15 @@ export default function ShopInfoPage() {
               <div className="p-1 bg-white rounded-full shadow-lg -mt-20">
                 {shop.logoUrl ? (
                   <div className="space-y-2">
-                    <h4 className="font-medium flex items-center gap-2">
-                      <Building className="w-4 h-4" />
-                      Logo
-                    </h4>
                     <img
                       src={shop.logoUrl}
                       alt="Logo"
-                      className="w-32 h-32 object-cover rounded-lg"
+                      className="w-32 h-32 object-cover rounded-full"
                     />
                   </div>
                 ) : (
-                  <div className="w-32 h-32 bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-                    <span className="text-2xl font-bold text-white uppercase">
+                  <div className="w-32 h-32 object-cover rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                    <span className="text-5xl font-bold text-white uppercase">
                       {shop.name?.[0] || "U"}
                     </span>
                   </div>
@@ -109,9 +97,6 @@ export default function ShopInfoPage() {
                 <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">
                   {shop.name}
                 </h1>
-                {shop.isVerified && (
-                  <ShieldCheck className="w-5 h-5 text-[#950101]" />
-                )}
               </div>
 
               <p className="text-slate-500 text-sm font-medium mt-2 leading-relaxed px-4">

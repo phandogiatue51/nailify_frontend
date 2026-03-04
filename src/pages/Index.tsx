@@ -108,7 +108,7 @@ const Index = () => {
       <div className="px-4 pt-6 space-y-4">
         <div>
           <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">
-            Hi, {user?.fullName?.split(" ")[0]}
+            Hi, {user?.fullName}
           </h2>
           <p className="text-[#950101] font-bold text-xs uppercase tracking-[0.15em] opacity-80 mt-2">
             Ready for a fresh set of nails?

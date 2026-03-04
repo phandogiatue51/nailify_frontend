@@ -12,12 +12,15 @@ import { DateScrollPicker } from "@/components/booking/DateScrollPickerProps";
 import { useShopOwnerLocationById } from "@/hooks/useLocation";
 import { useAuth } from "@/hooks/use-auth";
 import { ExistingBookings } from "@/components/booking/ExistingBookings";
+import { useQueryClient } from "@tanstack/react-query"; // Add this import
 
 const RescheduleBooking = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const queryClient = useQueryClient(); // Add queryClient
+
   const {
     useBookingById,
     updateBooking,
@@ -92,6 +95,11 @@ const RescheduleBooking = () => {
         id: booking.id,
         data: { scheduledStart: newDateTime.toISOString() },
       });
+      await queryClient.invalidateQueries({
+        queryKey: ["booking", booking.id],
+      });
+      await queryClient.invalidateQueries({ queryKey: ["bookings"] });
+
       navigate(`/booking/detail/${booking.id}`, { state: { success: true } });
     } catch (error) {
     } finally {
@@ -150,7 +158,7 @@ const RescheduleBooking = () => {
       </div>
 
       <div className="p-4 space-y-6">
-        <div className="rounded-[2rem] p-6 shadow-xl shadow-pink-100 bg-gradient-to-br from-[#f988b3] to-[#FFC988] text-white">
+        <div className="rounded-[2rem] p-6 shadow-xl shadow-pink-100 bg-gradient-to-br from-[#950101] to-[#FFCFE9] text-white">
           <h3 className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">
             Current Appointment
           </h3>
@@ -179,8 +187,8 @@ const RescheduleBooking = () => {
         <Card className="border-none shadow-sm rounded-[2.5rem] bg-white overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 bg-purple-50 rounded-xl">
-                <Clock className="w-5 h-5 text-[#E288F9]" />
+              <div className="p-2 bg-red-50 rounded-xl">
+                <Clock className="w-5 h-5 text-[#950101]" />
               </div>
               <h2 className="text-sm font-black uppercase tracking-tight text-slate-700">
                 Select New Time
@@ -199,7 +207,7 @@ const RescheduleBooking = () => {
                     className={cn(
                       "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
                       isSelected
-                        ? "bg-gradient-to-r from-[#f988b3] to-[#FFC988] text-white scale-95"
+                        ? "bg-gradient-to-r from-[#950101] to-[#FFCFE9] text-white scale-95"
                         : busy
                           ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
                           : "bg-white border-slate-50 text-slate-600 hover:border-slate-200",

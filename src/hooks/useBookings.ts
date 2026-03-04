@@ -94,6 +94,9 @@ export const useBookings = () => {
     mutationFn: async (filter: BookingFilterDto) => {
       return await BookingAPI.filter(filter);
     },
+    onSuccess: (data, filters) => {
+      queryClient.setQueryData(["filteredBookings", filters], data);
+    },
   });
 
   const useShopBookings = (
@@ -298,32 +301,172 @@ export const useBookings = () => {
       status: BookingStatus;
     }) => {
       console.log("DEBUG: mutationFn called with:", { bookingId, status });
-
       return await BookingAPI.updateStatus(bookingId, status);
     },
-    onSuccess: (data, variables) => {
+
+    // Optimistic update - runs BEFORE mutationFn
+    onMutate: async ({ bookingId, status }) => {
+      // Cancel any outgoing refetches to prevent them from overwriting optimistic update
+      await queryClient.cancelQueries({ queryKey: ["booking", bookingId] });
+      await queryClient.cancelQueries({ queryKey: ["customer-bookings"] });
+      await queryClient.cancelQueries({ queryKey: ["shop-auth-bookings"] });
+      await queryClient.cancelQueries({ queryKey: ["artist-auth-bookings"] });
+      await queryClient.cancelQueries({ queryKey: ["staff-auth-bookings"] });
+      await queryClient.cancelQueries({ queryKey: ["filteredBookings"] });
+      await queryClient.cancelQueries({ queryKey: ["bookings"] });
+
+      // Snapshot the previous values for rollback
+      const previousBooking = queryClient.getQueryData(["booking", bookingId]);
+      const previousCustomerBookings = queryClient.getQueryData([
+        "customer-bookings",
+      ]);
+      const previousShopBookings = queryClient.getQueryData([
+        "shop-auth-bookings",
+      ]);
+      const previousArtistBookings = queryClient.getQueryData([
+        "artist-auth-bookings",
+      ]);
+      const previousStaffBookings = queryClient.getQueryData([
+        "staff-auth-bookings",
+      ]);
+      const previousFilteredBookings = queryClient.getQueryData([
+        "filteredBookings",
+      ]);
+
+      // Optimistically update the individual booking
+      queryClient.setQueryData(["booking", bookingId], (old: any) => {
+        if (!old) return old;
+        return { ...old, status };
+      });
+
+      // Optimistically update all booking lists
+      const updateBookingInList = (old: any[] | undefined) => {
+        if (!old) return old;
+        return old.map((booking: any) =>
+          booking.id === bookingId ? { ...booking, status } : booking,
+        );
+      };
+
+      queryClient.setQueriesData(
+        { queryKey: ["customer-bookings"] },
+        updateBookingInList,
+      );
+      queryClient.setQueriesData(
+        { queryKey: ["shop-auth-bookings"] },
+        updateBookingInList,
+      );
+      queryClient.setQueriesData(
+        { queryKey: ["artist-auth-bookings"] },
+        updateBookingInList,
+      );
+      queryClient.setQueriesData(
+        { queryKey: ["staff-auth-bookings"] },
+        updateBookingInList,
+      );
+      queryClient.setQueriesData(
+        { queryKey: ["filteredBookings"] },
+        updateBookingInList,
+      );
+      queryClient.setQueriesData(
+        { queryKey: ["bookings"] },
+        updateBookingInList,
+      );
+
+      // Return context with snapshots for rollback
+      return {
+        previousBooking,
+        previousCustomerBookings,
+        previousShopBookings,
+        previousArtistBookings,
+        previousStaffBookings,
+        previousFilteredBookings,
+      };
+    },
+
+    // If mutation succeeds, invalidate to ensure consistency with server
+    onSuccess: (data, variables, context) => {
       toast({
         description: data.message,
         variant: "success",
         duration: 3000,
       });
 
+      // Invalidate all relevant queries to refetch fresh data
       queryClient.invalidateQueries({ queryKey: ["customer-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
-
+      queryClient.invalidateQueries({ queryKey: ["staff-auth-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["filteredBookings"] });
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
       queryClient.invalidateQueries({
         queryKey: ["booking", variables.bookingId],
       });
+
+      // Also invalidate location/date specific queries
+      queryClient.invalidateQueries({ queryKey: ["location-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["artist-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["shop-bookings"] });
     },
-    onError: (error: any) => {
+
+    // If mutation fails, rollback to previous values
+    onError: (error: any, variables, context) => {
       console.error("Update booking status error:", error);
+
+      // Rollback individual booking
+      if (context?.previousBooking) {
+        queryClient.setQueryData(
+          ["booking", variables.bookingId],
+          context.previousBooking,
+        );
+      }
+
+      // Rollback booking lists
+      if (context?.previousCustomerBookings) {
+        queryClient.setQueryData(
+          ["customer-bookings"],
+          context.previousCustomerBookings,
+        );
+      }
+      if (context?.previousShopBookings) {
+        queryClient.setQueryData(
+          ["shop-auth-bookings"],
+          context.previousShopBookings,
+        );
+      }
+      if (context?.previousArtistBookings) {
+        queryClient.setQueryData(
+          ["artist-auth-bookings"],
+          context.previousArtistBookings,
+        );
+      }
+      if (context?.previousStaffBookings) {
+        queryClient.setQueryData(
+          ["staff-auth-bookings"],
+          context.previousStaffBookings,
+        );
+      }
+      if (context?.previousFilteredBookings) {
+        queryClient.setQueryData(
+          ["filteredBookings"],
+          context.previousFilteredBookings,
+        );
+      }
+
       toast({
-        description: error?.message,
+        description: error?.message || "Failed to update booking status",
         variant: "destructive",
         duration: 5000,
       });
     },
+
+    // Always refetch after error or success to ensure consistency
+    onSettled: (data, error, variables) => {
+      // Optionally refetch critical data
+      queryClient.refetchQueries({
+        queryKey: ["booking", variables.bookingId],
+      });
+    },
+
     retry: 1,
   });
 

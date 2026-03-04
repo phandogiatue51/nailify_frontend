@@ -179,17 +179,16 @@ function ProfileCard({
               </span>
             </div>
           )}
-
-          <div className="absolute bottom-0 right-0">
-            <RoleBadge role={profile.role} />
-          </div>
         </div>
 
         <h1 className="text-2xl font-black text-slate-800 mt-4 uppercase tracking-tighter">
           {profile.fullName}
         </h1>
-        <p className="text-[#950101] font-bold text-xs uppercase tracking-widest mt-1 opacity-70">
+        <p className="text-[#950101] font-bold text-xs uppercase tracking-widest mt-2 opacity-70">
           {profile.email}
+        </p>
+        <p className="mt-2">
+          <RoleBadge role={profile.role} />
         </p>
         {!isCustomer && (
           <Button

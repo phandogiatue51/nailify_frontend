@@ -66,10 +66,10 @@ const ProfilePage = () => {
     <div>
       <Header title="Nailify" hasNotification={true} />
 
-      <div className="pb-20">
-        <div className="bg-gradient-to-b from-slate-50 to-white px-6 pt-10 pb-6 text-center">
+      <div className="pb-20 p-6">
+        <div className=" px-6 pt-10 pb-6 text-center">
           <div className="relative mx-auto w-24 h-24 mb-4">
-            <div className="w-full h-full rounded-full overflow-hidden ring-4 ring-white shadow-md flex items-center justify-center">
+            <div className="w-full h-full rounded-full overflow-hidden ring-4 ring-white shadow-md border border-slate-300 flex items-center justify-center">
               {profile.avatarUrl ? (
                 <img
                   src={profile.avatarUrl}

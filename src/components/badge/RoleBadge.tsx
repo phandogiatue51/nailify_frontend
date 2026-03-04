@@ -29,8 +29,8 @@ export const RoleBadge = ({ role }: { role: number }) => {
   return (
     <span
       className={`
-        px-2 py-0.5 rounded-full 
-        text-[9px] font-black uppercase tracking-widest 
+        px-3 py-1 rounded-full 
+        text-[10px] font-black uppercase tracking-widest 
         border transition-all duration-300
         ${roleInfo.className}
       `}
