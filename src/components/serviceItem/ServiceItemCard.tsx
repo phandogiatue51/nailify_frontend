@@ -63,7 +63,7 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-            <span className="text-2xl font-bold text-white uppercase">
+            <span className="text-5xl font-bold text-white uppercase">
               {item.name?.[0] || "U"}
             </span>
           </div>

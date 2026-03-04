@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { BiSolidLike } from "react-icons/bi";
 import { cn } from "@/lib/utils";
+import { RoleBadge } from "../badge/RoleBadge";
 interface BlogPostCardProps {
   post: BlogPost;
   myReaction?: any;
@@ -50,7 +51,7 @@ export const BlogPostCard = ({
   };
 
   return (
-    <div className="bg-white rounded-[2rem] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-50 transition-all active:scale-[0.99] h-96 overflow-hidden">
+    <div className="bg-white rounded-[2rem] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-50 transition-all active:scale-[0.99] overflow-hidden">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#FFCFE9]/50 flex items-center justify-center border border-[#FFCFE9]">
@@ -69,16 +70,24 @@ export const BlogPostCard = ({
             )}
           </div>
           <div>
-            <h4
-              onClick={handleClick}
-              className="text-sm font-black text-slate-800 leading-none mb-1 cursor-pointer hover:underline"
-            >
-              {post.authorName}
-            </h4>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              {new Date(post.createdAt).toLocaleDateString("vi-VN")}
+            <div className="flex items-center gap-2 mb-1">
+              <h4
+                onClick={handleClick}
+                className="text-sm font-black text-slate-900 leading-none cursor-pointer hover:text-[#950101] transition-colors"
+              >
+                {post.authorName}
+              </h4>
+              <RoleBadge role={post.role} />
+            </div>
+
+            <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">
+              {new Date(post.createdAt).toLocaleDateString("vi-VN", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
             </p>
-          </div>
+          </div>  
         </div>
 
         {post.profileId === user?.userId && (

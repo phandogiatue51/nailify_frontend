@@ -28,12 +28,12 @@ const UsersManagement = () => {
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold">User Management</h1>
+          <h1 className="text-2xl font-bold">Quản lý người dùng</h1>
           <p className="text-muted-foreground">
-            Manage user accounts and permissions
+            Quản lý tất cả người dùng và phân quyền
           </p>
         </div>
-        <div className="text-sm text-muted-foreground">Admin Dashboard</div>
+        <div className="text-sm text-muted-foreground">Nailify Dashboard</div>
       </div>
 
       <UserFilter filters={filters} onFilterChange={setFilters} />

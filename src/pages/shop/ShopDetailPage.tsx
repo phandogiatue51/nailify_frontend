@@ -3,8 +3,6 @@ import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import {
   useCustomerShopById,
-  useCustomerServiceItems,
-  useCustomerCollections,
   useAllCustomerCollections,
 } from "@/hooks/useCustomer";
 import {
@@ -17,29 +15,26 @@ import {
   Heart,
   Search,
   X,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import CollectionCard from "@/components/collection/CollectionCard";
 import { useStartConversation } from "@/hooks/useChat";
 import { useQuery } from "@tanstack/react-query";
-import { tagAPI } from "@/services/api";
+import { ratingAPI, tagAPI } from "@/services/api";
 import { TagDto } from "@/types/type";
 import { CollectionFilterDto, TagCategory } from "@/types/filter";
 import { TagBadge } from "@/components/badge/TagBadge";
+import { RatingSummaryDto } from "@/types/database";
 
 const ShopDetailPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const navigate = useNavigate();
   const { user, loading } = useAuthContext();
+  const [shopRating, setShopRating] = useState<RatingSummaryDto | null>(null);
+  const [ratingLoading, setRatingLoading] = useState(false);
 
   // Filter states
   const [searchName, setSearchName] = useState("");
@@ -101,7 +96,28 @@ const ShopDetailPage = () => {
     setSelectedTags([]);
   };
 
-  // Count active filters
+  useEffect(() => {
+    const fetchShopRating = async () => {
+      if (!shop?.id) {
+        return;
+      }
+
+      setRatingLoading(true);
+      try {
+        const response = await ratingAPI.getByShopId(shop.id);
+
+        setShopRating(response);
+      } catch (error) {
+        console.error("Failed to fetch shop rating:", error);
+        setShopRating(null);
+      } finally {
+        setRatingLoading(false);
+      }
+    };
+
+    fetchShopRating();
+  }, [shop?.id]);
+
   const activeFilterCount = selectedTags.length + (searchName ? 1 : 0);
 
   const handleShopChat = async () => {
@@ -165,18 +181,44 @@ const ShopDetailPage = () => {
       {/* Shop Info Card */}
       <div className="px-6 -mt-16 relative z-10">
         <div className="bg-white rounded-[2.5rem] p-6 shadow-xl shadow-slate-200/50 border border-white">
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">
-              {shop.name}
-            </h1>
+          <div className="flex justify-between items-start">
+            {/* Left Side: Name and Rating */}
+            <div className="space-y-2">
+              <h1 className="text-3xl font-black tracking-tight text-slate-900 leading-none">
+                {shop.name}
+              </h1>
 
+              {/* Rating Section */}
+              {ratingLoading ? (
+                <div className="inline-flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100">
+                  <Loader2 className="w-3 h-3 animate-spin text-slate-400" />
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                    Loading...
+                  </span>
+                </div>
+              ) : (
+                shopRating && (
+                  <div className="inline-flex items-center gap-1.5 bg-amber-50/50 px-2.5 py-1 rounded-full border border-amber-100 text-sm font-black">
+                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <span className="text-slate-700">
+                      {shopRating.averageRating.toFixed(1)}
+                    </span>
+                    <span className="text-slate-400">
+                      ({shopRating.totalRatings})
+                    </span>
+                  </div>
+                )
+              )}
+            </div>
+
+            {/* Right Side: Logo */}
             {shop.logoUrl ? (
               <img
                 src={shop.logoUrl}
-                className="w-16 h-16 rounded-full object-cover border-2 border-slate-50 shadow-sm"
+                className="w-16 h-16 rounded-full object-cover border-2 border-slate-50 shadow-sm shrink-0"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full border-2 border-slate-50 shadow-sm bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full border-2 border-slate-50 shadow-sm bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center shrink-0">
                 <span className="text-xl font-bold text-white uppercase">
                   {shop.name?.[0] || "U"}
                 </span>
@@ -184,7 +226,8 @@ const ShopDetailPage = () => {
             )}
           </div>
 
-          <p className="text-sm text-slate-400 leading-relaxed italic mt-3">
+          {/* Description */}
+          <p className="text-sm text-slate-400 leading-relaxed italic border-t border-slate-50">
             "{shop.description || "Welcome to our studio."}"
           </p>
         </div>

@@ -23,10 +23,10 @@ export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
                 <img
                   src={shop.logoUrl}
                   alt={shop.name}
-                  className="w-12 h-12 rounded-lg object-cover border"
+                  className="w-12 h-12 rounded-full object-cover border"
                 />
               ) : (
-                <div className="w-12 h-12 object-cover border rounded-lg flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+                <div className="w-12 h-12 object-cover border rounded-full flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
                   <span className="text-xl font-bold text-white uppercase">
                     {shop.name?.[0] || "U"}
                   </span>

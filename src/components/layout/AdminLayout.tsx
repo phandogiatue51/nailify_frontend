@@ -30,16 +30,15 @@ const AdminLayout: React.FC = () => {
 
   const menuItems = [
     { path: "/admin", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/admin/users", icon: Users, label: "Users" },
-    { path: "/admin/shops", icon: Store, label: "Shops" },
-    { path: "/admin/artists", icon: Palette, label: "Nail Artists" },
-    { path: "/admin/services", icon: Scissors, label: "Services" },
-    { path: "/admin/collections", icon: Layers, label: "Collections" },
-    { path: "/admin/ratings", icon: Star, label: "Ratings" },
-    { path: "/admin/blogs", icon: PenTool, label: "Journal Posts" },
-    { path: "/admin/invoices", icon: FileText, label: "Invoices" },
-    { path: "/admin/subscriptions", icon: CreditCard, label: "Subscriptions" },
-    { path: "/admin/chat", icon: MessageCircle, label: "Chats" },
+    { path: "/admin/users", icon: Users, label: "Người dùng" },
+    { path: "/admin/shops", icon: Store, label: "Cửa hàng" },
+    { path: "/admin/artists", icon: Palette, label: "Thợ nail" },
+    { path: "/admin/services", icon: Scissors, label: "Dịch vụ" },
+    { path: "/admin/collections", icon: Layers, label: "Bộ sưu tập" },
+    { path: "/admin/ratings", icon: Star, label: "Đánh giá" },
+    { path: "/admin/blogs", icon: PenTool, label: "Bài đăng" },
+    { path: "/admin/invoices", icon: FileText, label: "Hóa đơn" },
+    { path: "/admin/subscriptions", icon: CreditCard, label: "Gói đăng ký" },
   ];
 
   const handleSignOut = async () => {
@@ -118,7 +117,7 @@ const AdminLayout: React.FC = () => {
           <button
             onClick={handleSignOut}
             disabled={loading}
-            className="group flex items-center gap-4 px-4 py-4 text-slate-400 hover:text-red-500 transition-all w-full rounded-2xl hover:bg-red-50"
+            className="group flex items-center gap-4 px-4 py-4 text-red-400 hover:text-red-500 transition-all w-full rounded-2xl hover:bg-red-50"
           >
             <LogOut
               size={20}

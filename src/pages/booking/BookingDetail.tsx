@@ -17,6 +17,7 @@ import { BookingActions } from "@/components/booking/detail/BookingActions";
 import { useAuth } from "@/hooks/use-auth";
 import { BookingStatus } from "@/types/database";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { RatingCard } from "@/components/booking/detail/RatingCard";
 
 const BookingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -116,18 +117,26 @@ const BookingDetail = () => {
                     name={booking.customerName}
                     phone={booking.customerPhone}
                   />
-                ) : <CustomerInfo
-                  name={booking.customerName}
-                  phone={booking.customerPhone}
-                  address={booking.address}
-                />
-                }
+                ) : (
+                  <CustomerInfo
+                    name={booking.customerName}
+                    phone={booking.customerPhone}
+                    address={booking.address}
+                  />
+                )}
 
                 <LocationInfo
                   shopLocation={shopLocation}
                   nailArtist={nailArtist}
                   booking={booking}
                 />
+
+                {booking.ratings && (
+                  <RatingCard
+                    ratings={booking.ratings}
+                    comment={booking.comment}
+                  />
+                )}
 
                 <HelpCard />
               </div>

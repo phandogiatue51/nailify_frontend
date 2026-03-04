@@ -31,12 +31,12 @@ const CollectionsManagement = () => {
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Collections Management</h1>
+          <h1 className="text-2xl font-bold">Quản lý bộ sưu tập</h1>
           <p className="text-muted-foreground">
-            Browse and manage all collections
+            Tìm kiếm các bộ sưu tập do cửa hàng và thợ nail phát hành
           </p>
         </div>
-        <div className="text-sm text-muted-foreground">Admin Dashboard</div>
+        <div className="text-sm text-muted-foreground">Nailify Dashboard</div>
       </div>
 
       {/* Filter Section */}

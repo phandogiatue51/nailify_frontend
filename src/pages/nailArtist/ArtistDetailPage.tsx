@@ -31,11 +31,12 @@ import {
 import CollectionCard from "@/components/collection/CollectionCard";
 import { useStartConversation } from "@/hooks/useChat";
 import { useQuery } from "@tanstack/react-query";
-import { tagAPI } from "@/services/api";
+import { ratingAPI, tagAPI } from "@/services/api";
 import { TagDto } from "@/types/type";
 import { TagCategory } from "@/types/filter";
 import { CollectionFilterDto } from "@/types/filter";
 import { TagBadge } from "@/components/badge/TagBadge";
+import { RatingSummaryDto } from "@/types/database";
 
 const ArtistDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -46,6 +47,11 @@ const ArtistDetailPage = () => {
   const [searchName, setSearchName] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const [artistRating, setArtistRating] = useState<RatingSummaryDto | null>(
+    null,
+  );
+  const [ratingLoading, setRatingLoading] = useState(false);
 
   const { data: artist, isLoading: artistLoading } = useCustomerArtistById(id);
   const startConversation = useStartConversation();
@@ -64,7 +70,28 @@ const ArtistDetailPage = () => {
     return () => clearTimeout(timer);
   }, [searchName]);
 
-  // Build filter params with artistId
+  useEffect(() => {
+    const fetchArtistRating = async () => {
+      if (!artist?.id) {
+        return;
+      }
+
+      setRatingLoading(true);
+      try {
+        const response = await ratingAPI.getByArtistId(artist.id);
+
+        setArtistRating(response);
+      } catch (error) {
+        console.error("Failed to fetch artist rating:", error);
+        setArtistRating(null);
+      } finally {
+        setRatingLoading(false);
+      }
+    };
+
+    fetchArtistRating();
+  }, [artist?.id]);
+
   const filterParams = useMemo(() => {
     if (!id) return undefined;
 
@@ -135,11 +162,11 @@ const ArtistDetailPage = () => {
           <img
             src={artist.avatarUrl}
             alt={artist.fullName}
-            className="w-16 h-16 rounded-lg object-cover"
+            className="w-full h-full rounded-lg object-cover"
           />
         ) : (
-          <div className="w-16 h-16 rounded-lg object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-            <span className="text-xl font-bold text-white uppercase">
+          <div className="w-full h-full rounded-lg object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+            <span className="text-4xl font-bold text-white uppercase">
               {artist.fullName?.[0] || "U"}
             </span>
           </div>
@@ -169,19 +196,33 @@ const ArtistDetailPage = () => {
         {/* Artist Info Overlay */}
         <div className="absolute bottom-6 left-6 right-6">
           <div className="flex items-center gap-2 mb-2">
-            <Badge className="bg-[#FFC988] text-slate-900 font-black border-none">
-              {artist.isVerified ? "VERIFIED ARTIST" : "ARTIST"}
-            </Badge>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tighter mb-1">
+              {artist.fullName}
+            </h1>
             <div className="flex items-center gap-1 bg-white/80 backdrop-blur px-2 py-0.5 rounded-full">
-              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-              <span className="text-xs font-bold">
-                {artist.rating?.toFixed(1) || "0.0"}
-              </span>
+              {ratingLoading ? (
+                <div className="inline-flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100">
+                  <Loader2 className="w-3 h-3 animate-spin text-slate-400" />
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                    Loading...
+                  </span>
+                </div>
+              ) : (
+                artistRating && (
+                  <div className="inline-flex items-center gap-1.5 bg-amber-50/50 px-2.5 py-1 rounded-full border border-amber-100 text-sm font-black">
+                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <span className="text-slate-700">
+                      {artistRating.averageRating.toFixed(1)}
+                    </span>
+                    <span className="text-slate-400">
+                      ({artistRating.totalRatings})
+                    </span>
+                  </div>
+                )
+              )}
             </div>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter mb-1">
-            {artist.fullName}
-          </h1>
+
           {artist.bio && (
             <p className="text-sm text-slate-600 line-clamp-2">{artist.bio}</p>
           )}

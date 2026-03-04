@@ -21,10 +21,10 @@ const InvoiceManagement = () => {
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Invoice Management</h1>
-          <p className="text-muted-foreground">Manage invoices</p>
+          <h1 className="text-2xl font-bold">Quản lý hóa đơn</h1>
+          <p className="text-muted-foreground">Theo dõi các hóa đơn đến từ các gói đăng ký</p>
         </div>
-        <div className="text-sm text-muted-foreground">Admin Dashboard</div>
+        <div className="text-sm text-muted-foreground">Nailify Dashboard</div>
       </div>
     </div>
   );

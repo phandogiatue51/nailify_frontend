@@ -22,9 +22,7 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-2xl font-bold text-primary">
-            {shop.name?.[0]}
-          </span>
+          <span className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center" />
         )}
         {shop.logoUrl ? (
           <div className="absolute -bottom-6 left-4 w-14 h-14 rounded-xl border-4 border-background overflow-hidden bg-background">
@@ -35,7 +33,7 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
             />
           </div>
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+          <div className="absolute -bottom-6 left-4 w-14 h-14 rounded-xl border-4 border-background overflow-hidden bg-background bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
             <span className="text-2xl font-bold text-white uppercase">
               {shop.name?.[0] || "U"}
             </span>

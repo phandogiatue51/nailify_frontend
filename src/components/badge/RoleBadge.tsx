@@ -1,23 +1,24 @@
-const roleMap: Record<number, { label: string; color: string }> = {
+const roleMap: Record<number, { label: string; className: string }> = {
   0: {
-    label: "Customer",
-    color: "bg-gradient-to-r from-sky-100 to-sky-300 text-sky-900",
+    label: "Khách hàng",
+    className: "bg-slate-100 text-slate-500 border-slate-200",
   },
   1: {
-    label: "Shop Owner",
-    color: "bg-gradient-to-r from-indigo-100 to-indigo-300 text-indigo-900",
+    label: "Cửa hàng",
+    className: "bg-[#FFCFE9]/30 text-[#D81B60] border-[#FFCFE9]/50",
   },
   2: {
-    label: "Admin",
-    color: "bg-gradient-to-r from-red-100 to-red-300 text-red-900",
+    label: "Hệ thống",
+    className:
+      "bg-slate-900 text-white shadow-lg shadow-black/10 border-slate-800 ring-1 ring-slate-900/10",
   },
   3: {
-    label: "Manager",
-    color: "bg-gradient-to-r from-green-100 to-green-300 text-green-900",
+    label: "Quản lý cửa hàng",
+    className: "bg-slate-800 text-white border-slate-700",
   },
   4: {
-    label: "Nail Artist",
-    color: "bg-gradient-to-r from-pink-100 to-pink-300 text-pink-900",
+    label: "Thợ nail",
+    className: "bg-[#950101]/10 text-[#950101] border-[#950101]/20",
   },
 };
 
@@ -27,7 +28,12 @@ export const RoleBadge = ({ role }: { role: number }) => {
 
   return (
     <span
-      className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${roleInfo.color}`}
+      className={`
+        px-2 py-0.5 rounded-full 
+        text-[9px] font-black uppercase tracking-widest 
+        border transition-all duration-300
+        ${roleInfo.className}
+      `}
     >
       {roleInfo.label}
     </span>

@@ -67,7 +67,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-            <span className="text-2xl font-bold text-white uppercase">
+            <span className="text-5xl font-bold text-white uppercase">
               {collection.name?.[0] || "U"}
             </span>
           </div>

@@ -130,7 +130,7 @@ export const CollectionDetailModal = ({
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
-                    <span className="text-2xl font-bold text-white uppercase">
+                    <span className="text-5xl font-bold text-white uppercase">
                       {collection.name?.[0] || "U"}
                     </span>
                   </div>

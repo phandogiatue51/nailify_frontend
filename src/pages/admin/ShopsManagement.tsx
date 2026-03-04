@@ -28,10 +28,10 @@ const ShopsManagement = () => {
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Shops Management</h1>
-          <p className="text-muted-foreground">Manage and verify shops</p>
+          <h1 className="text-2xl font-bold">Quản lý cửa hàng</h1>
+          <p className="text-muted-foreground">Quản lý và xác minh cửa hàng</p>
         </div>
-        <div className="text-sm text-muted-foreground">Admin Dashboard</div>
+        <div className="text-sm text-muted-foreground">Nailify Dashboard</div>
       </div>
 
       <ShopFilter filters={filters} onFilterChange={setFilters} />

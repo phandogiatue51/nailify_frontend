@@ -30,12 +30,12 @@ const ArtistsManagement = () => {
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Artists Management</h1>
+          <h1 className="text-2xl font-bold">Quản lý thợ nail</h1>
           <p className="text-muted-foreground">
-            Manage and verify nail artists
+            Quản lý và xác minh thợ nail
           </p>
         </div>
-        <div className="text-sm text-muted-foreground">Admin Dashboard</div>
+        <div className="text-sm text-muted-foreground">Nailify Dashboard</div>
       </div>
 
       <ArtistFilter filters={filters} onFilterChange={setFilters} />

@@ -15,10 +15,10 @@ export default function BlogPostManagement() {
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Blog Post Management</h1>
-          <p className="text-muted-foreground">Manage and verify shops</p>
+          <h1 className="text-2xl font-bold">Quản lý bài đăng</h1>
+          <p className="text-muted-foreground">Quản lý các bài đăng trên diễn đàn</p>
         </div>
-        <div className="text-sm text-muted-foreground">Admin Dashboard</div>
+        <div className="text-sm text-muted-foreground">Nailify Dashboard</div>
       </div>
       <BlogPostFilter filters={filters} onFilterChange={handleFilterChange} />
 

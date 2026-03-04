@@ -99,9 +99,9 @@ const AdminDashboard = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold">Nailify Dashboard</h1>
         <p className="text-muted-foreground">
-          Monitor and manage your platform
+          Theo dõi và quản lý hệ thống
         </p>
       </div>
 

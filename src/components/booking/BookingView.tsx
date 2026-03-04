@@ -56,7 +56,7 @@ const BookingView: React.FC<BookingViewProps> = ({
       ? useShopOwnerLocations()
       : { locations: [], isLoading: false };
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 4;
+  const pageSize = 2;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

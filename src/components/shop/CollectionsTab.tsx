@@ -8,13 +8,15 @@ export const CollectionsTab = ({ collections, isLoading, onDelete }) => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <Button
-        onClick={() => navigate("/my-shop/collections/create")}
-        className="w-full h-14 rounded-[1.5rem] bg-gradient-to-r from-[#950101] to-[#D81B60] text-white font-black border-none shadow-lg shadow-purple-100 active:scale-95 transition-all"
-      >
-        <Plus className="w-5 h-5 mr-2" />
-        CREATE NEW COLLECTION
-      </Button>
+      <div className="flex justify-center w-full">
+        <Button
+          onClick={() => navigate("/my-shop/collections/create")}
+          className="w-auto px-10 h-12 text-[11px] tracking-[0.2em] rounded-[1.5rem] bg-gradient-to-r from-[#950101] to-[#D81B60] text-white font-black border-none shadow-xl shadow-[#950101]/20 active:scale-95 transition-all flex items-center justify-center"
+        >
+          <Plus className="w-4 h-4 mr-3 stroke-[3px]" />
+          CREATE NEW COLLECTION
+        </Button>
+      </div>
 
       {isLoading ? (
         <div className="flex justify-center py-20">

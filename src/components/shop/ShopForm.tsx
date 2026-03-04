@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Upload, X } from "lucide-react";
 import { Shop } from "@/types/database";
+import { cn } from "@/lib/utils";
 
 interface ShopFormProps {
   initialData?: Partial<Shop>;
@@ -203,13 +204,20 @@ const ShopForm: React.FC<ShopFormProps> = ({
 
       <Button
         type="submit"
-        className="w-full"
         disabled={isLoading || uploading || !name}
+        className={cn(
+          "w-full h-12 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.3em] transition-all duration-300 shadow-xl shadow-[#950101]/20 active:scale-[0.98] border-none text-white",
+          "bg-gradient-to-r from-[#950101] to-[#D81B60] disabled:grayscale disabled:opacity-50",
+        )}
       >
         {isLoading || uploading ? (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        ) : null}
-        {initialData ? "Update Shop" : "Create Shop"}
+          <div className="flex items-center justify-center gap-3">
+            <Loader2 className="w-4 h-4 animate-spin stroke-[3px]" />
+            <span>{uploading ? "Uploading..." : "Processing..."}</span>
+          </div>
+        ) : (
+          <span>{initialData ? "Update Shop" : "Create New Studio"}</span>
+        )}
       </Button>
     </form>
   );

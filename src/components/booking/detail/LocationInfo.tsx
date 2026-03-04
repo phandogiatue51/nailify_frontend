@@ -1,17 +1,16 @@
-import { MapPin, Star } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { artistAPI, LocationAPI, shopAPI } from "@/services/api";
+import { artistAPI, LocationAPI } from "@/services/api";
 
-export const LocationInfo = ({ shopLocation, nailArtist, booking }: any) => {
-  const { data: artist, isLoading: artistLoading } = useQuery({
+export const LocationInfo = ({ booking }: any) => {
+  const { data: artist } = useQuery({
     queryKey: ["artist", booking.nailArtistId],
     queryFn: () => artistAPI.getById(booking.nailArtistId),
     enabled: !!booking.nailArtistId,
   });
 
-  const { data: shop, isLoading: shopLoading } = useQuery({
+  const { data: shop } = useQuery({
     queryKey: ["shop", booking.shopLocationId],
     queryFn: () => LocationAPI.getById(booking.shopLocationId),
     enabled: !!booking.shopLocationId,

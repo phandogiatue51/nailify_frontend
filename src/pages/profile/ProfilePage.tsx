@@ -77,7 +77,7 @@ const ProfilePage = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-2xl font-bold text-white uppercase bg-gradient-to-br from-[#950101] to-[#FFCFE9] w-full h-full flex items-center justify-center rounded-full">
+                <span className="text-5xl font-bold text-white uppercase bg-gradient-to-br from-[#950101] to-[#FFCFE9] w-full h-full flex items-center justify-center rounded-full">
                   {profile.fullName?.[0] || "U"}
                 </span>
               )}

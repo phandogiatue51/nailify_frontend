@@ -299,6 +299,7 @@ export interface BlogPost {
   nailArtistId?: string;
   shopId?: string;
   profileId: string;
+  role: number;
   authorName: string;
   authorAvatarUrl: string | null;
   totalReactions: number;
