@@ -823,6 +823,40 @@ export const reactionAPI = {
     }),
 };
 
+export const subscriptionAPI = {
+  getAll: () => apiRequest(`/Subscription`),
+
+  getById: (id: string) =>
+    apiRequest(`/Subscription/${id}`, {
+      method: "GET",
+    }),
+
+  updateSub: (id: string, formData: FormData) =>
+    apiRequest(`/Subscription/${id}`, {
+      method: "PUT",
+      body: formData,
+    }),
+
+  subscribe: (id: string) =>
+    apiRequest(`/Subscription/${id}`, {
+      method: "POST",
+    }),
+};
+
+export const invoiceAPI = {
+  getAll: () => apiRequest(`/Invoice`),
+
+  getById: (id: string) =>
+    apiRequest(`/Invoice/${id}`, {
+      method: "GET",
+    }),
+
+  getByIdAuth: (id: string) =>
+    apiRequest(`/Invoice/auth/${id}`, {
+      method: "GET",
+    }),
+};
+
 // In api.ts
 export const buildQuery = (params?: Record<string, any>): string => {
   if (!params) return "";

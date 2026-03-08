@@ -57,7 +57,7 @@ const ExplorePage = () => {
   return (
     <div>
       <div className="bg-slate-50/50 min-h-screen">
-        <Header title="Nailify" hasNotification={true} />
+        <Header title="Nailify"/>
         <div className="bg-white px-6 pt-8 pb-6 rounded-b-[3rem] shadow-sm">
           <div className="flex items-center gap-2 text-[#950101] mb-2">
             <Sparkles className="w-4 h-4" />

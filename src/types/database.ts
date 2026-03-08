@@ -2,6 +2,9 @@ export type UserRole = 0 | 1 | 2 | 3 | 4; // 0: Customer, 1: Shop Owner, 2: Admi
 export type ComponentType = 0 | 1 | 2 | 3 | 4; // 0: Form, 1: Base, 2: Shape, 3: Polish, 4: Design
 export type BookingStatus = 0 | 1 | 2 | 3 | 4; // 0: Pending, 1: Approved, 2: Rejected, 3: Completed, 4: Cancelled
 export type ReactionType = 0 | 1 | 2 | 3 | 4 | 5; // 0: Like, 1: Love, 2: Care, 3: Wow, 4: Sad, 5: Angry
+export type SubscriptionStatus = 0 | 1 | 2 | 3; // 0: Active, 1: Expired, 2: Cancelled, 3: Pending
+export type SubscriptionTier = 0 | 1 | 2 | 3; // 0: Free, 1: Basic, 2: Premium, 3: Business
+export type InvoiceStatus = 0 | 1 | 2 | 3; // 0: Pending, 1: Paid, 2: Overdue, 3: Cancelled
 
 import { TagDto } from "./type";
 
@@ -329,4 +332,59 @@ export interface Reaction {
   reactorAvatarUrl: string | null;
   type: ReactionType;
   reactedAt: string;
+}
+
+export interface UserSubscription {
+  id: string;
+  userId: string;
+  fullName?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  subscriptionPlanId: string;
+  planName?: string | null;
+  startDate: string;
+  endDate?: string | null;
+  status: SubscriptionStatus;
+  isActive: boolean;
+  isExpired: boolean;
+  daysRemaining?: number | null;
+}
+
+export interface Subscription {
+  id: string;
+  imageUrl?: string | null;
+  name: string | null;
+  description: string | null;
+  price?: number | null;
+  iconUrl?: string | null;
+  colorHex?: string | null;
+  maxPostsPerDay?: number | null;
+  maxImagesPerPost?: number | null;
+  maxServices?: number | null;
+  maxCollections?: number | null;
+  tier?: SubscriptionTier | null;
+  durationDays?: number | null;
+}
+
+export interface Invoice {
+  id: string;
+  issuedAt: Date;
+  dueDate?: Date;
+
+  totalAmount: number;
+  amountPaid?: number;
+  paidAt?: Date;
+
+  status: InvoiceStatus;
+  orderCode?: number;
+  userId: string;
+  fullName?: string;
+  phone?: string;
+  email?: string;
+
+  userSubscriptionId?: string;
+  subscriptionPlanId: string;
+  planName?: string;
+  startDate: Date;
+  endDate?: Date;
 }

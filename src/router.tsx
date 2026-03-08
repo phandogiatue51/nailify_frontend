@@ -74,6 +74,8 @@ import InvoiceManagement from "./pages/admin/InvoiceManagement";
 import SubscriptionManagement from "./pages/admin/SubscriptionManagement";
 import BlogPostManagement from "./pages/admin/BlogPostManagement";
 import { BlogPostDetailModal } from "./components/admin/posts/BlogPostDetailModal";
+import SuccessPage from "./pages/payment/SuccessPage";
+import CancelPage from "./pages/payment/CancelPage";
 
 export const router = createBrowserRouter(
   [
@@ -86,6 +88,16 @@ export const router = createBrowserRouter(
 
         { path: "auth", element: <AuthPage /> },
         { path: "profile", element: withMobileLayout(<ProfilePage />) },
+
+        {
+          path: "payment/success",
+          element: withMobileLayout(<SuccessPage />),
+        },
+        {
+          path: "payment/cancel",
+          element: withMobileLayout(<CancelPage />),
+        },
+
         {
           path: "profile/:id/info",
           element: withMobileLayout(<ProfileInfoPage />),
@@ -134,11 +146,11 @@ export const router = createBrowserRouter(
 
         {
           path: "admin/blogs/create",
-          element: (<CreateBlogPostPage />),
+          element: <CreateBlogPostPage />,
         },
         {
           path: "admin/blogs/edit/:id",
-          element: (<EditBlogPostPage />),
+          element: <EditBlogPostPage />,
         },
         {
           path: "/blog/detail/:id",

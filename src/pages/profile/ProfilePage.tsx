@@ -64,7 +64,7 @@ const ProfilePage = () => {
 
   return (
     <div>
-      <Header title="Nailify" hasNotification={true} />
+      <Header title="Nailify"/>
 
       <div className="pb-20 p-6">
         <div className=" px-6 pt-10 pb-6 text-center">

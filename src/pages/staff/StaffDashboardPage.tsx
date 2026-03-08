@@ -39,7 +39,7 @@ export const StaffDashboardPage = () => {
 
   return (
     <div>
-      <Header title="Nailify" hasNotification={true} />
+      <Header title="Nailify"/>
 
       <div className="min-h-screen bg-slate-50/50 px-6 pt-8">
         <div className="flex items-center justify-between mb-6">

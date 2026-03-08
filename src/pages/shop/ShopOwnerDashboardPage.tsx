@@ -28,7 +28,7 @@ const ShopOwnerDashboardPage = () => {
   if (!myShop) {
     return (
       <div>
-        <Header title="Nailify" hasNotification={true} />
+        <Header title="Nailify"/>
 
         <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center space-y-6">
           <div className="w-24 h-24 bg-slate-50 rounded-[3rem] flex items-center justify-center shadow-inner">
@@ -56,7 +56,7 @@ const ShopOwnerDashboardPage = () => {
 
   return (
     <div>
-      <Header title="Nailify" hasNotification={true} />
+      <Header title="Nailify"/>
 
       <div className="p-6 space-y-8 bg-slate-50/30 min-h-screen">
         {/* Header Section */}

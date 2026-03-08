@@ -4,21 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle,
-  XCircle,
   Eye,
   Star,
   Mail,
   Phone,
-  Calendar,
-  MoreVertical,
-  User,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { CollectionPreview } from "../CollectionPreview";
 import { ServicePreview } from "../ServicePreview";
 import DateDisplay from "@/components/ui/date-display";

@@ -39,7 +39,7 @@ const NailArtistDashboardPage = () => {
   if (!myArtist) {
     return (
       <div>
-        <Header title="Nailify" hasNotification={true} />
+        <Header title="Nailify"/>
 
         <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
@@ -69,7 +69,7 @@ const NailArtistDashboardPage = () => {
 
   return (
     <div>
-      <Header title="Nailify" hasNotification={true} />
+      <Header title="Nailify"/>
 
       <div className="min-h-screen bg-slate-50/50 px-6 pt-8">
         <div className="flex items-center justify-between mb-6">

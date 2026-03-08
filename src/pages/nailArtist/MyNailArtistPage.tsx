@@ -51,7 +51,7 @@ const MyNailArtistPage = () => {
 
   return (
     <div>
-      <Header title="Nailify" hasNotification={true} />
+      <Header title="Nailify"/>
 
       <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
         {/* Profile Header */}
