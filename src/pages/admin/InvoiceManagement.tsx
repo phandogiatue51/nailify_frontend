@@ -1,9 +1,15 @@
+// pages/admin/InvoiceManagement.tsx
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { InvoiceList } from "@/components/admin/invoices/InvoiceList";
+import InvoiceFilter from "@/components/admin/invoices/InvoiceFilter";
+import { InvoiceFilterDto } from "@/types/filter";
+import { useState } from "react";
 
 const InvoiceManagement = () => {
   const { user, loading } = useAuthContext();
+  const [filters, setFilters] = useState<InvoiceFilterDto>({});
 
   if (loading) {
     return (
@@ -22,10 +28,20 @@ const InvoiceManagement = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Quản lý hóa đơn</h1>
-          <p className="text-muted-foreground">Theo dõi các hóa đơn đến từ các gói đăng ký</p>
+          <p className="text-muted-foreground">
+            Theo dõi các hóa đơn đến từ các gói đăng ký
+          </p>
         </div>
         <div className="text-sm text-muted-foreground">Nailify Dashboard</div>
       </div>
+
+      {/* Filters */}
+      <div className="mb-6">
+        <InvoiceFilter filters={filters} onFilterChange={setFilters} />
+      </div>
+
+      {/* Invoice List - Full width now */}
+      <InvoiceList filters={filters} isAdmin={true} />
     </div>
   );
 };

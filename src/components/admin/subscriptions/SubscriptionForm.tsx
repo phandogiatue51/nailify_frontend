@@ -240,7 +240,7 @@ export const SubscriptionForm = ({
                 <div className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50 border border-slate-100">
                   <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
                     {formData.iconUrl &&
-                    Icons[formData.iconUrl as keyof typeof Icons] ? (
+                      Icons[formData.iconUrl as keyof typeof Icons] ? (
                       React.createElement(
                         Icons[formData.iconUrl as keyof typeof Icons],
                         { className: "w-6 h-6 text-slate-900" },
@@ -500,7 +500,8 @@ export const SubscriptionForm = ({
                   />
                 ) : (
                   <p className="text-lg font-black text-emerald-600 tracking-tight">
-                    ${subscription.price || "0"}
+                    {subscription.price ? Number(subscription.price).toLocaleString() : "0"} VNĐ
+
                   </p>
                 )}
               </div>

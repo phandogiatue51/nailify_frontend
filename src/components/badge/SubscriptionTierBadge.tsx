@@ -1,46 +1,43 @@
-const roleMap: Record<
-  number,
-  { label: string; color: string; border: string }
-> = {
-  0: {
-    label: "Free",
-    color: "bg-gradient-to-r from-purple-100 to-purple-300 text-purple-900",
-    border: "border-purple-300",
-  },
-  1: {
-    label: "Basic",
-    color: "bg-gradient-to-r from-yellow-100 to-yellow-300 text-yellow-900",
-    border: "border-yellow-300",
-  },
-  2: {
-    label: "Premium",
-    color: "bg-gradient-to-r from-pink-100 to-pink-300 text-pink-900",
-    border: "border-pink-300",
-  },
-  3: {
-    label: "Business",
-    color: "bg-gradient-to-r from-teal-100 to-teal-300 text-teal-900",
-    border: "border-teal-300",
-  },
-};
+import { useState, useEffect } from "react";
+import * as FaIcons from "react-icons/fa";
+import { Subscription } from "@/types/database";
+import { subscriptionAPI } from "@/services/api";
 
-export const SubscriptionTierBadge = ({ role }: { role: number }) => {
-  const roleInfo = roleMap[role];
-  if (!roleInfo) return null;
+export const SubscriptionTierBadge = ({ planId }: { planId: string }) => {
+  const [sub, setSub] = useState<Subscription | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!planId) return;
+
+    subscriptionAPI.getById(planId)
+      .then((data) => setSub(data))
+      .catch((err) => console.error("Failed to load tier details", err))
+      .finally(() => setLoading(false));
+  }, [planId]);
+
+  // Loading State (Shimmer/Skeleton)
+  if (loading) {
+    return (
+      <div className="h-6 w-24 bg-gray-200 animate-pulse rounded-full border border-gray-300" />
+    );
+  }
+
+  if (!sub) return null;
+
+  // Resolve the icon from the string name (e.g., "FaRainbow")
+  const IconComponent = sub.iconUrl ? (FaIcons as any)[sub.iconUrl] : null;
 
   return (
     <span
-      className={`
-        px-2.5 py-0.5 
-        rounded-full 
-        text-xs font-semibold 
-        border shadow-sm 
-        inline-flex items-center
-        ${roleInfo.color} 
-        ${roleInfo.border}
-      `}
+      style={{
+        background: sub.colorHex || "linear-gradient(to right, #e2e8f0, #cbd5e1)",
+        border: "1px solid rgba(0,0,0,0.1)"
+      }}
+      className="px-3 py-1 rounded-full text-xs font-bold shadow-sm inline-flex items-center gap-2 text-gray-900"
     >
-      {roleInfo.label}
+      {IconComponent && <IconComponent className="w-3.5 h-3.5" />}
+      {sub.name}
     </span>
   );
 };

@@ -1,31 +1,28 @@
-const roleMap: Record<
-  number,
-  { label: string; color: string; border: string }
-> = {
+const roleMap: Record<number, { label: string; color: string; border: string }> = {
   0: {
-    label: "Active",
-    color: "bg-gradient-to-r from-purple-100 to-purple-300 text-purple-900",
-    border: "border-purple-300",
+    label: "Đang hoạt động",
+    color: "bg-gradient-to-r from-emerald-100 to-emerald-300 text-emerald-900",
+    border: "border-emerald-300",
   },
   1: {
-    label: "Expired",
-    color: "bg-gradient-to-r from-yellow-100 to-yellow-300 text-yellow-900",
-    border: "border-yellow-300",
+    label: "Đã hết hạn",
+    color: "bg-gradient-to-r from-slate-100 to-slate-300 text-slate-900", // Gray for "dead" states
+    border: "border-slate-300",
   },
   2: {
-    label: "Cancelled",
-    color: "bg-gradient-to-r from-pink-100 to-pink-300 text-pink-900",
-    border: "border-pink-300",
+    label: "Đã hủy",
+    color: "bg-gradient-to-r from-rose-100 to-rose-300 text-rose-900", // Rose/Red for cancelled
+    border: "border-rose-300",
   },
   3: {
-    label: "Pending",
-    color: "bg-gradient-to-r from-teal-100 to-teal-300 text-teal-900",
-    border: "border-teal-300",
+    label: "Đang chờ xử lý",
+    color: "bg-gradient-to-r from-amber-100 to-amber-300 text-amber-900", // Amber for "waiting"
+    border: "border-amber-300",
   }
 };
 
-export const SubscriptionStatusBadge = ({ role }: { role: number }) => {
-  const roleInfo = roleMap[role];
+export const SubscriptionStatusBadge = ({ status }: { status: number }) => {
+  const roleInfo = roleMap[status];
   if (!roleInfo) return null;
 
   return (

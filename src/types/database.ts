@@ -368,12 +368,12 @@ export interface Subscription {
 
 export interface Invoice {
   id: string;
-  issuedAt: Date;
-  dueDate?: Date;
+  issuedAt: string;
+  dueDate?: string;
 
   totalAmount: number;
   amountPaid?: number;
-  paidAt?: Date;
+  paidAt?: string;
 
   status: InvoiceStatus;
   orderCode?: number;
@@ -383,8 +383,9 @@ export interface Invoice {
   email?: string;
 
   userSubscriptionId?: string;
+  tier: SubscriptionTier
   subscriptionPlanId: string;
   planName?: string;
-  startDate: Date;
-  endDate?: Date;
+  startDate?: string;
+  endDate?: string;
 }

@@ -76,6 +76,7 @@ import BlogPostManagement from "./pages/admin/BlogPostManagement";
 import { BlogPostDetailModal } from "./components/admin/posts/BlogPostDetailModal";
 import SuccessPage from "./pages/payment/SuccessPage";
 import CancelPage from "./pages/payment/CancelPage";
+import InvoiceDetail from "./components/admin/invoices/InvoiceDetail";
 
 export const router = createBrowserRouter(
   [
@@ -331,6 +332,8 @@ export const router = createBrowserRouter(
             { path: "blogs/:id", element: <BlogPostDetailModal /> },
 
             { path: "invoices", element: <InvoiceManagement /> },
+            { path: "invoices/:id", element: <InvoiceDetail /> },
+
             { path: "subscriptions", element: <SubscriptionManagement /> },
             { path: "collections", element: <CollectionsManagement /> },
           ],

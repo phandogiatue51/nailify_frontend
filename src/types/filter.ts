@@ -28,6 +28,20 @@ export enum BookingStatus {
   Cancelled,
 }
 
+export enum SubscriptionTier {
+  Free,
+  Basic,
+  Premium,
+  Business
+}
+
+export enum InvoiceStatus {
+  Pending,
+  Paid,
+  Overdue,
+  Cancelled
+}
+
 export interface ProfileFilter {
   SearchTerm?: string;
   Role?: UserRole;
@@ -96,4 +110,10 @@ export interface BlogPostFilterDto {
   NailArtistId?: string;
   SearchTerm?: string;
   Recently?: boolean;
+}
+
+export interface InvoiceFilterDto {
+  tier?: SubscriptionTier;
+  status?: InvoiceStatus;
+  orderCode?: number;
 }

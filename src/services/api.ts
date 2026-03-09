@@ -9,6 +9,7 @@ import {
   StaffFilterDto,
   RatingFilterDto,
   BlogPostFilterDto,
+  InvoiceFilterDto
 } from "@/types/filter";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -855,6 +856,22 @@ export const invoiceAPI = {
     apiRequest(`/Invoice/auth/${id}`, {
       method: "GET",
     }),
+
+  filter: (filterParams: InvoiceFilterDto) => {
+    const queryString = buildQuery(filterParams);
+    const url = queryString
+      ? `/Invoice/filter?${queryString}`
+      : "/Invoice/filter";
+    return apiRequest(url);
+  },
+  
+  authFilter: (filterParams: InvoiceFilterDto) => {
+    const queryString = buildQuery(filterParams);
+    const url = queryString
+      ? `/Invoice/auth-filter?${queryString}`
+      : "/Invoice/auth-filter";
+    return apiRequest(url);
+  },
 };
 
 // In api.ts
