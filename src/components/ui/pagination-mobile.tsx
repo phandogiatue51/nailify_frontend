@@ -63,10 +63,10 @@ export function MobilePagination({
       {showInfo && totalItems && (
         <div className="flex items-center justify-between text-xs text-slate-500 px-4 py-2 bg-white/90 backdrop-blur-sm border-t border-slate-100">
           <span className="font-medium">
-            Showing {visibleItems} of {totalItems}
+            Đang hiển thị {visibleItems} trên tổng {totalItems}
           </span>
           <span className="font-bold">
-            Page {currentPage} of {totalPages}
+            Trang {currentPage} trong tổng số trang {totalPages}
           </span>
         </div>
       )}

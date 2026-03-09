@@ -8,7 +8,7 @@ export const SuccessPage = () => {
   const nagivate = useNavigate();
   return (
     <div className="min-h-screen bg-white">
-      <Header title="Booking Confirmed" />
+      <Header title="Nailify" />
 
       <div className="px-6 pt-16 flex flex-col items-center text-center">
         <div className="relative mb-8">
@@ -19,11 +19,8 @@ export const SuccessPage = () => {
         </div>
 
         <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-3">
-          Subscription Purchased!
+          Thanh toán thành công!
         </h1>
-        <p className="text-slate-500 font-medium leading-relaxed max-w-[280px] mb-10">
-          Your payment was successful!
-        </p>
 
         <div className="w-full bg-slate-50 rounded-[2.5rem] p-6 mb-10 border border-slate-100">
           <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-200/50">
@@ -33,16 +30,16 @@ export const SuccessPage = () => {
               </div>
               <div className="text-left">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  Status
+                  Trạng thái
                 </p>
                 <p className="text-sm font-black text-slate-900">
-                  Subscription Active
+                  Gói đăng ký đã được kích hoạt
                 </p>
               </div>
             </div>
           </div>
           <p className="text-[11px] text-slate-400 font-bold italic">
-            A confirmation receipt has been sent to your email.
+            Một hóa đơn đã được gửi tới email của bạn
           </p>
         </div>
 
@@ -51,7 +48,7 @@ export const SuccessPage = () => {
             onClick={() => nagivate("/my-subscriptions")}
             className="w-full h-14 rounded-full bg-slate-900 text-white font-black uppercase text-xs tracking-widest hover:bg-slate-800 transition-all"
           >
-            View My Subscriptions
+            Xem gói đăng ký của tôi
             <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
 
@@ -61,7 +58,7 @@ export const SuccessPage = () => {
             className="w-full h-14 rounded-full text-slate-400 font-black uppercase text-xs tracking-widest"
           >
             <Home className="mr-2 w-4 h-4" />
-            Back to Home
+            Trở về trang chủ
           </Button>
         </div>
       </div>

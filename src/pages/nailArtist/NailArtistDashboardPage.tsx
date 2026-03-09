@@ -14,6 +14,8 @@ import {
   LayoutDashboard,
   Globe,
   HeartHandshake,
+  Gem,
+  Wallet,
 } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { BookingStatusBadge } from "@/components/badge/BookingStatusBadge";
@@ -39,7 +41,7 @@ const NailArtistDashboardPage = () => {
   if (!myArtist) {
     return (
       <div>
-        <Header title="Nailify"/>
+        <Header title="Nailify" />
 
         <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
@@ -69,7 +71,7 @@ const NailArtistDashboardPage = () => {
 
   return (
     <div>
-      <Header title="Nailify"/>
+      <Header title="Nailify" />
 
       <div className="min-h-screen bg-slate-50/50 px-6 pt-8">
         <div className="flex items-center justify-between mb-6">
@@ -129,7 +131,7 @@ const NailArtistDashboardPage = () => {
                   <Globe className="w-6 h-6 text-blue-500 group-hover:text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                     Posts
                   </p>
                 </div>
@@ -137,7 +139,7 @@ const NailArtistDashboardPage = () => {
             </button>
 
             <button
-              onClick={() => navigate("/subscription/my-subscription")}
+              onClick={() => navigate("/subscription")}
               className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
             >
               <div className="flex items-center gap-4">
@@ -145,8 +147,38 @@ const NailArtistDashboardPage = () => {
                   <HeartHandshake className="w-6 h-6 text-red-500 group-hover:text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
-                    Package
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    All Subscription
+                  </p>
+                </div>
+              </div>
+            </button>
+            <button
+              onClick={() => navigate("/subscription/my-subscription")}
+              className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                  <Gem className="w-6 h-6 text-purple-500 group-hover:text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    My Subscription
+                  </p>
+                </div>
+              </div>
+            </button>
+            <button
+              onClick={() => navigate("/invoice/my-subscription")}
+              className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                  <Wallet className="w-6 h-6 text-yellow-500 group-hover:text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    Invoice
                   </p>
                 </div>
               </div>

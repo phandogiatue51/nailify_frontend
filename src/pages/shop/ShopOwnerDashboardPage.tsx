@@ -3,7 +3,7 @@ import { useShop } from "@/hooks/useShop";
 import { useBookings } from "@/hooks/useBookings";
 import QuickStats from "@/components/QuickStats";
 import { Button } from "@/components/ui/button";
-import { Loader2, Store, Sparkles, ChevronRight, Users, HeartHandshake, Globe } from "lucide-react";
+import { Loader2, Store, Sparkles, ChevronRight, Users, HeartHandshake, Globe, Gem, Wallet } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 import Header from "@/components/ui/header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -80,7 +80,7 @@ const ShopOwnerDashboardPage = () => {
 
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">
-            Management
+            Quản lý cửa hàng
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <button
@@ -92,8 +92,8 @@ const ShopOwnerDashboardPage = () => {
                   <Store className="w-6 h-6 text-[#FFC988] group-hover:text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
-                    My Shop
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    Cửa hàng
                   </p>
                 </div>
               </div>
@@ -108,8 +108,8 @@ const ShopOwnerDashboardPage = () => {
                   <Users className="w-6 h-6 text-[#E288F9] group-hover:text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
-                    Managers
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    Nhân viên
                   </p>
                 </div>
               </div>
@@ -124,15 +124,15 @@ const ShopOwnerDashboardPage = () => {
                   <Globe className="w-6 h-6 text-blue-500 group-hover:text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
-                    Posts
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    Bài đăng
                   </p>
                 </div>
               </div>
             </button>
 
             <button
-              onClick={() => navigate("/subscription/my-subscription")}
+              onClick={() => navigate("/subscription")}
               className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
             >
               <div className="flex items-center gap-4">
@@ -140,8 +140,38 @@ const ShopOwnerDashboardPage = () => {
                   <HeartHandshake className="w-6 h-6 text-red-500 group-hover:text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[12px] font-black uppercase tracking-widest text-slate-400">
-                    Package
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    Gói đăng ký
+                  </p>
+                </div>
+              </div>
+            </button>
+            <button
+              onClick={() => navigate("/subscription/my-subscription")}
+              className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                  <Gem className="w-6 h-6 text-green-500 group-hover:text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    Gói đăng ký của tôi
+                  </p>
+                </div>
+              </div>
+            </button>
+            <button
+              onClick={() => navigate("/invoice/my-subscription")}
+              className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                  <Wallet className="w-6 h-6 text-orange-500 group-hover:text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    Hóa đơn
                   </p>
                 </div>
               </div>

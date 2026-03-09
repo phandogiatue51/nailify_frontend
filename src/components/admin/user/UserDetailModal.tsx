@@ -24,8 +24,10 @@ import {
   Palette,
   Loader2,
   AlertCircle,
+  CheckCircle2,
 } from "lucide-react";
 import { format } from "date-fns";
+import { StatusRow } from "@/components/ui/status-row";
 
 interface UserDetailModalProps {
   userId: string | null;
@@ -73,7 +75,7 @@ export const UserDetailModal = ({
     try {
       await profileAPI.changeStatus(userId);
       onUserUpdated?.();
-      loadUserDetails(); // Reload to get updated status
+      loadUserDetails();
     } catch (error) {
       console.error("Failed to change user status:", error);
     } finally {
@@ -93,205 +95,201 @@ export const UserDetailModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl p-0 overflow-hidden border-none !rounded-3xl bg-white shadow-2xl">
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-[#950101]" />
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+              Loading Dossier
+            </p>
           </div>
         ) : !user ? (
-          <div className="text-center py-12">
-            <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">User not found</p>
+          <div className="text-center py-24">
+            <AlertCircle className="w-12 h-12 mx-auto text-slate-200 mb-4" />
+            <p className="font-black text-slate-400 uppercase tracking-widest text-xs">
+              User not found
+            </p>
           </div>
         ) : (
-          <>
-            <DialogHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  {user.avatarUrl ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.fullName}
-                      className="w-16 h-16 rounded-full object-cover border"
+          <div className="flex flex-col max-h-[90vh]">
+            <div className="relative bg-slate-50 px-8 pt-12 pb-8 border-b border-slate-100">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div className="flex items-center gap-6">
+                  <div className="relative group">
+                    {user.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.fullName}
+                        className="w-24 h-24 rounded-[2rem] object-cover border-4 border-white shadow-xl transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-[#950101] to-[#6b0101] flex items-center justify-center border-4 border-white shadow-xl">
+                        <span className="text-3xl font-black text-white italic uppercase">
+                          {user.fullName?.[0] || "U"}
+                        </span>
+                      </div>
+                    )}
+                    <div
+                      className={`absolute -bottom-2 -right-2 w-8 h-8 border-4 border-white rounded-full ${user.isActive ? "bg-emerald-500 shadow-lg shadow-emerald-200" : "bg-slate-300"}`}
                     />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-                      <span className="text-xl font-bold text-white uppercase">
-                        {user.fullName?.[0] || "U"}
-                      </span>
-                    </div>
-                  )}
+                  </div>
+
                   <div>
-                    <DialogTitle className="text-2xl">
-                      {user.fullName}
-                    </DialogTitle>
-                    <DialogDescription>User ID: {user.id}</DialogDescription>
+                    <div className="flex items-center gap-2 mb-1">
+                      <DialogTitle className="text-3xl font-black tracking-tighter text-slate-900 uppercase leading-none">
+                        {user.fullName}
+                      </DialogTitle>
+                      {user.isVerified && (
+                        <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-50" />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <RoleBadge role={user.role} />
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleChangeStatus}
-                    disabled={changingStatus}
-                    variant={user.isActive ? "destructive" : "default"}
-                    size="sm"
-                  >
-                    {changingStatus ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : user.isActive ? (
-                      <XCircle className="w-4 h-4 mr-2" />
-                    ) : (
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                    )}
-                    {user.isActive ? "Deactivate" : "Activate"}
-                  </Button>
-                </div>
+                <Button
+                  onClick={handleChangeStatus}
+                  disabled={changingStatus}
+                  variant="outline"
+                  className={`rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] px-6 h-12 transition-all ${
+                    user.isActive
+                      ? "border-red-100 text-red-600 hover:bg-red-50 hover:border-red-200"
+                      : "border-emerald-100 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200"
+                  }`}
+                >
+                  {changingStatus ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : user.isActive ? (
+                    <XCircle className="w-4 h-4 mr-2" />
+                  ) : (
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                  )}
+                  {user.isActive ? "Ngừng hoạt động" : "Kích hoạt"}
+                </Button>
               </div>
-            </DialogHeader>
+            </div>
 
-            <div className="space-y-6">
-              {/* User Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Contact Info */}
-                <div className="space-y-4">
-                  <h4 className="font-medium">Contact Information</h4>
-
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-2">
-                      <Mail className="w-4 h-4 mt-0.5 text-muted-foreground" />
+            <div className="p-8 overflow-y-auto space-y-10">
+              {/* Main Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                {/* Contact Column */}
+                <section className="space-y-6">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#950101] border-b border-slate-100 pb-2">
+                    Thông tin liên hệ
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4">
+                      <div className="p-2.5 bg-slate-50 rounded-xl text-[#950101]">
+                        <Mail className="w-4 h-4" />
+                      </div>
                       <div>
-                        <p className="font-medium">Email</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-[10px] font-black uppercase tracking-tighter text-slate-400 mb-0.5">
+                          Email
+                        </p>
+                        <p className="text-sm font-bold text-slate-700">
                           {user.email}
                         </p>
                       </div>
                     </div>
-
                     {user.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
+                      <div className="flex items-start gap-4">
+                        <div className="p-2.5 bg-slate-50 rounded-xl text-[#950101]">
+                          <Phone className="w-4 h-4" />
+                        </div>
                         <div>
-                          <p className="font-medium">Phone</p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-[10px] font-black uppercase tracking-tighter text-slate-400 mb-0.5">
+                          Số điện thoại
+                          </p>
+                          <p className="text-sm font-bold text-slate-700">
                             {user.phone}
                           </p>
                         </div>
                       </div>
                     )}
-
                     {user.address && (
-                      <div className="flex items-start gap-2">
-                        <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground" />
+                      <div className="flex items-start gap-4">
+                        <div className="p-2.5 bg-slate-50 rounded-xl text-[#950101]">
+                          <MapPin className="w-4 h-4" />
+                        </div>
                         <div>
-                          <p className="font-medium">Address</p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-[10px] font-black uppercase tracking-tighter text-slate-400 mb-0.5">
+                            Địa chỉ
+                          </p>
+                          <p className="text-sm font-bold text-slate-700 leading-relaxed">
                             {user.address}
                           </p>
                         </div>
                       </div>
                     )}
                   </div>
-                </div>
+                </section>
 
-                {/* Account Info */}
-                <div className="space-y-4">
-                  <h4 className="font-medium">Account Information</h4>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <RoleBadge role={user.role} />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {user.isActive ? (
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                        ) : (
-                          <XCircle className="w-4 h-4 text-red-500" />
-                        )}
-                        <span>Account Status</span>
-                      </div>
-                      <Badge
-                        variant={user.isActive ? "default" : "destructive"}
-                      >
-                        {user.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {user.isVerified ? (
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                        ) : (
-                          <AlertCircle className="w-4 h-4 text-amber-500" />
-                        )}
-                        <span>Email Verification</span>
-                      </div>
-                      <Badge
-                        variant={user.isVerified ? "default" : "secondary"}
-                      >
-                        {user.isVerified ? "Verified" : "Unverified"}
-                      </Badge>
-                    </div>
-
-                    <Separator />
-
-                    {/* Shop/Artist Verification */}
+                {/* Status Column */}
+                <section className="space-y-6">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#950101] border-b border-slate-100 pb-2">
+                    Tình trạng xác thực
+                  </h4>
+                  <div className="space-y-3 bg-slate-50/50 p-4 rounded-3xl border border-slate-50">
+                    <StatusRow
+                      label="Tài khoản đang hoạt động"
+                      isVerified={user.isActive}
+                    />
+                    <StatusRow
+                      label="Email đã xác minh"
+                      isVerified={user.isVerified}
+                    />
                     {user.shopVerified !== null && (
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Building className="w-4 h-4 text-muted-foreground" />
-                          <span>Shop Verification</span>
-                        </div>
-                        <Badge
-                          variant={user.shopVerified ? "default" : "secondary"}
-                        >
-                          {user.shopVerified ? "Verified" : "Unverified"}
-                        </Badge>
-                      </div>
+                      <StatusRow
+                        label="Cửa hàng đã xác minh"
+                        isVerified={user.shopVerified}
+                      />
                     )}
-
                     {user.artistVerified !== null && (
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Palette className="w-4 h-4 text-muted-foreground" />
-                          <span>Artist Verification</span>
-                        </div>
-                        <Badge
-                          variant={
-                            user.artistVerified ? "default" : "secondary"
-                          }
-                        >
-                          {user.artistVerified ? "Verified" : "Unverified"}
-                        </Badge>
-                      </div>
+                      <StatusRow
+                        label="Thợ nail đã xác minh"
+                        isVerified={user.artistVerified}
+                      />
                     )}
                   </div>
-                </div>
+                </section>
               </div>
 
-              {/* Timeline */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Account Timeline</h4>
-                <div className="bg-muted/30 p-4 rounded-lg space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span>Account Created: {formatDate(user.createdAt)}</span>
+              {/* Timeline Section */}
+              <section className="bg-slate-100 rounded-[2rem] p-6 text-black flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/10 rounded-2xl text-[#950101]">
+                    <Calendar className="w-5 h-5" />
                   </div>
-                  {user.updatedAt && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
-                      <span>Last Updated: {formatDate(user.updatedAt)}</span>
-                    </div>
-                  )}
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
+                      Tạo vào ngày
+                    </p>
+                    <p className="text-sm font-black italic">
+                      {formatDate(user.createdAt)}
+                    </p>
+                  </div>
                 </div>
-              </div>
+                {user.updatedAt && (
+                  <div className="text-right border-l border-white/10 pl-6 hidden sm:block">
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
+                      Hoạt động lần cuối
+                    </p>
+                    <p className="text-sm font-black italic">
+                      {formatDate(user.updatedAt)}
+                    </p>
+                  </div>
+                )}
+              </section>
             </div>
-          </>
+          </div>
         )}
       </DialogContent>
     </Dialog>
   );
+
+  // Helper component for cleaner rows
 };
 
 export default UserDetailModal;
