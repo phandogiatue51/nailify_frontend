@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { subscriptionAPI } from "@/services/api";
+import { useNavigate } from "react-router-dom";
 import {
   Loader2,
   ShieldCheck,
@@ -21,6 +22,12 @@ const SubscriptionCard = ({ subscriptionId }: SubscriptionCardProps) => {
     queryFn: () => subscriptionAPI.getById(subscriptionId),
     enabled: !!subscriptionId,
   });
+  const navigate = useNavigate();
+
+  const handleConfirm = () => {
+    navigate(`/confirm-subscription/${subscriptionId}`)
+    console.log("Proceeding to payment for:", subscriptionId);
+  };
 
   if (isLoading) {
     return (
@@ -96,6 +103,8 @@ const SubscriptionCard = ({ subscriptionId }: SubscriptionCardProps) => {
         </div>
 
         <button
+          onClick={handleConfirm}
+
           style={{
             background: subscription.colorHex || "#0f172a",
             boxShadow: `0 10px 20px -5px ${subscription.colorHex}66`,

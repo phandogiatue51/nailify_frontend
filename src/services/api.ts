@@ -838,10 +838,11 @@ export const subscriptionAPI = {
       body: formData,
     }),
 
-  subscribe: (id: string) =>
-    apiRequest(`/Subscription/${id}`, {
+  subscribe: async (id: string) => {
+    return apiRequest(`/Subscription/${id}/subscribe`, {
       method: "POST",
-    }),
+    });
+  }
 };
 
 export const invoiceAPI = {
@@ -892,6 +893,13 @@ export const userSubscriptionAPI = {
       method: "GET",
     }),
 };
+
+export const checkoutAPI = {
+  updateSuccessInvoice: (id: number) =>
+    apiRequest(`/Checkout/${id}/success`, {
+      method: "POST",
+    }),
+}
 
 // In api.ts
 export const buildQuery = (params?: Record<string, any>): string => {

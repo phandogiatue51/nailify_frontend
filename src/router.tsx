@@ -81,6 +81,7 @@ import { SubscriptionPage } from "./pages/subscription/SubscriptionPage";
 import { MySubscriptionPage } from "./pages/subscription/MySubscriptionPage";
 import MyInvoicePage from "./pages/invoice/MyInvoicePage";
 import { InvoiceDetailPage } from "./components/invoice/InvoiceDetailPage";
+import { ConfirmSubscription } from "./pages/subscription/ConfirmSubscription";
 
 export const router = createBrowserRouter(
   [
@@ -107,6 +108,11 @@ export const router = createBrowserRouter(
           path: "subscription/",
           element: withMobileLayout(<SubscriptionPage />),
         },
+        {
+          path: "confirm-subscription/:id",
+          element: withMobileLayout(<ConfirmSubscription />),
+        },
+
         {
           path: "my-subscription/",
           element: withMobileLayout(<MySubscriptionPage />),

@@ -49,19 +49,51 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
-            return id
-              .toString()
-              .split("node_modules/")[1]
-              .split("/")[0]
-              .toString();
+            // UI Library chunks
+            if (id.includes("@radix-ui") || id.includes("cmdk") || id.includes("sonner")) {
+              return "vendor-ui";
+            }
+
+            // React core chunks
+            if (id.includes("react") || id.includes("scheduler") || id.includes("use-callback-ref")) {
+              return "vendor-react";
+            }
+
+            // Form handling chunks
+            if (id.includes("react-hook-form") || id.includes("zod") || id.includes("@hookform")) {
+              return "vendor-forms";
+            }
+
+            // Date handling chunks
+            if (id.includes("date-fns") || id.includes("react-day-picker")) {
+              return "vendor-dates";
+            }
+
+            // Icon chunks (largest)
+            if (id.includes("react-icons")) {
+              return "vendor-icons";
+            }
+
+            // Other large UI libraries
+            if (id.includes("lucide-react")) {
+              return "vendor-icons-lucide";
+            }
+
+            // TanStack Query
+            if (id.includes("@tanstack")) {
+              return "vendor-query";
+            }
+
+            return id.split("node_modules/")[1].split("/")[0];
           }
         },
       },
     },
-  },
+  }
 }));
