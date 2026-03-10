@@ -82,6 +82,7 @@ import { MySubscriptionPage } from "./pages/subscription/MySubscriptionPage";
 import MyInvoicePage from "./pages/invoice/MyInvoicePage";
 import { InvoiceDetailPage } from "./components/invoice/InvoiceDetailPage";
 import { ConfirmSubscription } from "./pages/subscription/ConfirmSubscription";
+import RatingDetail from "./components/admin/ratings/RatingDetail";
 
 export const router = createBrowserRouter(
   [
@@ -354,7 +355,10 @@ export const router = createBrowserRouter(
             { path: "artists", element: <ArtistsManagement /> },
             { path: "artists/:artistId", element: <AdminArtistDetailPage /> },
             { path: "services", element: <ServicesManagement /> },
+            
             { path: "ratings", element: <RatingManagement /> },
+            { path: "ratings/:id", element: <RatingDetail /> },
+
             { path: "blogs", element: <BlogPostManagement /> },
             { path: "blogs/:id", element: <BlogPostDetailModal /> },
 

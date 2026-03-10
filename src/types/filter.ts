@@ -95,6 +95,8 @@ export interface BookingFilterDto {
   Date?: string;
   Status?: BookingStatus;
   SearchTerm?: string;
+  Rating?: number;
+  HasRating?: boolean;
 }
 
 export interface RatingFilterDto {

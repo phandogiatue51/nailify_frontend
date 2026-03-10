@@ -389,3 +389,31 @@ export interface Invoice {
   startDate?: string;
   endDate?: string;
 }
+
+export interface FourWidgetDto {
+  totalRevenue: number;
+  totalUsers: number;
+  totalInvoices: number;
+  totalRates: number;
+}
+
+export interface ChartPoint {
+  label: string;
+  value: number;
+}
+
+export interface DashboardData {
+  widgets: FourWidgetDto | undefined;
+  topShops: ChartPoint[] | undefined;
+  topArtists: ChartPoint[] | undefined;
+  customerGrowth: ChartPoint[] | undefined;
+  ratingsBreakdown: ChartPoint[] | undefined;
+}
+
+export interface DashboardState {
+  data: DashboardData;
+  isLoading: boolean;
+  isError: boolean;
+  errors: Array<Error | null>;
+  refetchAll: () => void;
+}

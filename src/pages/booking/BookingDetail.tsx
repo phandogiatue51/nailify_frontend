@@ -80,7 +80,7 @@ const BookingDetail = () => {
   const handleBack = () => navigate(-1);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="bg-slate-50">
       <BookingHeader bookingId={booking?.id} onBack={handleBack} />
 
       {isLoading ? (

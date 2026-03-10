@@ -11,6 +11,7 @@ import {
   BlogPostFilterDto,
   InvoiceFilterDto,
 } from "@/types/filter";
+import { ChartPoint, FourWidgetDto } from "@/types/database";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -843,6 +844,18 @@ export const subscriptionAPI = {
       method: "POST",
     });
   }
+};
+
+export const adminAPI = {
+  getWidgets: () => apiRequest<FourWidgetDto>(`/Admin/widgets`),
+
+  getTopShops: () => apiRequest<ChartPoint[]>(`/Admin/top-shops`),
+
+  getTopArtists: () => apiRequest<ChartPoint[]>(`/Admin/top-artists`),
+
+  getCustomerGrowth: () => apiRequest<ChartPoint[]>(`/Admin/customer-growth`),
+
+  getRatingsBreakdown: () => apiRequest<ChartPoint[]>(`/Admin/ratings-breakdown`)
 };
 
 export const invoiceAPI = {

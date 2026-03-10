@@ -27,6 +27,7 @@ interface BookingCardProps {
   onCancel?: (bookingId: string) => void;
   onComplete?: (bookingId: string) => void;
   isLoading?: boolean;
+  isAdmin?: boolean;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
@@ -36,6 +37,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onReject,
   onCancel,
   onComplete,
+  isAdmin,
   isLoading = false,
 }) => {
   const navigate = useNavigate();
@@ -118,79 +120,86 @@ const BookingCard: React.FC<BookingCardProps> = ({
           {/* Row 1: Contextual Actions - Only renders if there's content */}
           {((isShopOwner && [0, 1].includes(booking.status)) ||
             (!isShopOwner && booking.status === 3 && !booking.ratings)) && (
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {isShopOwner && booking.status === 0 && (
-                <div className="flex w-full gap-2 items-center">
-                  <ConfirmationDialog
-                    {...statusConfig.reject}
-                    onConfirm={() => onReject?.(booking.id)}
-                    trigger={
-                      <Button
-                        variant="ghost"
-                        className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
-                      >
-                        Reject
-                      </Button>
-                    }
-                  />
-                  <ConfirmationDialog
-                    {...statusConfig.approve}
-                    onConfirm={() => onApprove?.(booking.id)}
-                    trigger={
-                      <Button
-                        variant="ghost"
-                        className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
-                      >
-                        Approve
-                      </Button>
-                    }
-                  />
-                </div>
-              )}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {isShopOwner && booking.status === 0 && (
+                  <div className="flex w-full gap-2 items-center">
+                    <ConfirmationDialog
+                      {...statusConfig.reject}
+                      onConfirm={() => onReject?.(booking.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
+                        >
+                          Reject
+                        </Button>
+                      }
+                    />
+                    <ConfirmationDialog
+                      {...statusConfig.approve}
+                      onConfirm={() => onApprove?.(booking.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
+                        >
+                          Approve
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
 
-              {isShopOwner && booking.status === 1 && (
-                <div className="flex w-full gap-2 items-center">
-                  <ConfirmationDialog
-                    {...statusConfig.cancel}
-                    onConfirm={() => onCancel?.(booking.id)}
-                    trigger={
-                      <Button
-                        variant="ghost"
-                        className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
-                      >
-                        Cancel
-                      </Button>
-                    }
-                  />
-                  <ConfirmationDialog
-                    {...statusConfig.complete}
-                    onConfirm={() => onComplete?.(booking.id)}
-                    trigger={
-                      <Button
-                        variant="ghost"
-                        className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
-                      >
-                        Complete
-                      </Button>
-                    }
-                  />
-                </div>
-              )}
+                {isShopOwner && booking.status === 1 && (
+                  <div className="flex w-full gap-2 items-center">
+                    <ConfirmationDialog
+                      {...statusConfig.cancel}
+                      onConfirm={() => onCancel?.(booking.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
+                        >
+                          Cancel
+                        </Button>
+                      }
+                    />
+                    <ConfirmationDialog
+                      {...statusConfig.complete}
+                      onConfirm={() => onComplete?.(booking.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
+                        >
+                          Complete
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
 
-              {!isShopOwner && booking.status === 3 && !booking.ratings && (
-                <Button
-                  onClick={() => navigate(`/booking/rating/${booking.id}`)}
-                  className="h-12 w-full px-5 rounded-full text-blue-500 font-black text-[9px] uppercase tracking-widest border border-blue-300 hover:bg-blue-100 bg-white"
-                >
-                  Leave a Review
-                </Button>
-              )}
-            </div>
-          )}
+                {!isShopOwner && booking.status === 3 && !booking.ratings && (
+                  <Button
+                    onClick={() => navigate(`/booking/rating/${booking.id}`)}
+                    className="h-12 w-full px-5 rounded-full text-blue-500 font-black text-[9px] uppercase tracking-widest border border-blue-300 hover:bg-blue-100 bg-white"
+                  >
+                    Leave a Review
+                  </Button>
+                )}
+              </div>
+            )}
 
           {/* Row 2: Primary Action - Full Width */}
           <Button
-            onClick={() => navigate(`/booking/detail/${booking.id}`)}
+            onClick={() => {
+              if (isAdmin) {
+                navigate(`/admin/ratings/${booking.id}`);
+              } else {
+                navigate(`/booking/detail/${booking.id}`);
+              }
+            }}
+
             className="w-full h-11 rounded-full font-black uppercase text-[10px] tracking-[0.2em] text-white shadow-lg shadow-[#950101]/10 hover:opacity-90 active:scale-[0.98] transition-all"
             style={{
               background: "linear-gradient(135deg, #950101 0%, #D81B60 100%)",
