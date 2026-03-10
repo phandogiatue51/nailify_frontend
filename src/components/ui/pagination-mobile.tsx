@@ -62,10 +62,10 @@ export function MobilePagination({
       {/* Mobile Info Bar - Sticky at bottom */}
       {showInfo && totalItems && (
         <div className="flex items-center justify-between text-xs text-slate-500 px-4 py-2 bg-white/90 backdrop-blur-sm border-t border-slate-100">
-          <span className="font-medium">
+          <span className="font-bold text-slate-500">
             Đang hiển thị {visibleItems} trên tổng {totalItems}
           </span>
-          <span className="font-bold">
+          <span className="font-bold text-slate-500">
             Trang {currentPage} trong tổng số trang {totalPages}
           </span>
         </div>

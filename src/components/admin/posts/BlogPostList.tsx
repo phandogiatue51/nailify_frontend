@@ -6,8 +6,7 @@ import { BlogPostCard } from "@/components/blogPost/BlogPostCard";
 import { PaginationWrapper } from "@/components/ui/PaginationWrapper";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Loader2, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { AlertCircle, Loader2 } from "lucide-react";
 interface BlogPostListProps {
   filters: BlogPostFilterDto;
   onReaction?: (postId: string, reaction: string) => void;
@@ -18,7 +17,6 @@ export const BlogPostList = ({ filters }: BlogPostListProps) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const navigate = useNavigate();
   const loadPosts = async () => {
     setLoading(true);
     setError(null);
@@ -38,10 +36,6 @@ export const BlogPostList = ({ filters }: BlogPostListProps) => {
     loadPosts();
     setPage(1);
   }, [filters]);
-
-  const handleCreateNew = () => {
-    navigate("/admin/blogs/create");
-  };
 
   if (loading) {
     return (
@@ -82,10 +76,6 @@ export const BlogPostList = ({ filters }: BlogPostListProps) => {
               ? "Try adjusting your filters"
               : "No blog posts available yet"}
           </p>
-          <Button onClick={handleCreateNew} className="mt-4">
-            <Plus className="w-4 h-4 mr-2" />
-            Create First Post
-          </Button>
         </div>
       </div>
     );
@@ -93,13 +83,6 @@ export const BlogPostList = ({ filters }: BlogPostListProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button onClick={handleCreateNew}>
-          <Plus className="w-4 h-4 mr-2" />
-          New Post
-        </Button>
-      </div>
-
       <PaginationWrapper
         items={posts}
         currentPage={page}

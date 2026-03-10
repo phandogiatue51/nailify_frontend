@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Filter } from "lucide-react";
+import { Search, Store, Star } from "lucide-react";
 
 interface ShopFilterProps {
   filters: ShopFilterDto;
@@ -21,79 +21,69 @@ export const ShopFilter = ({ filters, onFilterChange }: ShopFilterProps) => {
   };
 
   return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4" />
-            <h3 className="font-semibold">Filters</h3>
-          </div>
-          <Button variant="ghost" size="sm" onClick={resetFilters}>
-            Clear All
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Search by Name */}
-          <div className="space-y-2">
-            <Label htmlFor="search">Search by Name</Label>
+    <Card className="border-2 border-slate-100 rounded-[2.5rem] shadow-sm bg-white overflow-hidden transition-all duration-300 focus-within:border-[#950101]/30">
+      <CardContent className="p-6">
+        <div className="flex flex-col lg:flex-row items-center gap-6">
+          {/* Main Search */}
+          <div className="flex-1 w-full group">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#950101] transition-colors" />
               <Input
                 id="search"
-                placeholder="Shop name..."
-                className="pl-9"
+                placeholder="Tìm kiếm theo tên cửa hàng ..."
+                className="pl-10 h-12 rounded-2xl border-slate-100 bg-slate-50/50 font-black text-[12px] tracking-widest focus-visible:ring-[#950101] focus-visible:border-[#950101] transition-all "
                 value={filters.Name || ""}
                 onChange={(e) => handleChange("Name", e.target.value)}
               />
             </div>
           </div>
 
-          {/* Verification Status */}
-          <div className="space-y-2">
-            <Label>Verification Status</Label>
-            <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center justify-between w-full lg:w-auto gap-10 pt-6 lg:pt-0 lg:pl-8">
+            <div className="flex items-center space-x-3">
               <Switch
                 id="verified"
+                className="data-[state=checked]:bg-[#950101]"
                 checked={filters.IsVerified === true}
                 onCheckedChange={(checked) =>
                   handleChange("IsVerified", checked ? true : undefined)
                 }
               />
-              <Label htmlFor="verified" className="cursor-pointer">
-                Verified Only
+              <Label
+                htmlFor="verified"
+                className="cursor-pointer font-black text-[12px] tracking-[0.2em] text-slate-500 hover:text-slate-900 transition-colors"
+              >
+                Đã xác minh
               </Label>
             </div>
-          </div>
 
-          {/* Active Status */}
-          <div className="space-y-2">
-            <Label>Active Status</Label>
-            <div className="flex items-center space-x-2">
+            {/* Active Switch */}
+            <div className="flex items-center space-x-3">
               <Switch
                 id="active"
+                className="data-[state=checked]:bg-emerald-500"
                 checked={filters.IsActive === true}
                 onCheckedChange={(checked) =>
                   handleChange("IsActive", checked ? true : undefined)
                 }
               />
-              <Label htmlFor="active" className="cursor-pointer">
-                Active Only
+              <Label
+                htmlFor="active"
+                className="cursor-pointer font-black text-[12px] tracking-[0.2em]  text-slate-500 hover:text-slate-900 transition-colors"
+              >
+                Hoạt động
               </Label>
             </div>
-          </div>
 
-          {/* Rating Filter (if available) */}
-          <div className="space-y-2">
-            <Label htmlFor="rating">Minimum Rating</Label>
-            <div className="flex gap-2">
-              <Input
-                id="rating"
+            {/* Rating Input - Minimalist Style */}
+            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1 rounded-xl border border-slate-100">
+              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+              <input
                 type="number"
                 min="1"
                 max="5"
                 step="0.1"
                 placeholder="4.0"
+                className="w-10 bg-transparent border-none text-[12px] font-black focus:ring-0 p-0"
                 value={filters.Rating || ""}
                 onChange={(e) =>
                   handleChange(
@@ -102,8 +92,17 @@ export const ShopFilter = ({ filters, onFilterChange }: ShopFilterProps) => {
                   )
                 }
               />
-              <span className="self-center">⭐</span>
             </div>
+
+            {/* Reset Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={resetFilters}
+              className="h-10 px-4 rounded-xl font-black text-[12px] tracking-widest  text-[#950101] hover:bg-red-50 hover:text-[#950101] transition-all"
+            >
+              Làm mới
+            </Button>
           </div>
         </div>
       </CardContent>

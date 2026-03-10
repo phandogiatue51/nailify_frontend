@@ -3,27 +3,27 @@ const roleMap: Record<
   { label: string; color: string; border: string }
 > = {
   0: {
-    label: "Base",
+    label: "Lớp Nền",
     color: "bg-gradient-to-r from-purple-100 to-purple-300 text-purple-900",
     border: "border-purple-300",
   },
   1: {
-    label: "Shape",
+    label: "Tạo Dáng",
     color: "bg-gradient-to-r from-yellow-100 to-yellow-300 text-yellow-900",
     border: "border-yellow-300",
   },
   2: {
-    label: "Polish",
+    label: "Sơn Bóng",
     color: "bg-gradient-to-r from-pink-100 to-pink-300 text-pink-900",
     border: "border-pink-300",
   },
   3: {
-    label: "Design",
+    label: "Trang Trí",
     color: "bg-gradient-to-r from-teal-100 to-teal-300 text-teal-900",
     border: "border-teal-300",
   },
   4: {
-    label: "Gem",
+    label: "Đính Đá",
     color: "bg-gradient-to-r from-indigo-100 to-indigo-300 text-indigo-900",
     border: "border-indigo-300",
   },

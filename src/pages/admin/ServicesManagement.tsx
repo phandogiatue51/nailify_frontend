@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-
 import ServiceFilter from "@/components/admin/service/ServiceFilter";
 import ServiceList from "@/components/admin/service/ServiceList";
 import { ServiceItemFilterDto } from "@/types/filter";
 import ServiceDetailModal from "@/components/admin/service/ServiceDetailModal";
+
 const ServicesManagement = () => {
   const { user, loading } = useAuthContext();
   const [filters, setFilters] = useState<ServiceItemFilterDto>({});
@@ -27,18 +27,23 @@ const ServicesManagement = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="container mx-auto p-6 max-w-7xl">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-8">
         <div>
-          <h1 className="text-2xl font-bold">Quản lý dịch vụ</h1>
-          <p className="text-muted-foreground">Quản lý các dịch vụ</p>
+          <h1 className="text-4xl font-black tracking-tighter text-slate-900 uppercase">
+            Quản lý <span className="text-[#950101]">Dịch vụ</span>
+          </h1>
+          <p className="text-sm font-bold text-slate-400 italic mt-1">
+            Thiết lập và điều chỉnh danh mục dịch vụ hệ thống
+          </p>
         </div>
-        <div className="text-sm text-muted-foreground">Nailify Dashboard</div>
       </div>
 
-      <ServiceFilter filters={filters} onFilterChange={setFilters} />
+      <div className="mb-6">
+        <ServiceFilter filters={filters} onFilterChange={setFilters} />
+      </div>
 
-      <div className="mt-6">
+      <div>
         <ServiceList filters={filters} onServiceSelect={setSelectedServiceId} />
       </div>
 

@@ -147,7 +147,7 @@ const InvoiceDetail = () => {
                 <div className="flex justify-center">
                   <SubscriptionTierBadge
                     planId={invoice.subscriptionPlanId}
-                    size="lg"
+                    size="md"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">

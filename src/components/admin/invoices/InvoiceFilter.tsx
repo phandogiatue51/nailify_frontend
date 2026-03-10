@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Filter, Search } from "lucide-react";
-import { Label } from "@radix-ui/react-label";
+import { Search } from "lucide-react";
 
 interface InvoiceFilterProps {
   filters: InvoiceFilterDto;
@@ -29,125 +28,116 @@ export const InvoiceFilter = ({
     onFilterChange({ ...filters, [key]: value });
   };
 
-  const resetFilters = () => {
-    onFilterChange({});
+  const invoiceStatusLabels: Record<InvoiceStatus, string> = {
+    0: "Đang chờ xử lý", // Pending
+    1: "Đã thanh toán", // Paid
+    2: "Quá hạn", // Overdue
+    3: "Đã hủy", // Cancelled
   };
 
+  const subscriptionTierLabels: Record<SubscriptionTier, string> = {
+    0: "Miễn phí", // Free
+    1: "Cơ bản", // Basic
+    2: "Nâng cao", // Premium
+    3: "Doanh nghiệp", // Business
+  };
+
+  const resetFilters = () => onFilterChange({});
+
   return (
-    <Card className="bg-white border-slate-100 shadow-sm rounded-[2rem] overflow-hidden">
-      <CardContent className="p-0">
-        <div className="flex items-center justify-between px-8 py-5 border-b border-slate-50 bg-slate-50/30">
-          <div className="flex items-center gap-3">
-            <div className="bg-[#950101] p-2 rounded-xl shadow-lg shadow-[#950101]/20">
-              <Filter className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <h3 className="text-sm font-black uppercase tracking-tighter text-slate-800">
-                Bộ lọc hóa đơn
-              </h3>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Advanced Search
-              </p>
-            </div>
+    <Card className="border-2 border-slate-100 rounded-[2.5rem] shadow-sm bg-white overflow-hidden transition-all duration-300 focus-within:border-[#950101]/30">
+      <CardContent className="p-6">
+        <div className="flex flex-col lg:flex-row items-center gap-6">
+          {/* Main Search - Order Code */}
+          <div className="flex-1 w-full relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#950101] transition-colors" />
+            <Input
+              type="number"
+              placeholder="Tìm kiếm theo mã đơn ..."
+              className="pl-10 h-12 rounded-2xl border-slate-100 bg-slate-50/50 font-black text-[12px] tracking-widest focus-visible:ring-[#950101] transition-all "
+              value={filters.orderCode || ""}
+              onChange={(e) =>
+                handleChange(
+                  "orderCode",
+                  e.target.value ? Number(e.target.value) : undefined,
+                )
+              }
+            />
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={resetFilters}
-            className="text-[10px] font-black uppercase tracking-widest border border-slate-400 rounded-xl text-slate-400 hover:text-red-800 hover:bg-transparent hover:border-red-800"
-          >
-            Làm mới tất cả
-          </Button>
-        </div>
-
-        {/* Filter Inputs Grid */}
-        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Status Filter */}
-          <div className="space-y-3">
-            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
-              Trạng thái
-            </Label>
+          {/* Controls Section */}
+          <div className="flex flex-wrap items-center justify-between w-full lg:w-auto gap-4">
+            {/* Status Select */}
             <Select
-              value={filters.status !== undefined ? String(filters.status) : ""}
+              value={
+                filters.status !== undefined ? String(filters.status) : "all"
+              }
               onValueChange={(value) =>
-                handleChange("status", value ? Number(value) : undefined)
+                handleChange(
+                  "status",
+                  value === "all" ? undefined : Number(value),
+                )
               }
             >
-              <SelectTrigger className="h-12 border-slate-200 rounded-2xl focus:ring-[#950101]/10 focus:border-[#950101] bg-slate-50/50 font-medium transition-all">
-                <SelectValue placeholder="Tất cả trạng thái" />
+              <SelectTrigger className="h-12 w-full lg:w-44 rounded-2xl border-slate-100 bg-white font-black text-[11px] tracking-widest hover:bg-slate-50 transition-all ">
+                <SelectValue placeholder="Trạng thái" />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-2xl">
-                {Object.keys(InvoiceStatus)
-                  .filter((key) => isNaN(Number(key)))
-                  .map((key) => (
-                    <SelectItem
-                      key={key}
-                      value={String(
-                        InvoiceStatus[key as keyof typeof InvoiceStatus],
-                      )}
-                      className="rounded-xl focus:bg-[#950101]/5 focus:text-[#950101] font-bold py-3"
-                    >
-                      {key}
-                    </SelectItem>
-                  ))}
+
+              <SelectContent>
+                <SelectItem value="all" className="font-bold text-xs">
+                  Tất cả
+                </SelectItem>
+                {Object.entries(invoiceStatusLabels).map(([value, label]) => (
+                  <SelectItem
+                    key={value}
+                    value={value}
+                    className="font-bold text-xs"
+                  >
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-          </div>
 
-          {/* Subscription Tier Filter */}
-          <div className="space-y-3">
-            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
-              Gói thành viên
-            </Label>
             <Select
-              value={filters.tier !== undefined ? String(filters.tier) : ""}
+              value={filters.tier !== undefined ? String(filters.tier) : "all"}
               onValueChange={(value) =>
-                handleChange("tier", value ? Number(value) : undefined)
+                handleChange(
+                  "tier",
+                  value === "all" ? undefined : Number(value),
+                )
               }
             >
-              <SelectTrigger className="h-12 border-slate-200 rounded-2xl focus:ring-[#950101]/10 focus:border-[#950101] bg-slate-50/50 font-medium transition-all">
-                <SelectValue placeholder="Tất cả các gói" />
+              <SelectTrigger className="h-12 w-full lg:w-44 rounded-2xl border-slate-100 bg-white font-black text-[11px] tracking-widest hover:bg-slate-50 transition-all ">
+                <SelectValue placeholder="Gói thành viên" />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-2xl">
-                {Object.keys(SubscriptionTier)
-                  .filter((key) => isNaN(Number(key)))
-                  .map((key) => (
+
+              <SelectContent>
+                <SelectItem value="all" className="font-bold text-xs">
+                  Tất cả gói
+                </SelectItem>
+                {Object.entries(subscriptionTierLabels).map(
+                  ([value, label]) => (
                     <SelectItem
-                      key={key}
-                      value={String(
-                        SubscriptionTier[key as keyof typeof SubscriptionTier],
-                      )}
-                      className="rounded-xl focus:bg-[#950101]/5 focus:text-[#950101] font-bold py-3"
+                      key={value}
+                      value={value}
+                      className="font-bold text-xs"
                     >
-                      {key}
+                      {label}
                     </SelectItem>
-                  ))}
+                  ),
+                )}
               </SelectContent>
             </Select>
-          </div>
 
-          {/* Order Code Filter */}
-          <div className="space-y-3">
-            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
-              Mã đơn hàng
-            </Label>
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
-              <Input
-                id="orderCode"
-                type="number"
-                placeholder="Tìm mã đơn..."
-                className="h-12 pl-12 border-slate-200 rounded-2xl focus:ring-[#950101]/10 focus:border-[#950101] bg-slate-50/50 font-bold placeholder:text-slate-300 placeholder:font-medium transition-all"
-                value={filters.orderCode || ""}
-                onChange={(e) =>
-                  handleChange(
-                    "orderCode",
-                    e.target.value ? Number(e.target.value) : undefined,
-                  )
-                }
-              />
-            </div>
+            {/* Reset Button */}
+            <Button
+              variant="ghost"
+              onClick={resetFilters}
+              className="h-10 px-6 rounded-xl font-black text-[11px] tracking-widest text-[#950101] hover:bg-red-50  transition-all"
+            >
+              Làm mới
+            </Button>
           </div>
         </div>
       </CardContent>

@@ -49,7 +49,7 @@ export const InvoiceList = ({ filters, isAdmin = true }: InvoiceListProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-4 gap-4">
       {invoices.map((invoice) => (
         <InvoiceCard key={invoice.id} invoice={invoice} />
       ))}

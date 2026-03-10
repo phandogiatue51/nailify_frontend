@@ -34,16 +34,8 @@ const InvoiceManagement = () => {
             Theo dõi hóa đơn từ các gói đăng ký
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="text-right hidden md:block">
-            <p className="text-xs font-bold text-[#950101]">
-              Nailify Dashboard
-            </p>
-          </div>
-        </div>
       </div>
 
-      {/* Filters */}
       <div className="mb-6">
         <InvoiceFilter filters={filters} onFilterChange={setFilters} />
       </div>

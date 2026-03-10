@@ -38,13 +38,7 @@ const SubscriptionManagement = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="text-right hidden md:block">
-            <p className="text-xs font-bold text-[#950101]">
-              Nailify Dashboard
-            </p>
-          </div>
-        </div>
+        
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">

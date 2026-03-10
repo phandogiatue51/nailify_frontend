@@ -2,11 +2,7 @@ import { Profile } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Mail,
-  Phone,
-  CheckCircle2,
-} from "lucide-react";
+import { Mail, Phone, CheckCircle2, Eye } from "lucide-react";
 import { RoleBadge } from "@/components/badge/RoleBadge";
 interface UserCardProps {
   user: Profile;
@@ -14,15 +10,11 @@ interface UserCardProps {
   onUserUpdated?: () => void;
 }
 
-export const UserCard = ({
-  user,
-  onViewDetails,
-}: UserCardProps) => {
+export const UserCard = ({ user, onViewDetails }: UserCardProps) => {
   return (
     <Card className="group relative overflow-hidden border-2 border-slate-100 rounded-[2.5rem] transition-all duration-500 hover:border-[#950101] hover:shadow-2xl hover:shadow-[#950101]/10 bg-white">
       <CardContent className="p-6">
-        <div className="flex justify-between items-start mb-6">
-          {/* Avatar & Dynamic Status Glow */}
+        <div className="flex flex-col items-center justify-center mb-3">
           <div className="relative">
             {user.avatarUrl ? (
               <img
@@ -45,7 +37,7 @@ export const UserCard = ({
 
         {/* Identity Section */}
         <div className="mb-3">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center justify-center gap-2 mb-3">
             <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none group-hover:text-[#950101] transition-colors ">
               {user.fullName}
             </h3>
@@ -53,19 +45,16 @@ export const UserCard = ({
               <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-50" />
             )}
           </div>
-          <RoleBadge role={user.role} />
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <RoleBadge role={user.role} />
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex items-center justify-center gap-2">
           <Badge
             className={`border-none px-3 font-black text-[9px] uppercase tracking-widest ${user.isVerified ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}
           >
             {user.isVerified ? "Đã xác minh email" : "Chưa xác minh email"}
-          </Badge>
-          <Badge
-            className={`border-none px-3 font-black text-[9px] uppercase tracking-widest ${user.isActive ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}
-          >
-            {user.isActive ? "Đang hoạt động" : "Đã ngừng hoạt động"}
           </Badge>
         </div>
 
@@ -85,9 +74,10 @@ export const UserCard = ({
         <div className="pt-4">
           <Button
             variant="ghost"
-            className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-10 hover:text-red-800 hover:bg-red-100"
+            className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-11 text-[#950101] hover:text-[#950101] hover:bg-red-50 transition-all border border-transparent hover:border-red-100 shadow-md"
             onClick={onViewDetails}
           >
+            <Eye className="w-4 h-4 mr-2" />
             Xem chi tiết
           </Button>
         </div>

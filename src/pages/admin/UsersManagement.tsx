@@ -43,18 +43,14 @@ const UsersManagement = () => {
             Quản lý toàn bộ người dùng
           </p>
         </div>
-        <div className="text-right hidden md:block">
-          <p className="text-xs font-bold text-[#950101] uppercase tracking-widest">
-            Nailify Dashboard
-          </p>
-        </div>
+
       </div>
 
-      <div className="mb-12">
+      <div className="mb-6">
         <UserFilter filters={filters} onFilterChange={setFilters} />
       </div>
 
-      <div className="mt-6">
+      <div>
         <UserList
           ref={userListRef}
           filters={filters}

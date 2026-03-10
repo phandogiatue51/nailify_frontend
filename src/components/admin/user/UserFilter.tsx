@@ -43,8 +43,8 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#950101] transition-colors" />
               <Input
                 id="search"
-                placeholder="Tìm kiếm bằng tên hoặc email ..."
-                className="pl-10 h-10 rounded-2xl border-slate-100 bg-slate-50/50 font-black text-[10px] tracking-widest focus-visible:ring-[#950101] focus-visible:border-[#950101] transition-all"
+                placeholder="Tìm kiếm theo tên hoặc email ..."
+                className="pl-10 h-10 rounded-2xl border-slate-100 bg-slate-50/50 font-black text-[12px] tracking-widest focus-visible:ring-[#950101] focus-visible:border-[#950101] transition-all"
                 value={filters.SearchTerm || ""}
                 onChange={(e) => handleChange("SearchTerm", e.target.value)}
               />
@@ -70,9 +70,9 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
                   <SelectItem
                     key={role.value}
                     value={role.value.toString()}
-                    className="font-bold text-xs"
+                    className="font-bold text-md"
                   >
-                    {role.label.toUpperCase()}
+                    {role.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -93,9 +93,9 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
               />
               <Label
                 htmlFor="active"
-                className="cursor-pointer font-black text-[9px] tracking-[0.2em] uppercase text-slate-500 hover:text-slate-900 transition-colors"
+                className="cursor-pointer font-black text-[12px] tracking-[0.2em]  text-slate-500 hover:text-slate-900 transition-colors"
               >
-                Đang hoạt động
+                Hoạt động
               </Label>
             </div>
 
@@ -103,9 +103,9 @@ export const UserFilter = ({ filters, onFilterChange }: UserFilterProps) => {
               variant="ghost"
               size="sm"
               onClick={resetFilters}
-              className="h-10 px-4 rounded-xl font-black text-[9px] tracking-widest uppercase text-[#950101] hover:bg-red-50 hover:text-[#950101] transition-all"
+              className="h-10 px-4 rounded-xl font-black text-[12px] tracking-widest  text-[#950101] hover:bg-red-50 hover:text-[#950101] transition-all"
             >
-              Hủy
+              Làm mới
             </Button>
           </div>
         </div>

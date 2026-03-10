@@ -44,7 +44,7 @@ export function PaginationWrapper<T>({
     <div className="space-y-6">
       {/* Results Info */}
       {showInfo && items.length > 0 && (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm font-bold text-slate-500">
           Đang hiển thị {pagination.visibleItems} trên tổng {items.length}
         </div>
       )}
