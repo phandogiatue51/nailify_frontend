@@ -856,9 +856,9 @@ export const invoiceAPI = {
     apiRequest(`/Invoice/auth/${id}`, {
       method: "GET",
     }),
-  
+
   cancel: (id: number) =>
-    apiRequest(`/Invoice/cancel/${id}`, {
+    apiRequest(`/Invoice/${id}/cancel`, {
       method: "DELETE",
     }),
 
