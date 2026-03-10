@@ -48,7 +48,6 @@ const InvoiceManagement = () => {
         <InvoiceFilter filters={filters} onFilterChange={setFilters} />
       </div>
 
-      {/* Invoice List - Full width now */}
       <InvoiceList filters={filters} isAdmin={true} />
     </div>
   );

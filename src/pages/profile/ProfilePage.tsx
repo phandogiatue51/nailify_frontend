@@ -66,7 +66,7 @@ const ProfilePage = () => {
     <div>
       <Header title="Nailify"/>
 
-      <div className="pb-20 p-6">
+      <div className="p-6">
         <div className=" px-6 pt-10 pb-6 text-center">
           <div className="relative mx-auto w-24 h-24 mb-4">
             <div className="w-full h-full rounded-full overflow-hidden ring-4 ring-white shadow-md border border-slate-300 flex items-center justify-center">

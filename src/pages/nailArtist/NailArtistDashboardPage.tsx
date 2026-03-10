@@ -94,7 +94,7 @@ const NailArtistDashboardPage = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">
-                Welcome back,
+                Chào mừng trở lại,
               </p>
               <h1 className="text-xl font-bold text-slate-900 leading-tight">
                 {myArtist.fullName}
@@ -108,7 +108,7 @@ const NailArtistDashboardPage = () => {
           >
             <LayoutDashboard className="w-5 h-5 text-slate-600" />
             <span className="text-sm font-medium text-slate-700">
-              Studio Page
+              Trang Studio
             </span>
           </Button>
         </div>
@@ -119,7 +119,7 @@ const NailArtistDashboardPage = () => {
 
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 mt-4">
-            Management
+            Quản lý dịch vụ
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <button
@@ -132,7 +132,7 @@ const NailArtistDashboardPage = () => {
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    Posts
+                    Bài đăng
                   </p>
                 </div>
               </div>
@@ -148,13 +148,13 @@ const NailArtistDashboardPage = () => {
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    All Subscription
+                    Gói đăng ký
                   </p>
                 </div>
               </div>
             </button>
             <button
-              onClick={() => navigate("/subscription/my-subscription")}
+              onClick={() => navigate("/my-subscription")}
               className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
             >
               <div className="flex items-center gap-4">
@@ -163,13 +163,13 @@ const NailArtistDashboardPage = () => {
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    My Subscription
+                    Gói đăng ký của tôi
                   </p>
                 </div>
               </div>
             </button>
             <button
-              onClick={() => navigate("/invoice/my-subscription")}
+              onClick={() => navigate("/my-invoice")}
               className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
             >
               <div className="flex items-center gap-4">
@@ -178,7 +178,7 @@ const NailArtistDashboardPage = () => {
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    Invoice
+                    Hóa đơn
                   </p>
                 </div>
               </div>
@@ -187,7 +187,7 @@ const NailArtistDashboardPage = () => {
 
           <div className="flex items-center justify-between mb-4 mt-4 px-1">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-              Upcoming Appointments
+              Lịch hẹn sắp tới
             </h3>
             <Button
               variant="link"
@@ -195,7 +195,7 @@ const NailArtistDashboardPage = () => {
               className="text-primary font-bold"
               onClick={() => navigate("/my-artist/bookings")}
             >
-              See All
+              Xem tất cả
             </Button>
           </div>
         </div>
@@ -223,7 +223,7 @@ const NailArtistDashboardPage = () => {
               ))
             ) : (
               <div className="p-8 text-center text-slate-400 text-sm">
-                No bookings found yet.
+                Không có lịch hẹn
               </div>
             )}
           </CardContent>
@@ -237,7 +237,7 @@ const NailArtistDashboardPage = () => {
           }}
           onClick={() => navigate("/booking/guest")}
         >
-          Book an appointment
+          Đặt lịch cho khách
         </Button>
       </div>
     </div>

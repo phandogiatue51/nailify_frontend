@@ -71,7 +71,7 @@ const QuickStats = ({
 
   const statItems = [
     {
-      label: "Bookings",
+      label: "Lịch hẹn",
       value: stats?.totalBookings || 0,
       icon: Calendar,
       color: "text-blue-600",
@@ -79,7 +79,7 @@ const QuickStats = ({
       border: "border-blue-100",
     },
     {
-      label: "Pending",
+      label: "Chờ xác nhận",
       value: stats?.pendingCount || 0,
       icon: Clock,
       color: "text-amber-600",
@@ -87,7 +87,7 @@ const QuickStats = ({
       border: "border-amber-100",
     },
     {
-      label: "Completed",
+      label: "Đã hoàn thành",
       value: stats?.completedCount || 0,
       icon: CheckCircle,
       color: "text-green-600",
@@ -95,7 +95,7 @@ const QuickStats = ({
       border: "border-green-100",
     },
     {
-      label: "Revenue",
+      label: "Doanh thu",
       value: `${stats?.totalRevenue.toLocaleString() || 0} VND`,
       icon: DollarSign,
       color: "text-purple-600",

@@ -2,11 +2,9 @@
 import { useNavigate } from "react-router-dom";
 import { Invoice } from "@/types/database";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Calendar, DollarSign, Receipt } from "lucide-react";
+import { Eye, Receipt } from "lucide-react";
 import { InvoiceStatusBadge } from "@/components/badge/InvoiceStatusBadge";
-import DateDisplay from "@/components/ui/date-display";
 
 interface InvoiceCardProps {
   invoice: Invoice;

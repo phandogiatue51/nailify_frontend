@@ -77,6 +77,10 @@ import { BlogPostDetailModal } from "./components/admin/posts/BlogPostDetailModa
 import SuccessPage from "./pages/payment/SuccessPage";
 import CancelPage from "./pages/payment/CancelPage";
 import InvoiceDetail from "./components/admin/invoices/InvoiceDetail";
+import { SubscriptionPage } from "./pages/subscription/SubscriptionPage";
+import { MySubscriptionPage } from "./pages/subscription/MySubscriptionPage";
+import MyInvoicePage from "./pages/invoice/MyInvoicePage";
+import { InvoiceDetailPage } from "./components/invoice/InvoiceDetailPage";
 
 export const router = createBrowserRouter(
   [
@@ -91,12 +95,29 @@ export const router = createBrowserRouter(
         { path: "profile", element: withMobileLayout(<ProfilePage />) },
 
         {
-          path: "payment/success",
+          path: "payments/success",
           element: withMobileLayout(<SuccessPage />),
         },
         {
-          path: "payment/cancel",
+          path: "payments/cancel",
           element: withMobileLayout(<CancelPage />),
+        },
+
+        {
+          path: "subscription/",
+          element: withMobileLayout(<SubscriptionPage />),
+        },
+        {
+          path: "my-subscription/",
+          element: withMobileLayout(<MySubscriptionPage />),
+        },
+        {
+          path: "my-invoice/",
+          element: withMobileLayout(<MyInvoicePage />),
+        },
+        {
+          path: "invoices/:id",
+          element: withMobileLayout(<InvoiceDetailPage />),
         },
 
         {

@@ -36,7 +36,6 @@ export const InvoiceFilter = ({
   return (
     <Card className="bg-white border-slate-100 shadow-sm rounded-[2rem] overflow-hidden">
       <CardContent className="p-0">
-        {/* Header Section with Brand Color Accent */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-slate-50 bg-slate-50/30">
           <div className="flex items-center gap-3">
             <div className="bg-[#950101] p-2 rounded-xl shadow-lg shadow-[#950101]/20">
@@ -154,6 +153,6 @@ export const InvoiceFilter = ({
       </CardContent>
     </Card>
   );
-};  
+};
 
 export default InvoiceFilter;

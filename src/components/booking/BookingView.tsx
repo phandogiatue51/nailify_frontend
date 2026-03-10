@@ -19,6 +19,7 @@ import {
 import { format, endOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
+import Header from "../ui/header";
 
 const STATUS_OPTIONS = [
   { label: "All", value: undefined },
@@ -171,174 +172,179 @@ const BookingView: React.FC<BookingViewProps> = ({
   const isLoading = filterBookings.isPending;
 
   return (
-    <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
-      <div className="sticky top-0 bg-white/90 backdrop-blur-md z-20 pt-2 pb-4 px-4 border-b border-slate-50 space-y-4">
-        <h2 className="text-xl font-black tracking-tight">{title}</h2>
+    <div>
+      <Header title="Nailify" />
+      <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md z-20 pt-2 pb-4 px-4 border-b border-slate-50 space-y-4">
+          <h2 className="text-xl font-black tracking-tight">{title}</h2>
 
-        <div className="flex items-center justify-between">
-          <div className="flex rounded-xl bg-slate-50 p-1">
-            <button
-              onClick={() => setViewMode("list")}
-              className={cn(
-                "px-3 py-1.5 rounded-lg text-md font-bold transition-all flex items-center gap-1.5",
-                viewMode === "list"
-                  ? "bg-white text-[#D81B60] shadow-sm"
-                  : "text-slate-400 hover:text-slate-600",
-              )}
-            >
-              <List className="h-3.5 w-3.5" />
-              List
-            </button>
-            <button
-              onClick={() => setViewMode("calendar")}
-              className={cn(
-                "px-3 py-1.5 rounded-lg text-md font-bold transition-all flex items-center gap-1.5",
-                viewMode === "calendar"
-                  ? "bg-white text-[#D81B60] shadow-sm"
-                  : "text-slate-400 hover:text-slate-600",
-              )}
-            >
-              <CalendarIcon className="h-3.5 w-3.5" />
-              Calendar
-            </button>
+          <div className="flex items-center justify-between">
+            <div className="flex rounded-xl bg-slate-50 p-1">
+              <button
+                onClick={() => setViewMode("list")}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-md font-bold transition-all flex items-center gap-1.5",
+                  viewMode === "list"
+                    ? "bg-white text-[#D81B60] shadow-sm"
+                    : "text-slate-400 hover:text-slate-600",
+                )}
+              >
+                <List className="h-3.5 w-3.5" />
+                List
+              </button>
+              <button
+                onClick={() => setViewMode("calendar")}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-md font-bold transition-all flex items-center gap-1.5",
+                  viewMode === "calendar"
+                    ? "bg-white text-[#D81B60] shadow-sm"
+                    : "text-slate-400 hover:text-slate-600",
+                )}
+              >
+                <CalendarIcon className="h-3.5 w-3.5" />
+                Calendar
+              </button>
+            </div>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="h-9 rounded-xl bg-slate-50 text-xs font-bold text-md"
+                >
+                  <CalendarIcon className="mr-2 h-3.5 w-3.5 text-[#D81B60]" />
+                  {date ? format(date, "MMM dd") : "Pick date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 border-none shadow-2xl rounded-[2rem]">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-9 rounded-xl bg-slate-50 text-xs font-bold text-md"
-              >
-                <CalendarIcon className="mr-2 h-3.5 w-3.5 text-[#D81B60]" />
-                {date ? format(date, "MMM dd") : "Pick date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 border-none shadow-2xl rounded-[2rem]">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2 px-4">
-          {STATUS_OPTIONS.map((opt) => (
-            <button
-              key={String(opt.value)}
-              onClick={() => setStatus(opt.value)}
-              className={cn(
-                "py-2.5 rounded-xl text-[12px] font-black uppercase  transition-all border-2",
-                status === opt.value
-                  ? "bg-[#D81B60] border-[#D81B60] text-white shadow-md shadow-red-100"
-                  : "bg-white border-slate-50 text-slate-400 hover:border-slate-100",
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-
-        {role === "shop" && locations && locations.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 pb-2">
-            <button
-              onClick={() => setSelectedLocationId(undefined)}
-              className={cn(
-                "whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5",
-                !selectedLocationId
-                  ? "bg-[#E288F9] text-white shadow-lg shadow-purple-100"
-                  : "bg-slate-50 text-slate-400 hover:bg-slate-100",
-              )}
-            >
-              <MapPin className="h-3 w-3" />
-              All Locations
-            </button>
-
-            {locations.map((location) => (
+          <div className="grid grid-cols-3 gap-2 px-4">
+            {STATUS_OPTIONS.map((opt) => (
               <button
-                key={location.shopLocationId || location.id}
-                onClick={() =>
-                  setSelectedLocationId(location.shopLocationId || location.id)
-                }
+                key={String(opt.value)}
+                onClick={() => setStatus(opt.value)}
                 className={cn(
-                  "whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                  selectedLocationId ===
-                    (location.shopLocationId || location.id)
-                    ? "bg-[#E288F9] text-white shadow-lg shadow-purple-100"
-                    : "bg-slate-50 text-slate-400 hover:bg-slate-100",
+                  "py-2.5 rounded-xl text-[12px] font-black uppercase  transition-all border-2",
+                  status === opt.value
+                    ? "bg-[#D81B60] border-[#D81B60] text-white shadow-md shadow-red-100"
+                    : "bg-white border-slate-50 text-slate-400 hover:border-slate-100",
                 )}
-                title={location.address}
               >
-                {location.address?.split(",")[0] || "Location"}
+                {opt.label}
               </button>
             ))}
           </div>
-        )}
-      </div>
 
-      {/* Main Content */}
-      <div className="px-4">
-        {isLoading || (role === "shop" && isLoadingLocations) ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-slate-200" />
-          </div>
-        ) : bookings?.length === 0 ? (
-          <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100">
-            <p className="text-sm font-bold text-slate-400">
-              {role === "shop" && selectedLocationId
-                ? `No bookings found for this location`
-                : `No bookings found`}
-            </p>
-          </div>
-        ) : viewMode === "list" ? (
-          <div className="space-y-4">
-            {bookings
-              ?.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-              .map((booking) => (
-                <BookingCard
-                  key={booking.id}
-                  booking={booking}
-                  isShopOwner={isShopOwner}
-                  onApprove={isShopOwner ? handleApprove : undefined}
-                  onReject={isShopOwner ? handleReject : undefined}
-                  onCancel={handleCancel}
-                  onComplete={isShopOwner ? handleComplete : undefined}
-                  isLoading={
-                    updatingBookingId === booking.id &&
-                    updateBookingStatus.isPending
+          {role === "shop" && locations && locations.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 pb-2">
+              <button
+                onClick={() => setSelectedLocationId(undefined)}
+                className={cn(
+                  "whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5",
+                  !selectedLocationId
+                    ? "bg-[#E288F9] text-white shadow-lg shadow-purple-100"
+                    : "bg-slate-50 text-slate-400 hover:bg-slate-100",
+                )}
+              >
+                <MapPin className="h-3 w-3" />
+                All Locations
+              </button>
+
+              {locations.map((location) => (
+                <button
+                  key={location.shopLocationId || location.id}
+                  onClick={() =>
+                    setSelectedLocationId(
+                      location.shopLocationId || location.id,
+                    )
                   }
-                />
-              ))}
-
-            {bookings && bookings.length > pageSize && (
-              <div className="pt-6 mt-6 border-t border-slate-100">
-                <MobilePagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(bookings.length / pageSize)}
-                  onPageChange={handlePageChange}
-                  totalItems={bookings.length}
-                  visibleItems={Math.min(
-                    pageSize,
-                    bookings.length - (currentPage - 1) * pageSize,
+                  className={cn(
+                    "whitespace-nowrap px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                    selectedLocationId ===
+                      (location.shopLocationId || location.id)
+                      ? "bg-[#E288F9] text-white shadow-lg shadow-purple-100"
+                      : "bg-slate-50 text-slate-400 hover:bg-slate-100",
                   )}
-                />
-              </div>
-            )}
-          </div>
-        ) : (
-          <BookingCalendarView
-            bookings={bookings || []}
-            role={role}
-            onApprove={isShopOwner ? handleApprove : undefined}
-            onReject={isShopOwner ? handleReject : undefined}
-            onCancel={handleCancel}
-            onComplete={isShopOwner ? handleComplete : undefined}
-            isLoading={updateBookingStatus.isPending}
-            updatingBookingId={updatingBookingId}
-          />
-        )}
+                  title={location.address}
+                >
+                  {location.address?.split(",")[0] || "Location"}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Main Content */}
+        <div className="px-4">
+          {isLoading || (role === "shop" && isLoadingLocations) ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="animate-spin text-slate-200" />
+            </div>
+          ) : bookings?.length === 0 ? (
+            <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100">
+              <p className="text-sm font-bold text-slate-400">
+                {role === "shop" && selectedLocationId
+                  ? `No bookings found for this location`
+                  : `No bookings found`}
+              </p>
+            </div>
+          ) : viewMode === "list" ? (
+            <div className="space-y-4">
+              {bookings
+                ?.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+                .map((booking) => (
+                  <BookingCard
+                    key={booking.id}
+                    booking={booking}
+                    isShopOwner={isShopOwner}
+                    onApprove={isShopOwner ? handleApprove : undefined}
+                    onReject={isShopOwner ? handleReject : undefined}
+                    onCancel={handleCancel}
+                    onComplete={isShopOwner ? handleComplete : undefined}
+                    isLoading={
+                      updatingBookingId === booking.id &&
+                      updateBookingStatus.isPending
+                    }
+                  />
+                ))}
+
+              {bookings && bookings.length > pageSize && (
+                <div className="pt-6 mt-6 border-t border-slate-100">
+                  <MobilePagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(bookings.length / pageSize)}
+                    onPageChange={handlePageChange}
+                    totalItems={bookings.length}
+                    visibleItems={Math.min(
+                      pageSize,
+                      bookings.length - (currentPage - 1) * pageSize,
+                    )}
+                  />
+                </div>
+              )}
+            </div>
+          ) : (
+            <BookingCalendarView
+              bookings={bookings || []}
+              role={role}
+              onApprove={isShopOwner ? handleApprove : undefined}
+              onReject={isShopOwner ? handleReject : undefined}
+              onCancel={handleCancel}
+              onComplete={isShopOwner ? handleComplete : undefined}
+              isLoading={updateBookingStatus.isPending}
+              updatingBookingId={updatingBookingId}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

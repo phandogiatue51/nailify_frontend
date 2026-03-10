@@ -147,7 +147,7 @@ const ShopOwnerDashboardPage = () => {
               </div>
             </button>
             <button
-              onClick={() => navigate("/subscription/my-subscription")}
+              onClick={() => navigate("/my-subscription")}
               className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
             >
               <div className="flex items-center gap-4">
@@ -162,7 +162,7 @@ const ShopOwnerDashboardPage = () => {
               </div>
             </button>
             <button
-              onClick={() => navigate("/invoice/my-subscription")}
+              onClick={() => navigate("/my-invoice")}
               className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
             >
               <div className="flex items-center gap-4">
@@ -181,7 +181,7 @@ const ShopOwnerDashboardPage = () => {
 
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-            Upcoming Appointments
+            Lịch hẹn sắp tới
           </h3>
           <Button
             variant="link"
@@ -189,7 +189,7 @@ const ShopOwnerDashboardPage = () => {
             className="text-primary font-bold"
             onClick={() => navigate("/shop/bookings")}
           >
-            See All
+            Xem tất cả
           </Button>
         </div>
 
@@ -217,7 +217,7 @@ const ShopOwnerDashboardPage = () => {
               ))
             ) : (
               <div className="p-8 text-center text-slate-400 text-sm">
-                No bookings found yet.
+                Không có lịch hẹn
               </div>
             )}
           </CardContent>
@@ -232,7 +232,7 @@ const ShopOwnerDashboardPage = () => {
           }}
           onClick={() => navigate("/booking/guest")}
         >
-          Book an appointment
+          Đặt lịch cho khách tại cửa hàng
         </Button>
       </div>
     </div>

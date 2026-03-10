@@ -201,13 +201,6 @@ const InvoiceDetail = () => {
               </div>
             </div>
           </section>
-
-          {/* Footer Branding */}
-          <div className="pt-6 text-center">
-            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
-              Nailify Premium Subscription Management
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>

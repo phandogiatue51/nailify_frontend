@@ -28,7 +28,7 @@ export const InvoiceList = ({ filters, isAdmin = true }: InvoiceListProps) => {
         setLoading(false);
       }
     };
-    
+
     loadInvoices();
   }, [filters, isAdmin]);
 

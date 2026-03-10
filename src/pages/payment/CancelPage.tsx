@@ -1,11 +1,37 @@
 "use client";
-import { XCircle, RefreshCcw, Home, AlertCircle } from "lucide-react";
+import { XCircle, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { invoiceAPI } from "@/services/api";
 import Header from "@/components/ui/header";
 
 export const CancelPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [isCancelling, setIsCancelling] = useState(true);
+  const orderCode = searchParams.get("orderCode");
+
+  useEffect(() => {
+    const cancelInvoice = async () => {
+      if (!orderCode) {
+        console.log("No order code provided");
+        setIsCancelling(false);
+        return;
+      }
+
+      try {
+        await invoiceAPI.cancel(parseInt(orderCode));
+        console.log(`Invoice ${orderCode} cancelled successfully`);
+      } catch (error) {
+        console.error("Failed to cancel invoice:", error);
+      } finally {
+        setIsCancelling(false);
+      }
+    };
+
+    cancelInvoice();
+  }, [orderCode]);
 
   return (
     <div className="min-h-screen bg-slate-50/50">
@@ -18,7 +44,7 @@ export const CancelPage = () => {
           </div>
 
           <h1 className="text-2xl font-black text-slate-900 tracking-tight mb-4">
-            Đã hủy hóa đơn
+            {isCancelling ? "Đang xử lý..." : "Đã hủy hóa đơn"}
           </h1>
 
           <div>
