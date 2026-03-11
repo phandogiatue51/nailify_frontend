@@ -33,9 +33,7 @@ const SubscriptionCard = ({ subscriptionId }: SubscriptionCardProps) => {
     return (
       <div className="flex flex-col items-center justify-center p-12 space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-slate-300" />
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-          Đang tải dữ liệu...
-        </p>
+        
       </div>
     );
   }

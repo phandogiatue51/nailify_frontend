@@ -26,12 +26,11 @@ export const MySubscriptionPage = () => {
         const userSub = await userSubscriptionAPI.getAuth();
         setData(userSub);
 
-        if (userSub?.subscriptionPlanId) {
-          const planDetails = await subscriptionAPI.getById(
-            userSub.subscriptionPlanId,
-          );
-          setPlan(planDetails);
-        }
+        const planDetails = userSub?.subscriptionPlanId
+          ? await subscriptionAPI.getById(userSub.subscriptionPlanId)
+          : await subscriptionAPI.getFreePlan();
+
+        setPlan(planDetails);
       } catch (err) {
         console.error("Error fetching subscription details:", err);
       } finally {
@@ -45,14 +44,12 @@ export const MySubscriptionPage = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          Đang đồng bộ dữ liệu...
-        </p>
+        
       </div>
     );
   }
 
-  if (!data || !data.isActive) return <NoSubscriptionView />;
+  // if (!data || !data.isActive) return <NoSubscriptionView />;
 
   return (
     <div>
@@ -82,50 +79,50 @@ export const MySubscriptionPage = () => {
           >
             <div className="flex justify-between items-start mb-6">
               <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[9px] font-black uppercase tracking-wider">
-                {data.isExpired ? "Đã hết hạn" : "Đang hoạt động"}
+                {data?.isExpired ? "Đã hết hạn" : "Đang hoạt động"}
               </span>
               <ShieldCheck className="w-8 h-8 opacity-50" />
             </div>
 
             <h2 className="text-4xl font-black uppercase tracking-tighter mb-1 drop-shadow-sm">
-              {data.planName}
+              {data?.planName ?? "Gói miễn phí"}
             </h2>
             <div className="flex items-center gap-2 opacity-70">
               <Clock className="w-3 h-3" />
               <p className="text-[15px] font-bold uppercase tracking-widest">
                 Hết hạn:{" "}
-                {data.endDate
+                {data?.endDate
                   ? new Date(data.endDate).toLocaleDateString("vi-VN")
-                  : "N/A"}
+                  : "Vô thời hạn"}
               </p>
             </div>
           </div>
 
           <CardContent className="p-6 space-y-8">
-            {/* Days Remaining Pill */}
-            <div className="flex items-center justify-between p-4 rounded-3xl bg-slate-50 border border-slate-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#950101]">
-                  <Clock className="w-5 h-5" />
+            {data?.daysRemaining && (
+              <div className="flex items-center justify-between p-4 rounded-3xl bg-slate-50 border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#950101]">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-black text-slate-400 uppercase">
+                      Thời gian còn lại
+                    </p>
+                    <p className="text-lg font-black text-slate-900 leading-none">
+                      {data?.daysRemaining ?? 0} ngày
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[12px] font-black text-slate-400 uppercase">
-                    Thời gian còn lại
-                  </p>
-                  <p className="text-lg font-black text-slate-900 leading-none">
-                    {data.daysRemaining ?? 0} ngày
-                  </p>
-                </div>
+                <Link
+                  to="/subscription"
+                  className="text-[10px] font-black uppercase text-[#950101] underline underline-offset-4"
+                >
+                  Gia hạn
+                </Link>
               </div>
-              <Link
-                to="/subscriptions"
-                className="text-[10px] font-black uppercase text-[#950101] underline underline-offset-4"
-              >
-                Gia hạn
-              </Link>
-            </div>
+            )}
 
-            {/* Plan Limits - Only shown if plan details were fetched */}
             {plan && (
               <div className="space-y-4">
                 <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
@@ -171,19 +168,18 @@ export const MySubscriptionPage = () => {
                     </div>
                   ))}
                 </div>
+                <Link
+                  to="/subscription"
+                  style={{
+                    background: plan.colorHex || "#0f172a",
+                    boxShadow: `0 10px 20px -5px ${plan.colorHex}66`,
+                  }}
+                  className="w-full py-5 text-white rounded-[1.5rem] font-black uppercase text-[12px] tracking-[0.2em] shadow-lg active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 group/btn"
+                >
+                  Nâng cấp gói dịch vụ <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             )}
-
-            <Link
-              to="/subscriptions"
-              style={{
-                background: plan.colorHex || "#0f172a",
-                boxShadow: `0 10px 20px -5px ${plan.colorHex}66`,
-              }}
-              className="w-full py-5 text-white rounded-[1.5rem] font-black uppercase text-[12px] tracking-[0.2em] shadow-lg active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 group/btn"
-            >
-              Nâng cấp gói dịch vụ <ArrowRight className="w-4 h-4" />
-            </Link>
           </CardContent>
         </Card>
       </div>
@@ -206,7 +202,7 @@ const NoSubscriptionView = () => (
         nghiệm.
       </p>
       <Link
-        to="/subscriptions"
+        to="/subscription"
         className="px-8 py-4 bg-[#950101] text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-[#950101]/30 active:scale-95 transition-all"
       >
         Xem các gói ngay

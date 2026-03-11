@@ -103,7 +103,7 @@ export const BlogPostCard = ({
             }}
             className="h-8 rounded-full bg-slate-50 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:bg-[#FFCFE9]/20 hover:text-[#950101]"
           >
-            Edit
+            Chỉnh sửa
           </Button>
         )}
       </div>
@@ -184,7 +184,7 @@ export const BlogPostCard = ({
 
             {myReaction
               ? reactionOptions.find((r) => r.type === myReaction.type)?.label
-              : "Like"}
+              : "Thích"}
           </button>
 
           {showReactions && (
@@ -210,7 +210,7 @@ export const BlogPostCard = ({
           className="w-full py-3 rounded-2xl bg-slate-50 text-slate-400 font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-2"
         >
           <MessageCircle size={16} />
-          Comment
+          Bình luận
         </button>
       </div>
     </div>

@@ -149,7 +149,6 @@ const ForgotPassword = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
                   </>
                 ) : (
                   "Send Reset Link"
@@ -183,7 +182,6 @@ const ForgotPassword = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
                   </>
                 ) : (
                   "Resend Reset Link"

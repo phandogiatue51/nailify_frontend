@@ -31,7 +31,6 @@ const NailArtistDashboardPage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
-        <p className="text-slate-500 mt-4 font-medium">Opening Dashboard...</p>
       </div>
     );
   }

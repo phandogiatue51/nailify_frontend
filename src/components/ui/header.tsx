@@ -12,7 +12,7 @@ export default function Header({ title = "Nailify", hasNotification = false }) {
         >
           {title}
         </h1>
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <button className="p-2 bg-slate-100 rounded-full">
             <Search className="w-5 h-5 text-slate-600" />
           </button>
@@ -22,7 +22,7 @@ export default function Header({ title = "Nailify", hasNotification = false }) {
               <span className="absolute top-1 right-1 w-2 h-2 bg-pink-500 rounded-full border-2 border-white" />
             )}
           </button>
-        </div>
+        </div> */}
       </div>
     </header>
   );

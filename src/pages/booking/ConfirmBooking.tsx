@@ -161,12 +161,7 @@ const ConfirmBooking = () => {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center space-y-4">
             <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-            <p className="text-lg font-medium text-slate-600">
-              Loading booking details...
-            </p>
-            <p className="text-sm text-slate-400">
-              Please wait while we fetch the information
-            </p>
+            
           </div>
         </div>
       </div>
@@ -404,7 +399,6 @@ const ConfirmBooking = () => {
           {createBooking.isPending ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin mr-2" />
-              Processing...
             </>
           ) : (
             <>

@@ -14,9 +14,7 @@ const MyInvoicePage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-          Đang tải lịch sử...
-        </p>
+        
       </div>
     );
   }

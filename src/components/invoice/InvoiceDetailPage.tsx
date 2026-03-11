@@ -93,7 +93,7 @@ export const InvoiceDetailPage = () => {
                 Ngày bắt đầu
               </p>
               <p className="text-[13px] font-black text-slate-700">
-                {new Date(invoice.startDate).toLocaleDateString("vi-VN")}
+                <DateDisplay dateString={invoice.startDate}/>
               </p>
             </div>
             <div className="text-right">
@@ -101,7 +101,7 @@ export const InvoiceDetailPage = () => {
                 Ngày kết thúc
               </p>
               <p className="text-[13px] font-black text-[#950101]">
-                {new Date(invoice.endDate).toLocaleDateString("vi-VN")}
+                <DateDisplay dateString={invoice.endDate}/>
               </p>
             </div>
           </div>

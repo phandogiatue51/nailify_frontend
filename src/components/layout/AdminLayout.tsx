@@ -125,7 +125,7 @@ const AdminLayout: React.FC = () => {
             />
             {sidebarOpen && (
               <span className="text-[11px] font-black uppercase tracking-widest">
-                Sign Out
+                Đăng xuất
               </span>
             )}
           </button>

@@ -13,7 +13,7 @@ export const VerificationBadge = ({ label, verified }: VerificationBadgeProps) =
           ${verified ? "bg-green-400" : "bg-yellow-400"}`}
       >
         <span className="text-xs font-bold uppercase tracking-wide">
-          {verified ? `${label} Verified` : "Pending Verification"}
+          {verified ? `${label} đã xác minh` : "Đang chờ xác minh"}
         </span>
         {verified ? (
           <CircleCheckBig className="w-3 h-3" />

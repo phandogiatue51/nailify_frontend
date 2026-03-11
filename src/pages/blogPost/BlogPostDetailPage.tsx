@@ -99,7 +99,7 @@ export const BlogPostDetailPage = () => {
           <ArrowLeft className="w-6 h-6" />
         </button>
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Journal Entry</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Bài viết</span>
           <div className="h-0.5 w-4 bg-[#950101] mt-1" />
         </div>
         <div className="w-10" /> {/* Symmetry Spacer */}
@@ -121,7 +121,7 @@ export const BlogPostDetailPage = () => {
             </div>
             {post.totalReactions > 0 && (
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                {post.totalReactions} Reactions
+                {post.totalReactions} cảm xúc
               </span>
             )}
           </div>
@@ -129,7 +129,7 @@ export const BlogPostDetailPage = () => {
           <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full">
             <MessageCircle size={12} className="text-slate-400" />
             <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-              {post.totalComments || 0} Comments
+              {post.totalComments || 0} bình luận
             </span>
           </div>
         </div>
@@ -195,7 +195,7 @@ export const BlogPostDetailPage = () => {
             className="w-full py-5 bg-slate-50 text-slate-400 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-100 transition-all active:scale-95 flex items-center justify-center gap-3"
           >
             <MessageCircle className="w-5 h-5" />
-            Comment
+            Bình luận
           </button>
         </div>
 

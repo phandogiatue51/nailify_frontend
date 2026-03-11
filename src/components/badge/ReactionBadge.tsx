@@ -14,42 +14,42 @@ const reactionMap: Record<
   }
 > = {
   0: {
-    label: "Like",
+    label: "Thích",
     bg: "bg-blue-50",
     text: "text-blue-600",
     icon: <BiSolidLike size={12} className="fill-blue-600" />,
     shadow: "shadow-blue-100",
   },
   1: {
-    label: "Love",
+    label: "Thả Tym",
     bg: "bg-rose-50",
     text: "text-rose-600",
     icon: <FcLike  size={12} className="fill-rose-600" />,
     shadow: "shadow-rose-100",
   },
   2: {
-    label: "Haha",
+    label: "Buồn Cười",
     bg: "bg-orange-50",
     text: "text-orange-600",
     icon: <FaLaughSquint size={12} className="fill-orange-600" />,
     shadow: "shadow-orange-100",
   },
   3: {
-    label: "Wow",
+    label: "Ngạc Nhiên",
     bg: "bg-amber-50",
     text: "text-amber-600",
     icon: <FaSurprise size={12} className="fill-amber-600" />,
     shadow: "shadow-amber-100",
   },
   4: {
-    label: "Sad",
+    label: "Buồn Bã",
     bg: "bg-slate-100",
     text: "text-slate-600",
     icon: <FaSadTear size={12} className="fill-slate-600" />,
     shadow: "shadow-slate-200",
   },
   5: {
-    label: "Angry",
+    label: "Tức Giận",
     bg: "bg-red-50",
     text: "text-red-600",
     icon: <FaAngry  size={12} className="fill-red-600" />,

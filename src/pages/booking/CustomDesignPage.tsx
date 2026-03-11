@@ -60,14 +60,7 @@ export const CustomDesignPage = () => {
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="text-center space-y-4">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Loading services</h2>
-            <p className="text-sm text-slate-500">
-              {shopId
-                ? "Fetching shop services..."
-                : "Fetching artist services..."}
-            </p>
-          </div>
+          
           <Button variant="outline" onClick={() => navigate(-1)} disabled>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Go Back

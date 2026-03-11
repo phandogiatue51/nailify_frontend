@@ -65,7 +65,7 @@ export const ProfileForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit}>
       {!isReadOnly && (
         <div className="flex flex-col items-center space-y-4 py-2">
           <div className="relative">
@@ -77,10 +77,15 @@ export const ProfileForm = ({
             </Avatar>
             <Label
               htmlFor="avatar"
-              className="absolute bottom-0 right-0 bg-primary text-primary-foreground p-2 rounded-full shadow-lg cursor-pointer border-2 border-white"
+              className="absolute bottom-0 right-0 text-primary-foreground p-2 rounded-full shadow-lg cursor-pointer border-2 border-white"
+              style={{
+                background:
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+              }}
             >
-              <Camera className="w-4 h-4" />
+              <Camera className="w-4 h-4 text-white" />
             </Label>
+
             <Input
               id="avatar"
               type="file"
@@ -90,16 +95,14 @@ export const ProfileForm = ({
               disabled={isLoading}
             />
           </div>
-          <p className="text-xs font-medium text-slate-500">
-            Tap to change photo
-          </p>
+          <p className="text-xs font-bold text-slate-500">Đổi ảnh đại diện</p>
         </div>
       )}
 
       <div className="space-y-4 text-left">
         <div className="grid gap-2">
-          <Label htmlFor="fullName" className="text-sm font-semibold ml-1">
-            Full Name
+          <Label htmlFor="fullName" className="text-sm font-bold ml-1">
+            Họ và tên
           </Label>
           <Input
             id="fullName"
@@ -112,7 +115,7 @@ export const ProfileForm = ({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="email" className="text-sm font-semibold ml-1">
+          <Label htmlFor="email" className="text-sm font-bold ml-1">
             Email
           </Label>
           <Input
@@ -127,8 +130,8 @@ export const ProfileForm = ({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="phone" className="text-sm font-semibold ml-1">
-            Phone Number
+          <Label htmlFor="phone" className="text-sm font-bold ml-1">
+            Số điện thoại
           </Label>
           <Input
             id="phone"
@@ -140,8 +143,8 @@ export const ProfileForm = ({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="address" className="text-sm font-semibold ml-1">
-            Address
+          <Label htmlFor="address" className="text-sm font-bold ml-1">
+            Địa chỉ
           </Label>
           <Textarea
             id="address"
@@ -158,15 +161,20 @@ export const ProfileForm = ({
       {!isReadOnly && (
         <Button
           type="submit"
-          className="w-full h-12 rounded-xl font-bold text-base mt-4 transition-all active:scale-[0.98]"
+          className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12 mt-6"
+          style={{
+            background:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+            border: "none",
+          }}
           disabled={isLoading}
         >
           {isLoading ? (
             <>
-              <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Saving...
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Đang lưu ...
             </>
           ) : (
-            "Save Changes"
+            "Lưu thông tin"
           )}
         </Button>
       )}

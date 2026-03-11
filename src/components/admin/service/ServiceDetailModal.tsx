@@ -103,9 +103,7 @@ export const ServiceDetailModal = ({
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Loader2 className="w-10 h-10 animate-spin text-[#950101]" />
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
-              Loading Menu
-            </p>
+            
           </div>
         ) : !service ? (
           <div className="text-center py-24 px-12">

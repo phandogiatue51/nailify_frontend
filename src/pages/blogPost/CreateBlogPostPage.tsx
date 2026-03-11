@@ -6,7 +6,7 @@ export const CreateBlogPostPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white pb-10">
+    <div className="min-h-screen bg-white p-4">
       {/* Editorial Header */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-50 px-6 py-4 flex items-center justify-between">
         <button
@@ -16,7 +16,7 @@ export const CreateBlogPostPage = () => {
           <ArrowLeft className="w-6 h-6" />
         </button>
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">New Entry</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Thêm bài viết</span>
           <div className="h-0.5 w-4 bg-[#950101] mt-1" />
         </div>
         <div className="w-10" />
@@ -25,10 +25,10 @@ export const CreateBlogPostPage = () => {
       <div className="max-w-2xl mx-auto px-6">
         <header className="mb-10 text-center">
           <h1 className="text-4xl font-black text-slate-900 leading-tight tracking-tight uppercase italic">
-            Create <span className="not-italic">Story</span>
+            Thêm <span className="not-italic">Bài viết</span>
           </h1>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
-            Share your latest inspiration with the collection
+            Chia sẻ cảm nghĩ hoặc về bộ sưu tập mới nhất của bạn
           </p>
         </header>
 

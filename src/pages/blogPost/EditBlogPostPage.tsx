@@ -30,14 +30,12 @@ export const EditBlogPostPage = () => {
     return (
       <div className="flex flex-col h-[60vh] items-center justify-center gap-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          Retrieving Post
-        </p>
+       
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-white pb-10">
+    <div className="min-h-screen bg-white p-4">
       {/* Editorial Header */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-50 px-6 py-4 flex items-center justify-between">
         <button
@@ -48,7 +46,7 @@ export const EditBlogPostPage = () => {
         </button>
         <div className="flex flex-col items-center">
           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
-            Editor
+            Chỉnh sửa
           </span>
           <div className="h-0.5 w-4 bg-[#950101] mt-1" />
         </div>
@@ -58,10 +56,10 @@ export const EditBlogPostPage = () => {
       <div className="max-w-2xl mx-auto px-6">
         <header className="mb-10 text-center">
           <h1 className="text-4xl font-black text-slate-900 leading-tight tracking-tight uppercase">
-            Edit <span className="italic font-serif">Journal</span>
+            Chỉnh sửa <span className="italic font-serif">Bài viết</span>
           </h1>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
-            Refining the details of your masterpiece
+            Chỉnh sửa bài viết theo ý của bạn
           </p>
         </header>
 

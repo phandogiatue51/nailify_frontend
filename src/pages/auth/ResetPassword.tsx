@@ -110,7 +110,6 @@ const ResetPassword = () => {
           <CardContent className="pt-6">
             <div className="flex flex-col items-center justify-center space-y-4">
               <Loader2 className="h-12 w-12 animate-spin text-blue-500" />
-              <p className="text-muted-foreground">Checking reset link...</p>
             </div>
           </CardContent>
         </Card>
@@ -323,7 +322,6 @@ const ResetPassword = () => {
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Resetting Password...
               </>
             ) : (
               "Reset Password"

@@ -108,7 +108,7 @@ export const MyBlogPage = () => {
         </button>
         <div className="flex flex-col items-center">
           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
-            The Collection
+            Danh sách bài viết
           </span>
           <div className="h-0.5 w-6 bg-[#950101] mt-1" />
         </div>
@@ -128,7 +128,7 @@ export const MyBlogPage = () => {
           {/* Subtle Shine Effect */}
           <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           <span className="relative flex items-center gap-2">
-            Create a Post
+            Tạo 1 bài viết
             <div className="h-1 w-1 rounded-full bg-[#FFCFE9]" />
           </span>
         </Button>
@@ -139,7 +139,7 @@ export const MyBlogPage = () => {
         {posts.length === 0 ? (
           <div className="text-center py-20 border-2 border-dashed border-slate-100 rounded-[3rem]">
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">
-              Your journal is empty
+              Danh sách bài viết trống
             </p>
           </div>
         ) : (

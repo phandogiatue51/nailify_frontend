@@ -35,9 +35,7 @@ export const InvoiceList = ({ filters }: InvoiceListProps) => {
     return (
       <div className="flex flex-col items-center justify-center p-20 space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          Đang tải lịch sử...
-        </p>
+        
       </div>
     );
   }

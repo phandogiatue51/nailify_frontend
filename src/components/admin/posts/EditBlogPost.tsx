@@ -30,9 +30,7 @@ export const EditBlogPost = () => {
     return (
       <div className="flex flex-col h-[60vh] items-center justify-center gap-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          Retrieving Post
-        </p>
+       
       </div>
     );
 

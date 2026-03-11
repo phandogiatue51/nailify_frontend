@@ -192,9 +192,7 @@ const ShopDetailPage = () => {
               {ratingLoading ? (
                 <div className="inline-flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100">
                   <Loader2 className="w-3 h-3 animate-spin text-slate-400" />
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-                    Loading...
-                  </span>
+                  
                 </div>
               ) : (
                 shopRating && (

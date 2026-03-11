@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { ServiceItem } from "@/types/database";
 import { serviceItemAPI } from "@/services/api";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Loader2,
   Package,
-  DollarSign,
   Clock,
   ChevronDown,
   ChevronUp,
-  Building,
-  User,
 } from "lucide-react";
 
 interface ServicePreviewProps {

@@ -236,7 +236,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
       </div>
 
       {/* 3. Action Footer */}
-      <div className="pt-10 border-t border-slate-100 space-y-6">
+      <div className="border-slate-100 ">
         {/* The Primary "Gold Standard" Button */}
         <button
           type="submit"

@@ -833,6 +833,11 @@ export const subscriptionAPI = {
       method: "GET",
     }),
 
+  getFreePlan: () =>
+    apiRequest(`/Subscription/free`, {
+      method: "GET",
+    }),
+
   updateSub: (id: string, formData: FormData) =>
     apiRequest(`/Subscription/${id}`, {
       method: "PUT",

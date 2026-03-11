@@ -1,8 +1,4 @@
-import {
-  InvoiceFilterDto,
-  SubscriptionTier,
-  InvoiceStatus,
-} from "@/types/filter";
+import { InvoiceFilterDto, SubscriptionTier } from "@/types/filter";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -26,13 +22,6 @@ export const InvoiceFilter = ({
 }: InvoiceFilterProps) => {
   const handleChange = (key: keyof InvoiceFilterDto, value: any) => {
     onFilterChange({ ...filters, [key]: value });
-  };
-
-  const invoiceStatusLabels: Record<InvoiceStatus, string> = {
-    0: "Đang chờ xử lý", // Pending
-    1: "Đã thanh toán", // Paid
-    2: "Quá hạn", // Overdue
-    3: "Đã hủy", // Cancelled
   };
 
   const subscriptionTierLabels: Record<SubscriptionTier, string> = {
@@ -65,40 +54,7 @@ export const InvoiceFilter = ({
             />
           </div>
 
-          {/* Controls Section */}
           <div className="flex flex-wrap items-center justify-between w-full lg:w-auto gap-4">
-            {/* Status Select */}
-            <Select
-              value={
-                filters.status !== undefined ? String(filters.status) : "all"
-              }
-              onValueChange={(value) =>
-                handleChange(
-                  "status",
-                  value === "all" ? undefined : Number(value),
-                )
-              }
-            >
-              <SelectTrigger className="h-12 w-full lg:w-44 rounded-2xl border-slate-100 bg-white font-black text-[11px] tracking-widest hover:bg-slate-50 transition-all ">
-                <SelectValue placeholder="Trạng thái" />
-              </SelectTrigger>
-
-              <SelectContent>
-                <SelectItem value="all" className="font-bold text-xs">
-                  Tất cả
-                </SelectItem>
-                {Object.entries(invoiceStatusLabels).map(([value, label]) => (
-                  <SelectItem
-                    key={value}
-                    value={value}
-                    className="font-bold text-xs"
-                  >
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
             <Select
               value={filters.tier !== undefined ? String(filters.tier) : "all"}
               onValueChange={(value) =>

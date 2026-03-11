@@ -34,7 +34,6 @@ export const ConfirmSubscription = () => {
     if (isLoading) return (
         <div className="min-h-screen flex flex-col items-center justify-center space-y-4">
             <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Đang chuẩn bị đơn hàng...</p>
         </div>
     );
 
@@ -111,7 +110,6 @@ export const ConfirmSubscription = () => {
                 {isProcessing ? (
                     <span className="flex items-center justify-center gap-2">
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        Đang xử lý ...
                     </span>
                 ) : (
                     "Thanh toán ngay"

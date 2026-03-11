@@ -1,23 +1,23 @@
 import { cn } from "@/lib/utils";
 const roleMap: Record<number, { label: string; bg: string }> = {
   0: {
-    label: "Pending",
+    label: "Đang chờ chấp nhận",
     bg: "bg-orange-400",
   },
   1: {
-    label: "Approved",
+    label: "Đã chấp nhận",
     bg: "bg-blue-400",
   },
   2: {
-    label: "Rejected",
+    label: "Đã từ chối",
     bg: "bg-purple-400",
   },
   3: {
-    label: "Completed",
+    label: "Đã hoàn thành",
     bg: "bg-green-400",
   },
   4: {
-    label: "Cancelled",
+    label: "Đã hủy",
     bg: "bg-red-400",
   },
 };

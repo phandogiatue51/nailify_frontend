@@ -19,9 +19,7 @@ export const StaffList = ({
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-[#E288F9]" />
-        <p className="text-xs font-black uppercase tracking-widest text-slate-400">
-          Syncing Team...
-        </p>
+       
       </div>
     );
   }

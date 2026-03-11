@@ -203,9 +203,7 @@ const ArtistDetailPage = () => {
               {ratingLoading ? (
                 <div className="inline-flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100">
                   <Loader2 className="w-3 h-3 animate-spin text-slate-400" />
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-                    Loading...
-                  </span>
+                  
                 </div>
               ) : (
                 artistRating && (
@@ -347,9 +345,7 @@ const ArtistDetailPage = () => {
         {collectionsLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-4">
-              Developing photos...
-            </p>
+            
           </div>
         ) : collections?.length > 0 ? (
           <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">

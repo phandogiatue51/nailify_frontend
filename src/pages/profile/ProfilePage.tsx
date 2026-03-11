@@ -38,9 +38,6 @@ const ProfilePage = () => {
       <div>
         <div className="flex flex-col justify-center items-center h-[60vh]">
           <Loader2 className="w-10 h-10 animate-spin text-primary" />
-          <p className="text-muted-foreground mt-4 font-medium">
-            Loading profile...
-          </p>
         </div>
       </div>
     );
@@ -64,7 +61,7 @@ const ProfilePage = () => {
 
   return (
     <div>
-      <Header title="Nailify"/>
+      <Header title="Nailify" />
 
       <div className="p-6">
         <div className=" px-6 pt-10 pb-6 text-center">
@@ -106,16 +103,16 @@ const ProfilePage = () => {
           <section>
             <div className="flex justify-between items-end mb-3 px-1">
               <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                Account Details
+                Thông tin cá nhân
               </h3>
               <button
                 onClick={() => navigate("/profile/edit")}
-                className="text-sm font-medium text-primary underline"
+                className="text-sm font-bold text-primary underline"
               >
-                Edit Profile
+                Chỉnh sửa
               </button>
             </div>
-            <Card className="overflow-hidden border-none shadow-sm ring-1 ring-slate-200">
+            <Card className="overflow-hidden border-none shadow-sm ring-1 ring-slate-200 rounded-3xl">
               <CardContent className="p-0 divide-y divide-slate-100">
                 <DetailRow icon={Mail} label="Email" value={profile.email}>
                   {profile.isVerified ? (
@@ -123,7 +120,7 @@ const ProfilePage = () => {
                       variant="default"
                       className="bg-green-400 text-white text-xs flex items-center gap-1"
                     >
-                      Verified
+                      Đã xác minh
                     </Badge>
                   ) : (
                     <VerificationButton
@@ -136,13 +133,13 @@ const ProfilePage = () => {
                 </DetailRow>
                 <DetailRow
                   icon={Phone}
-                  label="Phone"
-                  value={profile.phone || "Not set"}
+                  label="Số điện thoại"
+                  value={profile.phone || "Chưa cập nhật"}
                 />
                 <DetailRow
                   icon={MapPin}
-                  label="Address"
-                  value={profile.address || "Not set"}
+                  label="Địa chỉ"
+                  value={profile.address || "Chưa cập nhật"}
                 />
               </CardContent>
             </Card>
@@ -150,28 +147,32 @@ const ProfilePage = () => {
           <InstallButton />
           <section>
             <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
-              Security
+              Bảo mật
             </h3>
             <div className="space-y-2">
               <Button
                 variant="outline"
-                className="w-full justify-between h-12 px-4 border-slate-200"
+                className="w-full justify-between h-12 px-4 border-slate-200 rounded-3xl"
                 onClick={() => navigate("/profile/change-password")}
               >
                 <div className="flex items-center gap-3">
                   <KeyRound className="w-4 h-4 text-slate-500" />
-                  <span>Change Password</span>
+                  <span>Đổi mật khẩu</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-400" />
               </Button>
+
               <Button
                 variant="ghost"
-                className="w-full justify-start h-12 px-4 text-white bg-red-400"
+                className="w-full justify-between h-12 px-4 hover:text-white hover:bg-red-400 rounded-3xl bg-transparent border-red-400 border text-red-500"
                 onClick={handleSignOut}
                 disabled={loading}
               >
-                <LogOut className="w-4 h-4 mr-3" />
-                <span className="font-semibold">Sign Out</span>
+                <div className="flex items-center gap-3">
+                  <LogOut className="w-4 h-4 mr-3" />
+                  <span className="font-semibold">Đăng xuất</span>
+                </div>
+                <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
           </section>
