@@ -74,7 +74,7 @@ export const SignupForm = () => {
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1.5">
             <Label className="text-xs font-bold uppercase text-slate-500">
-              Password
+              Mật khẩu
             </Label>
             <Input
               type="password"
@@ -84,7 +84,7 @@ export const SignupForm = () => {
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs font-bold uppercase text-slate-500">
-              Confirm
+              Xác nhận mật khẩu
             </Label>
             <Input
               type="password"
@@ -96,7 +96,7 @@ export const SignupForm = () => {
 
         <div className="space-y-1.5">
           <Label className="text-xs font-bold uppercase text-slate-500">
-            Full Name
+            Họ và tên
           </Label>
           <Input
             className="h-11 rounded-xl border-slate-100"
@@ -107,7 +107,7 @@ export const SignupForm = () => {
 
         <div className="space-y-1.5">
           <Label className="text-xs font-bold uppercase text-slate-500">
-            Phone Number
+            Số điện thoại
           </Label>
           <Input
             type="text"
@@ -120,16 +120,16 @@ export const SignupForm = () => {
         </div>
         <div className="space-y-2 py-2">
           <Label className="text-xs font-bold uppercase text-slate-500">
-            I am a...
+            Tôi là ...
           </Label>
           <RadioGroup
             defaultValue="0"
             className="grid grid-cols-3 gap-2"
             onValueChange={(v) => signupForm.setValue("role", v as any)}
           >
-            <RoleTile value="0" label="Customer" id="role-0" />
-            <RoleTile value="4" label="Artist" id="role-4" />
-            <RoleTile value="1" label="Shop" id="role-1" />
+            <RoleTile value="0" label="Khách hàng" id="role-0" />
+            <RoleTile value="4" label="Thợ Nail" id="role-4" />
+            <RoleTile value="1" label="Chủ cửa hàng" id="role-1" />
           </RadioGroup>
         </div>
       </div>
@@ -140,7 +140,7 @@ export const SignupForm = () => {
         style={{ backgroundColor: "#950101" }}
         disabled={isLoading}
       >
-        {isLoading ? <Loader2 className="animate-spin" /> : "Create Account"}
+        {isLoading ? <Loader2 className="animate-spin" /> : "Tạo tài khoản"}
       </Button>
     </form>
   );

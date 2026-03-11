@@ -31,14 +31,13 @@ export const ArtistCard = ({ artist, onViewDetails }: ArtistCardProps) => {
                 </span>
               </div>
             )}
-
-            {/* Rating Badge Overlay */}
-            <div className="absolute -bottom-2 -right-2 bg-white px-2 py-1 rounded-xl shadow-sm border border-slate-100 flex items-center gap-1 scale-90 group-hover:scale-100 transition-transform">
-              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-              <span className="text-[10px] font-black">
-                {artist.rating?.toFixed(1) || "0.0"}
-              </span>
-            </div>
+            <div
+              className={`absolute -bottom-1 -right-1 w-5 h-5 border-4 border-white rounded-full ${
+                artist.isActive
+                  ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                  : "bg-slate-300"
+              }`}
+            />
           </div>
         </div>
 
@@ -48,9 +47,6 @@ export const ArtistCard = ({ artist, onViewDetails }: ArtistCardProps) => {
             <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none group-hover:text-[#950101] transition-colors">
               {artist.fullName}
             </h3>
-            {artist.artistVerified && (
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-50" />
-            )}
           </div>
         </div>
 

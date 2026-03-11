@@ -9,17 +9,8 @@ import {
   Building,
   User,
   Package,
-  MoreVertical,
-  Calendar,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ComponentBadge } from "@/components/badge/ComponentBadge";
-import DateDisplay from "@/components/ui/date-display";
 
 interface ServiceCardProps {
   service: ServiceItem;

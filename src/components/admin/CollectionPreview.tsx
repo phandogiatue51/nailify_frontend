@@ -60,58 +60,57 @@ export const CollectionPreview = ({
     setExpanded(!expanded);
   };
 
-  // Compact view
   if (compact) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-4">
         <Button
           variant="ghost"
-          size="sm"
           onClick={toggleExpand}
-          className="w-full justify-between"
+          className="w-full justify-between hover:bg-slate-50 rounded-2xl p-6 h-auto border border-slate-100 transition-all"
         >
-          <div className="flex items-center gap-2">
-            {shopId ? (
-              <Building className="w-4 h-4" />
-            ) : (
-              <User className="w-4 h-4" />
-            )}
-            <Layers className="w-4 h-4" />
-            <span>
-              {title} ({collections.length})
-            </span>
+          <div className="flex items-center gap-4">
+            <div className="p-2 bg-slate-900 rounded-xl text-white">
+              <Layers className="w-4 h-4" />
+            </div>
+            <div className="text-left">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#950101] leading-none mb-1">
+                Lookbook
+              </p>
+              <span className="font-black uppercase text-sm tracking-tight text-slate-900">
+                {title} ({collections.length})
+              </span>
+            </div>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4" />
+            <ChevronUp className="w-4 h-4 text-slate-300" />
           ) : (
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown className="w-4 h-4 text-slate-300" />
           )}
         </Button>
 
         {expanded && (
-          <div className="pl-6 space-y-2">
+          <div className="pl-4 space-y-3 animate-in slide-in-from-top-2 duration-300">
             {loading ? (
-              <Loader2 className="w-4 h-4 animate-spin mx-auto" />
+              <Loader2 className="w-4 h-4 animate-spin mx-auto text-slate-300" />
             ) : collections.length > 0 ? (
               collections.slice(0, 3).map((collection) => (
                 <div
                   key={collection.id}
-                  className="text-sm flex justify-between items-center"
+                  className="flex justify-between items-center bg-white p-3 rounded-2xl border border-slate-50 shadow-sm"
                 >
-                  <span className="truncate">{collection.name}</span>
-                  <Badge variant={collection.isActive ? "default" : "outline"}>
-                    {collection.isActive ? "Active" : "Inactive"}
+                  <span className="text-xs font-bold text-slate-600 uppercase tracking-tight truncate pr-4">
+                    {collection.name}
+                  </span>
+                  <Badge
+                    className={`text-[9px] font-black uppercase tracking-widest ${collection.isActive ? "bg-emerald-500" : "bg-slate-200 text-slate-500"}`}
+                  >
+                    {collection.isActive ? "Live" : "Off"}
                   </Badge>
                 </div>
               ))
             ) : (
-              <p className="text-sm text-muted-foreground">
-                No {title.toLowerCase()}
-              </p>
-            )}
-            {collections.length > 3 && (
-              <p className="text-xs text-muted-foreground">
-                +{collections.length - 3} more
+              <p className="text-[10px] font-bold text-slate-400 uppercase italic pl-4">
+                No Collections
               </p>
             )}
           </div>
@@ -120,112 +119,116 @@ export const CollectionPreview = ({
     );
   }
 
-  // Full view
+  // Full view (for modal/detail page)
   return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold flex items-center gap-2">
-            {shopId ? (
-              <Building className="w-5 h-5" />
-            ) : (
-              <User className="w-5 h-5" />
-            )}
-            <Layers className="w-5 h-5" />
-            {title} ({collections.length})
+    <div className="space-y-6">
+      <div className="flex justify-between items-end px-2">
+        <div>
+          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#950101] mb-2">
+            Editor's Choice
           </h3>
-          <Button variant="outline" size="sm" onClick={toggleExpand}>
-            {expanded ? "Hide" : "Show All"}
-          </Button>
+          <h2 className="text-2xl font-black uppercase tracking-tighter text-slate-900 flex items-center gap-3">
+            {title} <span className="text-slate-300">/</span>{" "}
+            {collections.length}
+          </h2>
         </div>
+        <Button
+          variant="link"
+          className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-[#950101]"
+          onClick={toggleExpand}
+        >
+          {expanded ? "Thu gọn" : "Xem tất cả"}
+        </Button>
+      </div>
 
-        {expanded && (
-          <div className="space-y-3">
-            {loading ? (
-              <div className="flex justify-center py-4">
-                <Loader2 className="w-6 h-6 animate-spin" />
-              </div>
-            ) : collections.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {collections.map((collection) => (
-                  <Card key={collection.id} className="p-3">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-start gap-3">
-                          {collection.imageUrl ? (
-                            <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0">
-                              <img
-                                src={collection.imageUrl}
-                                alt={collection.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-                              <span className="text-2xl font-bold text-white uppercase">
-                                {collection.name?.[0] || "U"}
-                              </span>
-                            </div>
-                          )}
-
-                          <div className="flex-1">
-                            <h4 className="font-medium">{collection.name}</h4>
-                            {collection.description && (
-                              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                                {collection.description}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                              <div className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {collection.estimatedDuration} min
-                              </div>
-                              {collection.totalPrice && (
-                                <div className="flex items-center gap-1">
-                                  <DollarSign className="w-3 h-3" />
-                                  {collection.totalPrice.toLocaleString()} VND
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <Badge
-                        variant={collection.isActive ? "default" : "secondary"}
-                      >
-                        {collection.isActive ? "Active" : "Inactive"}
+      {expanded && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in zoom-in-95 duration-500">
+          {loading ? (
+            <div className="col-span-full flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
+            </div>
+          ) : collections.length > 0 ? (
+            collections.map((collection) => (
+              <Card
+                key={collection.id}
+                className="overflow-hidden rounded-[2.5rem] border-2 border-slate-50 shadow-none hover:border-[#950101]/20 transition-all group"
+              >
+                <div className="flex flex-col">
+                  {/* Fixed Image section with clean gradient fallback */}
+                  <div className="h-40 bg-slate-100 relative overflow-hidden">
+                    {collection.imageUrl ? (
+                      <img
+                        src={collection.imageUrl}
+                        alt={collection.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] opacity-40" />
+                    )}
+                    <div className="absolute top-4 left-4">
+                      <Badge className="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-black uppercase tracking-widest border-none">
+                        {collection.isActive ? "Published" : "Draft"}
                       </Badge>
                     </div>
+                  </div>
+
+                  <div className="p-6 space-y-4">
+                    <div className="space-y-1">
+                      <h4 className="font-black uppercase text-lg tracking-tight text-slate-900 group-hover:text-[#950101] transition-colors">
+                        {collection.name}
+                      </h4>
+                      <p className="text-xs text-slate-400 font-medium italic line-clamp-2 leading-relaxed">
+                        {collection.description ||
+                          "Collection curated specifically for premium nail experiences."}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-slate-50 pt-4">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1 text-[#950101]">
+                          <span className="text-[10px] font-black">VND</span>
+                          <span className="text-md font-black italic">
+                            {collection.totalPrice
+                              ? collection.totalPrice.toLocaleString()
+                              : "Contact"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-slate-400">
+                          <Clock className="w-3 h-3" />
+                          <span className="text-[10px] font-bold uppercase">
+                            {collection.estimatedDuration ??
+                              collection.calculatedDuration}
+                            {" phút"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
                     {collection.tags && collection.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-3">
+                      <div className="flex flex-wrap gap-2">
                         {collection.tags.slice(0, 3).map((tag) => (
-                          <Badge
+                          <span
                             key={tag.id}
-                            variant="outline"
-                            className="flex items-center gap-1"
+                            className="text-[9px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 px-2 py-1 rounded-lg"
                           >
-                            <Tag className="w-2 h-2" />
-                            {tag.name}
-                          </Badge>
+                            # {tag.name}
+                          </span>
                         ))}
-                        {collection.tags.length > 3 && (
-                          <Badge key="more-tags" variant="outline">
-                            {collection.tags.length - 3}
-                          </Badge>
-                        )}
                       </div>
                     )}
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-muted-foreground py-4">
-                No {title.toLowerCase()} found
+                  </div>
+                </div>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-full p-12 bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-100 text-center">
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 italic">
+                Collection is empty
               </p>
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };

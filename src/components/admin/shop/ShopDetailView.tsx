@@ -1,22 +1,16 @@
 import { useState, useEffect } from "react";
-import { Shop } from "@/types/database";
-import { shopAPI } from "@/services/api";
+import { BookRateStats, Shop } from "@/types/database";
+import { adminAPI, shopAPI } from "@/services/api";
 import { ServicePreview } from "../ServicePreview";
 import { CollectionPreview } from "../CollectionPreview";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   CheckCircle,
-  XCircle,
   MapPin,
   Phone,
-  Calendar,
-  Building,
-  Globe,
   AlertCircle,
   Loader2,
-  Sparkles,
   ArrowRight,
 } from "lucide-react";
 import { format } from "date-fns";
@@ -27,7 +21,6 @@ interface ShopDetailViewProps {
   onShopUpdated?: () => void;
 }
 import { profileAPI } from "@/services/api";
-import UserCard from "../user/UserCard";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -48,12 +41,15 @@ export const ShopDetailView = ({
   const [verifying, setVerifying] = useState(false);
   const [owner, setOwner] = useState<Profile | null>(null);
   const [selectedOwnerId, setSelectedOwnerId] = useState<string | null>(null);
+  const [shopStats, setShopStats] = useState<BookRateStats | null>(null);
   const loadShopDetails = async () => {
     if (!shopId) return;
 
     setLoading(true);
     try {
       const shopData = await shopAPI.getById(shopId);
+      const shopStats = await adminAPI.getShopStats(shopId);
+      setShopStats(shopStats || null);
       setShop(shopData || null);
     } catch (error) {
       console.error("Error loading shop details:", error);
@@ -163,7 +159,6 @@ export const ShopDetailView = ({
                       {shop.name?.[0]}
                     </span>
                   </div>
-
                 )}
 
                 {shop.isVerified && (
@@ -177,32 +172,60 @@ export const ShopDetailView = ({
                   {shop.name}
                 </h1>
                 <p className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
-                  Partner ID: {shop.id.slice(0, 12)}
+                  ID: {shop.id.slice(0, 12)}
                 </p>
               </div>
             </div>
 
             <div className="flex gap-2">
               {!shop.isVerified && (
-                <Button
-                  onClick={handleVerify}
-                  disabled={verifying}
-                  className="bg-white text-slate-900 hover:bg-[#950101] hover:text-white rounded-xl font-black uppercase tracking-widest text-[10px] px-6 h-10 transition-all shadow-xl"
-                >
-                  {verifying ? (
-                    <Loader2 className="w-3 h-3 animate-spin mr-2" />
-                  ) : (
-                    <CheckCircle className="w-3 h-3 mr-2" />
-                  )}
-                  Kích hoạt cửa hàng
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      disabled={verifying}
+                      className="bg-white text-slate-900 hover:bg-[#950101] hover:text-white rounded-xl font-black uppercase tracking-widest text-[10px] px-6 h-10 transition-all shadow-xl"
+                    >
+                      {verifying ? (
+                        <Loader2 className="w-3 h-3 animate-spin mr-2" />
+                      ) : (
+                        <CheckCircle className="w-3 h-3 mr-2" />
+                      )}
+                      Kích hoạt cửa hàng
+                    </Button>
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent className="rounded-[2rem]">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="font-black uppercase tracking-tight">
+                        Xác minh cửa hàng
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="font-medium italic">
+                        Bạn có chắc chắn muốn kích hoạt và xác minh cửa hàng **
+                        {shop.name}**? Hành động này sẽ cho phép cửa hàng xuất
+                        hiện công khai trên hệ thống.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="rounded-xl font-bold">
+                        Hủy
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleVerify}
+                        className="rounded-xl bg-[#950101] font-bold hover:bg-[#7a0101]"
+                      >
+                        Xác nhận kích hoạt
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
-              <Button
+
+              {/* <Button
                 variant="destructive"
                 className="bg-black/40 backdrop-blur-md border border-white/10 hover:bg-red-600 rounded-xl font-black uppercase tracking-widest text-[10px] px-6 h-10 transition-all"
               >
                 Vô hiệu hóa
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
@@ -210,7 +233,6 @@ export const ShopDetailView = ({
 
       {/* CONTENT GRID */}
       <div className="p-10 grid grid-cols-1 lg:grid-cols-3 gap-12 bg-white">
-
         {/* LEFT: INFO & CONTACT */}
         <div className="lg:col-span-2 space-y-10">
           <section className="space-y-4">
@@ -224,32 +246,58 @@ export const ShopDetailView = ({
 
           <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Địa điểm & Liên hệ</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+                Địa điểm & Liên hệ
+              </h3>
               {shop.locations?.map((loc) => (
-                <div key={loc.id} className="bg-slate-50 p-6 rounded-[2rem] space-y-3 border border-slate-100">
+                <div
+                  key={loc.id}
+                  className="bg-slate-50 p-6 rounded-[2rem] space-y-3 border border-slate-100"
+                >
                   <div className="flex gap-3 items-start">
                     <MapPin className="w-4 h-4 text-[#950101] mt-1" />
-                    <p className="text-sm font-bold text-slate-700">{loc.address}, {loc.city}</p>
+                    <p className="text-sm font-bold text-slate-700">
+                      {loc.address}, {loc.city}
+                    </p>
                   </div>
                   <div className="flex gap-3 items-center">
                     <Phone className="w-4 h-4 text-[#950101]" />
-                    <p className="text-sm font-black text-slate-900 italic">{loc.phone || shop.phone}</p>
+                    <p className="text-sm font-black text-slate-900 italic">
+                      {loc.phone || shop.phone}
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
 
             <div className="space-y-6">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Chủ sở hữu</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+                Chủ sở hữu
+              </h3>
               {owner && (
                 <div
                   className="group flex items-center gap-4 bg-white p-4 rounded-[2rem] border-2 border-slate-50 hover:border-[#950101] transition-all cursor-pointer shadow-sm"
                   onClick={() => setSelectedOwnerId(owner.id)}
                 >
-                  <img src={owner.avatarUrl} className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-md" />
+                  {owner.avatarUrl ? (
+                    <img
+                      src={owner.avatarUrl || "/placeholder-logo.png"}
+                      className="w-14 h-14 rounded-2xl border-4 border-white shadow-2xl object-cover bg-white"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-2xl border-4 border-white shadow-2xl bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                      <span className="text-2xl font-black text-white uppercase italic">
+                        {owner.fullName?.[0]}
+                      </span>
+                    </div>
+                  )}
                   <div>
-                    <p className="text-sm font-black text-slate-900 uppercase tracking-tight">{owner.fullName}</p>
-                    <p className="text-[10px] font-bold text-slate-400 italic">Nhấp để xem hồ sơ</p>
+                    <p className="text-sm font-black text-slate-900 uppercase tracking-tight">
+                      {owner.fullName}
+                    </p>
+                    <p className="text-[10px] font-bold text-slate-400 italic">
+                      Nhấp để xem hồ sơ
+                    </p>
                   </div>
                   <ArrowRight className="w-4 h-4 ml-auto text-slate-300 group-hover:text-[#950101] transition-colors" />
                 </div>
@@ -267,48 +315,54 @@ export const ShopDetailView = ({
         <div className="space-y-8">
           <div className="rounded-[2.5rem] p-8 text-white space-y-8 relative overflow-hidden shadow-xl bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
             <div className="relative z-10 space-y-6">
-              <h3 className="text-[15px] font-black uppercase tracking-[0.3em]">Chỉ số hiệu suất</h3>
+              <h3 className="text-[15px] font-black uppercase tracking-[0.3em]">
+                Chỉ số hiệu suất
+              </h3>
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <p className="text-[12px] font-black uppercase tracking-widest">Bookings</p>
-                  <p className="text-2xl font-black italic tracking-tighter">124+</p>
+                  <p className="text-[12px] font-black uppercase tracking-widest">
+                    Lượt đặt lịch
+                  </p>
+                  <p className="text-2xl font-black italic tracking-tighter">
+                    {shopStats?.totalBookings ?? 0}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-[12px] font-black uppercase tracking-widest">Rating</p>
-                  <p className="text-2xl font-black italic tracking-tighter text-[#950101]">4.9</p>
+                  <p className="text-[12px] font-black uppercase tracking-widest">
+                    Đánh giá
+                  </p>
+                  <p className="text-2xl font-black italic tracking-tighter">
+                    {shopStats?.averageRating?.toFixed(1) ?? "N/A"}
+                  </p>
                 </div>
               </div>
               <Separator className="bg-white/10" />
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-[12px] font-black uppercase">Trạng thái</span>
+                  <span className="text-[12px] font-black uppercase">
+                    Trạng thái
+                  </span>
                   <div className="flex items-center gap-2">
                     <div
-                      className={`w-3 h-3 rounded-full ${shop.isActive ? 'bg-emerald-500' : 'bg-red-500'
-                        } shadow-[0_0_12px_rgba(16,185,129,0.5)]`}
+                      className={`w-3 h-3 rounded-full ${
+                        shop.isActive ? "bg-emerald-500" : "bg-red-500"
+                      } shadow-[0_0_12px_rgba(16,185,129,0.5)]`}
                     />
                     <span className="text-[12px] font-black">
-                      {shop.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+                      {shop.isActive ? "Đang hoạt động" : "Ngừng hoạt động"}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center text-[12px] font-black uppercase">
                   <span>Ngày tạo</span>
-                  <span className="text-white italic">{formatDate(shop.createdAt)}</span>
+                  <span className="text-white italic">
+                    {formatDate(shop.createdAt)}
+                  </span>
                 </div>
               </div>
             </div>
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#950101] opacity-20 rounded-full blur-3xl" />
-          </div>
-
-          <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#950101] mb-3 flex items-center gap-2">
-              <Sparkles className="w-3 h-3" /> Ghi chú hệ thống
-            </p>
-            <p className="text-xs font-bold text-slate-500 italic leading-relaxed">
-              Tài khoản này được hệ thống đánh giá mức độ tin cậy cao dựa trên lịch sử thanh toán và phản hồi của khách hàng.
-            </p>
           </div>
         </div>
       </div>

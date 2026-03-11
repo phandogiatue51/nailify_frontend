@@ -41,9 +41,6 @@ export const UserCard = ({ user, onViewDetails }: UserCardProps) => {
             <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none group-hover:text-[#950101] transition-colors ">
               {user.fullName}
             </h3>
-            {user.isVerified && (
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-50" />
-            )}
           </div>
           <div className="flex items-center justify-center gap-2 mb-3">
             <RoleBadge role={user.role} />

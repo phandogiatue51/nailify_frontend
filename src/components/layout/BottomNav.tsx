@@ -4,7 +4,6 @@ import {
   Search,
   Calendar,
   User,
-  ClipboardCheck,
   MessageCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,49 +13,29 @@ const BottomNav = () => {
   const location = useLocation();
   const { user } = useAuth();
 
-  const isShopOwner = user?.role === 1;
-  const isNailArtist = user?.role === 4;
-  const isStaff = user?.role === 3;
+  const role = user?.role;
 
-  const customerNavItems = [
-    { href: "/", icon: Home, label: "Home" },
-    { href: "/explore", icon: Search, label: "Explore" },
-    { href: "/profile/bookings", icon: Calendar, label: "Bookings" },
-    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
-    { href: "/profile", icon: User, label: "Profile" },
+  // cấu hình theo từng vai trò
+  const roleConfig: Record<number, { dashboard: string; bookings: string }> = {
+    1: { dashboard: "/shop-dashboard", bookings: "/my-shop/bookings" }, // Chủ tiệm
+    3: { dashboard: "/staff-dashboard", bookings: "/staff/bookings" }, // Nhân viên
+    4: { dashboard: "/artist-dashboard", bookings: "/my-artist/bookings" }, // Thợ Nail
+    0: { dashboard: "/", bookings: "/profile/bookings" }, // Khách hàng
+  };
+
+  const config = roleConfig[role ?? 0];
+
+  const navItems = [
+    {
+      href: config.dashboard,
+      icon: Home,
+      label: role === 0 ? "Trang chủ" : "Bảng điều khiển",
+    },
+    { href: "/explore", icon: Search, label: "Khám phá" },
+    { href: config.bookings, icon: Calendar, label: "Đặt lịch" },
+    { href: "/chat/list", icon: MessageCircle, label: "Trò chuyện" },
+    { href: "/profile", icon: User, label: "Hồ sơ" },
   ];
-
-  const shopOwnerNavItems = [
-    { href: "/shop-dashboard", icon: Home, label: "Dashboard" },
-    { href: "/explore", icon: Search, label: "Explore" },
-    { href: "/my-shop/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
-    { href: "/profile", icon: User, label: "Profile" },
-  ];
-
-  const StaffNavItems = [
-    { href: "/staff-dashboard", icon: Home, label: "Dashboard" },
-    { href: "/explore", icon: Search, label: "Explore" },
-    { href: "/staff/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
-    { href: "/profile", icon: User, label: "Profile" },
-  ];
-
-  const nailArtistNavItems = [
-    { href: "/artist-dashboard", icon: Home, label: "Dashboard" },
-    { href: "/explore", icon: Search, label: "Explore" },
-    { href: "/my-artist/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
-    { href: "/profile", icon: User, label: "Profile" },
-  ];
-
-  const navItems = isShopOwner
-    ? shopOwnerNavItems
-    : isNailArtist
-      ? nailArtistNavItems
-      : isStaff
-        ? StaffNavItems
-        : customerNavItems;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border safe-area-bottom">

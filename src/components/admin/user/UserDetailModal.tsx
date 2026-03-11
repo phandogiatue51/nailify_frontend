@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
 import { Profile } from "@/types/database";
 import { profileAPI } from "@/services/api";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { RoleBadge } from "@/components/badge/RoleBadge";
 import {
   CheckCircle,
@@ -18,10 +22,7 @@ import {
   Mail,
   Phone,
   Calendar,
-  User as UserIcon,
   MapPin,
-  Building,
-  Palette,
   Loader2,
   AlertCircle,
   CheckCircle2,
@@ -45,7 +46,7 @@ export const UserDetailModal = ({
   const [user, setUser] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
   const [changingStatus, setChangingStatus] = useState(false);
-
+  const { toast } = useToast();
   const loadUserDetails = async () => {
     if (!userId) return;
 
@@ -73,11 +74,21 @@ export const UserDetailModal = ({
 
     setChangingStatus(true);
     try {
-      await profileAPI.changeStatus(userId);
+      var response = await profileAPI.changeStatus(userId);
+      toast({
+        description: response.message,
+        variant: "success",
+        duration: 3000,
+      });
       onUserUpdated?.();
       loadUserDetails();
     } catch (error) {
       console.error("Failed to change user status:", error);
+      toast({
+        description: error?.message,
+        variant: "destructive",
+        duration: 5000,
+      });
     } finally {
       setChangingStatus(false);
     }
@@ -139,9 +150,6 @@ export const UserDetailModal = ({
                       <DialogTitle className="text-3xl font-black tracking-tighter text-slate-900 uppercase leading-none">
                         {user.fullName}
                       </DialogTitle>
-                      {user.isVerified && (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-50" />
-                      )}
                     </div>
                     <div className="flex items-center gap-3">
                       <RoleBadge role={user.role} />
@@ -149,25 +157,58 @@ export const UserDetailModal = ({
                   </div>
                 </div>
 
-                <Button
-                  onClick={handleChangeStatus}
-                  disabled={changingStatus}
-                  variant="outline"
-                  className={`rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] px-6 h-12 transition-all ${
-                    user.isActive
-                      ? "border-red-100 text-red-600 hover:bg-red-50 hover:border-red-200"
-                      : "border-emerald-100 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200"
-                  }`}
-                >
-                  {changingStatus ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : user.isActive ? (
-                    <XCircle className="w-4 h-4 mr-2" />
-                  ) : (
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                  )}
-                  {user.isActive ? "Ngừng hoạt động" : "Kích hoạt"}
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      disabled={changingStatus}
+                      variant="outline"
+                      className={`rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] px-6 h-12 transition-all ${
+                        user.isActive
+                          ? "border-red-100 text-red-600 hover:bg-red-50 hover:border-red-200"
+                          : "border-emerald-100 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200"
+                      }`}
+                    >
+                      {changingStatus ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : user.isActive ? (
+                        <XCircle className="w-4 h-4 mr-2" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                      )}
+                      {user.isActive ? "Ngừng hoạt động" : "Kích hoạt"}
+                    </Button>
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent className="rounded-[2.5rem] p-10">
+                    <AlertDialogHeader className="space-y-4">
+                      <AlertDialogTitle className="text-2xl font-black uppercase tracking-tight text-slate-900">
+                        Xác nhận
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-slate-500 font-medium italic text-lg leading-relaxed">
+                        Bạn có chắc muốn{" "}
+                        <span className="text-[#950101] font-black underline">
+                          {user.isActive ? "ngừng hoạt động" : "kích hoạt"}
+                        </span>{" "}
+                        tài khoản này?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="pt-6">
+                      <AlertDialogCancel className="rounded-xl font-bold uppercase tracking-widest text-xs border-slate-200">
+                        Hủy
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleChangeStatus}
+                        className={`rounded-xl font-bold uppercase tracking-widest text-xs px-8 ${
+                          user.isActive
+                            ? "bg-red-600 hover:bg-red-700 text-white"
+                            : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        }`}
+                      >
+                        {user.isActive ? "Ngừng hoạt động" : "Kích hoạt"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
 
@@ -200,7 +241,7 @@ export const UserDetailModal = ({
                         </div>
                         <div>
                           <p className="text-[10px] font-black uppercase tracking-tighter text-slate-400 mb-0.5">
-                          Số điện thoại
+                            Số điện thoại
                           </p>
                           <p className="text-sm font-bold text-slate-700">
                             {user.phone}

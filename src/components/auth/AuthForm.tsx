@@ -29,8 +29,8 @@ const AuthForm = () => {
           >
             Nailify
           </h1>
-          <p className="text-sm font-medium tracking-wide">
-            BEAUTY AT YOUR FINGERTIPS
+          <p className="text-sm font-bold tracking-wide uppercase">
+            Vẻ đẹp trên đầu ngón tay
           </p>
         </div>
 
@@ -42,13 +42,13 @@ const AuthForm = () => {
                   value="login"
                   className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm font-bold text-slate-500 transition-all"
                 >
-                  Sign In
+                  Đăng nhập
                 </TabsTrigger>
                 <TabsTrigger
                   value="signup"
                   className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm font-bold text-slate-500 transition-all"
                 >
-                  Sign Up
+                  Đăng ký
                 </TabsTrigger>
               </TabsList>
             </div>

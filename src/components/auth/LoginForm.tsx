@@ -53,7 +53,7 @@ export const LoginForm = () => {
         <div className="space-y-1.5">
           <div className="flex justify-between items-center px-1">
             <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Password
+              Mật khẩu
             </Label>
           </div>
           <Input
@@ -67,7 +67,7 @@ export const LoginForm = () => {
               to="/forgot-password"
               className="text-[10px] font-bold text-pink-600 hover:text-pink-700 underline"
             >
-              Forgot Password?
+              Quên mật khẩu?
             </Link>
           </div>
         </div>
@@ -78,7 +78,7 @@ export const LoginForm = () => {
         style={{ background: "#950101" }}
         disabled={isLoading}
       >
-        {isLoading ? <Loader2 className="animate-spin" /> : "Sign In"}
+        {isLoading ? <Loader2 className="animate-spin" /> : "Đăng nhập"}
       </Button>
     </form>
   );

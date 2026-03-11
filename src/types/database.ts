@@ -383,7 +383,7 @@ export interface Invoice {
   email?: string;
 
   userSubscriptionId?: string;
-  tier: SubscriptionTier
+  tier: SubscriptionTier;
   subscriptionPlanId: string;
   planName?: string;
   startDate?: string;
@@ -416,4 +416,9 @@ export interface DashboardState {
   isError: boolean;
   errors: Array<Error | null>;
   refetchAll: () => void;
+}
+
+export interface BookRateStats {
+  totalBookings: number;
+  averageRating?: number;
 }

@@ -47,9 +47,6 @@ export const ShopCard = ({ shop, onViewDetails }: ShopCardProps) => {
             <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none group-hover:text-[#950101] transition-colors">
               {shop.name}
             </h3>
-            {shop.isVerified && (
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-50" />
-            )}
           </div>
         </div>
 

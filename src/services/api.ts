@@ -11,7 +11,7 @@ import {
   BlogPostFilterDto,
   InvoiceFilterDto,
 } from "@/types/filter";
-import { ChartPoint, FourWidgetDto } from "@/types/database";
+import { BookRateStats, ChartPoint, FourWidgetDto } from "@/types/database";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -843,7 +843,7 @@ export const subscriptionAPI = {
     return apiRequest(`/Subscription/${id}/subscribe`, {
       method: "POST",
     });
-  }
+  },
 };
 
 export const adminAPI = {
@@ -855,7 +855,14 @@ export const adminAPI = {
 
   getCustomerGrowth: () => apiRequest<ChartPoint[]>(`/Admin/customer-growth`),
 
-  getRatingsBreakdown: () => apiRequest<ChartPoint[]>(`/Admin/ratings-breakdown`)
+  getRatingsBreakdown: () =>
+    apiRequest<ChartPoint[]>(`/Admin/ratings-breakdown`),
+
+  getShopStats: (id: string) =>
+    apiRequest<BookRateStats>(`/Admin/shop-stats/${id}`),
+
+  getArtistStats: (id: string) =>
+    apiRequest<BookRateStats>(`/Admin/artist-stats/${id}`),
 };
 
 export const invoiceAPI = {
@@ -912,7 +919,7 @@ export const checkoutAPI = {
     apiRequest(`/Checkout/${id}/success`, {
       method: "POST",
     }),
-}
+};
 
 // In api.ts
 export const buildQuery = (params?: Record<string, any>): string => {

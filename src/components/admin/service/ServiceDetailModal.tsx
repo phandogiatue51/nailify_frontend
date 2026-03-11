@@ -28,6 +28,7 @@ import {
   CheckCircle,
   XCircle,
   ExternalLink,
+  Sparkles,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -98,242 +99,181 @@ export const ServiceDetailModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl p-0 overflow-hidden border-none !rounded-3xl bg-white shadow-2xl">
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-[#950101]" />
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+              Loading Menu
+            </p>
           </div>
         ) : !service ? (
-          <div className="text-center py-12">
-            <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">Service not found</p>
+          <div className="text-center py-24 px-12">
+            <AlertCircle className="w-12 h-12 mx-auto text-slate-200 mb-6" />
+            <p className="text-xl font-black text-slate-900 uppercase italic">
+              Service not found
+            </p>
           </div>
         ) : (
-          <>
-            <DialogHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  {service.imageUrl ? (
-                    <img
-                      src={service.imageUrl}
-                      alt={service.name}
-                      className="w-16 h-16 rounded-lg object-cover border"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-lg border flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
-                      <span className="text-xl font-bold text-white uppercase">
-                        {service.name?.[0] || "U"}
-                      </span>
-                    </div>
-                  )}
-
-                  <div>
-                    <DialogTitle className="text-2xl">
-                      {service.name}
-                    </DialogTitle>
-                    <DialogDescription>
-                      Service ID: {service.id}
-                    </DialogDescription>
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit
-                  </Button>
-                </div>
-              </div>
-            </DialogHeader>
-
-            <div className="space-y-6">
-              {/* Service Image (Large) */}
-              <div className="relative h-48 rounded-lg overflow-hidden">
-                {service.imageUrl ? (
-                  <img
-                    src={service.imageUrl}
-                    alt={service.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
-                    <span className="text-2xl font-bold text-white uppercase">
-                      {service.name?.[0] || "U"}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Description */}
-              {service.description && (
-                <div className="space-y-2">
-                  <h4 className="font-medium">Description</h4>
-                  <p className="text-muted-foreground">{service.description}</p>
+          <div className="flex flex-col max-h-[90vh] overflow-y-auto outline-none">
+            {/* HERO SECTION */}
+            <div className="relative h-48 w-full group">
+              {service.imageUrl ? (
+                <img
+                  src={service.imageUrl}
+                  alt={service.name}
+                  className="w-full h-48 object-cover transition-transform duration-700"
+                />
+              ) : (
+                <div className="w-full h-48 bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                  <Sparkles className="w-12 h-12 text-white/20" />
                 </div>
               )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-              {/* Basic Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Service Details */}
-                <div className="space-y-4">
-                  <h4 className="font-medium">Service Details</h4>
+              <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-3xl font-black text-white uppercase tracking-tighter leading-none">
+                      {service.name}
+                    </h2>
+                    <Badge className="bg-white text-black hover:bg-white text-[10px] font-black px-3 py-0.5 rounded-full border-none">
+                      {service.isActive ? "Đang hoạt động" : "Ngừng hoạt động"}
+                    </Badge>
+                  </div>
+                  <p className="text-[10px] font-bold text-white/50 tracking-[0.3em] uppercase">
+                    Id: {service.id.slice(0, 12)}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <DollarSign className="w-4 h-4 text-muted-foreground" />
-                        <span>Price</span>
-                      </div>
-                      <span className="font-bold text-lg">
-                        {Number(service.price).toLocaleString()} VND
+            <div className="p-10">
+              {/* PRICING & DURATION DASHBOARD */}
+              <div className="grid grid-cols-2 gap-8 border-b-2 border-slate-50">
+                <div>
+                  <p className="text-[10px] font-black text-[#950101] uppercase tracking-[0.3em]">
+                    Giá tiền
+                  </p>
+                  <p className="text-4xl font-black italic tracking-tighter text-slate-900">
+                    {Number(service.price).toLocaleString()}{" "}
+                    <span className="text-lg not-italic text-slate-400">
+                      VND
+                    </span>
+                  </p>
+                </div>
+                <div className="space-y-1 text-right">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                    Thời gian dự kiến
+                  </p>
+                  <div className="flex items-center justify-end gap-2 text-4xl font-black italic tracking-tighter text-slate-900">
+                    <Clock className="w-6 h-6 text-[#950101] not-italic" />
+                    <span>
+                      {service.estimatedDuration}{" "}
+                      <span className="text-lg not-italic text-slate-400">
+                        phút
                       </span>
-                    </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
-                        <span>Duration</span>
-                      </div>
-                      <span>{service.estimatedDuration} minutes</span>
-                    </div>
+              {/* DESCRIPTION SECTION */}
+              <section className="space-y-4">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 flex items-center gap-3">
+                  <div className="w-8 h-[1px] bg-slate-200" /> Mô tả
+                </h4>
+                <p className="text-lg text-slate-600 font-medium leading-relaxed italic border-l-4 border-[#950101]/10 pl-6">
+                  {service.description ||
+                    "No specific details provided for this treatment."}
+                </p>
+              </section>
 
-                    <Separator />
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-muted-foreground" />
-                        <span>Component Type</span>
+              {/* SPECS GRID */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
+                {/* Left Column: Classification */}
+                <div className="space-y-6">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+                    Thông tin cơ bản
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-slate-100 transition-all">
+                      <div className="flex items-center gap-3">
+                        <Layers className="w-4 h-4 text-[#950101]" />
+                        <span className="text-xs font-black uppercase tracking-widest text-slate-500">
+                          Loại dịch vụ
+                        </span>
                       </div>
                       <ComponentBadge role={service.componentType} />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {service.isActive ? (
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                        ) : (
-                          <XCircle className="w-4 h-4 text-red-500" />
-                        )}
-                        <span>Status</span>
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-slate-100 transition-all">
+                      <div className="flex items-center gap-3">
+                        <Calendar className="w-4 h-4 text-[#950101]" />
+                        <span className="text-xs font-black uppercase tracking-widest text-slate-500">
+                          Ngày tạo
+                        </span>
                       </div>
-                      <Badge
-                        variant={service.isActive ? "default" : "destructive"}
-                      >
-                        {service.isActive ? "Active" : "Inactive"}
-                      </Badge>
+                      <span className="text-xs font-bold text-slate-900 italic uppercase">
+                        {formatDate(service.createdAt)}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Owner Information */}
-                <div className="space-y-4">
-                  <h4 className="font-medium">Owner Information</h4>
-
+                {/* Right Column: Origin */}
+                <div className="space-y-6">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+                    Phát hành bởi
+                  </h4>
                   <div className="space-y-3">
-                    {service.shopId && (
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Building className="w-4 h-4 text-muted-foreground" />
+                    {service.shopId ? (
+                      <div
+                        onClick={handleViewShop}
+                        className="group flex items-center justify-between p-4 bg-white border-2 border-slate-50 rounded-2xl hover:border-[#950101] transition-all cursor-pointer shadow-sm"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-[#950101]/5 transition-colors">
+                            <Building className="w-5 h-5 text-[#950101]" />
+                          </div>
                           <div>
-                            <p className="font-medium">Shop Service</p>
-                            <p className="text-sm text-muted-foreground">
-                              Shop ID: {service.shopId}
+                            <p className="text-[12px] font-black text-slate-400 uppercase leading-none mb-1">
+                              Bộ sưu tập cửa hàng
                             </p>
                           </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleViewShop}
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                        </Button>
+                        <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-[#950101]" />
                       </div>
-                    )}
-
-                    {service.nailArtistId && (
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-muted-foreground" />
+                    ) : service.nailArtistId ? (
+                      <div
+                        onClick={handleViewArtist}
+                        className="group flex items-center justify-between p-4 bg-white border-2 border-slate-50 rounded-2xl hover:border-[#950101] transition-all cursor-pointer shadow-sm"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-[#950101]/5 transition-colors">
+                            <User className="w-5 h-5 text-[#950101]" />
+                          </div>
                           <div>
-                            <p className="font-medium">Artist Service</p>
-                            <p className="text-sm text-muted-foreground">
-                              Artist ID: {service.nailArtistId}
+                            <p className="text-[12px] font-black text-slate-400 uppercase leading-none mb-1">
+                              Tác phẩm thợ nail
                             </p>
                           </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleViewArtist}
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                        </Button>
+                        <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-[#950101]" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-4 p-4 bg-slate-100 rounded-2xl border border-dashed border-slate-200">
+                        <Package className="w-5 h-5 text-slate-400" />
+                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest leading-tight">
+                          Chung
+                        </p>
                       </div>
                     )}
-
-                    {!service.shopId && !service.nailArtistId && (
-                      <div className="flex items-center gap-2">
-                        <Package className="w-4 h-4 text-muted-foreground" />
-                        <div>
-                          <p className="font-medium">General Service</p>
-                          <p className="text-sm text-muted-foreground">
-                            Not attached to specific shop or artist
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    <Separator />
-
-                    {/* Timeline */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
-                        <span>Created: {formatDate(service.createdAt)}</span>
-                      </div>
-                      {service.updatedAt && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Calendar className="w-4 h-4 text-muted-foreground" />
-                          <span>Updated: {formatDate(service.updatedAt)}</span>
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => {
-                    // Navigate to edit page or open edit modal
-                  }}
-                >
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Service
-                </Button>
-                <Button
-                  variant={service.isActive ? "destructive" : "default"}
-                  className="flex-1"
-                >
-                  {service.isActive ? (
-                    <>
-                      <XCircle className="w-4 h-4 mr-2" />
-                      Deactivate
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Activate
-                    </>
-                  )}
-                </Button>
               </div>
             </div>
-          </>
+          </div>
         )}
       </DialogContent>
     </Dialog>
