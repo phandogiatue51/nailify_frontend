@@ -8,7 +8,7 @@ export const SubscriptionPage = () => {
     <div>
       <Header title="Nailify" />
 
-      <div className="p-6">
+      <div className="p-6 min-h-screen">
         <h1 className="text-2xl font-black tracking-tighter text-slate-900 uppercase mb-4">
           Gói đăng ký
         </h1>

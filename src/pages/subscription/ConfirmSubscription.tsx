@@ -41,7 +41,7 @@ export const ConfirmSubscription = () => {
     if (!plan) return <div className="p-10 text-center">Không tìm thấy gói dịch vụ.</div>;
 
     return (
-        <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="p-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 min-h-screen">
             {/* onBack now uses navigate(-1) to go back in history */}
             <button
                 onClick={() => navigate(-1)}

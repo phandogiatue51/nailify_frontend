@@ -194,7 +194,7 @@ export const MySubscriptionPage = () => {
 const NoSubscriptionView = () => (
   <div>
     <Header title="Nailify" />
-    <div className="p-8 flex flex-col items-center justify-center text-center">
+    <div className="flex flex-col items-center pt-40 text-center min-h-screen">
       <div className="w-20 h-20 bg-slate-100 rounded-[2rem] flex items-center justify-center mb-6">
         <ShieldCheck className="w-10 h-10 text-slate-300" />
       </div>
