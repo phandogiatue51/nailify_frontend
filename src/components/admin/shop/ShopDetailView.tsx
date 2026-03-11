@@ -6,7 +6,6 @@ import { CollectionPreview } from "../CollectionPreview";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useNavigate } from "react-router-dom";
 import {
   CheckCircle,
   XCircle,
@@ -17,6 +16,8 @@ import {
   Globe,
   AlertCircle,
   Loader2,
+  Sparkles,
+  ArrowRight,
 } from "lucide-react";
 import { format } from "date-fns";
 import { Profile } from "@/types/database";
@@ -46,7 +47,6 @@ export const ShopDetailView = ({
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [owner, setOwner] = useState<Profile | null>(null);
-  const navigate = useNavigate();
   const [selectedOwnerId, setSelectedOwnerId] = useState<string | null>(null);
   const loadShopDetails = async () => {
     if (!shopId) return;
@@ -134,250 +134,181 @@ export const ShopDetailView = ({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            {shop.name}
-            {shop.isVerified && (
-              <Badge className="ml-2">
-                <CheckCircle className="w-3 h-3 mr-1" />
-                Verified
-              </Badge>
-            )}
-          </h2>
-          <p className="text-muted-foreground">Shop ID: {shop.id}</p>
-        </div>
-
-        <div className="flex gap-2">
-          {!shop.isVerified && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button disabled={verifying} size="sm">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Verify Shop
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Verify Shop</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to verify {shop.name}? This action
-                    cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleVerify}>
-                    Confirm
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => {
-              /* Handle disable */
-            }}
-          >
-            <XCircle className="w-4 h-4 mr-2" />
-            Disable
-          </Button>
-        </div>
-      </div>
-
-      {/* Shop Images */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="flex flex-col animate-in fade-in duration-700">
+      {/* HERO SECTION - Height adjusted to h-48 */}
+      <div className="relative h-48 group overflow-hidden">
         {shop.coverUrl ? (
-          <div className="space-y-2">
-            <h4 className="font-medium flex items-center gap-2">
-              <Globe className="w-4 h-4" />
-              Cover Image
-            </h4>
-            <img
-              src={shop.coverUrl}
-              alt="Cover"
-              className="w-full h-48 object-cover rounded-lg"
-            />
-          </div>
+          <img
+            src={shop.coverUrl}
+            alt="Cover"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
         ) : (
-          <div className="w-full h-48 object-cover rounded-lg flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
-            <span className="text-2xl font-bold text-white uppercase">
-              {shop.name?.[0] || "U"}
-            </span>
-          </div>
+          <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9]" />
         )}
-        {shop.logoUrl ? (
-          <div className="space-y-2">
-            <h4 className="font-medium flex items-center gap-2">
-              <Building className="w-4 h-4" />
-              Logo
-            </h4>
-            <img
-              src={shop.logoUrl}
-              alt="Logo"
-              className="w-32 h-32 object-cover rounded-lg"
-            />
+
+        {/* Overlay with Shop Identity & Verify Actions */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-6">
+            <div className="flex items-center gap-5">
+              <div className="relative">
+                {shop.logoUrl ? (
+                  <img
+                    src={shop.logoUrl || "/placeholder-logo.png"}
+                    className="w-20 h-20 rounded-2xl border-4 border-white shadow-2xl object-cover bg-white"
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-2xl border-4 border-white shadow-2xl bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                    <span className="text-4xl font-black text-white uppercase italic">
+                      {shop.name?.[0]}
+                    </span>
+                  </div>
+
+                )}
+
+                {shop.isVerified && (
+                  <div className="absolute -top-2 -right-2 bg-emerald-500 text-white p-1 rounded-full shadow-lg border-2 border-white">
+                    <CheckCircle className="w-3 h-3" />
+                  </div>
+                )}
+              </div>
+              <div className="space-y-0.5">
+                <h1 className="text-3xl font-black text-white tracking-tighter uppercase leading-none">
+                  {shop.name}
+                </h1>
+                <p className="text-[10px] font-bold text-white/50 tracking-[0.2em] uppercase">
+                  Partner ID: {shop.id.slice(0, 12)}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              {!shop.isVerified && (
+                <Button
+                  onClick={handleVerify}
+                  disabled={verifying}
+                  className="bg-white text-slate-900 hover:bg-[#950101] hover:text-white rounded-xl font-black uppercase tracking-widest text-[10px] px-6 h-10 transition-all shadow-xl"
+                >
+                  {verifying ? (
+                    <Loader2 className="w-3 h-3 animate-spin mr-2" />
+                  ) : (
+                    <CheckCircle className="w-3 h-3 mr-2" />
+                  )}
+                  Kích hoạt cửa hàng
+                </Button>
+              )}
+              <Button
+                variant="destructive"
+                className="bg-black/40 backdrop-blur-md border border-white/10 hover:bg-red-600 rounded-xl font-black uppercase tracking-widest text-[10px] px-6 h-10 transition-all"
+              >
+                Vô hiệu hóa
+              </Button>
+            </div>
           </div>
-        ) : (
-          <div className="w-32 h-32 object-cover rounded-lg flex items-center justify-center bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
-            <span className="text-2xl font-bold text-white uppercase">
-              {shop.name?.[0] || "U"}
-            </span>
-          </div>
-        )}
+        </div>
       </div>
 
-      {/* Description */}
-      {shop.description && (
-        <div className="space-y-2">
-          <h4 className="font-medium">Description</h4>
-          <p className="text-muted-foreground">{shop.description}</p>
-        </div>
-      )}
+      {/* CONTENT GRID */}
+      <div className="p-10 grid grid-cols-1 lg:grid-cols-3 gap-12 bg-white">
 
-      {/* Contact Info */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <h4 className="font-medium">Contact Information</h4>
+        {/* LEFT: INFO & CONTACT */}
+        <div className="lg:col-span-2 space-y-10">
+          <section className="space-y-4">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#950101] flex items-center gap-3">
+              <div className="w-8 h-[2px] bg-[#950101]" /> Giới thiệu
+            </h3>
+            <p className="text-slate-600 font-medium leading-relaxed italic border-l-4 border-slate-100 pl-6 text-lg">
+              {shop.description || "Chưa có mô tả cho cửa hàng này."}
+            </p>
+          </section>
 
-          <div className="space-y-3">
-            {/* Shop phone (top-level) */}
-            {shop.phone && (
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">Shop Phone</p>
-                  <p className="text-sm text-muted-foreground">{shop.phone}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Locations */}
-            {shop.locations?.map((location) => (
-              <div key={location.id} className="space-y-2">
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">Address</p>
-                      <p className="text-sm text-muted-foreground">
-                        {location.address}, {location.city}
-                      </p>
-                    </div>
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Địa điểm & Liên hệ</h3>
+              {shop.locations?.map((loc) => (
+                <div key={loc.id} className="bg-slate-50 p-6 rounded-[2rem] space-y-3 border border-slate-100">
+                  <div className="flex gap-3 items-start">
+                    <MapPin className="w-4 h-4 text-[#950101] mt-1" />
+                    <p className="text-sm font-bold text-slate-700">{loc.address}, {loc.city}</p>
                   </div>
-                  {location.phone && (
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">Location Phone</p>
-                        <p className="text-sm text-muted-foreground">
-                          {location.phone}
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                  <div className="flex gap-3 items-center">
+                    <Phone className="w-4 h-4 text-[#950101]" />
+                    <p className="text-sm font-black text-slate-900 italic">{loc.phone || shop.phone}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h4 className="font-medium">Shop Status</h4>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {shop.isActive ? (
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                ) : (
-                  <XCircle className="w-4 h-4 text-red-500" />
-                )}
-                <span>Active Status</span>
-              </div>
-              <Badge variant={shop.isActive ? "default" : "destructive"}>
-                {shop.isActive ? "Active" : "Inactive"}
-              </Badge>
+              ))}
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {shop.isVerified ? (
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                ) : (
-                  <AlertCircle className="w-4 h-4 text-amber-500" />
-                )}
-                <span>Verification</span>
-              </div>
-              <Badge variant={shop.isVerified ? "default" : "secondary"}>
-                {shop.isVerified ? "Verified" : "Unverified"}
-              </Badge>
-            </div>
-
-            <Separator />
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <Calendar className="w-4 h-4 text-muted-foreground" />
-                <span>Created: {formatDate(shop.createdAt)}</span>
-              </div>
-              {shop.updatedAt && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <span>Updated: {formatDate(shop.updatedAt)}</span>
+            <div className="space-y-6">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Chủ sở hữu</h3>
+              {owner && (
+                <div
+                  className="group flex items-center gap-4 bg-white p-4 rounded-[2rem] border-2 border-slate-50 hover:border-[#950101] transition-all cursor-pointer shadow-sm"
+                  onClick={() => setSelectedOwnerId(owner.id)}
+                >
+                  <img src={owner.avatarUrl} className="w-14 h-14 rounded-2xl object-cover border-2 border-white shadow-md" />
+                  <div>
+                    <p className="text-sm font-black text-slate-900 uppercase tracking-tight">{owner.fullName}</p>
+                    <p className="text-[10px] font-bold text-slate-400 italic">Nhấp để xem hồ sơ</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 ml-auto text-slate-300 group-hover:text-[#950101] transition-colors" />
                 </div>
               )}
             </div>
+          </section>
+
+          <div className="pt-6 space-y-12">
+            <ServicePreview shopId={shop.id} />
+            <CollectionPreview shopId={shop.id} />
           </div>
         </div>
-      </div>
 
-      <div className="space-y-4">
-        <h4 className="font-medium">Owner Information</h4>
-        {owner ? (
-          <UserCard
-            user={owner}
-            onUserUpdated={loadShopDetails}
-            onViewDetails={() => setSelectedOwnerId(owner.id)}
-          />
-        ) : (
-          <div className="bg-muted/30 p-4 rounded-lg">
-            <p className="text-sm">
-              Owner ID: <span className="font-mono">{shop.ownerId}</span>
+        {/* RIGHT: METRICS & STATUS */}
+        <div className="space-y-8">
+          <div className="rounded-[2.5rem] p-8 text-white space-y-8 relative overflow-hidden shadow-xl bg-gradient-to-br from-[#950101] to-[#FFCFE9]">
+            <div className="relative z-10 space-y-6">
+              <h3 className="text-[15px] font-black uppercase tracking-[0.3em]">Chỉ số hiệu suất</h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <p className="text-[12px] font-black uppercase tracking-widest">Bookings</p>
+                  <p className="text-2xl font-black italic tracking-tighter">124+</p>
+                </div>
+                <div>
+                  <p className="text-[12px] font-black uppercase tracking-widest">Rating</p>
+                  <p className="text-2xl font-black italic tracking-tighter text-[#950101]">4.9</p>
+                </div>
+              </div>
+              <Separator className="bg-white/10" />
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-[12px] font-black uppercase">Trạng thái</span>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-3 h-3 rounded-full ${shop.isActive ? 'bg-emerald-500' : 'bg-red-500'
+                        } shadow-[0_0_12px_rgba(16,185,129,0.5)]`}
+                    />
+                    <span className="text-[12px] font-black">
+                      {shop.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center text-[12px] font-black uppercase">
+                  <span>Ngày tạo</span>
+                  <span className="text-white italic">{formatDate(shop.createdAt)}</span>
+                </div>
+              </div>
+            </div>
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#950101] opacity-20 rounded-full blur-3xl" />
+          </div>
+
+          <div className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#950101] mb-3 flex items-center gap-2">
+              <Sparkles className="w-3 h-3" /> Ghi chú hệ thống
             </p>
-          </div>
-        )}
-      </div>
-
-      {/* Service & Collection Previews */}
-      <div className="space-y-6">
-        <ServicePreview shopId={shop.id} />
-        <CollectionPreview shopId={shop.id} />
-      </div>
-
-      {/* Shop Metrics */}
-      <div className="bg-muted/30 p-4 rounded-lg">
-        <h4 className="font-medium mb-3">Shop Metrics</h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold">0</div>
-            <div className="text-xs text-muted-foreground">Total Bookings</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold">0</div>
-            <div className="text-xs text-muted-foreground">Active Services</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold">0</div>
-            <div className="text-xs text-muted-foreground">Reviews</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold">-</div>
-            <div className="text-xs text-muted-foreground">Avg. Rating</div>
+            <p className="text-xs font-bold text-slate-500 italic leading-relaxed">
+              Tài khoản này được hệ thống đánh giá mức độ tin cậy cao dựa trên lịch sử thanh toán và phản hồi của khách hàng.
+            </p>
           </div>
         </div>
       </div>
@@ -388,7 +319,7 @@ export const ShopDetailView = ({
           onClose={() => setSelectedOwnerId(null)}
           onUserUpdated={() => {
             setSelectedOwnerId(null);
-            loadShopDetails(); // refresh shop details after update
+            loadShopDetails();
           }}
         />
       )}

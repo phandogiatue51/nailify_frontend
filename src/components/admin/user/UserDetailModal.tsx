@@ -288,8 +288,6 @@ export const UserDetailModal = ({
       </DialogContent>
     </Dialog>
   );
-
-  // Helper component for cleaner rows
 };
 
 export default UserDetailModal;
