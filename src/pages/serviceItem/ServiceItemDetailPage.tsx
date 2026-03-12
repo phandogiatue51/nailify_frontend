@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useCustomerServiceItemById } from "@/hooks/useCustomer";
 import ServiceItemDetail from "@/components/serviceItem/ServiceItemDetail";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 const ServiceItemDetailPage = () => {
   const { id } = useParams();
@@ -12,7 +12,6 @@ const ServiceItemDetailPage = () => {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center gap-2">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-       
       </div>
     );
   }
@@ -20,9 +19,14 @@ const ServiceItemDetailPage = () => {
   if (!data) {
     return (
       <div className="container py-10 text-center">
-        <h2 className="text-xl font-semibold">Service not found</h2>
-        <Button variant="link" onClick={() => navigate(-1)}>
-          Go Back
+        <h2 className="text-xl font-semibold">Không tìm thấy dịch vụ</h2>
+
+        <Button
+          variant="outline"
+          onClick={() => navigate(-1)}
+          className="group rounded-full border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
+        >
+          <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
         </Button>
       </div>
     );
@@ -31,13 +35,11 @@ const ServiceItemDetailPage = () => {
   return (
     <div className="container max-w-5xl py-6 space-y-6">
       <Button
-        variant="ghost"
-        size="sm"
+        variant="outline"
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 hover:bg-secondary"
+        className="group rounded-full border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
       >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Services
+        <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
       </Button>
 
       <ServiceItemDetail item={data} />

@@ -87,11 +87,11 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
       <div className="flex items-center gap-4 w-full">
         {collection.estimatedDuration ? (
           <Badge variant="secondary" className="whitespace-nowrap text-md">
-            {collection.estimatedDuration} minutes
+            {collection.estimatedDuration} phút
           </Badge>
         ) : collection.calculatedDuration > 0 ? (
           <Badge variant="secondary" className="whitespace-nowrap text-md">
-            {collection.calculatedDuration} minutes
+            {collection.calculatedDuration} phút
           </Badge>
         ) : null}
 
@@ -104,7 +104,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
 
       {collection.tags && collection.tags.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Tags</h3>
+          <h3 className="text-lg font-semibold">Phân loại</h3>
           <div className="flex flex-wrap gap-2">
             {collection.tags.map((tag) => (
               <Badge key={tag.id} className={tag.color}>
@@ -123,7 +123,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           border: "none",
         }}
       >
-        Book Now
+        Đặt lịch ngay
       </Button>
       <Separator />
 
@@ -169,7 +169,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
               }}
               className="ml-auto"
             >
-              View {isArtist ? "Artist" : "Shop"}
+              Xem trang {isArtist ? "thợ Nail" : "cửa hàng"}
             </Button>
           </div>
         ) : null}
@@ -178,7 +178,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
       {collections.length > 1 && (
         <div className="space-y-2 mt-6">
           <h3 className="text-lg font-semibold">
-            Other Collections from this {isArtist ? "Artist" : "Shop"}
+            Bộ sưu tập khác từ {isArtist ? "thợ Nail này" : "cửa hàng này"}
           </h3>
           <div className="grid grid-cols-2 gap-3">
             {collections

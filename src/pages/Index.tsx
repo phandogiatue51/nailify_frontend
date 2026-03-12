@@ -103,15 +103,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#fafafa]">
       {/* 1. BRANDED HEADER */}
-      <Header title="Nailify"/>
+      <Header title="Nailify" />
 
       <div className="px-4 pt-6 space-y-4">
         <div>
-          <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">
-            Hi, {user?.fullName}
+          <h2 className="text-2xl font-black text-slate-800 tracking-tight">
+            Chào {user?.fullName},
           </h2>
-          <p className="text-[#950101] font-bold text-xs uppercase tracking-[0.15em] opacity-80 mt-2">
-            Ready for a fresh set of nails?
+          <p className="text-[#950101] font-bold text-md tracking-[0.15em] opacity-80 mt-2">
+            Sẵn sàng lên đồ cho bộ móng mới?
           </p>
         </div>
 
@@ -121,7 +121,7 @@ const Index = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[#950101] transition-colors" />
             <Input
               type="text"
-              placeholder="Search aesthetics..."
+              placeholder="Tìm kiếm bộ nail phù hợp ..."
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
               className="pl-11 pr-4 h-14 w-full bg-white border-none rounded-2xl shadow-xl shadow-[#950101]/5 focus-visible:ring-2 focus-visible:ring-[#FFCFE9] text-sm font-medium"
@@ -132,14 +132,14 @@ const Index = () => {
           <div className="space-y-2">
             <div className="flex items-center justify-between px-1">
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                Categories
+                Phân loại
               </span>
               {activeFilterCount > 0 && (
                 <button
                   onClick={clearFilters}
                   className="text-[10px] font-black text-[#950101] uppercase tracking-widest underline underline-offset-4"
                 >
-                  Clear All
+                  Làm mới
                 </button>
               )}
             </div>
@@ -167,7 +167,7 @@ const Index = () => {
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-5 bg-[#950101] rounded-full" />
             <h3 className="font-black text-slate-800 uppercase tracking-tight">
-              Featured Looks
+              Bộ sưu tập đề xuất
             </h3>
           </div>
 
@@ -175,7 +175,7 @@ const Index = () => {
             <div className="flex flex-col items-center justify-center py-20 space-y-4">
               <div className="w-10 h-10 border-4 border-[#FFCFE9] border-t-[#950101] rounded-full animate-spin" />
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                Finding the best sets...
+                Tìm kiếm bộ nail phù hợp ...
               </p>
             </div>
           ) : allCollections.length > 0 ? (
@@ -193,13 +193,7 @@ const Index = () => {
               ))}
             </div>
           ) : (
-            <EmptyState
-              message={
-                activeFilterCount > 0
-                  ? "No matches for these filters"
-                  : "Looks like we're fresh out of sets"
-              }
-            />
+            <EmptyState message={"Không có bộ sưu tập khả dụng"} />
           )}
         </div>
       </div>

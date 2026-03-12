@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import MobileLayout from "@/components/layout/MobileLayout";
 import CollectionForm from "@/components/collection/CollectionForm";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronLeft, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { serviceItemAPI } from "@/services/api";
 import { useRequireRole } from "@/hooks/useRequireRole";
@@ -60,39 +60,50 @@ const CreateCollectionPage = () => {
   }
 
   return (
-    <div>
-      <div className="p-4 space-y-6">
-        <div className="flex items-center">
+    <div className="min-h-screen bg-white">
+      <div className="px-6 pt-2">
+        <div className="flex items-center gap-4">
           <Button
-            variant="ghost"
-            size="icon"
+            variant="outline"
             onClick={() => navigate(-1)}
-            className="mr-2"
+            className="group rounded-full border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
           </Button>
-          <div>
-            <h1 className="text-2xl font-bold">Create Collection</h1>
-            <p className="text-muted-foreground">
-              Group services together for your{" "}
-              {isArtist ? "artist profile" : "shop"}
-            </p>
+
+          <div className="space-y-1">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D81B60]">
+              Xưởng Sáng Tạo
+            </span>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
+              Tạo Bộ Sưu Tập
+            </h1>
           </div>
         </div>
+      </div>
 
-        <CollectionForm
-          serviceItems={serviceItems}
-          onSubmit={handleSubmit}
-          isLoading={collectionsHook.createCollection.isPending}
-        />
+      {/* Form Body */}
+      <div className="px-6">
+        <div className="relative">
+          {/* Subtle decorative element to anchor the form */}
+          <div className="absolute -top-4 -left-2 w-12 h-12 bg-[#FFCFE9]/20 rounded-full blur-2xl -z-10" />
 
-        <Button
-          variant="outline"
-          onClick={() => navigate(-1)}
-          className="w-full"
-        >
-          Cancel
-        </Button>
+          <CollectionForm
+            serviceItems={serviceItems}
+            onSubmit={handleSubmit}
+            isLoading={collectionsHook.createCollection.isPending}
+          />
+
+          <div>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="w-full py-4 text-[11px] font-black uppercase tracking-[0.2em] text-red-500 transition-all active:letter-spacing-widest rounded-3xl"
+            >
+              Hủy
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

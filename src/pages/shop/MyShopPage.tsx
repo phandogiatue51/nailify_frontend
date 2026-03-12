@@ -122,13 +122,13 @@ const MyShopPage = () => {
         <Tabs defaultValue="services" className="w-full">
           <TabsList className="grid w-full grid-cols-3 h-12 p-1 bg-slate-200/50 rounded-2xl mb-6">
             <TabsTrigger value="services" className="rounded-xl font-bold">
-              Services
+              Dịch vụ
             </TabsTrigger>
             <TabsTrigger value="collections" className="rounded-xl font-bold">
-              Collections
+              Set Nail
             </TabsTrigger>
             <TabsTrigger value="locations" className="rounded-xl font-bold">
-              Locations
+              Chi Nhánh
             </TabsTrigger>
           </TabsList>
 

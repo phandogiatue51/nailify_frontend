@@ -50,45 +50,62 @@ const EditServiceItemPage = () => {
     }
   };
 
-  const componentLabels = ["Form", "Base", "Shape", "Polish", "Design"];
+  const componentLabels = [
+    "Lớp Nền",
+    "Tạo Dáng",
+    "Sơn Bóng",
+    "Trang Trí",
+    "Đính Đá",
+  ];
 
   return (
-    <div>
-      <div className="p-4 space-y-6">
-        <div className="flex items-center">
+    <div className="min-h-screen bg-white">
+      {/* Header: Refinement Studio */}
+      <div className="px-6 pt-4">
+        <div className="flex items-start gap-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
-            className="mr-2"
+            className="mt-1 rounded-2xl bg-slate-50 hover:bg-[#950101]/5 text-slate-600 hover:text-[#950101] transition-all active:scale-90 shrink-0"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div>
-            <h1 className="text-2xl font-bold">
-              Edit {componentLabels[item.componentType]}
+
+          <div className="space-y-1">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#950101]">
+              Phòng Tinh Chỉnh
+            </span>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
+              Chỉnh sửa {componentLabels[item.componentType]}
             </h1>
-            <p className="text-muted-foreground">
-              Update service item details for your{" "}
-              {isArtist ? "artist profile" : "shop"}
-            </p>
           </div>
         </div>
+      </div>
 
-        <ServiceItemForm
-          componentType={item.componentType}
-          initialData={item}
-          onSubmit={handleSubmit}
-          isLoading={serviceItemsHook.updateServiceItem.isPending}
-        />
+      {/* Form Body */}
+      <div className="px-6">
+        <div className="relative">
+          {/* Subtle decorative glow for Edit mode */}
+          <div className="absolute -top-10 -right-4 w-32 h-32 bg-[#E288F9]/10 rounded-full blur-3xl -z-10" />
 
-        <Button
-          variant="outline"
-          onClick={() => navigate(-1)}
-          className="w-full"
-        >
-          Cancel
-        </Button>
+          <ServiceItemForm
+            componentType={item.componentType}
+            initialData={item}
+            onSubmit={handleSubmit}
+            isLoading={serviceItemsHook.updateServiceItem.isPending}
+          />
+
+          <div>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="w-full py-4 text-[11px] font-black uppercase tracking-[0.2em] text-red-500 transition-all"
+            >
+              Hủy
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

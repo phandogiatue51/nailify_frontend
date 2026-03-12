@@ -174,14 +174,6 @@ export const router = createBrowserRouter(
         },
 
         {
-          path: "admin/blogs/create",
-          element: <CreateBlogPostPage />,
-        },
-        {
-          path: "admin/blogs/edit/:id",
-          element: <EditBlogPostPage />,
-        },
-        {
           path: "/blog/detail/:id",
           element: withMobileLayout(<BlogPostDetailPage />),
         },
@@ -355,10 +347,11 @@ export const router = createBrowserRouter(
             { path: "artists", element: <ArtistsManagement /> },
             { path: "artists/:artistId", element: <AdminArtistDetailPage /> },
             { path: "services", element: <ServicesManagement /> },
-            
+
             { path: "ratings", element: <RatingManagement /> },
             { path: "ratings/:id", element: <RatingDetail /> },
-
+            { path: "blogs/create", element: <CreateBlogPostPage /> },
+            { path: "blogs/edit/:id", element: <EditBlogPostPage /> },
             { path: "blogs", element: <BlogPostManagement /> },
             { path: "blogs/:id", element: <BlogPostDetailModal /> },
 

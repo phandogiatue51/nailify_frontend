@@ -19,35 +19,35 @@ const BottomNav = () => {
   const isStaff = user?.role === 3;
 
   const customerNavItems = [
-    { href: "/", icon: Home, label: "Home" },
-    { href: "/explore", icon: Search, label: "Explore" },
-    { href: "/profile/bookings", icon: Calendar, label: "Bookings" },
-    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
-    { href: "/profile", icon: User, label: "Profile" },
+    { href: "/", icon: Home, label: "Trang chủ" },
+    { href: "/explore", icon: Search, label: "Khám phá" },
+    { href: "/profile/bookings", icon: Calendar, label: "Đặt lịch" },
+    { href: "/chat/list", icon: MessageCircle, label: "Trò chuyện" },
+    { href: "/profile", icon: User, label: "Hồ sơ" },
   ];
 
   const shopOwnerNavItems = [
-    { href: "/shop-dashboard", icon: Home, label: "Dashboard" },
-    { href: "/explore", icon: Search, label: "Explore" },
-    { href: "/my-shop/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
-    { href: "/profile", icon: User, label: "Profile" },
+    { href: "/shop-dashboard", icon: Home, label: "Bảng điều khiển" },
+    { href: "/explore", icon: Search, label: "Khám phá" },
+    { href: "/my-shop/bookings", icon: ClipboardCheck, label: "Đặt lịch" },
+    { href: "/chat/list", icon: MessageCircle, label: "Trò chuyện" },
+    { href: "/profile", icon: User, label: "Hồ sơ" },
   ];
 
   const StaffNavItems = [
-    { href: "/staff-dashboard", icon: Home, label: "Dashboard" },
-    { href: "/explore", icon: Search, label: "Explore" },
-    { href: "/staff/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
-    { href: "/profile", icon: User, label: "Profile" },
+    { href: "/staff-dashboard", icon: Home, label: "Bảng điều khiển" },
+    { href: "/explore", icon: Search, label: "Khám phá" },
+    { href: "/staff/bookings", icon: ClipboardCheck, label: "Đặt lịch" },
+    { href: "/chat/list", icon: MessageCircle, label: "Trò chuyện" },
+    { href: "/profile", icon: User, label: "Hồ sơ" },
   ];
 
   const nailArtistNavItems = [
-    { href: "/artist-dashboard", icon: Home, label: "Dashboard" },
-    { href: "/explore", icon: Search, label: "Explore" },
-    { href: "/my-artist/bookings", icon: ClipboardCheck, label: "Bookings" },
-    { href: "/chat/list", icon: MessageCircle, label: "Chat" },
-    { href: "/profile", icon: User, label: "Profile" },
+    { href: "/artist-dashboard", icon: Home, label: "Bảng điều khiển" },
+    { href: "/explore", icon: Search, label: "Khám phá" },
+    { href: "/my-artist/bookings", icon: ClipboardCheck, label: "Đặt lịch" },
+    { href: "/chat/list", icon: MessageCircle, label: "Trò chuyện" },
+    { href: "/profile", icon: User, label: "Hồ sơ" },
   ];
 
   const navItems = isShopOwner

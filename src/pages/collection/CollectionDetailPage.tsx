@@ -20,8 +20,15 @@ const CollectionDetailPage = () => {
   if (!data) {
     return (
       <div className="container py-10 text-center">
-        <p className="mb-4 text-lg">Collection not found</p>
-        <Button onClick={() => navigate(-1)}>Return to Shop</Button>
+        <p className="mb-4 text-lg">Không tìm thấy bộ sưu tập</p>
+        <Button
+          variant="outline"
+          onClick={() => navigate(-1)}
+          className="group rounded-3xl border-slate-500 border-2"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4  transition-transform group-hover:-translate-x-1" />
+          Trở về
+        </Button>
       </div>
     );
   }
@@ -32,10 +39,10 @@ const CollectionDetailPage = () => {
         <Button
           variant="outline"
           onClick={() => navigate(-1)}
-          className="group"
+          className="group rounded-3xl border-slate-500 border-2"
         >
-          <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          Back
+          <ArrowLeft className="mr-2 h-4 w-4  transition-transform group-hover:-translate-x-1" />
+          Trở về
         </Button>
       </div>
 

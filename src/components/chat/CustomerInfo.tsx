@@ -5,7 +5,7 @@ import { Profile } from "@/types/database";
 import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { RoleBadge } from "../badge/RoleBadge";
-import { ChevronLeft, Calendar, Store } from "lucide-react";
+import { ChevronLeft, Calendar, Store, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "../ui/button";
@@ -97,7 +97,7 @@ export default function CustomerInfo() {
             <ChevronLeft className="w-6 h-6 text-[#950101]" />
           </button>
           <h1 className="font-black uppercase tracking-tight text-slate-800">
-            Profile Details
+            Thông tin cá nhân
           </h1>
         </div>
       </div>
@@ -139,13 +139,8 @@ export default function CustomerInfo() {
       </div>
 
       {navigating && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl p-4 shadow-xl flex items-center gap-3">
-            <div className="w-5 h-5 border-2 border-[#FFCFE9] border-t-[#950101] rounded-full animate-spin" />
-            <p className="text-sm font-bold text-slate-700">
-              Loading artist profile...
-            </p>
-          </div>
+        <div className="flex flex-col items-center justify-center py-12 space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       )}
     </div>
@@ -200,7 +195,7 @@ function ProfileCard({
               border: "none",
             }}
           >
-            Book for this Customer
+            Đặt lịch cho khách hàng này
           </Button>
         )}
       </div>
@@ -212,10 +207,10 @@ function ProfileCard({
           </div>
           <div>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              Phone
+              Số điện thoại
             </p>
             <p className="text-sm font-bold text-slate-700">
-              {profile.phone ?? "Not provided"}
+              {profile.phone ?? "N/A"}
             </p>
           </div>
         </div>
@@ -225,10 +220,10 @@ function ProfileCard({
           </div>
           <div>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              Address
+              Địa chỉ
             </p>
             <p className="text-sm font-bold text-slate-700 truncate">
-              {profile.address ?? "No address on file"}
+              {profile.address ?? "N/A"}
             </p>
           </div>
         </div>
@@ -242,12 +237,11 @@ function ProfileCard({
             className="w-full h-14 rounded-2xl bg-[#950101] hover:bg-[#7a0101] text-white font-black uppercase tracking-[0.2em] text-[10px] shadow-lg shadow-[#950101]/20 transition-all active:scale-[0.98]"
           >
             {isNavigating ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Loading...
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-              "View Full Profile"
+              "Xem trang thợ Nail"
             )}
           </Button>
         </div>

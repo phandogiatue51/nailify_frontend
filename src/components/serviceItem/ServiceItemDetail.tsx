@@ -18,8 +18,6 @@ interface ServiceItemDetailProps {
 const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
   const navigate = useNavigate();
 
-  const isArtistItem = !!item.nailArtistId && !item.shopId;
-
   const { data: shop, isLoading: shopLoading } = useCustomerShopById(
     item.shopId,
   );
@@ -61,13 +59,13 @@ const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
       <div className="flex items-center gap-4 w-full">
         {item.estimatedDuration && (
           <Badge variant="secondary" className="whitespace-nowrap text-md">
-            {item.estimatedDuration} minutes
+            {item.estimatedDuration} phút
           </Badge>
         )}
 
         {item.price !== undefined && (
           <p className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
-            {item.price.toLocaleString()} VND
+            {item.price.toLocaleString()}đ
           </p>
         )}
       </div>
@@ -114,7 +112,7 @@ const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
               }}
               className="ml-auto"
             >
-              View {isArtist ? "Artist" : "Shop"}
+              Xem trang {isArtist ? "thợ Nail" : "cửa hàng"}
             </Button>
           </div>
         ) : null}
@@ -123,7 +121,7 @@ const ServiceItemDetail: React.FC<ServiceItemDetailProps> = ({ item }) => {
       {serviceItems.length > 1 && (
         <div className="space-y-2 mt-6">
           <h3 className="text-lg font-semibold">
-            Other Services from this {isArtist ? "Artist" : "Shop"}
+            Các dịch vụ khác đến từ {isArtist ? "thợ Nail này" : "cửa hàng này"}
           </h3>
           <div className="grid grid-cols-2 gap-3">
             {serviceItems

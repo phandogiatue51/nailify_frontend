@@ -268,25 +268,6 @@ export default function DetailChatPage() {
         isLoading={isLoading}
         onMarkAsRead={handleMarkAsRead}
       />
-      {/* Connection status indicator */}
-      <div className="fixed bottom-4 right-4 flex gap-2 text-xs bg-white p-2 rounded shadow z-50">
-        <div className="flex items-center gap-1">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              signalRConnected ? "bg-green-500" : "bg-red-500"
-            }`}
-          />
-          <span>SignalR</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              isJoined ? "bg-green-500" : "bg-yellow-500"
-            }`}
-          />
-          <span>Conversation</span>
-        </div>
-      </div>
     </div>
   );
 }

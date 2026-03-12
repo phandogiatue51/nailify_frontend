@@ -4,6 +4,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useConversations } from "@/hooks/useChat";
 import { cn } from "@/lib/utils";
+import DateDisplay from "../ui/date-display";
 interface ConversationListProps {
   onSelectConversation?: (conversationId: string) => void;
   selectedId?: string | null;
@@ -19,29 +20,7 @@ export const ConversationList = ({
 }: ConversationListProps) => {
   const { user } = useAuth();
 
-  // Use the React Query hook instead of internal state
   const { conversations, isLoading } = useConversations(filter?.type);
-
-  const formatTime = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
-
-      if (diffInHours < 24) {
-        return date.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-      } else if (diffInHours < 48) {
-        return "Yesterday";
-      } else {
-        return date.toLocaleDateString();
-      }
-    } catch {
-      return "";
-    }
-  };
 
   if (isLoading) {
     return (
@@ -134,8 +113,8 @@ export const ConversationList = ({
                 >
                   {conv.title}
                 </h3>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">
-                  {formatTime(conv.lastMessageAt)}
+                <span className="text-[10px] font-medium text-slate-400 uppercase">
+                  <DateDisplay dateString={conv.lastMessageAt} />
                 </span>
               </div>
 

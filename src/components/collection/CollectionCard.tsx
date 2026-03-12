@@ -75,7 +75,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
 
         <div className="absolute bottom-3 left-3">
           <Badge className="bg-white/90 backdrop-blur-md text-slate-900 border-none text-[10px] font-bold px-2 rounded-lg">
-            {itemCount} ITEMS
+            {itemCount} dịch vụ
           </Badge>
         </div>
       </div>
@@ -88,7 +88,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
         <div className="flex items-center justify-between mt-1">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
             ~{collection.calculatedDuration || collection.estimatedDuration}{" "}
-            MINS
+            phút
           </span>
           <span className="text-sm font-black text-[#950101]">
             {Number(collection.totalPrice).toLocaleString()}đ

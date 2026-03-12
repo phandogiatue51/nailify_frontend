@@ -57,23 +57,22 @@ const ExplorePage = () => {
   return (
     <div>
       <div className="bg-slate-50/50 min-h-screen">
-        <Header title="Nailify"/>
+        <Header title="Nailify" />
         <div className="bg-white px-6 pt-8 pb-6 rounded-b-[3rem] shadow-sm">
           <div className="flex items-center gap-2 text-[#950101] mb-2">
             <Sparkles className="w-4 h-4" />
             <span className="text-[10px] font-black uppercase tracking-[0.2em]">
-              Discover
+              Khám phá
             </span>
           </div>
           <h1 className="text-3xl font-black text-black tracking-tight">
-            Find your {""}
             <span
               className="italic text-[#950101]"
               style={{
                 textShadow: "2px 2px 0px #FFCFE9",
               }}
             >
-              Vibe
+              Chất Riêng
             </span>
           </h1>
 
@@ -83,7 +82,7 @@ const ExplorePage = () => {
                 <Search className="w-5 h-5" />
               </div>
               <Input
-                placeholder={`Search for ${activeTab}...`}
+                placeholder={`Tìm kiếm ...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-14 pl-12 pr-12 rounded-2xl border-none bg-slate-100/80 focus-visible:ring-2 focus-visible:ring-[#E288F9]/20 font-medium text-slate-900 placeholder:text-slate-400 transition-all"
@@ -107,21 +106,21 @@ const ExplorePage = () => {
                 className="rounded-xl font-bold data-[state=active]:bg-[#950101] data-[state=active]:text-white transition-all"
               >
                 <User className="w-4 h-4 mr-2" />
-                Posts
+                Bài Viết
               </TabsTrigger>
               <TabsTrigger
                 value="shops"
                 className="rounded-xl font-bold data-[state=active]:bg-[#D81B60] data-[state=active]:text-white transition-all"
               >
                 <Store className="w-4 h-4 mr-2" />
-                Salons
+                Cửa Hàng
               </TabsTrigger>
               <TabsTrigger
                 value="artists"
                 className="rounded-xl font-bold data-[state=active]:bg-[#FFCFE9] data-[state=active]:text-white transition-all"
               >
                 <User className="w-4 h-4 mr-2" />
-                Artists
+                Thợ Nail
               </TabsTrigger>
             </TabsList>
 
@@ -210,13 +209,6 @@ const ExplorePage = () => {
               </TabsContent>
             </div>
           </Tabs>
-
-          <div className="py-4 border-t border-slate-200/60 text-center">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              {filteredShops.length} Salons • {filteredArtists.length} Artists
-              near you
-            </p>
-          </div>
         </div>
       </div>
     </div>

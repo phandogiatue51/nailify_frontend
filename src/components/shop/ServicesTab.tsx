@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { EmptyTabState } from "../ui/EmptyTabState";
 
 const COMPONENT_TYPES = [
-  { value: 0, label: "Base" },
-  { value: 1, label: "Shape" },
-  { value: 2, label: "Polish" },
-  { value: 3, label: "Design" },
-  { value: 4, label: "Gem" },
+  { value: 0, label: "Lớp Nền" },
+  { value: 1, label: "Tạo Dáng" },
+  { value: 2, label: "Sơn Bóng" },
+  { value: 3, label: "Trang Trí" },
+  { value: 4, label: "Đính Đá" },
 ];
+
 export const ServicesTab = ({
   groupedItems,
   serviceItems,

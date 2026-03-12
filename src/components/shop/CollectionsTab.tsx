@@ -13,8 +13,8 @@ export const CollectionsTab = ({ collections, isLoading, onDelete }) => {
           onClick={() => navigate("/my-shop/collections/create")}
           className="w-auto px-10 h-12 text-[11px] tracking-[0.2em] rounded-[1.5rem] bg-gradient-to-r from-[#950101] to-[#D81B60] text-white font-black border-none shadow-xl shadow-[#950101]/20 active:scale-95 transition-all flex items-center justify-center"
         >
-          <Plus className="w-4 h-4 mr-3 stroke-[3px]" />
-          CREATE NEW COLLECTION
+          <Plus className="w-4 h-4 mr-3 stroke-[3px] uppercase" />
+          Tạo set Nail
         </Button>
       </div>
 

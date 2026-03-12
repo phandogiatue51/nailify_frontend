@@ -3,7 +3,7 @@
 
 import { ConversationList } from "@/components/chat/ConversationList";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useConversations, useStartConversation } from "@/hooks/useChat";
 
@@ -36,12 +36,21 @@ export default function ChatList() {
   return (
     <div className="bg-white min-h-screen p-8">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Conversations</h1>
+        <h1
+          className="font-black tracking-tight uppercase text-xl bg-clip-text text-transparent pb-1"
+          style={{
+            backgroundImage:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+            WebkitBackgroundClip: "text",
+          }}
+        >
+          Danh sách cuộc trò chuyện
+        </h1>
       </div>
 
       {isLoading ? (
-        <div className="h-full flex items-center justify-center">
-          <div className="text-gray-400">Loading messages...</div>
+        <div className="flex flex-col items-center justify-center py-12 space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : (
         <ConversationList onSelectConversation={handleSelectConversation} />

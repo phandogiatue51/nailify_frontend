@@ -51,7 +51,7 @@ const MyNailArtistPage = () => {
 
   return (
     <div>
-      <Header title="Nailify"/>
+      <Header title="Nailify" />
 
       <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
         {/* Profile Header */}
@@ -60,14 +60,14 @@ const MyNailArtistPage = () => {
             <div className="flex items-center gap-2 text-[#FFC988]">
               <Award className="w-4 h-4" />
               <span className="text-[10px] font-black uppercase tracking-widest">
-                Master Artist
+                Nghệ Sĩ Nail
               </span>
             </div>
             <h1 className="text-3xl font-black tracking-tight text-slate-900">
-              {myArtist?.name || "My Portfolio"}
+              {myArtist?.name || "Tác Phẩm Của Tôi"}
             </h1>
             <p className="text-slate-500 text-sm font-medium italic">
-              {myArtist?.bio || "Expert Nail Technician"}
+              {myArtist?.bio}
             </p>
           </div>
         </header>
@@ -75,10 +75,10 @@ const MyNailArtistPage = () => {
         <Tabs defaultValue="services" className="w-full">
           <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-slate-200/50 rounded-2xl mb-6">
             <TabsTrigger value="services" className="rounded-xl font-bold">
-              Services
+              Dịch vụ
             </TabsTrigger>
             <TabsTrigger value="collections" className="rounded-xl font-bold">
-              Collections
+              Set Nail
             </TabsTrigger>
           </TabsList>
 

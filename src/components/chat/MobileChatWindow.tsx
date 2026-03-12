@@ -7,6 +7,7 @@ import { useState } from "react";
 import { MessageDto, ConversationDetailDto } from "@/types/chat";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
+import DateDisplay from "../ui/date-display";
 interface MobileChatWindowProps {
   conversationId: string;
   conversation?: ConversationDetailDto;
@@ -77,9 +78,9 @@ export const MobileChatWindow = ({
     yesterday.setDate(yesterday.getDate() - 1);
 
     if (date.toDateString() === today.toDateString()) {
-      return "Today";
+      return "Ngày hôm nay";
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday";
+      return "Ngày hôm qua";
     } else {
       return date.toLocaleDateString();
     }
@@ -207,7 +208,7 @@ export const MobileChatWindow = ({
           ([date, dateMessages]) => (
             <div key={date} className="space-y-4">
               <div className="flex justify-center">
-                <span className="text-[10px] font-black bg-slate-200/50 text-slate-500 px-3 py-1 rounded-full uppercase tracking-widest">
+                <span className="text-[10px] font-medium bg-slate-200/50 text-slate-500 px-3 py-1 rounded-full uppercase tracking-widest">
                   {date}
                 </span>
               </div>
@@ -263,7 +264,6 @@ export const MobileChatWindow = ({
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Write a message..."
             rows={1}
             className="flex-1 max-h-32 resize-none bg-transparent border-0 p-2 text-sm font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0"
           />
