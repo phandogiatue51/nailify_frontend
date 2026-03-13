@@ -6,7 +6,7 @@ import MobileLayout from "@/components/layout/MobileLayout";
 import { useShopOwnerLocations } from "@/hooks/useLocation";
 import LocationForm from "@/components/shop/LocationForm";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronLeft } from "lucide-react";
 
 const CreateLocationPage = () => {
   const navigate = useNavigate();
@@ -31,20 +31,27 @@ const CreateLocationPage = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
       <div className="p-4 space-y-6">
         <div className="flex items-center">
           <Button
-            variant="ghost"
-            size="icon"
+            variant="outline"
             onClick={() => navigate(-1)}
-            className="mr-2"
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Add Location</h1>
-            <p className="text-muted-foreground">Add a new shop location</p>
+            <h1
+              className="font-black tracking-tight uppercase text-xl bg-clip-text text-transparent pb-1"
+              style={{
+                backgroundImage:
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                WebkitBackgroundClip: "text",
+              }}
+            >
+              Thêm chi nhánh
+            </h1>
           </div>
         </div>
 

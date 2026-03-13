@@ -1,4 +1,4 @@
-import { MapPin } from "lucide-react";
+import { Loader2, MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { artistAPI, LocationAPI } from "@/services/api";
@@ -21,7 +21,7 @@ export const LocationInfo = ({ booking }: any) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400">
           <MapPin className="w-4 h-4 text-[#88D0F9]" />
-          {booking?.shopLocationId ? "Shop" : "Artist"}
+          {booking?.shopLocationId ? "Cửa hàng" : "Thợ Nail"}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -53,9 +53,9 @@ export const LocationInfo = ({ booking }: any) => {
             </p>
           </>
         ) : (
-          <p className="text-xs font-bold text-slate-300 uppercase animate-pulse">
-            Loading details...
-          </p>
+          <div className="flex flex-col items-center justify-center py-12 space-y-4">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
         )}
       </CardContent>
     </Card>

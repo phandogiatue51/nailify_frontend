@@ -500,7 +500,7 @@ export const SubscriptionForm = ({
                   />
                 ) : (
                   <p className="text-lg font-black text-emerald-600 tracking-tight">
-                    {subscription.price ? Number(subscription.price).toLocaleString() : "0"} VNĐ
+                    {subscription.price ? Number(subscription.price).toLocaleString() : "0"} đ
 
                   </p>
                 )}

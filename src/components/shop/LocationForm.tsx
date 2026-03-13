@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { CalendarCheck, Clock, Loader2, MapIcon, MapPin } from "lucide-react";
 import { ShopLocation, ShopLocationCreateDto } from "@/types/database";
+import { cn } from "@/lib/utils";
 
 interface LocationFormProps {
   initialData?: ShopLocation;
@@ -104,190 +105,192 @@ const LocationForm: React.FC<LocationFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="address">Address *</Label>
-        <Textarea
-          id="address"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          placeholder="Full address"
-          className={errors.address ? "border-red-500" : ""}
-          required
-        />
-        {errors.address && (
-          <p className="text-sm text-red-500">{errors.address}</p>
-        )}
-      </div>
+    <div className="p-4">
+      <form onSubmit={handleSubmit}>
+        <div>
+          <div className="flex items-center gap-2 px-1">
+            <MapPin className="w-4 h-4 text-[#950101]" />
+            <h3 className="text-lg font-black uppercase tracking-widest text-slate-800">
+              Thông tin chi nhánh
+            </h3>
+          </div>
+          <div className="space-y-2">
+            <Label
+              htmlFor="address"
+              className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400"
+            >
+              Địa chỉ
+            </Label>
+            <Textarea
+              id="address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className={cn(
+                "border-none bg-slate-50 rounded-2xl focus-visible:ring-[#950101] shadow-sm resize-none",
+                errors.address && "ring-2 ring-red-500",
+              )}
+              required
+            />
+            {errors.address && (
+              <p className="text-[10px] font-bold text-red-500 px-2">
+                {errors.address}
+              </p>
+            )}
+          </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="city">City</Label>
-          <Input
-            id="city"
-            name="city"
-            value={formData.city || ""}
-            onChange={handleChange}
-            placeholder="City"
-          />
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <div className="space-y-2">
+              <Label
+                htmlFor="city"
+                className="text-[10px] font-black uppercase tracking-widest text-slate-400"
+              >
+                Thành phố
+              </Label>
+              <Input
+                id="city"
+                name="city"
+                value={formData.city || ""}
+                onChange={handleChange}
+                className="border-none bg-slate-50 rounded-2xl h-12 focus-visible:ring-[#950101] shadow-sm"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="phone"
+                className="text-[10px] font-black uppercase tracking-widest text-slate-400"
+              >
+                Số điện thoại
+              </Label>
+              <Input
+                id="phone"
+                name="phone"
+                value={formData.phone || ""}
+                onChange={handleChange}
+                className="border-none bg-slate-50 rounded-2xl h-12 focus-visible:ring-[#950101] shadow-sm"
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
-          <Input
-            id="phone"
-            name="phone"
-            value={formData.phone || ""}
-            onChange={handleChange}
-            placeholder="Phone number"
-          />
-        </div>
-      </div>
+        <div className="pt-6">
+          <div className="flex items-center gap-2 px-1">
+            <CalendarCheck className="w-4 h-4 text-[#D81B60]" />
+            <h3 className="text-lg font-black uppercase tracking-widest text-slate-800">
+              Quy trình đặt lịch
+            </h3>
+          </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="city">Max Concurrent Bookings</Label>
-          <Input
-            id="maxConcurrentBookings"
-            name="maxConcurrentBookings"
-            type="number"
-            value={formData.maxConcurrentBookings || ""}
-            onChange={handleChange}
-            placeholder="Max Concurrent Bookings"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="phone">Buffer Minutes</Label>
-          <Input
-            id="bufferMinutes"
-            name="bufferMinutes"
-            type="number"
-            value={formData.bufferMinutes || ""}
-            onChange={handleChange}
-            placeholder="Buffer Minutes"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="city">Lead Time Minutes</Label>
-          <Input
-            id="bookingLeadTimeMinutes"
-            name="bookingLeadTimeMinutes"
-            type="number"
-            value={formData.bookingLeadTimeMinutes || ""}
-            onChange={handleChange}
-            placeholder="Booking Lead Time Minutes"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="phone">Booking Window Days</Label>
-          <Input
-            id="bookingWindowDays"
-            name="bookingWindowDays"
-            type="number"
-            value={formData.bookingWindowDays || ""}
-            onChange={handleChange}
-            placeholder="Booking Window Days"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="openingTime">Opening Time</Label>
-          <Input
-            id="openingTime"
-            name="openingTime"
-            type="time"
-            value={formData.openingTime || ""}
-            onChange={handleChange}
-            className={errors.openingTime ? "border-red-500" : ""}
-          />
-          {errors.openingTime && (
-            <p className="text-sm text-red-500">{errors.openingTime}</p>
-          )}
+          <div className="grid grid-cols-2 gap-6 mt-2">
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Số khách song song{" "}
+              </Label>
+              <Input
+                name="maxConcurrentBookings"
+                type="number"
+                value={formData.maxConcurrentBookings || ""}
+                onChange={handleChange}
+                className="border-none bg-white rounded-xl h-10 shadow-inner"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Thời gian nghỉ (phút){" "}
+              </Label>
+              <Input
+                name="bufferMinutes"
+                type="number"
+                value={formData.bufferMinutes || ""}
+                onChange={handleChange}
+                className="border-none bg-white rounded-xl h-10 shadow-inner"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Đặt trước ít nhất (phút){" "}
+              </Label>
+              <Input
+                name="bookingLeadTimeMinutes"
+                type="number"
+                value={formData.bookingLeadTimeMinutes || ""}
+                onChange={handleChange}
+                className="border-none bg-white rounded-xl h-10 shadow-inner"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Giới hạn đặt trước (ngày)
+              </Label>
+              <Input
+                name="bookingWindowDays"
+                type="number"
+                value={formData.bookingWindowDays || ""}
+                onChange={handleChange}
+                className="border-none bg-white rounded-xl h-10 shadow-inner"
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="closingTime">Closing Time</Label>
-          <Input
-            id="closingTime"
-            name="closingTime"
-            type="time"
-            value={formData.closingTime || ""}
-            onChange={handleChange}
-            className={errors.closingTime ? "border-red-500" : ""}
-          />
-          {errors.closingTime && (
-            <p className="text-sm text-red-500">{errors.closingTime}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="latitude">Latitude</Label>
-          <Input
-            id="latitude"
-            name="latitude"
-            type="number"
-            step="any"
-            value={formData.latitude || ""}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                latitude: e.target.value
-                  ? parseFloat(e.target.value)
-                  : undefined,
-              }))
-            }
-            placeholder="e.g., 37.7749"
-          />
+        <div className="pt-6">
+          <div className="flex items-center gap-2 px-1">
+            <Clock className="w-4 h-4 text-[#950101]" />
+            <h3 className="text-lg font-black uppercase tracking-widest text-slate-800">
+              Giờ hoạt động
+            </h3>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2 p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus-within:border-[#950101]/20 transition-all">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Giờ mở cửa
+              </Label>
+              <Input
+                name="openingTime"
+                type="time"
+                value={formData.openingTime || ""}
+                onChange={handleChange}
+                className="border-none bg-transparent h-8 p-0 text-lg font-bold"
+              />
+            </div>
+            <div className="space-y-2 p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus-within:border-[#950101]/20 transition-all">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Giờ đóng cửa
+              </Label>
+              <Input
+                name="closingTime"
+                type="time"
+                value={formData.closingTime || ""}
+                onChange={handleChange}
+                className="border-none bg-transparent h-8 p-0 text-lg font-bold"
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="longitude">Longitude</Label>
-          <Input
-            id="longitude"
-            name="longitude"
-            type="number"
-            step="any"
-            value={formData.longitude || ""}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                longitude: e.target.value
-                  ? parseFloat(e.target.value)
-                  : undefined,
-              }))
-            }
-            placeholder="e.g., -122.4194"
-          />
-        </div>
-      </div>
-      <div className="flex gap-2 pt-2">
-        <Button type="submit" className="flex-1" disabled={isLoading}>
-          {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-          {initialData ? "Update Location" : "Create Location"}
-        </Button>
-        {onCancel && (
+        {/* Submit Actions */}
+        <div className="space-y-3 pt-4">
           <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            className="flex-1"
+            type="submit"
+            className="w-full h-14 uppercase rounded-2xl bg-gradient-to-r from-[#950101] to-[#D81B60] shadow-xl shadow-red-100 text-white font-black text-lg active:scale-[0.98] transition-all"
             disabled={isLoading}
           >
-            Cancel
+            {isLoading && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
+            {initialData ? "Cập nhật" : "Tạo chi nhánh"}
           </Button>
-        )}
-      </div>
-    </form>
+
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="w-full py-3 text-[11px] font-black uppercase tracking-[0.2em] text-red-500 transition-colors"
+            >
+              Hủy
+            </button>
+          )}
+        </div>
+      </form>
+    </div>
   );
 };
 

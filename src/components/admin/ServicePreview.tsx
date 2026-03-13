@@ -170,7 +170,7 @@ export const ServicePreview = ({
                     <div className="flex items-center gap-4 pt-1">
                       <div className="flex items-center gap-1 text-[#950101]">
                         <span className="text-[10px] font-black uppercase">
-                          VND
+                          đ
                         </span>
                         <span className="text-sm font-black italic">
                           {Number(service.price).toLocaleString()}

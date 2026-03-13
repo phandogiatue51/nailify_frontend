@@ -232,7 +232,7 @@ const ConfirmBooking = () => {
                     className="flex justify-between py-2 border-b font-medium text-slate-900 tracking-tight"
                   >
                     <span>{item.name}</span>
-                    <span>{item.price?.toLocaleString()} VND</span>
+                    <span>{item.price?.toLocaleString()} đ</span>
                   </div>
                 ))}
               </div>
@@ -373,7 +373,7 @@ const ConfirmBooking = () => {
               <div className="flex justify-between items-center">
                 <span>Total Price:</span>
                 <span className="text-2xl font-bold text-green-600">
-                  {calculatedPrice.toLocaleString()} VND
+                  {calculatedPrice.toLocaleString()} đ
                 </span>
               </div>
               <div className="flex justify-between text-sm text-muted-foreground">

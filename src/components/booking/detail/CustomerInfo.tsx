@@ -6,7 +6,7 @@ export const CustomerInfo = ({ name, phone, address }: any) => (
     <CardHeader>
       <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400">
         <User className="w-4 h-4 text-[#FFC988]" />
-        Customer
+        Khách hàng
       </CardTitle>
     </CardHeader>
     <CardContent>

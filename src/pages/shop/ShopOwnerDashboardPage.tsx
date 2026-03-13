@@ -63,7 +63,7 @@ const ShopOwnerDashboardPage = () => {
         <div className="pt-4 flex justify-between items-end">
           <div className="space-y-1">
             <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-              Dashboard
+              Bảng điều khiển
             </h1>
             <p className="text-slate-500 font-bold text-xs uppercase tracking-tighter">
               {myShop.name}

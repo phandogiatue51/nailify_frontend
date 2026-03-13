@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, ChevronLeft } from "lucide-react";
 import { profileAPI } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/ui/header";
@@ -51,13 +51,11 @@ const ChangePasswordPage = () => {
       <div className="p-6 space-y-6">
         <div className="flex items-center justify-between text-slate-600">
           <Button
-            className="rounded-2xl border-slate-400 border-2 font-bold"
             variant="outline"
-            size="sm"
             onClick={() => navigate(-1)}
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Trở về
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
           </Button>
           <h1 className="text-2xl font-black">Cập nhật mật khẩu</h1>
         </div>

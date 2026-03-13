@@ -97,7 +97,7 @@ export const SubscriptionList = ({
 
                 <div className="flex items-baseline gap-1">
                   <span className="text-lg font-black">
-                    {sub.price ? Number(sub.price).toLocaleString() : "0"} VNĐ
+                    {sub.price ? Number(sub.price).toLocaleString() : "0"} đ
                   </span>
                   <span className="text-sm font-bold uppercase tracking-tight">
                     / {sub.durationDays || "?"} ngày

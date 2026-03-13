@@ -82,7 +82,7 @@ const EditCollectionPage = () => {
           <Button
             variant="outline"
             onClick={() => navigate(-1)}
-            className="group rounded-full border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
             <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
           </Button>

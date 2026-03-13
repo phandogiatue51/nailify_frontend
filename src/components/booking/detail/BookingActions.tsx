@@ -52,7 +52,7 @@ export const BookingActions = ({
                       ) : (
                         <X size={20} />
                       )}
-                      Cancel Booking
+                      Hủy
                     </Button>
                   }
                   {...statusConfig.reject}
@@ -69,7 +69,7 @@ export const BookingActions = ({
                       ) : (
                         <CheckCircle className="mr-2" size={18} />
                       )}
-                      Approve Booking
+                      Xác nhận
                     </Button>
                   }
                   {...statusConfig.approve}
@@ -92,7 +92,7 @@ export const BookingActions = ({
                       ) : (
                         <CheckCircle className="mr-2" size={18} />
                       )}
-                      Mark Complete
+                      Hoàn thành
                     </Button>
                   }
                   {...statusConfig.complete}
@@ -109,7 +109,7 @@ export const BookingActions = ({
                         className="flex-1 h-12 rounded-xl border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] text-rose-300 border-rose-300 hover:bg-rose-400 hover:text-white"
                       >
                         <XCircle className="mr-2" size={14} />
-                        Cancel Booking
+                        Hủy
                       </Button>
                     }
                     {...statusConfig.cancel}
@@ -124,7 +124,7 @@ export const BookingActions = ({
                       className="flex-1 h-12 rounded-xl border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px] text-blue-300 border-blue-300 hover:bg-blue-400 hover:text-white"
                     >
                       <UserCog className="mr-2" size={14} />
-                      Edit Guest Info
+                      Chỉnh sửa thông tin khách hàng
                     </Button>
                   )}
                 </div>
@@ -144,7 +144,7 @@ export const BookingActions = ({
                   className="h-10 rounded-2xl border-red-400 text-red-400 hover:text-white hover:bg-red-400 font-black uppercase tracking-widest text-xs shadow-xl"
                 >
                   <XCircle size={20} />
-                  Cancel Booking
+                  Hủy
                 </Button>
               }
               {...statusConfig.cancel}
@@ -175,7 +175,7 @@ export const BookingActions = ({
                 "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
             }}
           >
-            <Star className="w-4 h-4 mr-2 fill-white" /> Rate Experience
+            <Star className="w-4 h-4 mr-2 fill-white" /> Đánh giá trải nghiệm
           </Button>
         )}
       </div>

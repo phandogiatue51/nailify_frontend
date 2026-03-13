@@ -97,7 +97,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
 
         {collection.totalPrice !== undefined && (
           <p className="ml-auto text-xl font-black text-green-600 whitespace-nowrap">
-            {collection.totalPrice.toLocaleString()} VND
+            {collection.totalPrice.toLocaleString()} đ
           </p>
         )}
       </div>

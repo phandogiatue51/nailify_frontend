@@ -33,7 +33,7 @@ export const InvoiceCard = ({ invoice }: InvoiceCardProps) => {
               </div>
               <span className="text-sm font-black text-slate-700 tracking-tight">
                 {Number(invoice.totalAmount).toLocaleString()}{" "}
-                <span className="text-[10px]">VND</span>
+                <span className="text-[10px]">đ</span>
               </span>
             </div>
             <div className="flex items-center gap-2">

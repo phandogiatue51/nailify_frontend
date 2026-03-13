@@ -15,14 +15,14 @@ export const DateTimeCard = ({
     <CardHeader>
       <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400">
         <Calendar className="w-4 h-4 text-[#88F9D0]" />
-        Date & Time
+        Thời gian lịch hẹn
       </CardTitle>
     </CardHeader>
     <CardContent>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <div className="space-y-2">
           <p className="text-[12px] font-black uppercase text-slate-400">
-            Start
+            Giờ vào
           </p>
           <div className="flex items-center gap-3">
             <div className="bg-[#88F9D0]/20 p-3 rounded-2xl">
@@ -34,7 +34,7 @@ export const DateTimeCard = ({
           </div>
         </div>
         <div className="space-y-2">
-          <p className="text-[12px] font-black uppercase text-slate-400">End</p>
+          <p className="text-[12px] font-black uppercase text-slate-400">Giờ ra</p>
           <div className="flex items-center gap-3">
             <div className="bg-red-50 p-3 rounded-2xl">
               <Calendar className="w-5 h-5 text-red-500" />

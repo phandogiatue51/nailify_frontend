@@ -38,7 +38,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onCancel,
   onComplete,
   isAdmin,
-  isLoading = false,
 }) => {
   const navigate = useNavigate();
   const statusConfig = getStatusConfig(booking.status, isShopOwner || false);
@@ -51,11 +50,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
           <BookingStatusBadge status={booking.status} />
           <div className="text-right">
             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 leading-none mb-1">
-              Total Investment
+              Tổng giá tiền
             </p>
             <span className="text-xl font-black text-emerald-500 tracking-tight">
               {Number(booking.totalPrice).toLocaleString()}
-              <span className="text-[10px] ml-1 text-slate-500">VND</span>
+              <span className="text-[10px] ml-1 text-slate-500">đ</span>
             </span>
           </div>
         </div>
@@ -63,7 +62,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
         {/* 2. Artist Row */}
         <div>
           <p className="text-[10px] font-black uppercase tracking-widest text-[#950101]/60 mb-2">
-            Appointment with
+            Bạn có hẹn với
           </p>
           {isShopOwner ? (
             <h4 className="font-black text-slate-800 text-lg leading-tight">
@@ -87,7 +86,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <div className="bg-slate-50/80 rounded-3xl p-5 flex items-center justify-between">
           <div className="flex flex-col">
             <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">
-              Check-in
+              Giờ vào
             </p>
             <div className="text-xs font-black text-slate-700">
               <DateDisplay dateString={booking.scheduledStart} showTime />
@@ -103,7 +102,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
           <div className="flex flex-col text-right">
             <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-1">
-              Completion
+              Giờ ra
             </p>
             <div className="text-xs font-black text-slate-700">
               <DateDisplay dateString={booking.scheduledEnd} showTime />
@@ -120,75 +119,75 @@ const BookingCard: React.FC<BookingCardProps> = ({
           {/* Row 1: Contextual Actions - Only renders if there's content */}
           {((isShopOwner && [0, 1].includes(booking.status)) ||
             (!isShopOwner && booking.status === 3 && !booking.ratings)) && (
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                {isShopOwner && booking.status === 0 && (
-                  <div className="flex w-full gap-2 items-center">
-                    <ConfirmationDialog
-                      {...statusConfig.reject}
-                      onConfirm={() => onReject?.(booking.id)}
-                      trigger={
-                        <Button
-                          variant="ghost"
-                          className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
-                        >
-                          Reject
-                        </Button>
-                      }
-                    />
-                    <ConfirmationDialog
-                      {...statusConfig.approve}
-                      onConfirm={() => onApprove?.(booking.id)}
-                      trigger={
-                        <Button
-                          variant="ghost"
-                          className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
-                        >
-                          Approve
-                        </Button>
-                      }
-                    />
-                  </div>
-                )}
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {isShopOwner && booking.status === 0 && (
+                <div className="flex w-full gap-2 items-center">
+                  <ConfirmationDialog
+                    {...statusConfig.reject}
+                    onConfirm={() => onReject?.(booking.id)}
+                    trigger={
+                      <Button
+                        variant="ghost"
+                        className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
+                      >
+                        Từ chối
+                      </Button>
+                    }
+                  />
+                  <ConfirmationDialog
+                    {...statusConfig.approve}
+                    onConfirm={() => onApprove?.(booking.id)}
+                    trigger={
+                      <Button
+                        variant="ghost"
+                        className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
+                      >
+                        Xác nhận
+                      </Button>
+                    }
+                  />
+                </div>
+              )}
 
-                {isShopOwner && booking.status === 1 && (
-                  <div className="flex w-full gap-2 items-center">
-                    <ConfirmationDialog
-                      {...statusConfig.cancel}
-                      onConfirm={() => onCancel?.(booking.id)}
-                      trigger={
-                        <Button
-                          variant="ghost"
-                          className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
-                        >
-                          Cancel
-                        </Button>
-                      }
-                    />
-                    <ConfirmationDialog
-                      {...statusConfig.complete}
-                      onConfirm={() => onComplete?.(booking.id)}
-                      trigger={
-                        <Button
-                          variant="ghost"
-                          className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
-                        >
-                          Complete
-                        </Button>
-                      }
-                    />
-                  </div>
-                )}
+              {isShopOwner && booking.status === 1 && (
+                <div className="flex w-full gap-2 items-center">
+                  <ConfirmationDialog
+                    {...statusConfig.cancel}
+                    onConfirm={() => onCancel?.(booking.id)}
+                    trigger={
+                      <Button
+                        variant="ghost"
+                        className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
+                      >
+                        Hủy
+                      </Button>
+                    }
+                  />
+                  <ConfirmationDialog
+                    {...statusConfig.complete}
+                    onConfirm={() => onComplete?.(booking.id)}
+                    trigger={
+                      <Button
+                        variant="ghost"
+                        className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
+                      >
+                        Hoàn thành
+                      </Button>
+                    }
+                  />
+                </div>
+              )}
 
-                {!isShopOwner && booking.status === 3 && !booking.ratings && (
-                  <Button
-                    onClick={() => navigate(`/booking/rating/${booking.id}`)}
-                    className="h-12 w-full px-5 rounded-full text-blue-500 font-black text-[9px] uppercase tracking-widest border border-blue-300 hover:bg-blue-100 bg-white"
-                  >
-                    Leave a Review
-                  </Button>
-                )}
-              </div>
-            )}
+              {!isShopOwner && booking.status === 3 && !booking.ratings && (
+                <Button
+                  onClick={() => navigate(`/booking/rating/${booking.id}`)}
+                  className="h-12 w-full px-5 rounded-full text-blue-500 font-black text-[9px] uppercase tracking-widest border border-blue-300 hover:bg-blue-100 bg-white"
+                >
+                  Đánh giá trải nghiệm
+                </Button>
+              )}
+            </div>
+          )}
 
           {/* Row 2: Primary Action - Full Width */}
           <Button
@@ -199,13 +198,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 navigate(`/booking/detail/${booking.id}`);
               }
             }}
-
             className="w-full h-11 rounded-full font-black uppercase text-[10px] tracking-[0.2em] text-white shadow-lg shadow-[#950101]/10 hover:opacity-90 active:scale-[0.98] transition-all"
             style={{
               background: "linear-gradient(135deg, #950101 0%, #D81B60 100%)",
             }}
           >
-            Details
+            Xem chi tiết
           </Button>
         </div>
       </CardContent>

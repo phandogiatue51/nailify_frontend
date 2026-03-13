@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
 const roleMap: Record<number, { label: string; bg: string }> = {
   0: {
-    label: "Đang chờ chấp nhận",
+    label: "Đang chờ xác nhận",
     bg: "bg-orange-400",
   },
   1: {
-    label: "Đã chấp nhận",
+    label: "Đã xác nhận",
     bg: "bg-blue-400",
   },
   2: {

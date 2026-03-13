@@ -156,7 +156,7 @@ export const ServiceDetailModal = ({
                   <p className="text-4xl font-black italic tracking-tighter text-slate-900">
                     {Number(service.price).toLocaleString()}{" "}
                     <span className="text-lg not-italic text-slate-400">
-                      VND
+                      đ
                     </span>
                   </p>
                 </div>

@@ -169,7 +169,7 @@ const InvoiceDetail = () => {
                   Tổng cộng (Total)
                 </span>
                 <span className="text-xl font-black text-slate-900">
-                  {Number(invoice.totalAmount).toLocaleString()} VNĐ
+                  {Number(invoice.totalAmount).toLocaleString()} đ
                 </span>
               </div>
               <div className="flex justify-between items-center text-sm border-b border-slate-200 pb-4">
@@ -177,7 +177,7 @@ const InvoiceDetail = () => {
                   Đã thanh toán (Paid)
                 </span>
                 <span className="text-xl font-black text-[#950101]">
-                  -{Number(invoice.amountPaid).toLocaleString()} VNĐ
+                  -{Number(invoice.amountPaid).toLocaleString()} đ
                 </span>
               </div>
 

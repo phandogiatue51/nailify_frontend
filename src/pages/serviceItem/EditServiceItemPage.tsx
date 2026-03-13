@@ -67,7 +67,7 @@ const EditServiceItemPage = () => {
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
-            className="mt-1 rounded-2xl bg-slate-50 hover:bg-[#950101]/5 text-slate-600 hover:text-[#950101] transition-all active:scale-90 shrink-0"
+            className="mt-1 rounded-2xl mr-4 bg-slate-50 hover:bg-[#950101]/5 text-slate-600 hover:text-[#950101] transition-all active:scale-90 shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>

@@ -76,7 +76,7 @@ export const ServiceCard = ({ service, onViewDetails }: ServiceCardProps) => {
               </div>
               <span className="text-sm font-black text-slate-700 tracking-tight">
                 {service.price?.toLocaleString()}{" "}
-                <span className="text-[10px]">VND</span>
+                <span className="text-[10px]">đ</span>
               </span>
             </div>
             <div className="flex items-center gap-2">

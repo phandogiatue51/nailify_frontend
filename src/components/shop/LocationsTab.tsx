@@ -14,7 +14,7 @@ export const LocationsTab = ({ locations, isLoading, onDelete }) => {
         className="w-full h-12 rounded-2xl border-dashed border-2 border-slate-200 text-slate-500 font-bold hover:bg-slate-50"
       >
         <MapPin className="w-4 h-4 mr-2" />
-        Add Branch Location
+        Thêm chi nhánh
       </Button>
 
       {isLoading ? (

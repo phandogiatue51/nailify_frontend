@@ -96,7 +96,7 @@ const QuickStats = ({
     },
     {
       label: "Doanh thu",
-      value: `${stats?.totalRevenue.toLocaleString() || 0} VND`,
+      value: `${stats?.totalRevenue.toLocaleString() || 0} đ`,
       icon: DollarSign,
       color: "text-purple-600",
       bg: "bg-purple-50",

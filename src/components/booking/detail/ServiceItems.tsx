@@ -7,7 +7,7 @@ export const ServiceItems = ({ items, totalPrice, duration }: any) => (
     <CardHeader>
       <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400">
         <Package className="w-4 h-4 text-[#E288F9]" />
-        Services
+        Dịch vụ đã đặt
       </CardTitle>
     </CardHeader>
     <CardContent className="space-y-2">
@@ -22,18 +22,18 @@ export const ServiceItems = ({ items, totalPrice, duration }: any) => (
             </p>
           </div>
           <p className="font-black text-slate-900">
-            {item.price?.toLocaleString()} <span className="text-md">VND</span>
+            {item.price?.toLocaleString()} <span className="text-md">đ</span>
           </p>
         </div>
       ))}
       <Separator className="bg-slate-50" />
       <div className="flex justify-between items-end">
         <p className="text-xs font-black uppercase text-slate-400">
-          Total Value
+          Tổng giá tiền
         </p>
         <div className="text-right">
           <p className="text-xl font-black text-[#950101]">
-            {totalPrice.toLocaleString()} VND
+            {totalPrice.toLocaleString()} đ
           </p>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import { ProfileForm } from "@/components/auth/ProfileForm";
 import { useProfile } from "@/hooks/useProfile";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const EditProfilePage = () => {
@@ -40,12 +40,11 @@ const EditProfilePage = () => {
         {/* Top Navigation Bar */}
         <div className="bg-white px-4 py-4 flex items-center gap-2 border-b sticky top-0 z-10">
           <Button
-            variant="ghost"
-            size="icon"
+            variant="outline"
             onClick={() => navigate(-1)}
-            className="rounded-full hover:bg-slate-100"
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ArrowLeft className="w-5 h-5 text-slate-600" />
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
           </Button>
           <div>
             <h1 className="text-xl font-black tracking-tight">

@@ -59,7 +59,7 @@ const BookingCalendarView: React.FC<BookingCalendarViewProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-            Schedule
+            Lịch hẹn
           </h3>
           <h2 className="text-2xl font-black text-slate-900">
             {format(selectedDate, "MMMM yyyy")}
@@ -150,7 +150,7 @@ const BookingCalendarView: React.FC<BookingCalendarViewProps> = ({
               <CalendarIcon className="w-6 h-6 text-slate-200" />
             </div>
             <p className="text-sm font-bold text-slate-400">
-              No appointments scheduled
+              Không có lịch hẹn
             </p>
           </div>
         )}

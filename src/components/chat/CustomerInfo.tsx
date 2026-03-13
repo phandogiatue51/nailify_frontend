@@ -89,13 +89,13 @@ export default function CustomerInfo() {
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
-          <button
+          <Button
+            variant="outline"
             onClick={() => navigate(-1)}
-            className="p-2 hover:bg-[#FFCFE9]/30 rounded-full transition-colors"
-            disabled={navigating} // Disable while navigating
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ChevronLeft className="w-6 h-6 text-[#950101]" />
-          </button>
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
+          </Button>
           <h1 className="font-black uppercase tracking-tight text-slate-800">
             Thông tin cá nhân
           </h1>

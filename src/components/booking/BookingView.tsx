@@ -22,12 +22,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import Header from "../ui/header";
 
 const STATUS_OPTIONS = [
-  { label: "All", value: undefined },
-  { label: "Pending", value: 0 },
-  { label: "Approved", value: 1 },
-  { label: "Rejected", value: 2 },
-  { label: "Completed", value: 3 },
-  { label: "Cancelled", value: 4 },
+  { label: "Tất cả", value: undefined },
+  { label: "Đang chờ xác nhận", value: 0 },
+  { label: "Đã xác nhận", value: 1 },
+  { label: "Đã từ chối", value: 2 },
+  { label: "Đã hoàn thành", value: 3 },
+  { label: "Đã hủy", value: 4 },
 ] as const;
 
 export type UserRole = "customer" | "nailArtist" | "shop" | "staff";
@@ -190,7 +190,7 @@ const BookingView: React.FC<BookingViewProps> = ({
                 )}
               >
                 <List className="h-3.5 w-3.5" />
-                List
+                Danh sách
               </button>
               <button
                 onClick={() => setViewMode("calendar")}
@@ -202,7 +202,7 @@ const BookingView: React.FC<BookingViewProps> = ({
                 )}
               >
                 <CalendarIcon className="h-3.5 w-3.5" />
-                Calendar
+                Lịch
               </button>
             </div>
 
@@ -213,7 +213,7 @@ const BookingView: React.FC<BookingViewProps> = ({
                   className="h-9 rounded-xl bg-slate-50 text-xs font-bold text-md"
                 >
                   <CalendarIcon className="mr-2 h-3.5 w-3.5 text-[#D81B60]" />
-                  {date ? format(date, "MMM dd") : "Pick date"}
+                  {date ? format(date, "MMM dd") : "Chọn ngày"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0 border-none shadow-2xl rounded-[2rem]">
@@ -233,7 +233,7 @@ const BookingView: React.FC<BookingViewProps> = ({
                 key={String(opt.value)}
                 onClick={() => setStatus(opt.value)}
                 className={cn(
-                  "py-2.5 rounded-xl text-[12px] font-black uppercase  transition-all border-2",
+                  "py-2.5 rounded-xl text-[10px] font-black uppercase  transition-all border-2",
                   status === opt.value
                     ? "bg-[#D81B60] border-[#D81B60] text-white shadow-md shadow-red-100"
                     : "bg-white border-slate-50 text-slate-400 hover:border-slate-100",
@@ -256,7 +256,7 @@ const BookingView: React.FC<BookingViewProps> = ({
                 )}
               >
                 <MapPin className="h-3 w-3" />
-                All Locations
+                Tất cả chi nhánh
               </button>
 
               {locations.map((location) => (
@@ -293,8 +293,8 @@ const BookingView: React.FC<BookingViewProps> = ({
             <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100">
               <p className="text-sm font-bold text-slate-400">
                 {role === "shop" && selectedLocationId
-                  ? `No bookings found for this location`
-                  : `No bookings found`}
+                  ? `Danh sách lịch hẹn trống cho chi nhánh này`
+                  : `Danh sách lịch hẹn trống`}
               </p>
             </div>
           ) : viewMode === "list" ? (

@@ -16,6 +16,7 @@ import {
   Search,
   X,
   Star,
+  ChevronLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -160,12 +161,11 @@ const ShopDetailPage = () => {
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute top-6 left-4 right-4 flex justify-between items-center">
           <Button
-            variant="secondary"
-            size="icon"
-            className="rounded-2xl bg-white/90 backdrop-blur"
+            variant="outline"
             onClick={() => navigate(-1)}
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ArrowLeft className="w-5 h-5 text-slate-900" />
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
           </Button>
           <Button
             variant="secondary"
@@ -192,7 +192,6 @@ const ShopDetailPage = () => {
               {ratingLoading ? (
                 <div className="inline-flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100">
                   <Loader2 className="w-3 h-3 animate-spin text-slate-400" />
-                  
                 </div>
               ) : (
                 shopRating && (

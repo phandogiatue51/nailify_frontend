@@ -12,6 +12,7 @@ import {
   AlertCircle,
   ShoppingBag,
   ArrowRight,
+  ChevronLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -46,7 +47,7 @@ export const CustomDesignPage = () => {
 
     navigate(`/customer-book`, { state: bookingState });
   };
-  
+
   const toggleItem = (item: ServiceItem) => {
     const isSelected = selectedItems.some((s) => s.id === item.id);
     if (isSelected) {
@@ -60,7 +61,7 @@ export const CustomDesignPage = () => {
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="text-center space-y-4">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-          
+
           <Button variant="outline" onClick={() => navigate(-1)} disabled>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Go Back
@@ -143,12 +144,11 @@ export const CustomDesignPage = () => {
       <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 pt-4 pb-3">
         <div className="flex items-center gap-3 mb-4">
           <Button
-            variant="ghost"
-            size="icon"
+            variant="outline"
             onClick={() => navigate(-1)}
-            className="rounded-full bg-slate-50"
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
           </Button>
           <div>
             <h1
@@ -180,7 +180,7 @@ export const CustomDesignPage = () => {
               {selectedItems
                 .reduce((sum, item) => sum + Number(item.price), 0)
                 .toLocaleString()}{" "}
-              VND
+              đ
             </span>
           </div>
         </div>
@@ -243,10 +243,10 @@ export const CustomDesignPage = () => {
           style={
             selectedItems.length > 0
               ? {
-                background:
-                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
-                border: "none",
-              }
+                  background:
+                    "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                  border: "none",
+                }
               : { background: "#0F172A", border: "none" }
           }
           className={cn(

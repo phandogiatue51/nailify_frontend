@@ -142,7 +142,7 @@ export const CollectionDetailModal = ({
                   <p className="text-3xl font-black italic text-slate-900">
                     {collection.totalPrice?.toLocaleString() ?? 0}{" "}
                     <span className="text-sm not-italic text-slate-400">
-                      VND
+                      đ
                     </span>
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export const CollectionDetailModal = ({
                             {item.serviceItemName}
                           </p>
                           <p className="text-[10px] font-bold text-[#950101] italic">
-                            {item.serviceItemPrice?.toLocaleString()} VND
+                            {item.serviceItemPrice?.toLocaleString()} đ
                           </p>
                         </div>
                       </div>

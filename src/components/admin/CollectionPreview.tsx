@@ -186,7 +186,7 @@ export const CollectionPreview = ({
                     <div className="flex items-center justify-between border-t border-slate-50 pt-4">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1 text-[#950101]">
-                          <span className="text-[10px] font-black">VND</span>
+                          <span className="text-[10px] font-black">đ</span>
                           <span className="text-md font-black italic">
                             {collection.totalPrice
                               ? collection.totalPrice.toLocaleString()

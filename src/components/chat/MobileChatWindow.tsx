@@ -8,6 +8,7 @@ import { MessageDto, ConversationDetailDto } from "@/types/chat";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import DateDisplay from "../ui/date-display";
+import { Button } from "../ui/button";
 interface MobileChatWindowProps {
   conversationId: string;
   conversation?: ConversationDetailDto;
@@ -112,12 +113,13 @@ export const MobileChatWindow = ({
       {/* HEADER: No changes needed to logic, just ensure it's relative/sticky within flex */}
       <header className="flex-shrink-0 bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between z-20 shadow-sm">
         <div className="flex items-center gap-3">
-          <button
+          <Button
+            variant="outline"
             onClick={() => navigate(-1)}
-            className="p-1 hover:bg-[#FFCFE9]/30 rounded-full transition-colors"
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ChevronLeft className="w-6 h-6 text-[#950101]" />
-          </button>
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
+          </Button>
 
           <div className="flex items-center gap-2">
             <div>

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
-import { Loader2, ArrowLeft, Receipt } from "lucide-react";
+import { Loader2, ArrowLeft, Receipt, ChevronLeft } from "lucide-react";
 import { InvoiceList } from "@/components/invoice/InvoiceList";
 import { InvoiceFilter } from "@/components/invoice/InvoiceFilter";
 import { InvoiceFilterDto } from "@/types/filter";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 const MyInvoicePage = () => {
   const { user, loading } = useAuthContext();
   const [filters, setFilters] = useState<InvoiceFilterDto>({});
@@ -14,7 +15,6 @@ const MyInvoicePage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#950101]" />
-        
       </div>
     );
   }
@@ -27,12 +27,13 @@ const MyInvoicePage = () => {
     <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md px-6">
         <div className="flex items-center justify-between mb-4">
-          <button
+          <Button
+            variant="outline"
             onClick={() => navigate(-1)}
-            className="p-2 -ml-2 hover:bg-slate-50 rounded-full transition-colors"
+            className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
           >
-            <ArrowLeft className="w-5 h-5 text-slate-900" />
-          </button>
+            <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
+          </Button>
         </div>
 
         <div className="flex items-center gap-3">

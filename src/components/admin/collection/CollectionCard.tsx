@@ -82,7 +82,7 @@ export const CollectionCard = ({
               </div>
               <span className="text-sm font-black text-slate-700 tracking-tight">
                 {collection.totalPrice?.toLocaleString()}{" "}
-                <span className="text-[10px]">VND</span>
+                <span className="text-[10px]">đ</span>
               </span>
             </div>
             <div className="flex items-center gap-2">

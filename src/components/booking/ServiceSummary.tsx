@@ -70,7 +70,7 @@ export const ServiceSummary = ({
               <div className="flex justify-between text-sm">
                 <span>Estimated Price:</span>
                 <span className="font-semibold">
-                  {localTotalPrice.toLocaleString()} VND
+                  {localTotalPrice.toLocaleString()} đ
                 </span>
               </div>
 
@@ -90,12 +90,12 @@ export const ServiceSummary = ({
                 className="flex justify-between py-2 border-b "
               >
                 <span>{item.name}</span>
-                <span>{Number(item.price).toLocaleString()} VND</span>
+                <span>{Number(item.price).toLocaleString()} đ</span>
               </div>
             ))}
             <div className="flex justify-between font-black pt-2 text-lg text-green-400">
               <span>Total</span>
-              <span>{localTotalPrice.toLocaleString()} VND</span>
+              <span>{localTotalPrice.toLocaleString()} đ</span>
             </div>
             <div className="text-sm text-muted-foreground pt-1">
               Duration: {localTotalDuration} minutes
