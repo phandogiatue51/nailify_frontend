@@ -178,84 +178,73 @@ const ShopDetailPage = () => {
         <div className="absolute -bottom-1 left-0 right-0 h-8 bg-slate-50 rounded-t-[3rem]" />
       </div>
 
-      {/* Shop Info Card */}
       <div className="px-6 -mt-16 relative z-10">
-        <div className="bg-white rounded-[2.5rem] p-6 shadow-xl shadow-slate-200/50 border border-white">
+        <div className="bg-white rounded-[2.5rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-white/50 backdrop-blur-sm">
           <div className="flex justify-between items-start">
-            {/* Left Side: Name and Rating */}
-            <div className="space-y-2">
-              <h1 className="text-3xl font-black tracking-tight text-slate-900 leading-none">
-                {shop.name}
-              </h1>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <h1 className="text-3xl font-black tracking-tight text-slate-900 leading-none">
+                  {shop.name}
+                </h1>
+              </div>
 
-              {/* Rating Section */}
               {ratingLoading ? (
-                <div className="inline-flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full border border-slate-100">
+                <div className="inline-flex items-center bg-slate-50 px-3 py-1 rounded-full">
                   <Loader2 className="w-3 h-3 animate-spin text-slate-400" />
                 </div>
               ) : (
                 shopRating && (
-                  <div className="inline-flex items-center gap-1.5 bg-amber-50/50 px-2.5 py-1 rounded-full border border-amber-100 text-sm font-black">
+                  <div className="inline-flex items-center gap-1.5 bg-amber-50/50 px-3 py-1 rounded-full border border-amber-100/50">
                     <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    <span className="text-slate-700">
+                    <span className="text-md font-black text-slate-700">
                       {shopRating.averageRating.toFixed(1)}
                     </span>
-                    <span className="text-slate-400">
-                      ({shopRating.totalRatings})
+                    <span className="text-sm font-bold text-slate-400 ml-0.5">
+                      ({shopRating.totalRatings} lượt đánh giá)
                     </span>
                   </div>
                 )
               )}
             </div>
 
-            {/* Right Side: Logo */}
-            {shop.logoUrl ? (
-              <img
-                src={shop.logoUrl}
-                className="w-16 h-16 rounded-full object-cover border-2 border-slate-50 shadow-sm shrink-0"
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-full border-2 border-slate-50 shadow-sm bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center shrink-0">
-                <span className="text-xl font-bold text-white uppercase">
-                  {shop.name?.[0] || "U"}
-                </span>
-              </div>
-            )}
+            <div className="relative shrink-0">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#950101] to-[#FFCFE9] rounded-full blur-md opacity-20 animate-pulse" />
+              {shop.logoUrl ? (
+                <img
+                  src={shop.logoUrl}
+                  alt="logo"
+                  className="relative w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm"
+                />
+              ) : (
+                <div className="relative w-20 h-20 rounded-full border-4 border-white shadow-sm bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                  <span className="text-2xl font-black text-white uppercase">
+                    {shop.name?.[0] || "U"}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Description */}
-          <p className="text-sm text-slate-400 leading-relaxed italic border-t border-slate-50">
-            "{shop.description || "Welcome to our studio."}"
-          </p>
-        </div>
-      </div>
+          <div className="border-t border-slate-50 mb-6">
+            <p className="text-sm text-slate-500 leading-relaxed font-medium italic">
+              {shop.description
+                ? `"${shop.description}"`
+                : "Experience the art of luxury nail care."}
+            </p>
+          </div>
 
-      <div className="px-6 -mt-4 relative z-20">
-        <div className="flex gap-3">
           <Button
-            className="font-black tracking-tight uppercase rounded-[2rem] w-full"
             onClick={handleShopChat}
-            style={{
-              background:
-                "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
-              border: "none",
-            }}
+            className="w-full h-14 font-black tracking-widest uppercase rounded-full bg-gradient-to-r from-[#950101] via-[#D81B60] to-[#FFCFE9] hover:opacity-90 shadow-[0_10px_25px_rgba(216,27,96,0.2)] text-white border-none transition-all active:scale-[0.98]"
           >
-            <MessageCircle className="w-4 h-4 mr-2" />
-            Chat Now
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-12 w-12 rounded-[2rem] border border-pink-300 bg-white shadow-sm"
-          >
-            <Heart className="w-4 h-4 text-pink-500" />
+            <MessageCircle className="w-5 h-5 mr-3" />
+            Kết nối ngay
           </Button>
         </div>
       </div>
 
       <div className="px-4 mt-6">
-        <Card className="overflow-hidden border-0 shadow-lg">
+        <Card className="overflow-hidden border-0 shadow-lg rounded-3xl">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#ffcfe9] flex items-center justify-center">
@@ -263,10 +252,10 @@ const ShopDetailPage = () => {
               </div>
               <div className="flex-1">
                 <h3 className="font-black text-slate-900">
-                  Want something unique?
+                  Bạn muốn chất riêng?
                 </h3>
-                <p className="text-sm text-slate-500">
-                  Create your own custom nail design
+                <p className="text-sm text-slate-500 font-medium">
+                  Tự tạo mẫu móng thiết kế của riêng bạn
                 </p>
               </div>
               <Button
@@ -279,7 +268,7 @@ const ShopDetailPage = () => {
                   border: "none",
                 }}
               >
-                Customize
+                Thiết Kế Ngay
               </Button>
             </div>
           </CardContent>
@@ -294,8 +283,8 @@ const ShopDetailPage = () => {
             <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
               Lookbook
             </h2>
-            <p className="text-[10px] font-black text-[#950101] uppercase tracking-[0.2em] opacity-70">
-              Curated Inspirations
+            <p className="text-[10px] font-black text-[#950101] uppercase tracking-[0.2em] opacity-70 mt-2">
+              Các set Nail khả dụng
             </p>
           </div>
           {collections && (
@@ -310,7 +299,7 @@ const ShopDetailPage = () => {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[#950101] transition-colors" />
           <Input
             type="text"
-            placeholder="Search aesthetics (minimal, bold...)"
+            placeholder="Tìm kiếm set thích hợp ..."
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
             className="pl-11 pr-4 h-12 w-full bg-white border-none rounded-2xl shadow-xl shadow-[#950101]/5 focus-visible:ring-2 focus-visible:ring-[#FFCFE9] text-sm font-medium"
@@ -321,14 +310,14 @@ const ShopDetailPage = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-              Filter by Category
+              Lọc theo phân loại
             </h3>
             {activeFilterCount > 0 && (
               <button
                 onClick={clearFilters}
                 className="text-[10px] font-black text-[#950101] uppercase tracking-widest flex items-center gap-1 hover:opacity-70 transition-opacity"
               >
-                <X className="w-3 h-3" /> Reset
+                <X className="w-3 h-3" /> Làm mới
               </button>
             )}
           </div>
@@ -356,7 +345,7 @@ const ShopDetailPage = () => {
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-10 h-10 border-4 border-[#FFCFE9] border-t-[#950101] rounded-full animate-spin mb-4" />
             <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
-              Polishing the gallery...
+              Đang tìm ...
             </p>
           </div>
         ) : collections && collections.length > 0 ? (
@@ -374,22 +363,21 @@ const ShopDetailPage = () => {
             ))}
           </div>
         ) : (
-          /* Custom Design Call-to-Action for Empty State */
           <div className="bg-white rounded-[2.5rem] p-8 border border-dashed border-slate-200 text-center shadow-sm">
             <div className="w-16 h-16 bg-[#FFCFE9]/50 rounded-full flex items-center justify-center mx-auto mb-4">
               <Sparkles className="w-8 h-8 text-[#950101]" />
             </div>
             <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">
-              No match found
+              Không tìm thấy mẫu
             </h3>
             <p className="text-slate-400 text-sm mt-2 mb-6">
-              Can't find the perfect vibe? Design your own custom set.
+              Chưa tìm được "vibe" ưng ý? Hãy tự thiết kế bộ móng của riêng bạn.
             </p>
             <Button
               onClick={() => navigate(`/shop/${shopId}/custom`)}
               className="w-full h-12 rounded-2xl bg-[#950101] text-white font-black uppercase tracking-widest text-[10px]"
             >
-              <Wand2 className="w-4 h-4 mr-2" /> Start Custom Design
+              <Wand2 className="w-4 h-4 mr-2" /> Bắt Đầu Thiết Kế Riêng
             </Button>
           </div>
         )}

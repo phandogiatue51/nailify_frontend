@@ -25,7 +25,7 @@ export const LocationStep = ({
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-4">
           <MapPin className="w-5 h-5 text-primary" />
-          <h2 className="font-black uppercase tracking-tight">Select Location</h2>
+          <h2 className="font-black uppercase tracking-tight">Chọn địa điểm</h2>
           {isLoading && <Loader2 className="w-4 h-4 animate-spin ml-auto" />}
         </div>
 
@@ -34,7 +34,7 @@ export const LocationStep = ({
             <Loader2 className="w-6 h-6 animate-spin" />
           </div>
         ) : locations.length === 0 ? (
-          <p className="text-muted-foreground">No locations available</p>
+          <p className="text-muted-foreground">Không có địa điểm khả dụng</p>
         ) : (
           <LocationSelector
             locations={locations}

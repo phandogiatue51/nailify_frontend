@@ -16,6 +16,8 @@ import {
   Phone,
   MapPin,
   KeyRound,
+  CircleCheck,
+  CircleCheckBig,
 } from "lucide-react";
 import { VerificationBadge } from "@/components/badge/VerificationBadge";
 import { useProfile } from "@/hooks/useProfile";
@@ -93,7 +95,7 @@ const ProfilePage = () => {
 
           {profile.role === 4 && (
             <VerificationBadge
-              label="Artist"
+              label="Thợ Nail"
               verified={profile.artistVerified}
             />
           )}
@@ -116,12 +118,7 @@ const ProfilePage = () => {
               <CardContent className="p-0 divide-y divide-slate-100">
                 <DetailRow icon={Mail} label="Email" value={profile.email}>
                   {profile.isVerified ? (
-                    <Badge
-                      variant="default"
-                      className="bg-green-400 text-white text-xs flex items-center gap-1"
-                    >
-                      Đã xác minh
-                    </Badge>
+                    <CircleCheckBig className="w-5 h-5 text-green-500" />
                   ) : (
                     <VerificationButton
                       email={profile.email}

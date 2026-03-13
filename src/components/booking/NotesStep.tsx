@@ -10,7 +10,7 @@ export const NotesStep = ({ notes, setNotes }: NotesStepProps) => {
   return (
     <Card>
       <CardContent className="p-4">
-        <h2 className="font-semibold mb-4">Additional Notes</h2>
+        <h2 className="font-semibold mb-4">Ghi chú</h2>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}

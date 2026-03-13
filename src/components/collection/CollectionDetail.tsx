@@ -60,31 +60,33 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen">
       {collection.imageUrl ? (
         <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
           <img
             src={collection.imageUrl}
             alt={collection.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-3xl"
           />
         </div>
       ) : (
-        <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-          <span className="text-2xl font-bold text-white uppercase">
-            {collection.name?.[0] || "U"}
-          </span>
+        <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
+          <div className="w-full h-full object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+            <span className="text-4xl font-bold text-white uppercase">
+              {collection.name?.[0] || "U"}
+            </span>
+          </div>
         </div>
       )}
 
-      <div>
+      <div className="pt-4">
         <h2 className="text-2xl font-bold">{collection.name}</h2>
         {collection.description && (
           <p className="text-muted-foreground mt-2">{collection.description}</p>
         )}
       </div>
 
-      <div className="flex items-center gap-4 w-full">
+      <div className="flex items-center gap-4 w-full pt-4">
         {collection.estimatedDuration ? (
           <Badge variant="secondary" className="whitespace-nowrap text-md">
             {collection.estimatedDuration} phút
@@ -103,7 +105,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
       </div>
 
       {collection.tags && collection.tags.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2 pt-4">
           <h3 className="text-lg font-semibold">Phân loại</h3>
           <div className="flex flex-wrap gap-2">
             {collection.tags.map((tag) => (
@@ -114,21 +116,24 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           </div>
         </div>
       )}
-      <Button
-        onClick={handleBookNow}
-        className="font-black tracking-tight uppercase text-lg w-full rounded-[2rem]"
-        style={{
-          background:
-            "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
-          border: "none",
-        }}
-      >
-        Đặt lịch ngay
-      </Button>
+      <div className="pt-4 pb-6">
+        <Button
+          onClick={handleBookNow}
+          className="font-black tracking-tight uppercase text-lg w-full rounded-[2rem] h-14"
+          style={{
+            background:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+            border: "none",
+          }}
+        >
+          Đặt lịch ngay
+        </Button>
+      </div>
+
       <Separator />
 
       {/* Owner Info */}
-      <div className="pt-2">
+      <div className="pt-6">
         {isLoading ? (
           <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
         ) : owner ? (
@@ -148,7 +153,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
             )}
 
             <div>
-              <p className="text-md font-medium">
+              <p className="text-md font-bold">
                 {isArtist ? artist?.fullName : shop?.name}
               </p>
               {owner.address && (
@@ -167,7 +172,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
                   navigate(`/shop/${shop.id}`);
                 }
               }}
-              className="ml-auto"
+              className="ml-auto rounded-3xl border border-slate-400"
             >
               Xem trang {isArtist ? "thợ Nail" : "cửa hàng"}
             </Button>
@@ -180,7 +185,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
           <h3 className="text-lg font-semibold">
             Bộ sưu tập khác từ {isArtist ? "thợ Nail này" : "cửa hàng này"}
           </h3>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 pt-4">
             {collections
               .filter((c) => c.id !== collection.id)
               .map((c) => (

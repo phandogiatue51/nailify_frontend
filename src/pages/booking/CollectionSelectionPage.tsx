@@ -106,7 +106,7 @@ const CollectionSelectionPage = () => {
       bookingState.nailArtistId = user.nailArtistId;
       bookingState.type = "artist";
     }
-    
+
     navigate("/customer-book", { state: bookingState });
   };
 
@@ -125,7 +125,7 @@ const CollectionSelectionPage = () => {
             WebkitBackgroundClip: "text",
           }}
         >
-          Select Collection
+          Chọn set Nail
         </h1>
       </div>
 
@@ -146,7 +146,7 @@ const CollectionSelectionPage = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
               type="text"
-              placeholder="Search collections..."
+              placeholder="Tìm kiếm set nail ..."
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
               className="pl-9 pr-4 py-2 w-full bg-white border-slate-200 rounded-lg"
@@ -161,7 +161,7 @@ const CollectionSelectionPage = () => {
                   variant="outline"
                   className="bg-white border-slate-200 flex-1 justify-between"
                 >
-                  <span>Filter by tags</span>
+                  <span>Lọc theo phân loại</span>
                   {selectedTags.length > 0 && (
                     <Badge variant="secondary" className="ml-2">
                       {selectedTags.length}
@@ -232,10 +232,6 @@ const CollectionSelectionPage = () => {
           </div>
         ) : collections.length > 0 ? (
           <>
-            <p className="text-sm text-slate-500">
-              Found {collections.length} collection
-              {collections.length !== 1 ? "s" : ""}
-            </p>
             <div className="grid grid-cols-2 gap-3">
               {collections.map((collection) => (
                 <div
@@ -253,8 +249,8 @@ const CollectionSelectionPage = () => {
             <CardContent className="py-12 text-center">
               <p className="text-slate-500">
                 {activeFilterCount > 0
-                  ? "No collections match your filters"
-                  : "No collections available"}
+                  ? "Không có set nail phù hợp"
+                  : "Không có set nail"}
               </p>
             </CardContent>
           </Card>

@@ -85,7 +85,7 @@ const ConfirmBooking = () => {
 
   const handleConfirm = async () => {
     if (!selectedDate || !selectedTime) {
-      alert("Please go back and select date and time");
+      alert("Hãy quay lại trang trước và chọn ngày giờ");
       return;
     }
 
@@ -154,14 +154,13 @@ const ConfirmBooking = () => {
               WebkitBackgroundClip: "text",
             }}
           >
-            Review & Confirm Booking
+            Kiểm Tra & Xác Nhận Lịch Hẹn
           </h1>
         </div>
 
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center space-y-4">
             <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-            
           </div>
         </div>
       </div>
@@ -182,7 +181,7 @@ const ConfirmBooking = () => {
             WebkitBackgroundClip: "text",
           }}
         >
-          Review & Confirm Booking
+          Kiểm Tra & Xác Nhận Lịch Hẹn
         </h1>
       </div>
 
@@ -192,7 +191,7 @@ const ConfirmBooking = () => {
             <div className="flex items-center gap-2 mb-4">
               <Package className="w-5 h-5 text-primary" />
               <h2 className="font-black uppercase tracking-tight">
-                Selected Services
+                Dịch vụ đã chọn
               </h2>
             </div>
 
@@ -217,9 +216,7 @@ const ConfirmBooking = () => {
                       <h3 className="font-semibold">
                         {selectedCollection.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
-                        Collection
-                      </p>
+                      <p className="text-sm text-muted-foreground">Set Nail</p>
                     </div>
                   </div>
                 </div>
@@ -229,7 +226,7 @@ const ConfirmBooking = () => {
                 {selectedItems.map((item: any) => (
                   <div
                     key={item.id}
-                    className="flex justify-between py-2 border-b font-medium text-slate-900 tracking-tight"
+                    className="flex justify-between py-2 border-b text-md font-bold text-slate-500"
                   >
                     <span>{item.name}</span>
                     <span>{item.price?.toLocaleString()} đ</span>
@@ -237,7 +234,7 @@ const ConfirmBooking = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground">No services selected</p>
+              <p className="text-muted-foreground">Không có dịch vụ</p>
             )}
           </CardContent>
         </Card>
@@ -248,16 +245,16 @@ const ConfirmBooking = () => {
             <div className="flex items-center gap-2 mb-4">
               <Calendar className="w-5 h-5 text-primary" />
               <h2 className="font-black uppercase tracking-tight">
-                Date & Time
+                Ngày & Giờ
               </h2>
             </div>
-            <div className="space-y-2 font-medium text-slate-900 tracking-tighter text-md">
+            <div className="space-y-2 tracking-tighter text-md font-bold text-slate-500">
               <div className="flex justify-between">
-                <p>Date:</p>
+                <p>Ngày:</p>
                 <span>{selectedDate}</span>
               </div>
               <div className="flex justify-between">
-                <span>Time:</span>
+                <span>Giờ:</span>
                 <span>{selectedTime}</span>
               </div>
             </div>
@@ -273,7 +270,7 @@ const ConfirmBooking = () => {
                 <MapPin className="w-5 h-5 text-primary" />
               )}
               <h2 className="text-md font-black uppercase tracking-tight">
-                {isArtistBooking ? "Artist Info" : "Studio Location"}
+                {isArtistBooking ? "Thông tin thợ Nail" : "Thông tin cửa hàng"}
               </h2>
             </div>
 
@@ -284,7 +281,7 @@ const ConfirmBooking = () => {
                     {artist?.fullName}
                   </p>
                   <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                    {artist?.phone ?? "No phone available"}
+                    {artist?.phone ?? "Không có số điện thoại"}
                   </p>
                 </div>
               </div>
@@ -294,25 +291,25 @@ const ConfirmBooking = () => {
                   <h2 className="text-xl font-black text-slate-900 tracking-tighter uppercase">
                     {selectedLocationObj.shopName}
                   </h2>
-                  <div className="flex items-start gap-2 mt-2 text-slate-500">
-                    <p className="text-sm font-medium leading-tight">
+                  <div className="flex items-start gap-2 mt-2">
+                    <p className="text-md font-bold text-slate-500">
                       {selectedLocationObj.address}, {selectedLocationObj.city}
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-2">
+                <div className="grid grid-cols-2 gap-2 pt-2 text-center">
                   <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p className="text-[10px] font-black uppercase text-slate-400 mb-1">
-                      Opens
+                    <p className="text-sm font-black uppercase text-slate-400 mb-1">
+                      Mở cửa
                     </p>
                     <p className="text-sm font-bold text-slate-700">
                       {selectedLocationObj.openingTime}
                     </p>
                   </div>
                   <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p className="text-[10px] font-black uppercase text-slate-400 mb-1">
-                      Closes
+                    <p className="text-sm font-black uppercase text-slate-400 mb-1">
+                      Đóng cửa
                     </p>
                     <p className="text-sm font-bold text-slate-700">
                       {selectedLocationObj.closingTime}
@@ -329,7 +326,7 @@ const ConfirmBooking = () => {
             <div className="flex items-center gap-2 mb-4">
               <User className="w-5 h-5 text-primary" />
               <h2 className="text-md font-black uppercase tracking-tight">
-                {isCustomer ? "Your Information" : "Customer Information"}
+                {isCustomer ? "Thông tin của bạn" : "Thông tin khách hàng"}
               </h2>
             </div>
             <div className="flex items-start gap-4">
@@ -338,7 +335,7 @@ const ConfirmBooking = () => {
                   {profile?.fullName || customerName}
                 </p>
                 <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                  {profile?.phone || customerPhone || "No phone available"}
+                  {profile?.phone || customerPhone || ""}
                 </p>
                 <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
                   {profile?.address || customerAddress || ""}
@@ -352,9 +349,7 @@ const ConfirmBooking = () => {
         {notes && (
           <Card>
             <CardContent className="p-4">
-              <h2 className="font-black uppercase tracking-tight">
-                Additional Notes
-              </h2>
+              <h2 className="font-black uppercase tracking-tight">Ghi chú</h2>
               <p className="text-muted-foreground">{notes}</p>
             </CardContent>
           </Card>
@@ -365,20 +360,18 @@ const ConfirmBooking = () => {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-4">
               <CircleDollarSign className="w-5 h-5 text-primary" />
-              <h2 className="font-black uppercase tracking-tight">
-                Price Summary
-              </h2>
+              <h2 className="font-black uppercase tracking-tight">Tổng quan</h2>
             </div>
-            <div className="space-y-3 font-medium text-slate-900 tracking-tighter text-md">
+            <div className="space-y-3  tracking-tighter text-md  font-bold text-slate-500">
               <div className="flex justify-between items-center">
-                <span>Total Price:</span>
+                <span>Tổng giá tiền:</span>
                 <span className="text-2xl font-bold text-green-600">
                   {calculatedPrice.toLocaleString()} đ
                 </span>
               </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Estimated Duration:</span>
-                <span>{calculatedDuration} minutes</span>
+              <div className="flex justify-between text-muted-foreground">
+                <span>Thời gian dự kiến:</span>
+                <span>{calculatedDuration} phút</span>
               </div>
             </div>
           </CardContent>
@@ -403,7 +396,7 @@ const ConfirmBooking = () => {
           ) : (
             <>
               <Check className="w-5 h-5 mr-2" />
-              Confirm Booking
+              Xác nhận đặt lịch
             </>
           )}
         </Button>

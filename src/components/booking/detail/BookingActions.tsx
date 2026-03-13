@@ -144,7 +144,7 @@ export const BookingActions = ({
                   className="h-10 rounded-2xl border-red-400 text-red-400 hover:text-white hover:bg-red-400 font-black uppercase tracking-widest text-xs shadow-xl"
                 >
                   <XCircle size={20} />
-                  Hủy
+                  Hủy lịch hẹn
                 </Button>
               }
               {...statusConfig.cancel}
@@ -159,7 +159,7 @@ export const BookingActions = ({
                 }}
                 onClick={() => onReschedule?.(booking.id)}
               >
-                <Calendar className="w-4 h-4 mr-2" /> Reschedule
+                <Calendar className="w-4 h-4 mr-2" /> Dời lịch hẹn
               </Button>
             )}
           </>

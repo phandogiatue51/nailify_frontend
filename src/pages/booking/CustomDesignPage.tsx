@@ -90,7 +90,7 @@ export const CustomDesignPage = () => {
                   WebkitBackgroundClip: "text",
                 }}
               >
-                Custom Design
+                Mẫu thiết kế riêng
               </h1>
             </div>
           </div>
@@ -101,36 +101,20 @@ export const CustomDesignPage = () => {
           <div className="text-center space-y-4 max-w-md">
             <ShoppingBag className="w-16 h-16 text-slate-300 mx-auto" />
             <div>
-              <h2 className="text-xl font-bold mb-2">No services available</h2>
+              <h2 className="text-xl font-bold mb-2">
+                Chưa có mẫu thiết kế khả dụng
+              </h2>
               <p className="text-slate-500">
                 {shopId
-                  ? "This shop doesn't have any services available for custom design yet."
-                  : "This artist doesn't have any services available for custom design yet."}
+                  ? "Cửa hàng này chưa có mẫu thiết kế khả dụng."
+                  : "Thợ nail này chưa có mẫu thiết kế khả dụng."}
               </p>
             </div>
             <div className="space-y-2 pt-4">
               <Button onClick={() => navigate(-1)}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Go Back
+                Trở về
               </Button>
-              {shopId && (
-                <Button
-                  variant="outline"
-                  onClick={() => navigate(`/shop/${shopId}`)}
-                  className="w-full"
-                >
-                  View Shop Profile
-                </Button>
-              )}
-              {id && (
-                <Button
-                  variant="outline"
-                  onClick={() => navigate(`/artist/${id}`)}
-                  className="w-full"
-                >
-                  View Artist Profile
-                </Button>
-              )}
             </div>
           </div>
         </div>
@@ -159,22 +143,22 @@ export const CustomDesignPage = () => {
                 WebkitBackgroundClip: "text",
               }}
             >
-              Custom Design
+              Mẫu thiết kế riêng
             </h1>
             <p className="text-[10px] font-bold uppercase tracking-widest">
-              Tap to select services
+              Chọn mẫu thiết kế cho riêng bạn
             </p>
           </div>
         </div>
 
         <div className="flex justify-between items-center bg-slate-50 rounded-2xl p-3">
           <Badge className="bg-[#950101] text-white border-none font-black px-3 py-1 text-[10px] uppercase">
-            {selectedItems.length}{" "}
-            {selectedItems.length === 1 ? "Item" : "Items"}
+            {selectedItems.length}
+            {" thiết kế"}
           </Badge>
           <div className="flex flex-col items-end">
             <span className="text-[9px] font-black text-slate-400 uppercase leading-none">
-              Total
+              Tổng giá tiền
             </span>
             <span className="text-sm font-black text-slate-900">
               {selectedItems
@@ -230,7 +214,7 @@ export const CustomDesignPage = () => {
           <div className="text-center py-20 bg-white rounded-[3rem] border-2 border-dashed border-slate-100 mx-4">
             <ShoppingBag className="w-12 h-12 text-slate-200 mx-auto mb-4" />
             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-              No services found
+              Chưa có mẫu thiết kế khả dụng
             </p>
           </div>
         )}
@@ -257,13 +241,11 @@ export const CustomDesignPage = () => {
           )}
         >
           {selectedItems.length === 0 ? (
-            <span>Select to Continue</span>
+            <span>Chọn 1 mẫu để tiếp tục</span>
           ) : (
-            <div className="flex justify-between w-full items-center px-2">
-              <span>Continue Booking</span>
-              <div className="h-6 w-[1px] bg-white/20" />
-              <span className="flex items-center gap-1">
-                Next <ArrowRight className="w-3 h-3" />
+            <div className="flex justify-center w-full items-center px-2">
+              <span className="flex gap-1">
+                Tiếp theo <ArrowRight className="w-3 h-3" />
               </span>
             </div>
           )}

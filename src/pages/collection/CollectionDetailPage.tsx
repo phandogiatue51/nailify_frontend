@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useCustomerCollectionById } from "@/hooks/useCustomer";
 import CollectionDetail from "@/components/collection/CollectionDetail";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const CollectionDetailPage = () => {
@@ -39,10 +39,9 @@ const CollectionDetailPage = () => {
         <Button
           variant="outline"
           onClick={() => navigate(-1)}
-          className="group rounded-3xl border-slate-500 border-2"
+          className="group rounded-full mr-4 border-2 border-slate-400 hover:border-[#950101] transition-all px-3"
         >
-          <ArrowLeft className="mr-2 h-4 w-4  transition-transform group-hover:-translate-x-1" />
-          Trở về
+          <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
         </Button>
       </div>
 

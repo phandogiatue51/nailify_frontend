@@ -184,13 +184,6 @@ const ArtistDetailPage = () => {
           >
             <ChevronLeft className="h-5 w-5 text-slate-600 group-hover:text-[#950101] transition-transform" />
           </Button>
-          <Button
-            variant="secondary"
-            size="icon"
-            className="rounded-2xl bg-white/90 backdrop-blur"
-          >
-            <Share2 className="w-5 h-5 text-slate-900" />
-          </Button>
         </div>
 
         {/* Artist Info Overlay */}
@@ -239,14 +232,7 @@ const ArtistDetailPage = () => {
             }}
           >
             <MessageCircle className="w-4 h-4 mr-2" />
-            Chat Now
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-12 w-12 rounded-[2rem] border border-pink-300 bg-white shadow-sm"
-          >
-            <Heart className="w-4 h-4 text-pink-500" />
+            Kết nối ngay
           </Button>
         </div>
       </div>
@@ -262,21 +248,21 @@ const ArtistDetailPage = () => {
               </div>
               <div className="flex-1">
                 <h3 className="font-black text-slate-800 uppercase tracking-tighter text-sm">
-                  Unique Vision?
+                  Bạn có ý tưởng riêng?
                 </h3>
                 <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
-                  Request a custom design
+                  Yêu cầu thiết kế độc bản
                 </p>
               </div>
               <Button
                 onClick={() => navigate(`/artist/${id}/custom`)}
-                className="h-10 px-6 font-black tracking-widest uppercase text-[10px] rounded-xl text-white transition-all active:scale-95 shadow-md shadow-[#950101]/20 border-none"
+                className="h-10 px-6 font-black tracking-widest uppercase text-[10px] rounded-full text-white transition-all active:scale-95 shadow-md shadow-[#950101]/20 border-none"
                 style={{
                   background:
                     "linear-gradient(135deg, #950101 0%, #D81B60 100%)",
                 }}
               >
-                Request
+                Gửi Yêu Cầu
               </Button>
             </div>
           </CardContent>
@@ -290,7 +276,7 @@ const ArtistDetailPage = () => {
             </h2>
             {collections?.length > 0 && (
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                {collections.length} Masterpieces
+                {collections.length} set Nail
               </span>
             )}
           </div>
@@ -299,7 +285,7 @@ const ArtistDetailPage = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[#950101] transition-colors" />
             <Input
               type="text"
-              placeholder="Search styles..."
+              placeholder="Tìm kiếm set nail phù hợp ..."
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
               className="pl-11 pr-4 h-12 w-full bg-white border-none rounded-2xl shadow-xl shadow-[#950101]/5 focus-visible:ring-2 focus-visible:ring-[#FFCFE9] text-sm font-medium"
@@ -311,14 +297,14 @@ const ArtistDetailPage = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              Techniques & Styles
+              Phân loại
             </p>
             {activeFilterCount > 0 && (
               <button
                 onClick={clearFilters}
                 className="text-[10px] font-black text-[#950101] uppercase tracking-widest underline decoration-2 underline-offset-4"
               >
-                Reset
+                Làm mới
               </button>
             )}
           </div>
@@ -360,7 +346,6 @@ const ArtistDetailPage = () => {
             ))}
           </div>
         ) : (
-          /* Empty State for Artists */
           <Card className="border-dashed border-2 bg-white/50 rounded-[2rem]">
             <CardContent className="py-12 text-center">
               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 grayscale opacity-50">
@@ -368,19 +353,19 @@ const ArtistDetailPage = () => {
               </div>
               <h3 className="font-black text-slate-800 uppercase tracking-tight text-sm">
                 {activeFilterCount > 0
-                  ? "No matches found"
-                  : "Portfolio Under Construction"}
+                  ? "Không tìm thấy kết quả"
+                  : "Portfolio đang hoàn thiện"}
               </h3>
               <p className="text-[11px] font-medium text-slate-500 mt-2 mb-6 max-w-[200px] mx-auto leading-relaxed">
                 {activeFilterCount > 0
-                  ? "Try picking different styles or search terms."
-                  : `${artist.fullName.split(" ")[0]} is still curating their best work.`}
+                  ? "Hãy thử chọn phong cách khác hoặc từ khóa tìm kiếm khác."
+                  : `${artist.fullName.split(" ")[0]} đang tuyển chọn những tác phẩm tâm huyết nhất.`}
               </p>
               <Button
                 onClick={() => navigate(`/artist/${id}/custom`)}
                 className="w-full h-12 bg-[#950101] text-white rounded-xl font-black uppercase tracking-widest text-[10px]"
               >
-                <Wand2 className="w-4 h-4 mr-2" /> Book a Custom Set
+                <Wand2 className="w-4 h-4 mr-2" /> Bắt Đầu Thiết Kế Riêng
               </Button>
             </CardContent>
           </Card>

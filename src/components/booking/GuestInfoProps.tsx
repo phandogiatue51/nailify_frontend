@@ -34,7 +34,7 @@ export const GuestInfoForm = ({
     onSubmit,
     isSubmitting = false,
     onBack,
-    nextButtonText = "Continue to Collections"
+    nextButtonText = "Chọn set Nail"
 }: GuestInfoFormProps) => {
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -139,13 +139,12 @@ export const GuestInfoForm = ({
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
                                     <User className="w-4 h-4" />
-                                    Full Name
+                                    Họ và tên
                                 </label>
                                 <Input
                                     name="fullName"
                                     value={formData.fullName}
                                     onChange={handleChange}
-                                    placeholder="Enter guest full name"
                                     disabled={isSubmitting}
                                     className={cn(
                                         "h-12 rounded-xl border-2 bg-white",
@@ -162,13 +161,12 @@ export const GuestInfoForm = ({
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
                                     <Phone className="w-4 h-4" />
-                                    Phone Number
+                                    Số điện thoại
                                 </label>
                                 <Input
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    placeholder="Enter guest phone number"
                                     disabled={isSubmitting}
                                     className={cn(
                                         "h-12 rounded-xl border-2 bg-white",
@@ -186,13 +184,12 @@ export const GuestInfoForm = ({
                                 <div className="space-y-2">
                                     <label className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
                                         <MapPin className="w-4 h-4" />
-                                        Address <span className="text-red-500">*</span>
+                                        Địa chỉ <span className="text-red-500">*</span>
                                     </label>
                                     <Input
                                         name="address"
                                         value={formData.address}
                                         onChange={handleChange}
-                                        placeholder="Enter guest address for home service"
                                         disabled={isSubmitting}
                                         className={cn(
                                             "h-12 rounded-xl border-2 bg-white",
@@ -204,7 +201,7 @@ export const GuestInfoForm = ({
                                         <p className="text-xs text-red-500 mt-1">{errors.address}</p>
                                     )}
                                     <p className="text-xs text-slate-400 mt-1">
-                                        Artists provide home service, so address is required
+                                        Đối với thợ Nail, bắt buộc nhập địa chỉ khách hàng
                                     </p>
                                 </div>
                             )}
@@ -227,11 +224,11 @@ export const GuestInfoForm = ({
                         {isSubmitting ? (
                             <div className="flex items-center gap-2">
                                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                {mode === 'create' ? 'Creating...' : 'Updating...'}
+                                {mode === 'create' ? 'Tạo thông tin ...' : 'Cập nhật thông tin ...'}
                             </div>
                         ) : (
                             <>
-                                {mode === 'create' ? nextButtonText : 'Save Changes'}
+                                {mode === 'create' ? nextButtonText : 'Lưu thay đổi'}
                                 {mode === 'create' ? (
                                     <ArrowRight className="w-4 h-4 ml-2" />
                                 ) : (

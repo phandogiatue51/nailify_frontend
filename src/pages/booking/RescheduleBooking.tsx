@@ -152,7 +152,7 @@ const RescheduleBooking = () => {
               WebkitBackgroundClip: "text",
             }}
           >
-            Reschedule
+            Dời lịch hẹn
           </h1>
         </div>
       </div>
@@ -160,7 +160,7 @@ const RescheduleBooking = () => {
       <div className="p-4 space-y-6">
         <div className="rounded-[2rem] p-6 shadow-xl shadow-pink-100 bg-gradient-to-br from-[#950101] to-[#FFCFE9] text-white">
           <h3 className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">
-            Current Appointment
+            Lịch hẹn hiện tại
           </h3>
           <div className="flex justify-between items-end">
             <div>
@@ -168,7 +168,7 @@ const RescheduleBooking = () => {
                 {format(new Date(booking.scheduledStart), "MMM do  h:mm a")}
               </p>
               <p className="text-xs font-bold opacity-90 italic">
-                {booking.collectionName || "Custom Service"}
+                {booking.collectionName || "Mẫu thiết kế riêng"}
               </p>
             </div>
             <Calendar className="w-8 h-8 opacity-20" />
@@ -191,7 +191,7 @@ const RescheduleBooking = () => {
                 <Clock className="w-5 h-5 text-[#950101]" />
               </div>
               <h2 className="text-sm font-black uppercase tracking-tight text-slate-700">
-                Select New Time
+                Chọn giờ mới
               </h2>
             </div>
 
@@ -216,7 +216,7 @@ const RescheduleBooking = () => {
                     {slot}
                     {busy && (
                       <span className="text-[8px] uppercase absolute bottom-1">
-                        Busy
+                        Bận
                       </span>
                     )}
                   </button>
@@ -230,10 +230,6 @@ const RescheduleBooking = () => {
           selectedDateStr &&
           (booking.shopLocationId || booking.nailArtistId) && (
             <div className="mt-4 px-2">
-              <h3 className="text-xs font-black uppercase text-slate-400 mb-4 px-2 flex items-center gap-2">
-                <AlertCircle className="w-3 h-3" />
-                Existing Bookings
-              </h3>
               <ExistingBookings
                 bookings={conflicts}
                 isLoading={conflictsLoading}
@@ -251,7 +247,7 @@ const RescheduleBooking = () => {
             onClick={() => navigate(-1)}
             className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs border-slate-200 text-slate-400"
           >
-            Cancel
+            Hủy
           </Button>
           <Button
             onClick={handleReschedule}
@@ -263,7 +259,7 @@ const RescheduleBooking = () => {
             }}
             className="flex-[2] h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-2xl transition-all active:scale-95 disabled:opacity-50"
           >
-            {isSubmitting ? "Updating..." : "Confirm Reschedule"}
+            {isSubmitting ? "Cập nhật ..." : "Xác nhận dời lịch"}
           </Button>
         </div>
       </div>

@@ -1,32 +1,32 @@
 export const getStatusConfig = (status: number, isShopOwner: boolean) => {
   const configs = {
     approve: {
-      title: "Approve Booking?",
+      title: "Xác nhận lịch hẹn?",
       description:
-        "This will approve the customer's booking request. The customer will be notified.",
-      confirmText: "Yes, approve this booking",
+        "Hành động này sẽ xác nhận lịch đặt của khách hàng. Hệ thống sẽ gửi thông báo cho khách.",
+      confirmText: "Xác nhận lịch hẹn",
       variant: "success" as const,
     },
     reject: {
-      title: "Reject Booking?",
+      title: "Từ chối lịch hẹn?",
       description:
-        "This will reject the customer's booking request. The customer will be notified and this action cannot be undone.",
-      confirmText: "Yes, reject this booking",
+        "Lịch đặt này sẽ bị từ chối và không thể hoàn tác. Khách hàng sẽ nhận được thông báo.",
+      confirmText: "Từ chối lịch này",
       variant: "destructive" as const,
     },
     cancel: {
-      title: isShopOwner ? "Cancel Booking?" : "Cancel Your Booking?",
+      title: isShopOwner ? "Hủy lịch hẹn này?" : "Hủy lịch hẹn của bạn?",
       description: isShopOwner
-        ? "This will cancel the approved appointment. The customer will be notified and this action cannot be undone."
-        : "This will cancel your booking request. Your time slot will be released and this action cannot be undone.",
-      confirmText: "Yes, cancel this booking",
+        ? "Lịch hẹn đã xác nhận sẽ bị hủy. Khách hàng sẽ được thông báo và không thể hoàn tác."
+        : "Yêu cầu đặt lịch của bạn sẽ bị hủy. Khung giờ này sẽ được mở lại cho người khác.",
+      confirmText: "Xác nhận hủy lịch",
       variant: "destructive" as const,
     },
     complete: {
-      title: "Mark as Completed?",
+      title: "Hoàn thành dịch vụ?",
       description:
-        "This will mark the booking as completed. The customer will be notified.",
-      confirmText: "Yes, mark Complete this booking",
+        "Đánh dấu lịch hẹn này là đã hoàn thành. Khách hàng sẽ nhận được thông báo kết thúc.",
+      confirmText: "Xác nhận hoàn thành",
       variant: "success" as const,
     },
   };

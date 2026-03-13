@@ -33,7 +33,7 @@ export const ServiceSummary = ({
         <div className="flex items-center gap-2 mb-4">
           <Package className="w-5 h-5 text-primary" />
           <h2 className="font-black uppercase tracking-tight">
-            Selected Services
+            Dịch vụ đã chọn
           </h2>
         </div>
 
@@ -57,7 +57,7 @@ export const ServiceSummary = ({
                 )}
                 <div>
                   <h3 className="font-semibold">{selectedCollection.name}</h3>
-                  <p className="text-sm text-muted-foreground">Collection</p>
+                  <p className="text-sm text-muted-foreground">Set Nail</p>
                 </div>
               </div>
 
@@ -68,7 +68,7 @@ export const ServiceSummary = ({
               )}
 
               <div className="flex justify-between text-sm">
-                <span>Estimated Price:</span>
+                <span>Giá tiền:</span>
                 <span className="font-semibold">
                   {localTotalPrice.toLocaleString()} đ
                 </span>
@@ -76,8 +76,8 @@ export const ServiceSummary = ({
 
               {localTotalDuration > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span>Estimated Duration:</span>
-                  <span>{localTotalDuration} minutes</span>
+                  <span>Thời gian dự kiến:</span>
+                  <span>{localTotalDuration} phút</span>
                 </div>
               )}
             </div>
@@ -94,15 +94,15 @@ export const ServiceSummary = ({
               </div>
             ))}
             <div className="flex justify-between font-black pt-2 text-lg text-green-400">
-              <span>Total</span>
+              <span>Tổng giá tiền</span>
               <span>{localTotalPrice.toLocaleString()} đ</span>
             </div>
             <div className="text-sm text-muted-foreground pt-1">
-              Duration: {localTotalDuration} minutes
+              Tổng thời gian dự kiến: {localTotalDuration} phút
             </div>
           </div>
         ) : (
-          <p className="text-muted-foreground">No services selected</p>
+          <p className="text-muted-foreground">Không có dịch vụ</p>
         )}
       </CardContent>
     </Card>

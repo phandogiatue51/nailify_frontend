@@ -19,12 +19,12 @@ export const PriceSummaryCard = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div className="space-y-2">
           <h3 className="text-xl font-black text-slate-900">
-            {collectionName || "Custom Service"}
+            {collectionName || "Mẫu thiết kế riêng"}
           </h3>
           <div className="flex items-center gap-2">
             <BookingStatusBadge status={status} />
             <p className="text-xs font-bold text-slate-400">
-              {durationMinutes} min
+              {durationMinutes} phút
             </p>
           </div>
         </div>

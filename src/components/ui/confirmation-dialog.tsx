@@ -27,23 +27,25 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   trigger,
   title,
   description,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  confirmText = "Xác nhận",
+  cancelText = "Hủy",
   onConfirm,
   onCancel,
   variant = "default",
   isLoading = false,
 }) => {
   const variantClasses = {
-    default: "bg-blue-500 hover:bg-blue-600",
-    destructive: "bg-red-500 hover:bg-red-600",
-    success: "bg-green-500 hover:bg-green-600",
+    default: "bg-blue-400 hover:bg-blue-400",
+    destructive:
+      "border-red-400 bg-white border border-2 text-red-400 hover:text-white hover:bg-red-400 ",
+    success:
+      "border-green-400 bg-white border border-2 text-green-400 hover:text-white hover:bg-green-400 ",
   };
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent className="rounded-[2rem] border-none">
+      <AlertDialogContent className="w-[350px] rounded-[2rem] border-none">
         <AlertDialogHeader>
           <AlertDialogTitle className="font-black">{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -51,14 +53,14 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
         <AlertDialogFooter>
           <AlertDialogCancel
             onClick={onCancel}
-            className="rounded-xl font-bold"
+            className="rounded-full font-bold"
           >
             {cancelText}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             disabled={isLoading}
-            className={`rounded-xl font-bold ${variantClasses[variant]}`}
+            className={`rounded-full font-bold ${variantClasses[variant]}`}
           >
             {isLoading ? "Processing..." : confirmText}
           </AlertDialogAction>

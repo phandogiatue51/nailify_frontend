@@ -37,8 +37,8 @@ export const ExistingBookings = ({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between px-1">
-        <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          {isShopOwner ? "Schedule Conflict Check" : "Availability Note"}
+        <h3 className="text-xs font-black uppercase text-slate-400 mb-2 px-2">
+          Các lịch hẹn đang tồn tại
         </h3>
       </div>
 
@@ -74,7 +74,7 @@ export const ExistingBookings = ({
                   {booking.customerName || "Busy"}
                 </p>
                 <p className="text-[9px] font-bold text-amber-600/70">
-                  {booking.durationMinutes}m
+                  {booking.durationMinutes} phút
                 </p>
               </div>
             ) : (
@@ -82,7 +82,7 @@ export const ExistingBookings = ({
                 variant="outline"
                 className="text-[9px] uppercase border-slate-300 text-slate-500 font-black"
               >
-                Slot Taken
+                Slot bận
               </Badge>
             )}
           </div>

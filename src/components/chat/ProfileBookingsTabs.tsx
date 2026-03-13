@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MobilePagination } from "../ui/pagination-mobile";
 import { ProfileBookingsTabsProps } from "@/types/props";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 export default function ProfileBookingsTabs({
   profileId,
   shopId,
@@ -166,11 +167,8 @@ export default function ProfileBookingsTabs({
 
   if (bookingsLoading) {
     return (
-      <div className="flex flex-col items-center py-12 space-y-3">
-        <div className="w-10 h-10 border-4 border-[#FFCFE9] border-t-[#950101] rounded-full animate-spin" />
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-          Loading Records...
-        </p>
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -179,7 +177,7 @@ export default function ProfileBookingsTabs({
     return (
       <div className="bg-white rounded-[2rem] p-10 text-center border-2 border-dashed border-slate-100">
         <p className="text-slate-400 font-bold text-sm">
-          No bookings found yet.
+          Người dùng này không có lịch hẹn với cửa hàng của bạn
         </p>
       </div>
     );
@@ -188,12 +186,14 @@ export default function ProfileBookingsTabs({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-2">
+        <span className="w-2 h-6 bg-[#950101] rounded-full" />
         <h2 className="font-black text-lg text-slate-800 uppercase tracking-tight flex items-center gap-2">
-          <span className="w-2 h-6 bg-[#950101] rounded-full" />
-          {shopId ? "Shop History" : "Visits"}
+          {shopId
+            ? "Lịch sử đặt lịch với cửa hàng"
+            : "Lịch sử đặt lịch với bạn"}
         </h2>
         <span className="text-[10px] font-black bg-[#950101] text-white px-2 py-1 rounded-lg">
-          {bookings.length} TOTAL
+          {bookings.length} lượt đặt
         </span>
       </div>
 
@@ -205,12 +205,12 @@ export default function ProfileBookingsTabs({
       >
         <div className="overflow-x-auto no-scrollbar -mx-4 px-4">
           <TabsList className="flex bg-transparent w-max gap-2 h-auto p-0">
-            <TabTrigger value="all" label="All" />
-            <TabTrigger value="pending" label="Pending" />
-            <TabTrigger value="approved" label="Approved" />
-            <TabTrigger value="rejected" label="Rejected" />
-            <TabTrigger value="completed" label="Completed" />
-            <TabTrigger value="cancelled" label="Cancelled" />
+            <TabTrigger value="all" label="Tất cả" />
+            <TabTrigger value="pending" label="Đang chờ xác nhận" />
+            <TabTrigger value="approved" label="Đã xác nhận" />
+            <TabTrigger value="rejected" label="Đã từ chối" />
+            <TabTrigger value="completed" label="Đã hoàn thành" />
+            <TabTrigger value="cancelled" label="Đã hũy" />
           </TabsList>
         </div>
         <div className="mt-4">

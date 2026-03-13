@@ -84,7 +84,6 @@ const MyNailArtistPage = () => {
 
           <TabsContent value="services">
             <ArtistServicesTab
-              groupedItems={groupedItems}
               serviceItems={serviceItems}
               isLoading={itemsLoading}
               onDelete={handleDeleteItem}

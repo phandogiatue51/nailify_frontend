@@ -84,7 +84,7 @@ const CustomerBookingPage = () => {
               WebkitBackgroundClip: "text",
             }}
           >
-            {isArtistBooking ? "Book with Artist" : "Book Appointment"}
+            {isArtistBooking ? "Đặt lịch với thợ Nail" : "Đặt lịch với cửa hàng"}
           </h1>
         </div>
 
@@ -131,7 +131,7 @@ const CustomerBookingPage = () => {
                 }}
                 className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
               >
-                Next: Select Date & Time
+                Tiếp theo: Chọn ngày & giờ
               </Button>
             </div>
           </div>
