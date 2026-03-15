@@ -37,19 +37,18 @@ const ResetPassword = () => {
       setError("Invalid reset link. No token found.");
     }
   }, [token]);
-
   const validatePassword = (password: string) => {
     if (password.length < 8) {
-      return "Password must be at least 8 characters long";
+      return "Mật khẩu phải có tối thiểu 8 ký tự";
     }
     if (!/[A-Z]/.test(password)) {
-      return "Password must contain at least one uppercase letter";
+      return "Mật khẩu phải chứa ít nhất một chữ cái viết hoa";
     }
     if (!/[a-z]/.test(password)) {
-      return "Password must contain at least one lowercase letter";
+      return "Mật khẩu phải chứa ít nhất một chữ cái viết thường";
     }
     if (!/\d/.test(password)) {
-      return "Password must contain at least one number";
+      return "Mật khẩu phải chứa ít nhất một chữ số";
     }
     return "";
   };
@@ -126,29 +125,34 @@ const ResetPassword = () => {
             <div className="flex justify-center mb-4">
               <XCircle className="h-12 w-12 text-red-500" />
             </div>
-            <CardTitle className="text-2xl">Invalid Reset Link</CardTitle>
-            <CardDescription>
-              This password reset link has expired or is invalid.
+            <CardTitle className="text-2xl font-black uppercase tracking-tight">
+              Link Không Hợp Lệ
+            </CardTitle>
+            <CardDescription className="font-medium">
+              Đường dẫn đặt lại mật khẩu đã hết hạn hoặc không còn hiệu lực.
             </CardDescription>
           </CardHeader>
 
           <CardContent className="text-center">
-            <p className="text-muted-foreground mb-4">
-              Password reset links are valid for 30 minutes. Please request a
-              new one.
+            <p className="text-muted-foreground text-sm">
+              Mã đặt lại mật khẩu chỉ có hiệu lực trong vòng 30 phút. Vui lòng
+              gửi lại yêu cầu mới để tiếp tục.
             </p>
           </CardContent>
 
           <CardFooter className="flex flex-col gap-3">
-            <Button onClick={handleRequestNewLink} className="w-full">
-              Request New Reset Link
+            <Button
+              onClick={handleRequestNewLink}
+              className="w-full bg-[#950101] hover:bg-[#D81B60] font-black uppercase tracking-widest text-xs h-12 rounded-xl"
+            >
+              Gửi Lại Yêu Cầu Mới
             </Button>
             <Button
               onClick={handleGoToLogin}
               variant="outline"
-              className="w-full"
+              className="w-full font-bold uppercase tracking-widest text-[10px] h-10 rounded-xl"
             >
-              Back to Login
+              Quay Lại Đăng Nhập
             </Button>
           </CardFooter>
         </Card>
@@ -165,21 +169,26 @@ const ResetPassword = () => {
             <div className="flex justify-center mb-4">
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
-            <CardTitle className="text-2xl">Password Reset!</CardTitle>
-            <CardDescription>
-              Your password has been successfully reset.
+            <CardTitle className="text-2xl font-black uppercase tracking-tight">
+              Đã Đặt Lại Mật Khẩu!
+            </CardTitle>
+            <CardDescription className="font-medium">
+              Mật khẩu của bạn đã được thay đổi thành công.
             </CardDescription>
           </CardHeader>
 
           <CardContent className="text-center">
-            <p className="text-muted-foreground">
-              Redirecting to login page in a few seconds...
+            <p className="text-muted-foreground text-sm">
+              Đang chuyển hướng về trang đăng nhập trong giây lát...
             </p>
           </CardContent>
 
           <CardFooter className="flex flex-col gap-3">
-            <Button onClick={handleGoToLogin} className="w-full">
-              Go to Login Now
+            <Button
+              onClick={handleGoToLogin}
+              className="w-full bg-[#950101] hover:bg-[#D81B60] font-black uppercase tracking-widest text-xs h-12 rounded-xl"
+            >
+              Đăng Nhập Ngay
             </Button>
           </CardFooter>
         </Card>
@@ -196,21 +205,22 @@ const ResetPassword = () => {
             <Lock className="h-12 w-12 text-blue-500" />
           </div>
 
-          <CardTitle className="text-2xl text-center">Reset Password</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            Đặt Lại Mật Khẩu
+          </CardTitle>
           <CardDescription className="text-center">
-            Enter your new password below
+            Vui lòng nhập mật khẩu mới của bạn bên dưới
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
+              <Label htmlFor="newPassword">Mật khẩu mới</Label>
               <div className="relative">
                 <Input
                   id="newPassword"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter new password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   disabled={isSubmitting}
@@ -231,14 +241,10 @@ const ResetPassword = () => {
                   )}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Must be at least 8 characters with uppercase, lowercase, and
-                number
-              </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -272,8 +278,8 @@ const ResetPassword = () => {
             )}
 
             <div className="rounded-lg bg-muted p-4">
-              <h4 className="font-semibold text-sm mb-2">
-                Password Requirements
+              <h4 className="font-bold text-sm mb-2 uppercase tracking-wide">
+                Yêu cầu mật khẩu
               </h4>
               <ul className="text-sm space-y-1 text-muted-foreground">
                 <li
@@ -281,32 +287,32 @@ const ResetPassword = () => {
                 >
                   <div
                     className={`h-2 w-2 rounded-full ${newPassword.length >= 8 ? "bg-green-500" : "bg-gray-300"}`}
-                  ></div>
-                  <span>At least 8 characters</span>
+                  />
+                  <span>Tối thiểu 8 ký tự</span>
                 </li>
                 <li
                   className={`flex items-center gap-2 ${/[A-Z]/.test(newPassword) ? "text-green-600" : ""}`}
                 >
                   <div
                     className={`h-2 w-2 rounded-full ${/[A-Z]/.test(newPassword) ? "bg-green-500" : "bg-gray-300"}`}
-                  ></div>
-                  <span>One uppercase letter (A-Z)</span>
+                  />
+                  <span>Một chữ cái viết hoa</span>
                 </li>
                 <li
                   className={`flex items-center gap-2 ${/[a-z]/.test(newPassword) ? "text-green-600" : ""}`}
                 >
                   <div
                     className={`h-2 w-2 rounded-full ${/[a-z]/.test(newPassword) ? "bg-green-500" : "bg-gray-300"}`}
-                  ></div>
-                  <span>One lowercase letter (a-z)</span>
+                  />
+                  <span>Một chữ cái viết thường</span>
                 </li>
                 <li
                   className={`flex items-center gap-2 ${/\d/.test(newPassword) ? "text-green-600" : ""}`}
                 >
                   <div
                     className={`h-2 w-2 rounded-full ${/\d/.test(newPassword) ? "bg-green-500" : "bg-gray-300"}`}
-                  ></div>
-                  <span>One number (0-9)</span>
+                  />
+                  <span>Một chữ số (0-9)</span>
                 </li>
               </ul>
             </div>
@@ -324,7 +330,7 @@ const ResetPassword = () => {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               </>
             ) : (
-              "Reset Password"
+              "Đặt lại mật khẩu"
             )}
           </Button>
 
@@ -334,7 +340,7 @@ const ResetPassword = () => {
             className="w-full"
             disabled={isSubmitting}
           >
-            Request New Reset Link
+            Gửi lại link yêu cầu mới
           </Button>
         </CardFooter>
       </Card>

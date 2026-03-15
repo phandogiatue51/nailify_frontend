@@ -6,7 +6,7 @@ import { useBookings } from "@/hooks/useBookings";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import QuickStats from "@/components/QuickStats";
-import { Calendar, CheckCircle } from "lucide-react";
+import { Calendar, ChartLine, CheckCircle } from "lucide-react";
 import {
   Loader2,
   User,
@@ -38,7 +38,7 @@ export const StaffDashboardPage = () => {
 
   return (
     <div>
-      <Header title="Nailify"/>
+      <Header title="Nailify" />
 
       <div className="min-h-screen bg-slate-50/50 px-6 pt-8">
         <div className="flex items-center justify-between mb-6">
@@ -61,7 +61,7 @@ export const StaffDashboardPage = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">
-                Welcome back,
+                Chào mừng trở lại,
               </p>
               <h1 className="text-xl font-bold text-slate-900 leading-tight">
                 {currentStaff?.fullName || "Staff Member"}
@@ -78,21 +78,33 @@ export const StaffDashboardPage = () => {
           />
         </div>
 
-        {/* If staff have bookings */}
-        <div className="flex items-center justify-between mb-4 px-1">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-            Today's Appointments
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">
+            Quản lý cửa hàng
           </h3>
-          {bookings && bookings.length > 0 && (
-            <Button
-              variant="link"
-              size="sm"
-              className="text-primary font-bold"
-              onClick={() => navigate("/staff/bookings")}
-            >
-              See All
-            </Button>
-          )}
+
+          <button
+            onClick={() => navigate("/shop-location-insight")}
+            className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                <ChartLine className="w-6 h-6 text-pink-500 group-hover:text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Hiệu suất
+                </p>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {/* If staff have bookings */}
+        <div className="flex items-center justify-between mb-4 px-1 mt-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+            Lịch hẹn hôm nay
+          </h3>
         </div>
 
         <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden">
@@ -119,7 +131,7 @@ export const StaffDashboardPage = () => {
               ))
             ) : (
               <div className="p-8 text-center text-slate-400 text-sm">
-                No appointments scheduled for today.
+                Không có lịch hẹn hôm nay
               </div>
             )}
           </CardContent>
@@ -134,7 +146,7 @@ export const StaffDashboardPage = () => {
           }}
           onClick={() => navigate("/booking/guest")}
         >
-          Book an appointment
+          Đặt lịch cho khách
         </Button>
       </div>
     </div>

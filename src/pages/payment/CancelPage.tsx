@@ -22,9 +22,7 @@ export const CancelPage = () => {
       }
 
       try {
-        console.log(`Cancelling invoice ${orderCode}...`);
         await invoiceAPI.cancel(parseInt(orderCode));
-        console.log(`Invoice ${orderCode} cancelled successfully`);
         setError(null);
       } catch (error) {
         console.error("Failed to cancel invoice:", error);

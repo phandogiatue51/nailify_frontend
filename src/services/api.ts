@@ -10,6 +10,7 @@ import {
   RatingFilterDto,
   BlogPostFilterDto,
   InvoiceFilterDto,
+  InsightFilters,
 } from "@/types/filter";
 import { BookRateStats, ChartPoint, FourWidgetDto } from "@/types/database";
 
@@ -925,6 +926,39 @@ export const checkoutAPI = {
       method: "POST",
     }),
 };
+
+export const insightAPI = {
+  customer: () => apiRequest(`/Insight/customer`),
+
+  shop: (filterParams?: InsightFilters) => {
+    const queryString = filterParams ? buildQuery(filterParams) : '';
+    const url = queryString ? `/Insight/shop?${queryString}` : "/Insight/shop";
+    return apiRequest(url);
+  },
+
+  artist: (filterParams?: InsightFilters) => {
+    const queryString = filterParams ? buildQuery(filterParams) : '';
+    const url = queryString ? `/Insight/artist?${queryString}` : "/Insight/artist";
+    return apiRequest(url);
+  },
+
+  shopLocation: (id: string, filterParams?: InsightFilters) => {
+    const queryString = filterParams ? buildQuery(filterParams) : '';
+    const url = queryString
+      ? `/Insight/shopLocation/${id}?${queryString}`
+      : `/Insight/shopLocation/${id}`;
+    return apiRequest(url);
+  },
+
+  shopLocationAuth: (filterParams?: InsightFilters) => {
+    const queryString = filterParams ? buildQuery(filterParams) : '';
+    const url = queryString
+      ? `/Insight/shopLocation/auth?${queryString}`
+      : "/Insight/shopLocation/auth";
+    return apiRequest(url);
+  },
+};
+
 
 // In api.ts
 export const buildQuery = (params?: Record<string, any>): string => {

@@ -83,6 +83,10 @@ import MyInvoicePage from "./pages/invoice/MyInvoicePage";
 import { InvoiceDetailPage } from "./components/invoice/InvoiceDetailPage";
 import { ConfirmSubscription } from "./pages/subscription/ConfirmSubscription";
 import RatingDetail from "./components/admin/ratings/RatingDetail";
+import CustomerInsight from "./pages/insight/CustomerInsight";
+import ArtistInsights from "./pages/insight/ArtistInsights";
+import ShopInsights from "./pages/insight/ShopInsight";
+import ShopLocationInsights from "./pages/insight/ShopLocationInsights";
 
 export const router = createBrowserRouter(
   [
@@ -125,6 +129,23 @@ export const router = createBrowserRouter(
         {
           path: "invoices/:id",
           element: withMobileLayout(<InvoiceDetailPage />),
+        },
+
+        {
+          path: "customer-insight",
+          element: withMobileLayout(<CustomerInsight />),
+        },
+        {
+          path: "artist-insight",
+          element: withMobileLayout(<ArtistInsights />),
+        },
+        {
+          path: "shop-insight",
+          element: withMobileLayout(<ShopInsights />),
+        },
+        {
+          path: "shop-location-insight",
+          element: withMobileLayout(<ShopLocationInsights />),
         },
 
         {

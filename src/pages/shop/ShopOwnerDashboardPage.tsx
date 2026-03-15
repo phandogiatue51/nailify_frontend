@@ -3,7 +3,18 @@ import { useShop } from "@/hooks/useShop";
 import { useBookings } from "@/hooks/useBookings";
 import QuickStats from "@/components/QuickStats";
 import { Button } from "@/components/ui/button";
-import { Loader2, Store, Sparkles, ChevronRight, Users, HeartHandshake, Globe, Gem, Wallet } from "lucide-react";
+import {
+  Loader2,
+  Store,
+  Sparkles,
+  ChevronRight,
+  Users,
+  HeartHandshake,
+  Globe,
+  Gem,
+  Wallet,
+  ChartLine,
+} from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 import Header from "@/components/ui/header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,7 +39,7 @@ const ShopOwnerDashboardPage = () => {
   if (!myShop) {
     return (
       <div>
-        <Header title="Nailify"/>
+        <Header title="Nailify" />
 
         <div className="p-8 flex flex-col items-center justify-center min-h-[80vh] text-center space-y-6">
           <div className="w-24 h-24 bg-slate-50 rounded-[3rem] flex items-center justify-center shadow-inner">
@@ -56,7 +67,7 @@ const ShopOwnerDashboardPage = () => {
 
   return (
     <div>
-      <Header title="Nailify"/>
+      <Header title="Nailify" />
 
       <div className="p-6 space-y-8 bg-slate-50/30 min-h-screen">
         {/* Header Section */}
@@ -177,6 +188,21 @@ const ShopOwnerDashboardPage = () => {
               </div>
             </button>
           </div>
+          <button
+            onClick={() => navigate("/shop-insight")}
+            className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                <ChartLine className="w-6 h-6 text-pink-500 group-hover:text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Hiệu suất
+                </p>
+              </div>
+            </div>
+          </button>
         </div>
 
         <div className="flex items-center justify-between">

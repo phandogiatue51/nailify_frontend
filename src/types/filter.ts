@@ -32,14 +32,14 @@ export enum SubscriptionTier {
   Free,
   Basic,
   Premium,
-  Business
+  Business,
 }
 
 export enum InvoiceStatus {
   Pending,
   Paid,
   Overdue,
-  Cancelled
+  Cancelled,
 }
 
 export interface ProfileFilter {
@@ -118,4 +118,12 @@ export interface InvoiceFilterDto {
   tier?: SubscriptionTier;
   status?: InvoiceStatus;
   orderCode?: number;
+}
+
+export interface InsightFilters {
+  shopLocationId?: string;
+  startDate?: string;
+  endDate?: string;
+  thisWeek?: boolean;
+  thisMonth?: boolean;
 }

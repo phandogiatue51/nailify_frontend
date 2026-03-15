@@ -14,7 +14,7 @@ export const RatingCard = ({
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400">
           <Star className="w-4 h-4 text-[#FFC988] " />
-          Client Review
+          Đánh giá từ khách hàng
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -42,7 +42,7 @@ export const RatingCard = ({
           </div>
         ) : (
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 italic">
-            No written feedback provided.
+            Không có bình luận từ đánh giá
           </p>
         )}
       </CardContent>

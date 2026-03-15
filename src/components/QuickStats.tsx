@@ -137,25 +137,22 @@ const QuickStats = ({
           )}
         >
           <CardContent className="p-5">
-            {/* Top Row: Icon (Left) and Label (Right) */}
-            <div className="flex items-center justify-between mb-4">
-              <div className={cn("p-2 rounded-xl shrink-0", item.bg)}>
-                <item.icon className={cn("w-4 h-4", item.color)} />
+            <div className="flex flex-col h-full ">
+              <div className="flex justify-center items-center">
+                <div className={cn("p-2 rounded-xl shrink-0", item.bg)}>
+                  <item.icon className={cn("w-4 h-4", item.color)} />
+                </div>
+                <span className="text-[10px] ml-2 font-black uppercase tracking-[0.15em] text-slate-400">
+                  {item.label}
+                </span>
               </div>
 
-              <span className="text-[13px] font-black uppercase tracking-widest text-slate-400">
-                {item.label}
-              </span>
-            </div>
-
-            {/* Value Section */}
-            <div className="space-y-1">
-              <p className="text-2xl font-black text-slate-900 tracking-tighter text-center">
-                {item.value}
-              </p>
-
-              {/* Decorative bar - now left-aligned to match the value and icon start */}
-              <div className={cn("h-1 w-8 rounded-full", item.bg)} />
+              <div className="space-y-1">
+                <p className="text-2xl font-black text-slate-900 text-center">
+                  {item.value}
+                </p>
+                <div className={cn("h-1 w-6 rounded-full", item.bg)} />
+              </div>
             </div>
           </CardContent>
         </Card>

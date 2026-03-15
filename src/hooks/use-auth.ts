@@ -206,7 +206,7 @@ export function useAuth() {
       sessionStorage.removeItem("jwtToken");
       setUser(null);
 
-      toast({ description: "Logged out successfully", duration: 3000 });
+      toast({ description: "Đăng xuất thành công", duration: 3000 });
 
       if (redirect) {
         setTimeout(() => {

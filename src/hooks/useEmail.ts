@@ -43,8 +43,8 @@ export const useEmail = () => {
     },
     onSuccess: () => {
       toast({
-        title: "Email verified!",
-        description: "Your email has been successfully verified.",
+        title: "Đã xác minh email",
+        description: "Email của bạn được xác minh",
         duration: 5000,
       });
     },
@@ -52,8 +52,8 @@ export const useEmail = () => {
       console.error("Error verifying email:", error);
       toast({
         variant: "destructive",
-        title: "Verification failed",
-        description: "Invalid or expired verification link.",
+        title: "Lỗi khi xác minh email",
+        description: "Đường dẫn xác minh đã hết hạn",
         duration: 5000,
       });
     },
@@ -89,8 +89,8 @@ export const useEmail = () => {
     },
     onSuccess: () => {
       toast({
-        title: "Password reset!",
-        description: "Your password has been successfully reset.",
+        title: "Thiết lập lại mật khẩu!",
+        description: "Mật khẩu của bạn được thiết lập lại",
         duration: 5000,
       });
     },
@@ -98,8 +98,8 @@ export const useEmail = () => {
       console.error("Error resetting password:", error);
       toast({
         variant: "destructive",
-        title: "Password reset failed",
-        description: "Invalid or expired reset link.",
+        title: "Lỗi khi thiết lập lại mật khẩu",
+        description: "Đường dẫn đã hết hạn",
         duration: 5000,
       });
     },

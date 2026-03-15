@@ -422,3 +422,65 @@ export interface BookRateStats {
   totalBookings: number;
   averageRating?: number;
 }
+
+export interface BusinessInsight {
+  shopId?: string;
+  nailArtistId?: string;
+  shopLocationId?: string;
+  startDate?: string;
+  endDate?: string;
+  totalBookings?: number;
+  completedBookings?: number;
+  cancelledBookings?: number;
+  averageBookingValue?: number;
+  averageRating?: number;
+  newCustomers?: CustomerDetail[];
+  returningCustomers?: CustomerDetail[];
+  popularCollections?: PopularCollection[];
+  PeakHours?: PeakHourDto[];
+}
+
+export interface CustomerDetail {
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  totalBookings?: number;
+  totalSpent?: number;
+}
+
+export interface PopularCollection {
+  collectionName?: string;
+  bookingCount?: number;
+  totalRevenue?: number;
+}
+
+export interface PeakHourDto {
+  displayHour?: string;
+  bookingCount?: number;
+  period?: string;
+}
+
+export interface CustomerInsight {
+  customerName?: string;
+
+  totalBookings?: number;
+  completedBookings?: number;
+  cancelledBookings?: number;
+  averageSpent?: number;
+  totalSpent?: number;
+
+  // Time patterns
+  firstBookingDate?: string;
+  lastBookingDate?: string;
+  averageDaysBetweenBookings?: number;
+
+  // Service preferences
+  preferredCollections?: string[];
+  artistName?: string;
+  artistAvatar?: string;
+  shopName?: string;
+  shopAvatar?: string;
+
+  preferredTimeOfDay?: string;
+  preferredDayOfWeek?: string;
+}

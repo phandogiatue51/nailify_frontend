@@ -42,7 +42,7 @@ export const BlogPostDetailModal = () => {
         duration: 3000,
       });
       navigate("/admin/blogs", {
-        state: { message: "Post deleted successfully" },
+        state: { message: "Xóa bài viết thành công" },
       });
     } catch (error) {
       console.error("Failed to delete post:", error);
@@ -111,7 +111,7 @@ export const BlogPostDetailModal = () => {
           <ArrowLeft className="w-5 h-5" />
         </button>
 
-        <h1 className="text-lg font-semibold">Blog Post Details</h1>
+        <h1 className="text-lg font-semibold">Thông tin bài viết</h1>
 
         {deleting ? (
           <div className="p-2 rounded-full">
@@ -120,10 +120,10 @@ export const BlogPostDetailModal = () => {
         ) : (
           <ConfirmationDialog
             onConfirm={handleDeletePost}
-            title="Delete Blog Post"
-            description="Are you sure you want to delete this post? This action cannot be undone."
-            confirmText="Delete"
-            cancelText="Cancel"
+            title="Xóa bài viết"
+            description="Bạn có muốn xóa bài viết này?"
+            confirmText="Xóa bài viết"
+            cancelText="Hủy"
             variant="destructive"
             trigger={
               <button className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors">
@@ -145,12 +145,12 @@ export const BlogPostDetailModal = () => {
           <div className="flex items-center gap-2 mb-4">
             <MessageCircle className="w-5 h-5 text-gray-500" />
             <h2 className="text-lg font-semibold">
-              Comments ({comments.length})
+              Số bình luận ({comments.length})
             </h2>
           </div>
 
           {comments.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">No comments yet</p>
+            <p className="text-center text-gray-500 py-8">Chưa có bình luận</p>
           ) : (
             <div className="space-y-4">
               {comments.map((comment) => (
@@ -177,10 +177,10 @@ export const BlogPostDetailModal = () => {
 
                     <ConfirmationDialog
                       onConfirm={() => handleDeleteComment(comment.id)}
-                      title="Delete Comment"
-                      description="Are you sure you want to delete this comment?"
-                      confirmText="Delete"
-                      cancelText="Cancel"
+                      title="Xóa bình luận"
+                      description="Bạn có muốn xóa bình luận này?"
+                      confirmText="Xóa"
+                      cancelText="Hủy"
                       variant="destructive"
                       trigger={
                         <button

@@ -125,39 +125,43 @@ const VerifyEmail = () => {
               <XCircle className="h-12 w-12 text-red-500" />
             )}
           </div>
-          <CardTitle className="text-2xl">
-            {status === "loading" && "Verifying Email..."}
-            {status === "success" && "Email Verified!"}
-            {status === "error" && "Verification Failed"}
+
+          <CardTitle className="text-2xl font-black uppercase tracking-tight">
+            {status === "loading" && "Đang xác thực..."}
+            {status === "success" && "Xác thực thành công!"}
+            {status === "error" && "Lỗi xác thực"}
           </CardTitle>
-          <CardDescription>
-            {status === "loading" && "Please wait while we verify your email."}
+
+          <CardDescription className="font-medium">
+            {status === "loading" &&
+              "Vui lòng chờ trong giây lát để hệ thống xác thực email."}
             {status === "success" &&
-              "Your email has been successfully verified."}
+              "Email của bạn đã được xác thực thành công."}
             {status === "error" &&
-              "The verification link is invalid or has expired."}
+              "Đường dẫn xác thực không hợp lệ hoặc đã hết hạn."}
           </CardDescription>
         </CardHeader>
 
         <CardContent className="text-center space-y-4">
           {status === "success" && (
             <div className="space-y-2">
-              <p className="text-muted-foreground">
-                Redirecting to login page in 5 seconds...
+              <p className="text-muted-foreground text-sm">
+                Tự động chuyển hướng sau 5 giây...
               </p>
               <Button
                 onClick={handleManualRedirect}
                 variant="link"
-                className="text-sm"
+                className="text-xs text-[#950101] font-bold uppercase"
               >
-                Click here to redirect now
+                Chuyển hướng ngay
               </Button>
             </div>
           )}
 
           {status === "error" && (
-            <p className="text-muted-foreground">
-              This verification link may have expired or is invalid.
+            <p className="text-muted-foreground text-sm">
+              Vui lòng kiểm tra lại link trong email hoặc yêu cầu gửi lại mã
+              mới.
             </p>
           )}
         </CardContent>
@@ -165,15 +169,18 @@ const VerifyEmail = () => {
         <CardFooter className="flex flex-col gap-3">
           {status === "success" && (
             <>
-              <Button onClick={handleGoToLogin} className="w-full">
-                Go to Login
+              <Button
+                onClick={handleGoToLogin}
+                className="w-full bg-[#950101] font-black uppercase tracking-widest text-xs h-12"
+              >
+                Đăng Nhập Ngay
               </Button>
               <Button
                 onClick={handleGoToHome}
                 variant="outline"
-                className="w-full"
+                className="w-full font-bold uppercase text-[10px]"
               >
-                Go to Home
+                Về Trang Chủ
               </Button>
             </>
           )}
@@ -183,24 +190,21 @@ const VerifyEmail = () => {
               <Button
                 onClick={handleResendVerification}
                 disabled={isResending}
-                className="w-full"
+                className="w-full bg-[#950101] font-black uppercase tracking-widest text-xs h-12"
               >
                 {isResending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  </>
+                  <Loader2 className="animate-spin" />
                 ) : (
-                  "Resend Verification Email"
+                  "Gửi lại Email xác thực"
                 )}
               </Button>
 
               <Button
                 onClick={handleGoToLogin}
                 variant="outline"
-                className="w-full"
+                className="w-full font-bold uppercase text-[10px]"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Login
+                <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại Đăng nhập
               </Button>
             </>
           )}

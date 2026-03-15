@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useBookings } from "@/hooks/useBookings";
 import { Button } from "@/components/ui/button";
@@ -7,12 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { TIME_SLOTS } from "./TimeSlot";
 import { DateScrollPicker } from "@/components/booking/DateScrollPickerProps";
 import { useShopOwnerLocationById } from "@/hooks/useLocation";
 import { useAuth } from "@/hooks/use-auth";
 import { ExistingBookings } from "@/components/booking/ExistingBookings";
 import { useQueryClient } from "@tanstack/react-query"; // Add this import
+import { generateTimeSlots } from "@/components/ui/timeSlots";
 
 const RescheduleBooking = () => {
   const { id } = useParams<{ id: string }>();
@@ -73,6 +73,30 @@ const RescheduleBooking = () => {
     });
 
     return overlappingBookings.length >= maxCapacity;
+  };
+
+  const timeSlots = useMemo(() => {
+    return generateTimeSlots({
+      openingTime: locationData?.openingTime,
+      closingTime: locationData?.closingTime,
+      bufferMinutes: locationData?.bufferMinutes,
+    });
+  }, [
+    locationData?.openingTime,
+    locationData?.closingTime,
+    locationData?.bufferMinutes,
+  ]);
+
+  const isSlotInPast = (slotTimeStr: string) => {
+    const [hours, minutes] = slotTimeStr.split(":").map(Number);
+    const slotDate = new Date(selectedDateObj);
+    slotDate.setHours(hours, minutes, 0, 0);
+
+    const now = new Date();
+    const isToday =
+      format(selectedDateObj, "yyyy-MM-dd") === format(now, "yyyy-MM-dd");
+
+    return isToday && slotDate < now;
   };
 
   const handleReschedule = async () => {
@@ -196,21 +220,27 @@ const RescheduleBooking = () => {
             </div>
 
             <div className="grid grid-cols-3 gap-2">
-              {TIME_SLOTS.map((slot) => {
+              {timeSlots.map((slot) => {
                 const busy = isSlotBusy(slot);
                 const isSelected = selectedTime === slot;
+                const inPast = isSlotInPast(slot);
+
+                const disabled = (busy || inPast) && !isShopOwner;
+
                 return (
                   <button
                     key={slot}
-                    disabled={busy}
+                    disabled={disabled}
                     onClick={() => setSelectedTime(slot)}
                     className={cn(
                       "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
                       isSelected
-                        ? "bg-gradient-to-r from-[#950101] to-[#FFCFE9] text-white scale-95"
+                        ? "bg-gradient-to-r from-[#950101] to-[#ffcfe9] text-white scale-95"
                         : busy
                           ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
-                          : "bg-white border-slate-50 text-slate-600 hover:border-slate-200",
+                          : inPast
+                            ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
+                            : "bg-white border-slate-50 text-slate-600 hover:border-slate-200",
                     )}
                   >
                     {slot}
@@ -219,6 +249,7 @@ const RescheduleBooking = () => {
                         Bận
                       </span>
                     )}
+                    {inPast && <span className="text-[10px]">(đã qua)</span>}
                   </button>
                 );
               })}

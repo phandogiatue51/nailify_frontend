@@ -244,6 +244,11 @@ const DateTimeSelection = () => {
                       )}
                     >
                       {slot}
+                        {busy && (
+                      <span className="text-[8px] uppercase absolute bottom-1">
+                        Bận
+                      </span>
+                    )}
                       {!canComplete && (
                         <span className="text-[10px]">(đóng cửa)</span>
                       )}

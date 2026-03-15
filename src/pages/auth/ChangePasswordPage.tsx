@@ -33,12 +33,12 @@ const ChangePasswordPage = () => {
       const result = await profileAPI.changePassword(formData);
       setFormData({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
       toast({
-        description: "Password changed successfully!",
+        description: "Thay đổi mật khẩu thành công!",
         duration: 3000,
       });
       navigate("/profile");
     } catch (err: any) {
-      setMessage(err.message || "Failed to change password");
+      setMessage(err.message);
     } finally {
       setLoading(false);
     }

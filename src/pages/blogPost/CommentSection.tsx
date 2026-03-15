@@ -81,7 +81,6 @@ export const CommentSection = ({
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               className="w-full p-6 pb-16 bg-slate-50 border-none rounded-[2rem] focus:ring-2 focus:ring-[#950101]/5 text-slate-800 placeholder:text-slate-300 transition-all resize-none"
-              placeholder="Join the conversation..."
               rows={4}
               autoFocus
               disabled={loading}
@@ -101,7 +100,7 @@ export const CommentSection = ({
                 disabled={loading || !newComment.trim()}
                 className="flex items-center gap-2 px-6 py-2.5 bg-[#950101] text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-[#950101]/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale"
               >
-                {loading ? "Sending..." : "Comment"}
+                {loading ? "Đang gửi ..." : "Bình luận"}
                 {!loading && <Send size={12} />}
               </button>
             </div>
@@ -115,7 +114,7 @@ export const CommentSection = ({
           <div className="text-center py-16 border-2 border-dashed border-slate-100 rounded-[2.5rem]">
             <MessageCircle className="w-10 h-10 text-slate-200 mx-auto mb-4" />
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">
-              No entries yet
+              Chưa có bình luận nào
             </p>
           </div>
         ) : (

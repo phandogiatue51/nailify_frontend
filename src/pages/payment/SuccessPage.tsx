@@ -24,9 +24,7 @@ export const SuccessPage = () => {
       }
 
       try {
-        console.log(`Processing success payment for order: ${orderCode}`);
         await checkoutAPI.updateSuccessInvoice(parseInt(orderCode));
-        console.log("Invoice updated successfully");
         setError(null);
       } catch (err) {
         console.error("Failed to update invoice:", err);

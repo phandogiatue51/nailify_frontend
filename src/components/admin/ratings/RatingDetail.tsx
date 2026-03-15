@@ -76,7 +76,7 @@ const RatingDetail = () => {
                 </main>
             ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-slate-500">
-                    <p>Booking details not found.</p>
+                    <p>Không tìm thấy lịch hẹn</p>
                 </div>
             )}
         </div>

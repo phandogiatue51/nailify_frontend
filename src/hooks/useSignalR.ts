@@ -111,7 +111,6 @@ export const useSignalR = () => {
     const startConnection = async () => {
       try {
         await newConnection.start();
-        console.log("✅ SignalR Connected successfully!");
         setIsConnected(true);
         setReconnectFailed(false);
         reconnectAttemptsRef.current = 0;

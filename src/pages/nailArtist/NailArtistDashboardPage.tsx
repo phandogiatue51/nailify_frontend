@@ -16,6 +16,7 @@ import {
   HeartHandshake,
   Gem,
   Wallet,
+  ChartLine,
 } from "lucide-react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { BookingStatusBadge } from "@/components/badge/BookingStatusBadge";
@@ -153,16 +154,16 @@ const NailArtistDashboardPage = () => {
               </div>
             </button>
             <button
-              onClick={() => navigate("/my-subscription")}
+              onClick={() => navigate("/artist-insight")}
               className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
-                  <Gem className="w-6 h-6 text-purple-500 group-hover:text-white" />
+                  <ChartLine className="w-6 h-6 text-yellow-500 group-hover:text-white" />
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    Gói đăng ký của tôi
+                    Hiệu suất
                   </p>
                 </div>
               </div>
@@ -173,7 +174,7 @@ const NailArtistDashboardPage = () => {
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
-                  <Wallet className="w-6 h-6 text-yellow-500 group-hover:text-white" />
+                  <Wallet className="w-6 h-6 text-green-500 group-hover:text-white" />
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -183,20 +184,27 @@ const NailArtistDashboardPage = () => {
               </div>
             </button>
           </div>
+          <button
+            onClick={() => navigate("/my-subscription")}
+            className="mt-3 w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                <Gem className="w-6 h-6 text-purple-500 group-hover:text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Gói đăng ký của tôi
+                </p>
+              </div>
+            </div>
+          </button>
+        </div>
 
-          <div className="flex items-center justify-between mb-4 mt-4 px-1">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-              Lịch hẹn sắp tới
-            </h3>
-            <Button
-              variant="link"
-              size="sm"
-              className="text-primary font-bold"
-              onClick={() => navigate("/my-artist/bookings")}
-            >
-              Xem tất cả
-            </Button>
-          </div>
+        <div className="flex items-center justify-between mb-4 mt-4 px-1">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+            Lịch hẹn sắp tới
+          </h3>
         </div>
         <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden">
           <CardContent className="p-0 divide-y">

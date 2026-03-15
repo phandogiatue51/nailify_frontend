@@ -18,6 +18,7 @@ import {
   KeyRound,
   CircleCheck,
   CircleCheckBig,
+  ChartLine,
 } from "lucide-react";
 import { VerificationBadge } from "@/components/badge/VerificationBadge";
 import { useProfile } from "@/hooks/useProfile";
@@ -66,8 +67,8 @@ const ProfilePage = () => {
       <Header title="Nailify" />
 
       <div className="p-6">
-        <div className=" px-6 pt-10 pb-6 text-center">
-          <div className="relative mx-auto w-24 h-24 mb-4">
+        <div className=" px-6 text-center">
+          <div className="relative mx-auto w-24 h-24">
             <div className="w-full h-full rounded-full overflow-hidden ring-4 ring-white shadow-md border border-slate-300 flex items-center justify-center">
               {profile.avatarUrl ? (
                 <img
@@ -85,7 +86,7 @@ const ProfilePage = () => {
           <h1 className="text-2xl font-bold tracking-tight flex items-center justify-center gap-2">
             {profile.fullName || "User"}
           </h1>
-          <div className="flex justify-center mt-2">
+          <div className="flex justify-center mt-2 mb-4">
             <RoleBadge role={profile.role} />
           </div>
 
@@ -138,6 +139,33 @@ const ProfilePage = () => {
                   label="Địa chỉ"
                   value={profile.address || "Chưa cập nhật"}
                 />
+              </CardContent>
+            </Card>
+          </section>
+
+          <section>
+            <div className="flex justify-between items-end mb-3 px-1">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                Hành trình cá nhân
+              </h3>
+            </div>
+            <Card className="overflow-hidden border-none shadow-sm ring-1 ring-slate-200 rounded-3xl">
+              <CardContent className="p-0 divide-y divide-slate-100">
+                <button
+                  onClick={() => navigate("/customer-insight")}
+                  className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-50 shadow-sm active:scale-[0.98] transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center group-hover:bg-red-400 transition-colors">
+                      <ChartLine className="w-6 h-6 text-green-500 group-hover:text-white" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                        Thống kê của tôi
+                      </p>
+                    </div>
+                  </div>
+                </button>
               </CardContent>
             </Card>
           </section>
