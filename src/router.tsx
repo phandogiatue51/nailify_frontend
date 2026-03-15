@@ -87,6 +87,7 @@ import CustomerInsight from "./pages/insight/CustomerInsight";
 import ArtistInsights from "./pages/insight/ArtistInsights";
 import ShopInsights from "./pages/insight/ShopInsight";
 import ShopLocationInsights from "./pages/insight/ShopLocationInsights";
+import LandingPage from "./pages/LandingPage";
 
 export const router = createBrowserRouter(
   [
@@ -96,6 +97,7 @@ export const router = createBrowserRouter(
       errorElement: <ErrorBoundary />,
       children: [
         { index: true, element: withMobileLayout(<Index />) },
+        { path: "landing-page", element: <LandingPage /> },
 
         { path: "auth", element: <AuthPage /> },
         { path: "profile", element: withMobileLayout(<ProfilePage />) },

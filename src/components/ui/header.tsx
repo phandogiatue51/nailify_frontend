@@ -1,4 +1,3 @@
-import { Search, Bell } from "lucide-react";
 export default function Header({ title = "Nailify", hasNotification = false }) {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 py-3">
@@ -12,17 +11,6 @@ export default function Header({ title = "Nailify", hasNotification = false }) {
         >
           {title}
         </h1>
-        {/* <div className="flex gap-2">
-          <button className="p-2 bg-slate-100 rounded-full">
-            <Search className="w-5 h-5 text-slate-600" />
-          </button>
-          <button className="p-2 bg-slate-100 rounded-full relative">
-            <Bell className="w-5 h-5 text-slate-600" />
-            {hasNotification && (
-              <span className="absolute top-1 right-1 w-2 h-2 bg-pink-500 rounded-full border-2 border-white" />
-            )}
-          </button>
-        </div> */}
       </div>
     </header>
   );
