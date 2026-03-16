@@ -100,7 +100,7 @@ const MyShopPage = () => {
       <Header title="Nailify"/>
 
       <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
-        <header className="pt-4 flex items-start justify-between">
+        <header className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-black tracking-tight text-slate-900">
               {myShop.name}

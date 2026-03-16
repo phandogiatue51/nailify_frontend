@@ -22,15 +22,15 @@ export const StaffCard = ({
     <Card className="group overflow-hidden border shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 rounded-[2rem] bg-white">
       <CardContent className="p-5">
         <div className="grid grid-cols-[auto,1fr] gap-4 mb-4">
-          <div className="w-24 h-28 rounded-2xl bg-[#FFC988]/20 flex items-center justify-center text-xl border-2 border-white shadow-sm overflow-hidden">
+          <div className="rounded-3xl w-24 h-24 flex items-center justify-center text-xl border-2 border-white shadow-sm overflow-hidden">
             {staff.avatarUrl ? (
               <img
                 src={staff.avatarUrl}
-                className="w-full h-full object-cover"
+                className="object-cover"
                 alt=""
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+              <div className="bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
                 <span className="text-2xl font-bold text-white uppercase">
                   {staff.fullName?.[0] || "U"}
                 </span>
@@ -41,18 +41,18 @@ export const StaffCard = ({
           <div className="flex flex-col justify-between">
             <div className="flex items-start justify-between">
               <div>
-                <h4 className="font-black text-slate-800 leading-tight">
+                <h4 className="font-black text-slate-800">
                   {staff.fullName || "Unnamed Staff"}
                 </h4>
                 <Badge
                   className={cn(
-                    "text-[10px] font-black uppercase tracking-tighter border-none px-2",
+                    "text-[10px] font-black uppercase border-none px-2",
                     staff.isActive
                       ? "bg-green-100 text-green-600"
                       : "bg-red-100 text-red-500",
                   )}
                 >
-                  {staff.isActive ? "Active" : "Inactive"}
+                  {staff.isActive ? "Hoạt động" : "Ngừng hoạt động"}
                 </Badge>
               </div>
 
@@ -84,7 +84,7 @@ export const StaffCard = ({
               variant="outline"
               className="w-full h-10 rounded-2xl text-[12px] font-black uppercase tracking-widest border text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm"
             >
-              Edit
+              Chỉnh sửa
             </Button>
           </Link>
 
@@ -113,10 +113,10 @@ export const StaffCard = ({
                 )}
               >
                 {isUpdating
-                  ? "Updating..."
+                  ? "Đang cập nhật ..."
                   : staff.isActive
-                    ? "Disable"
-                    : "Enable"}
+                    ? "Vô hiệu hóa"
+                    : "Kích hoạt"}
               </Button>
             }
           />

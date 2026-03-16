@@ -38,8 +38,8 @@ export const CollectionsTab = ({ collections, isLoading, onDelete }) => {
         </div>
       ) : (
         <EmptyTabState
-          title="Empty Lookbook"
-          desc="Combine services into trendy pre-set collections."
+          title="Set nail đang trống"
+          desc="Hãy kết hợp các dịch vụ của bạn thành những bộ sưu tập xu hướng để thu hút khách hàng."
           onAction={() => navigate("/my-shop/collections/create")}
         />
       )}

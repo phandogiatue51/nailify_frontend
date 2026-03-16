@@ -42,7 +42,7 @@ export const VerificationButton: React.FC<VerificationButtonProps> = ({
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         </>
       ) : (
-        "Verify Email"
+        "Xác thực"
       )}
     </Button>
   );

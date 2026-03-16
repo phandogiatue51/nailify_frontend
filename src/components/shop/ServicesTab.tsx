@@ -72,11 +72,9 @@ export const ServicesTab = ({
         </div>
       ) : (
         <div key="empty-state">
-          {" "}
-          {/* Add key */}
           <EmptyTabState
-            title="No services yet"
-            desc="Add your first nail service to start booking."
+            title="Chưa có dịch vụ nào"
+            desc="Hãy tạo dịch vụ đầu tiên để bắt đầu nhận lịch hẹn từ khách hàng của bạn."
             onAction={() => navigate("/my-shop/service-items/create/0")}
           />
         </div>

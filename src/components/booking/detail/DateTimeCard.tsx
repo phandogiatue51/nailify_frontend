@@ -19,7 +19,7 @@ export const DateTimeCard = ({
       </CardTitle>
     </CardHeader>
     <CardContent>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <div className="space-y-2">
           <p className="text-[12px] font-black uppercase text-slate-400">
             Giờ vào
@@ -29,7 +29,7 @@ export const DateTimeCard = ({
               <Calendar className="w-5 h-5 text-[#88F9D0]" />
             </div>
             <div className="font-bold">
-              <DateDisplay dateString={scheduledStart} showTime />
+              <DateDisplay dateString={scheduledStart} showTime isIcon={false} />
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@ export const DateTimeCard = ({
               <Calendar className="w-5 h-5 text-red-500" />
             </div>
             <div className="font-bold">
-              <DateDisplay dateString={scheduledEnd} showTime />
+              <DateDisplay dateString={scheduledEnd} showTime isIcon={false}/>
             </div>
           </div>
         </div>

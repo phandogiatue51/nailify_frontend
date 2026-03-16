@@ -80,13 +80,13 @@ export const ArtistList = ({
   if (artists.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">
-        <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground" />
-        <div>
-          <h3 className="text-lg font-medium">No artists found</h3>
-          <p className="text-muted-foreground mt-1">
+        <AlertCircle className="w-12 h-12 mx-auto text-slate-300" />
+        <div className="space-y-1">
+          <h3 className="text-lg font-black uppercase tracking-tight text-slate-900">Không tìm thấy nghệ sĩ</h3>
+          <p className="text-sm font-medium text-slate-400">
             {Object.keys(filters).length > 0
-              ? "Try adjusting your filters"
-              : "No artists registered yet"}
+              ? "Thử điều chỉnh bộ lọc để tìm kiếm gương mặt phù hợp."
+              : "Hiện chưa có nghệ sĩ nào đăng ký thành viên."}
           </p>
         </div>
       </div>

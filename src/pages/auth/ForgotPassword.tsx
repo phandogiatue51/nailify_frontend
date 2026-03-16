@@ -29,12 +29,12 @@ const ForgotPassword = () => {
     setError("");
 
     if (!email.trim()) {
-      setError("Please enter your email address");
+      setError("Hãy nhập email");
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Please enter a valid email address");
+      setError("Hãy nhập email hợp lệ");
       return;
     }
 
@@ -44,7 +44,7 @@ const ForgotPassword = () => {
     } catch (error: any) {
       console.error("Failed to send reset email:", error);
       // Error is already handled in the hook, but we can set a local error too
-      setError("Something went wrong. Please try again.");
+      setError("Đã có lỗi. Vui lòng thử lại sau.");
     }
   };
 
@@ -63,20 +63,20 @@ const ForgotPassword = () => {
             className="self-start -ml-2 mb-2"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Login
+            Quay lại Đăng nhập
           </Button>
 
           <div className="flex justify-center mb-4">
-            <Mail className="h-12 w-12 text-blue-500" />
+            <Mail className="h-12 w-12 text-red-500" />
           </div>
 
           <CardTitle className="text-2xl text-center">
-            {isSubmitted ? "Check Your Email" : "Forgot Password"}
+            {isSubmitted ? "Kiểm tra Email" : "Quên mật khẩu?"}
           </CardTitle>
           <CardDescription className="text-center">
             {isSubmitted
-              ? `We sent a password reset link to ${email}`
-              : "Enter your email to reset your password"}
+              ? `Chúng tôi đã gửi link đặt lại mật khẩu đến ${email}`
+              : "Nhập địa chỉ email của bạn để nhận liên kết đặt lại mật khẩu"}
           </CardDescription>
         </CardHeader>
 
@@ -84,11 +84,11 @@ const ForgotPassword = () => {
           {!isSubmitted ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">Địa chỉ Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="ten@vidu.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
@@ -101,8 +101,8 @@ const ForgotPassword = () => {
 
               <div className="rounded-lg bg-muted p-4">
                 <p className="text-sm text-muted-foreground">
-                  Enter the email address associated with your account and we'll
-                  send you a link to reset your password.
+                  Hãy nhập email đã đăng ký với tài khoản của bạn. Chúng tôi sẽ gửi
+                  một liên kết để bạn có thể tạo mật khẩu mới.
                 </p>
               </div>
             </form>
@@ -111,26 +111,26 @@ const ForgotPassword = () => {
               <div className="rounded-lg border border-green-200 bg-green-50 p-4">
                 <Mail className="h-8 w-8 text-green-500 mx-auto mb-2" />
                 <p className="text-green-700 font-medium">
-                  Password reset email sent!
+                  Đã gửi email thành công!
                 </p>
               </div>
 
               <div className="space-y-3">
                 <p className="text-muted-foreground">
-                  Please check your inbox at{" "}
-                  <span className="font-medium">{email}</span> for the password
-                  reset link.
+                  Vui lòng kiểm tra hộp thư tại{" "}
+                  <span className="font-medium">{email}</span> để thực hiện đặt
+                  lại mật khẩu.
                 </p>
 
                 <div className="rounded-lg bg-muted p-4 text-left">
                   <h4 className="font-semibold text-sm mb-2">
-                    Didn't receive the email?
+                    Bạn không nhận được email?
                   </h4>
                   <ul className="text-sm space-y-2 text-muted-foreground">
-                    <li>• Check your spam or junk folder</li>
-                    <li>• Make sure you entered the correct email address</li>
-                    <li>• Wait a few minutes and try again</li>
-                    <li>• The link expires in 30 minutes</li>
+                    <li>• Kiểm tra hòm thư rác (Spam) hoặc quảng cáo</li>
+                    <li>• Đảm bảo bạn đã nhập đúng địa chỉ email</li>
+                    <li>• Đợi vài phút và thử lại</li>
+                    <li>• Liên kết sẽ hết hạn sau 30 phút</li>
                   </ul>
                 </div>
               </div>
@@ -147,17 +147,15 @@ const ForgotPassword = () => {
                 className="w-full"
               >
                 {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  </>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  "Send Reset Link"
+                  "Gửi yêu cầu"
                 )}
               </Button>
               <p className="text-sm text-center text-muted-foreground">
-                Remember your password?{" "}
+                Bạn đã nhớ mật khẩu?{" "}
                 <Link to="/auth" className="text-primary hover:underline">
-                  Log in here
+                  Đăng nhập tại đây
                 </Link>
               </p>
             </>
@@ -172,7 +170,7 @@ const ForgotPassword = () => {
                 variant="outline"
                 className="w-full"
               >
-                Use a Different Email
+                Sử dụng email khác
               </Button>
               <Button
                 onClick={handleSubmit}
@@ -180,11 +178,9 @@ const ForgotPassword = () => {
                 className="w-full"
               >
                 {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  </>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  "Resend Reset Link"
+                  "Gửi lại email"
                 )}
               </Button>
               <Button
@@ -192,7 +188,7 @@ const ForgotPassword = () => {
                 variant="ghost"
                 className="w-full"
               >
-                Back to Login
+                Quay lại Đăng nhập
               </Button>
             </>
           )}

@@ -9,28 +9,35 @@ export type ResetPasswordRequest = {
   newPassword: string;
 };
 
-// Main hook
+interface EmailResponse {
+  message: string;
+  success: boolean;
+}
+
 export const useEmail = () => {
   const { toast } = useToast();
 
   // Send verification email mutation
   const sendVerificationEmail = useMutation({
-    mutationFn: async (email: string) => {
-      return await emailAPI.sendVerification(email);
+    mutationFn: async (email: string): Promise<EmailResponse> => {
+      const response = await emailAPI.sendVerification(email);
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (data: EmailResponse) => {
       toast({
-        title: "Verification email sent",
-        description: "Please check your email for the verification link.",
-        duration: 5000,
+        description: data.message || "Verification email sent successfully!",
+        variant: "success",
+        duration: 3000,
       });
     },
     onError: (error: any) => {
       console.error("Error sending verification email:", error);
+      const errorMessage = error?.response?.data?.message ||
+        error?.message ||
+        "Failed to send verification email";
       toast({
-        title: "Verification email sent",
-        description:
-          "If an account exists with this email, you'll receive a verification link.",
+        description: errorMessage,
+        variant: "destructive",
         duration: 5000,
       });
     },
@@ -38,22 +45,24 @@ export const useEmail = () => {
 
   // Verify email token
   const verifyEmail = useMutation({
-    mutationFn: async (token: string) => {
+    mutationFn: async (token: string): Promise<EmailResponse> => {
       return await emailAPI.verify(token);
     },
-    onSuccess: () => {
+    onSuccess: (data: EmailResponse) => {
       toast({
-        title: "Đã xác minh email",
-        description: "Email của bạn được xác minh",
-        duration: 5000,
+        description: data.message || "Email verified successfully!",
+        variant: "success",
+        duration: 3000,
       });
     },
     onError: (error: any) => {
       console.error("Error verifying email:", error);
+      const errorMessage = error?.response?.data?.message ||
+        error?.message ||
+        "Failed to verify email";
       toast({
+        description: errorMessage,
         variant: "destructive",
-        title: "Lỗi khi xác minh email",
-        description: "Đường dẫn xác minh đã hết hạn",
         duration: 5000,
       });
     },
@@ -61,22 +70,24 @@ export const useEmail = () => {
 
   // Send password reset email mutation
   const sendPasswordResetEmail = useMutation({
-    mutationFn: async (email: string) => {
+    mutationFn: async (email: string): Promise<EmailResponse> => {
       return await emailAPI.sendPasswordReset(email);
     },
-    onSuccess: () => {
+    onSuccess: (data: EmailResponse) => {
       toast({
-        title: "Password reset email sent",
-        description: "Please check your email for the password reset link.",
-        duration: 5000,
+        description: data.message || "Password reset email sent!",
+        variant: "success",
+        duration: 3000,
       });
     },
     onError: (error: any) => {
       console.error("Error sending password reset email:", error);
+      const errorMessage = error?.response?.data?.message ||
+        error?.message ||
+        "Failed to send password reset email";
       toast({
-        title: "Password reset email sent",
-        description:
-          "If an account exists with this email, you'll receive a password reset link.",
+        description: errorMessage,
+        variant: "destructive",
         duration: 5000,
       });
     },
@@ -84,22 +95,24 @@ export const useEmail = () => {
 
   // Reset password mutation
   const resetPassword = useMutation({
-    mutationFn: async ({ token, newPassword }: ResetPasswordRequest) => {
+    mutationFn: async ({ token, newPassword }: ResetPasswordRequest): Promise<EmailResponse> => {
       return await emailAPI.resetPassword({ token, newPassword });
     },
-    onSuccess: () => {
+    onSuccess: (data: EmailResponse) => {
       toast({
-        title: "Thiết lập lại mật khẩu!",
-        description: "Mật khẩu của bạn được thiết lập lại",
-        duration: 5000,
+        description: data.message || "Password reset successfully!",
+        variant: "success",
+        duration: 3000,
       });
     },
     onError: (error: any) => {
       console.error("Error resetting password:", error);
+      const errorMessage = error?.response?.data?.message ||
+        error?.message ||
+        "Failed to reset password";
       toast({
+        description: errorMessage,
         variant: "destructive",
-        title: "Lỗi khi thiết lập lại mật khẩu",
-        description: "Đường dẫn đã hết hạn",
         duration: 5000,
       });
     },
@@ -109,7 +122,7 @@ export const useEmail = () => {
   const useCheckResetToken = (token: string | null) => {
     const query = useQuery({
       queryKey: ["reset-token-validity", token],
-      queryFn: async () => {
+      queryFn: async (): Promise<{ valid: boolean; message?: string }> => {
         if (!token) throw new Error("No token provided");
         return await emailAPI.checkResetToken(token);
       },
@@ -117,14 +130,16 @@ export const useEmail = () => {
       retry: false,
     });
 
-    // Handle success/error with useEffect
+    // Handle error with useEffect
     useEffect(() => {
       if (query.isError) {
         console.error("Error checking reset token:", query.error);
+        const errorMessage = (query.error as any)?.response?.data?.message ||
+          (query.error as any)?.message ||
+          "Invalid or expired reset token";
         toast({
+          description: errorMessage,
           variant: "destructive",
-          title: "Invalid reset link",
-          description: "This password reset link has expired or is invalid.",
           duration: 5000,
         });
       }
@@ -172,7 +187,7 @@ export const usePasswordReset = (token?: string | null) => {
   return {
     handleResetPassword,
     resetPassword,
-    tokenValid: tokenValid ?? false,
+    tokenValid: tokenValid?.valid ?? false,
     checkingToken,
   };
 };

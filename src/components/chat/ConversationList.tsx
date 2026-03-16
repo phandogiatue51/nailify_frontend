@@ -44,11 +44,11 @@ export const ConversationList = ({
         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
           <span className="text-2xl">💬</span>
         </div>
-        <div className="text-gray-500 mb-2">No conversations yet</div>
+        <div className="text-gray-500 mb-2">Chưa có lịch sử trò chuyện</div>
         <div className="text-sm text-gray-400">
           {user?.role === 0
-            ? "Start chatting with a shop to book appointments"
-            : "Your conversations will appear here"}
+            ? "Hãy trò chuyện với 1 cửa hàng hoặc thợ nail"
+            : "Hãy bắt đầu đặt lịch!"}
         </div>
       </div>
     );

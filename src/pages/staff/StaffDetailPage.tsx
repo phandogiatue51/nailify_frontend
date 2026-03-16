@@ -39,7 +39,7 @@ export const StaffDetailPage = () => {
     );
 
   return (
-    <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
+    <div className="p-6 space-y-6 bg-slate-50 min-h-screen">
       {/* Header Navigation */}
       <div className="flex items-center justify-between mb-6">
         <Button
@@ -51,7 +51,7 @@ export const StaffDetailPage = () => {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <h2 className="font-black text-sm uppercase tracking-widest text-slate-400">
-          Staff Profile
+          Thông tin quản lý
         </h2>
         <Button
           variant="ghost"
@@ -63,7 +63,7 @@ export const StaffDetailPage = () => {
         </Button>
       </div>
 
-      <div className="text-center mb-8">
+      <div className="text-center">
         <div className="relative inline-block">
           <div className="w-24 h-24 rounded-[2.5rem] bg-slate-100 overflow-hidden mx-auto border-4 border-white shadow-xl">
             {staff.avatarUrl ? (
@@ -89,16 +89,6 @@ export const StaffDetailPage = () => {
         <h1 className="text-2xl font-black mt-4 text-slate-900 leading-tight">
           {staff.fullName}
         </h1>
-        <Badge
-          className={cn(
-            "mt-2 border-none font-bold",
-            staff.isActive
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700",
-          )}
-        >
-          {staff.isActive ? "Active Member" : "Inactive"}
-        </Badge>
       </div>
 
       {/* Info Sections */}
@@ -111,7 +101,7 @@ export const StaffDetailPage = () => {
               </div>
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  Email Address
+                  Địa chỉ email
                 </p>
                 <p className="text-sm font-bold text-slate-700">
                   {staff.email || "No email provided"}
@@ -125,7 +115,7 @@ export const StaffDetailPage = () => {
               </div>
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  Phone Number
+                  Số điện thoại
                 </p>
                 <p className="text-sm font-bold text-slate-700">
                   {staff.phone || "No phone provided"}
@@ -139,34 +129,29 @@ export const StaffDetailPage = () => {
               </div>
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  Primary Address
+                  Địa chỉ
                 </p>
                 <p className="text-sm font-bold text-slate-700">
                   {staff.address || "N/A"}
                 </p>
               </div>
             </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center">
+                <Calendar className="w-4 h-4 text-slate-400" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Ngày tham gia
+                </p>
+                <p className="text-sm font-bold text-slate-700">
+                  {new Date(staff.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
           </CardContent>
         </Card>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-slate-50 p-4 rounded-[2rem] border border-slate-100">
-            <Calendar className="w-4 h-4 text-[#FFC988] mb-2" />
-            <p className="text-[10px] font-black uppercase text-slate-400">
-              Joined
-            </p>
-            <p className="text-xs font-bold">
-              {new Date(staff.createdAt).toLocaleDateString()}
-            </p>
-          </div>
-          <div className="bg-slate-50 p-4 rounded-[2rem] border border-slate-100">
-            <ShieldCheck className="w-4 h-4 text-[#E288F9] mb-2" />
-            <p className="text-[10px] font-black uppercase text-slate-400">
-              Staff ID
-            </p>
-            <p className="text-xs font-bold">#{staff.staffId}</p>
-          </div>
-        </div>
 
         <ConfirmationDialog
           onConfirm={() => mutateAsync(id!)}
@@ -193,8 +178,8 @@ export const StaffDetailPage = () => {
               {isPending
                 ? "Updating..."
                 : staff.isActive
-                  ? "Disable"
-                  : "Enable"}
+                  ? "Ngừng hoạt động"
+                  : "Kích hoạt"}
             </Button>
           }
         />

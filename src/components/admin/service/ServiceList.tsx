@@ -79,13 +79,13 @@ export const ServiceList = ({
   if (services.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">
-        <Package className="w-12 h-12 mx-auto text-muted-foreground" />
-        <div>
-          <h3 className="text-lg font-medium">No services found</h3>
-          <p className="text-muted-foreground mt-1">
+        <Package className="w-12 h-12 mx-auto text-slate-300" />
+        <div className="space-y-1">
+          <h3 className="text-lg font-black uppercase tracking-tight text-slate-900">Dịch vụ chưa sẵn sàng</h3>
+          <p className="text-sm font-medium text-slate-400">
             {Object.keys(filters).length > 0
-              ? "Try adjusting your filters"
-              : "No services available yet"}
+              ? "Hãy thử thay đổi yêu cầu để tìm thấy gói dịch vụ phù hợp."
+              : "Studio đang chuẩn bị cập nhật danh mục dịch vụ mới."}
           </p>
         </div>
       </div>

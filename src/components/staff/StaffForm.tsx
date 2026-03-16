@@ -152,16 +152,12 @@ export const StaffForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 pb-10">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="text-center">
         <h2 className="text-2xl font-black tracking-tighter text-slate-900">
-          {mode === "create" ? "Add Team Member" : "Update Profile"}
+          {mode === "create" ? "Thêm quản lý" : "Chỉnh sửa quản lý"}
         </h2>
-        <p className="text-xs text-slate-400 font-medium mt-1">
-          {mode === "create"
-            ? "Create a new account for your artist"
-            : "Modify existing staff information"}
-        </p>
+
       </div>
 
       {/* Luxury Avatar Upload */}
@@ -190,7 +186,7 @@ export const StaffForm = ({
             onClick={removeImage}
             className="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-500"
           >
-            Remove Photo
+            Xóa ảnh
           </button>
         )}
       </div>
@@ -200,14 +196,14 @@ export const StaffForm = ({
         <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-50 space-y-5">
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-              Full Name *
+              Họ và tên *
             </Label>
             <Input
               name="fullName"
+              placeholder="Nguyễn Văn A"
               value={formData.fullName}
               onChange={handleChange}
-              placeholder="Artist name"
-              className="rounded-xl bg-slate-50/50 border-none h-12 focus-visible:ring-[#E288F9]"
+              className="rounded-xl bg-slate-50 border-none h-12 focus-visible:ring-[#E288F9]"
             />
             {errors.fullName && (
               <p className="text-[10px] text-red-500 font-bold ml-1">
@@ -218,15 +214,15 @@ export const StaffForm = ({
 
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-              Email Address *
+              Địa chỉ email *
             </Label>
             <Input
               name="email"
               type="email"
+              placeholder="abc@gmail.com"
               value={formData.email}
               onChange={handleChange}
-              placeholder="artist@nailify.com"
-              className="rounded-xl bg-slate-50/50 border-none h-12 focus-visible:ring-[#E288F9]"
+              className="rounded-xl bg-slate-50 border-none h-12 focus-visible:ring-[#E288F9]"
             />
             {errors.email && (
               <p className="text-[10px] text-red-500 font-bold ml-1">
@@ -240,15 +236,15 @@ export const StaffForm = ({
         <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-50 space-y-5">
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-              Location *
+              Chi nhánh *
             </Label>
             <select
               name="shopLocationId"
               value={formData.shopLocationId}
               onChange={handleChange}
-              className="w-full h-12 px-4 rounded-xl bg-slate-50/50 border-none text-sm font-medium focus:ring-2 focus:ring-[#E288F9]"
+              className="w-full h-12 px-4 rounded-xl bg-slate-50 border-none text-sm font-medium focus:ring-2 focus:ring-[#E288F9]"
             >
-              <option value="">Select Studio</option>
+              <option value="">Chọn chi nhánh</option>
               {locations.map((loc) => (
                 <option key={loc.shopLocationId} value={loc.shopLocationId}>
                   {loc.address}
@@ -257,41 +253,40 @@ export const StaffForm = ({
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                Phone
-              </Label>
-              <Input
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="090..."
-                className="rounded-xl bg-slate-50/50 border-none h-12"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                Address
-              </Label>
-              <Input
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="District 1..."
-                className="rounded-xl bg-slate-50/50 border-none h-12"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
+              Số điện thoại
+            </Label>
+            <Input
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="+84"
+              className="rounded-xl bg-slate-50 border-none h-12"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
+              Địa chỉ
+            </Label>
+            <Input
+              name="address"
+              value={formData.address}
+              placeholder="Lò Lu ..."
+              onChange={handleChange}
+              className="rounded-xl bg-slate-50 border-none h-12"
+            />
           </div>
         </div>
 
+
         {/* Security Group (Create Only) */}
         {mode === "create" && (
-          <div className="bg-red-50/30 rounded-[2rem] p-6 border border-red-100/50 space-y-5">
+          <div className="bg-white rounded-[2rem] p-6 border border-red-100/50 space-y-5">
             <div className="flex items-center gap-2 mb-2">
               <Lock className="w-3 h-3 text-[#D81B60]" />
               <span className="text-[10px] font-black uppercase tracking-widest text-[#D81B60]">
-                Security
+                Bảo mật
               </span>
             </div>
             <Input
@@ -299,16 +294,16 @@ export const StaffForm = ({
               type="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Set password"
-              className="rounded-xl bg-white border-none h-12 shadow-sm"
+              placeholder="Mật khẩu"
+              className="rounded-xl bg-slate-50 border-none h-12 shadow-sm"
             />
             <Input
               name="confirmPassword"
               type="password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              placeholder="Confirm password"
-              className="rounded-xl bg-white border-none h-12 shadow-sm"
+              placeholder="Xác nhận mật khẩu"
+              className="rounded-xl bg-slate-50 border-none h-12 shadow-sm"
             />
           </div>
         )}
@@ -318,17 +313,17 @@ export const StaffForm = ({
         <Button
           type="submit"
           disabled={isLoading}
-          className="font-black tracking-tight uppercase rounded-[2rem] w-1/2 h-10 text-lg"
+          className="font-black tracking-tight uppercase rounded-[2rem] w-full h-10 text-lg"
           style={{
             background:
               "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)"
           }}
         >
           {isLoading
-            ? "Syncing..."
+            ? "Đang đồng bộ ..."
             : mode === "create"
-              ? "Create Staff"
-              : "Save Profile"}
+              ? "Thêm quản lý"
+              : "Cập nhật thông tin"}
         </Button>
       </div>
 

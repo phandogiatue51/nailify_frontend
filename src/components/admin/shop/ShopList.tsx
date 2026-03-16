@@ -69,13 +69,13 @@ export const ShopList = ({ filters, onShopSelect }: ShopListProps) => {
   if (shops.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">
-        <AlertCircle className="w-12 h-12 mx-auto text-muted-foreground" />
-        <div>
-          <h3 className="text-lg font-medium">No shops found</h3>
-          <p className="text-muted-foreground mt-1">
+        <AlertCircle className="w-12 h-12 mx-auto text-slate-300" />
+        <div className="space-y-1">
+          <h3 className="text-lg font-black uppercase tracking-tight text-slate-900">Không tìm thấy Studio</h3>
+          <p className="text-sm font-medium text-slate-400">
             {Object.keys(filters).length > 0
-              ? "Try adjusting your filters"
-              : "No shops available yet"}
+              ? "Hãy mở rộng phạm vi hoặc thay đổi tiêu chí tìm kiếm của bạn."
+              : "Hiện chưa có Studio nào khả dụng tại khu vực này."}
           </p>
         </div>
       </div>

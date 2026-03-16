@@ -101,16 +101,16 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-slate-50">
       {/* 1. BRANDED HEADER */}
       <Header title="Nailify" />
 
-      <div className="px-4 pt-6 space-y-4">
+      <div className="p-6">
         <div>
           <h2 className="text-2xl font-black text-slate-800 tracking-tight">
             Chào {user?.fullName},
           </h2>
-          <p className="text-[#950101] font-bold text-md tracking-[0.15em] opacity-80 mt-2">
+          <p className="text-[#950101] font-bold text-md tracking-[0.15em] opacity-80 pt-2 pb-4">
             Sẵn sàng lên đồ cho bộ móng mới?
           </p>
         </div>

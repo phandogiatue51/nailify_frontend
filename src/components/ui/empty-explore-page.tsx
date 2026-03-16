@@ -11,10 +11,8 @@ export const EmptyExploreState = ({
       <Search className="w-10 h-10 text-slate-200" />
     </div>
     <h3 className="font-bold text-slate-900">
-      {query ? `No ${type} matching "${query}"` : `No ${type} available`}
+      Không có kết quả phù hợp
     </h3>
-    <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-      Try checking your spelling or using more general keywords.
-    </p>
+  
   </div>
 );

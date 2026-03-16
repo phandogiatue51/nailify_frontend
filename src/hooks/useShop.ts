@@ -5,6 +5,7 @@ import { Shop } from "@/types/database";
 import { useAuthContext } from "./../components/auth/AuthProvider";
 import { useToast } from "./use-toast";
 import { useNavigate } from "react-router-dom";
+import { ShopFilterDto } from "@/types/filter";
 
 export const useShop = () => {
   const { user } = useAuthContext();
@@ -83,7 +84,7 @@ export const useShop = () => {
       queryClient.setQueryData(["shop", updatedShop.id], updatedShop);
       queryClient.setQueryData(["my-shop", user?.userId], updatedShop);
       toast({
-        description: updatedShop.message || "Cập nhật cửa hàng thành công!", 
+        description: updatedShop.message || "Cập nhật cửa hàng thành công!",
         variant: "success",
         duration: 3000,
       });
@@ -121,6 +122,24 @@ export const useAllShops = (options?: { enabled?: boolean }) => {
         return await shopAPI.getAll();
       } catch (error: any) {
         console.error("Error fetching all shops:", error);
+        return [];
+      }
+    },
+    enabled: options?.enabled ?? true,
+  });
+};
+
+export const useFilteredShops = (
+  filterParams: ShopFilterDto,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery({
+    queryKey: ["filtered-shops", filterParams], 
+    queryFn: async () => {
+      try {
+        return await shopAPI.customerFilter(filterParams);
+      } catch (error: any) {
+        console.error("Error fetching filtered shops:", error);
         return [];
       }
     },

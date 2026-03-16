@@ -219,7 +219,7 @@ const RescheduleBooking = () => {
               </h2>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {timeSlots.map((slot) => {
                 const busy = isSlotBusy(slot);
                 const isSelected = selectedTime === slot;

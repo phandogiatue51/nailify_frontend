@@ -6,7 +6,7 @@ import {
   artistAPI,
 } from "@/services/api";
 import { ServiceItem, ComponentType } from "@/types/database";
-import { CollectionFilterDto } from "@/types/filter";
+import { ArtistFilterDto, CollectionFilterDto } from "@/types/filter";
 
 export const useCustomerShops = (options?: { enabled?: boolean }) => {
   return useQuery({
@@ -192,14 +192,17 @@ export const useAllCustomerCollections = (
   });
 };
 
-export const useCustomerArtists = (options?: { enabled?: boolean }) => {
+export const useFilteredArtists = (
+  filterParams: ArtistFilterDto,
+  options?: { enabled?: boolean }
+) => {
   return useQuery({
-    queryKey: ["customer-artists"],
+    queryKey: ["filtered-shops", filterParams],
     queryFn: async () => {
       try {
-        return await artistAPI.getAll();
+        return await artistAPI.customerFilter(filterParams);
       } catch (error: any) {
-        console.error("Error fetching artists:", error);
+        console.error("Error fetching filtered shops:", error);
         return [];
       }
     },

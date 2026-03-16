@@ -101,23 +101,23 @@ const ShopForm: React.FC<ShopFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Shop Name *</Label>
+        <Label htmlFor="name">Tên cửa hàng *</Label>
         <Input
           id="name"
+          className="rounded-2xl"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="My Nail Salon"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">Mô tả</Label>
         <Textarea
           id="description"
+          className="rounded-2xl"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Tell customers about your shop..."
           rows={3}
         />
       </div>
@@ -132,7 +132,7 @@ const ShopForm: React.FC<ShopFormProps> = ({
                   <img
                     src={logoPreview}
                     alt="Logo"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-3xl"
                   />
                   <button
                     type="button"
@@ -157,13 +157,13 @@ const ShopForm: React.FC<ShopFormProps> = ({
               />
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              {logoPreview ? "Click to change" : "Click to upload"}
+              {logoPreview ? "Tải ảnh lên" : "Click to upload"}
             </p>
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label>Cover Image</Label>
+          <Label>Ảnh bìa</Label>
           <div className="relative">
             <div className="relative aspect-square bg-muted rounded-lg overflow-hidden group">
               {coverPreview ? (
@@ -171,7 +171,7 @@ const ShopForm: React.FC<ShopFormProps> = ({
                   <img
                     src={coverPreview}
                     alt="Cover"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-3xl"
                   />
                   <button
                     type="button"
@@ -196,7 +196,7 @@ const ShopForm: React.FC<ShopFormProps> = ({
               />
             </div>
             <p className="text-xs text-muted-foreground text-center">
-              {coverPreview ? "Click to change" : "Click to upload"}
+              {coverPreview ? "Tải ảnh lên" : "Click to upload"}
             </p>
           </div>
         </div>
@@ -213,10 +213,10 @@ const ShopForm: React.FC<ShopFormProps> = ({
         {isLoading || uploading ? (
           <div className="flex items-center justify-center gap-3">
             <Loader2 className="w-4 h-4 animate-spin stroke-[3px]" />
-            <span>{uploading ? "Uploading..." : "Processing..."}</span>
+            <span>{uploading ? "Đang cập nhật ..." : "Đang tạo ..."}</span>
           </div>
         ) : (
-          <span>{initialData ? "Update Shop" : "Create New Studio"}</span>
+          <span>{initialData ? "Cập nhật cửa hàng" : "Tạo cửa hàng"}</span>
         )}
       </Button>
     </form>

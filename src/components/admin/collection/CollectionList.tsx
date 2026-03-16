@@ -72,13 +72,15 @@ export const CollectionList = ({
   if (collections.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">
-        <Layers className="w-12 h-12 mx-auto text-muted-foreground" />
-        <div>
-          <h3 className="text-lg font-medium">No collections found</h3>
-          <p className="text-muted-foreground mt-1">
+        <Layers className="w-12 h-12 mx-auto text-muted-foreground opacity-50" />
+        <div className="space-y-1">
+          <h3 className="text-lg font-black tracking-tight text-slate-900 uppercase">
+            Không tìm thấy kết quả
+          </h3>
+          <p className="text-sm font-medium text-muted-foreground">
             {Object.keys(filters).length > 0
-              ? "Try adjusting your filters"
-              : "No collections available yet"}
+              ? "Hãy thử điều chỉnh lại bộ lọc để tìm thấy bộ sưu tập mong muốn"
+              : "Hiện tại chưa có bộ sưu tập nào khả dụng"}
           </p>
         </div>
       </div>

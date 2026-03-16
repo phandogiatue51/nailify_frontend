@@ -4,7 +4,6 @@ import { useStaff } from "@/hooks/useStaff";
 import { useShopOwnerLocations } from "@/hooks/useLocation";
 import { StaffList } from "@/components/staff/StaffList";
 import { StaffFilter } from "@/components/staff/StaffFilter";
-import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, Sparkles } from "lucide-react";
 
@@ -28,15 +27,7 @@ export const StaffManagement = () => {
     });
   };
 
-  const hasActiveFilters = Object.values(filters).some(
-    (value) => value !== "" && value !== undefined,
-  );
-
-  const { data: filteredStaff = [] } = useFilteredStaff(
-    hasActiveFilters ? filters : { SearchTerm: "" },
-  );
-
-  const displayStaff = hasActiveFilters ? filteredStaff : staffList || [];
+  const { data: displayStaff = [] } = useFilteredStaff(filters);
 
   const handleFilterChange = (key: keyof typeof filters, value: any) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -44,31 +35,23 @@ export const StaffManagement = () => {
 
   return (
     <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
-      <div className="flex items-center justify-between p-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Users className="w-4 h-4 text-[#E288F9]" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-              Team Portal
-            </span>
-          </div>
-          <h1 className="text-2xl font-black tracking-tighter text-slate-900">
-            Staff Management
-          </h1>
-        </div>
-        <Button
-          onClick={() => navigate("/staff/create")}
-          className="font-black tracking-tight uppercase rounded-[2rem] w-30 h-10"
-          style={{
-            background:
-              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)"
-          }}
-        >
-          <Plus className="w-5 h-5 mr-1" />
-          <span className="font-bold">Add Staff</span>
-        </Button>
-      </div>
+      <div className="pt-4 text-center">
 
+        <h1 className="text-2xl font-black tracking-tighter text-slate-900 uppercase italic pb-2">
+          Quản lý nhân sự
+        </h1>
+
+      <Button
+        onClick={() => navigate("/staff/create")}
+        className="h-10 px-8 font-black tracking-widest uppercase rounded-full shadow-lg shadow-[#950101]/20 hover:scale-[1.02] transition-transform"
+        style={{
+          background: "linear-gradient(135deg, #950101 0%, #D81B60 100%)"
+        }}
+      >
+        <Plus className="w-5 h-5 stroke-[3px]" />
+        Thêm quản lý
+      </Button>
+      </div>
       <div>
         <StaffFilter
           filters={filters}

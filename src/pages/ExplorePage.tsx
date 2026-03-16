@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthContext } from "@/components/auth/AuthProvider";
 import { Navigate } from "react-router-dom";
-import { useAllShops } from "@/hooks/useShop";
-import { useCustomerArtists } from "@/hooks/useCustomer";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Search, User, Store, Sparkles, Filter } from "lucide-react";
@@ -11,18 +9,43 @@ import NailArtistCard from "@/components/nailArtist/NailArtistCard";
 import { ExploreSkeleton } from "@/components/ui/explore-skeleton";
 import { EmptyExploreState } from "@/components/ui/empty-explore-page";
 import { MobilePagination } from "@/components/ui/pagination-mobile";
-
 import Header from "@/components/ui/header";
 import { BlogListPage } from "./blogPost/BlogListPage";
+import { useFilteredShops } from "@/hooks/useShop";
+import { useFilteredArtists } from "@/hooks/useCustomer";
+
 const ExplorePage = () => {
   const { user, loading } = useAuthContext();
-  const { data: shops, isLoading: shopsLoading } = useAllShops();
-  const { data: artists, isLoading: artistsLoading } = useCustomerArtists();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(""); // ✅ Added missing state
   const [activeTab, setActiveTab] = useState("posts");
-
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
+
+  // ✅ Debounce search to avoid too many API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Reset page when tab changes or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, debouncedSearch]);
+
+  // ✅ Pass search params to the hooks
+  const { data: shops, isLoading: shopsLoading } = useFilteredShops(
+    { Name: debouncedSearch || undefined },
+    { enabled: activeTab === "shops" }
+  );
+
+  const { data: artists, isLoading: artistsLoading } = useFilteredArtists(
+    { SearchTerm: debouncedSearch || undefined },
+    { enabled: activeTab === "artists" }
+  );
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -38,25 +61,26 @@ const ExplorePage = () => {
   }
 
   if (!user) return <Navigate to="/auth" replace />;
-  const filteredShops =
-    shops?.filter((shop) =>
-      [shop.name, shop.description, shop.address].some((field) =>
-        field?.toLowerCase().includes(searchQuery.toLowerCase()),
-      ),
-    ) || [];
 
-  const filteredArtists =
-    artists?.filter((artist) =>
-      [artist.profile?.fullName, artist.address].some((field) =>
-        field?.toLowerCase().includes(searchQuery.toLowerCase()),
-      ),
-    ) || [];
+  // ✅ Remove client-side filtering since API already filters
+  // const filteredShops = shops || []; // Use directly from API
+  // const filteredArtists = artists || []; // Use directly from API
 
   const isLoading = activeTab === "shops" ? shopsLoading : artistsLoading;
 
+  // Calculate pagination items
+  const currentItems = activeTab === "shops"
+    ? (shops || [])
+    : (artists || []);
+
+  const paginatedItems = currentItems.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   return (
     <div>
-      <div className="bg-slate-50/50 min-h-screen">
+      <div className="bg-slate-50 min-h-screen">
         <Header title="Nailify" />
         <div className="bg-white px-6 pt-8 pb-6 rounded-b-[3rem] shadow-sm">
           <div className="flex items-center gap-2 text-[#950101] mb-2">
@@ -82,7 +106,7 @@ const ExplorePage = () => {
                 <Search className="w-5 h-5" />
               </div>
               <Input
-                placeholder={`Tìm kiếm ...`}
+                placeholder={`Tìm kiếm ${activeTab === "shops" ? "cửa hàng" : "thợ nail"}...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-14 pl-12 pr-12 rounded-2xl border-none bg-slate-100/80 focus-visible:ring-2 focus-visible:ring-[#E288F9]/20 font-medium text-slate-900 placeholder:text-slate-400 transition-all"
@@ -132,33 +156,22 @@ const ExplorePage = () => {
               <TabsContent value="shops" className="m-0 space-y-4">
                 {isLoading ? (
                   <ExploreSkeleton />
-                ) : filteredShops.length > 0 ? (
+                ) : shops && shops.length > 0 ? (
                   <>
                     <div className="grid grid-cols-2 gap-4">
-                      {filteredShops
-                        .slice(
-                          (currentPage - 1) * pageSize,
-                          currentPage * pageSize,
-                        )
-                        .map((shop) => (
-                          <ShopCard key={shop.id} shop={shop} />
-                        ))}
+                      {paginatedItems.map((shop) => (
+                        <ShopCard key={shop.id} shop={shop} />
+                      ))}
                     </div>
 
-                    {/* Pagination for shops */}
-                    {filteredShops.length > pageSize && (
+                    {shops.length > pageSize && (
                       <div className="pt-6 mt-6 border-t border-slate-100">
                         <MobilePagination
                           currentPage={currentPage}
-                          totalPages={Math.ceil(
-                            filteredShops.length / pageSize,
-                          )}
+                          totalPages={Math.ceil(shops.length / pageSize)}
                           onPageChange={handlePageChange}
-                          totalItems={filteredShops.length}
-                          visibleItems={Math.min(
-                            pageSize,
-                            filteredShops.length - (currentPage - 1) * pageSize,
-                          )}
+                          totalItems={shops.length}
+                          visibleItems={paginatedItems.length}
                         />
                       </div>
                     )}
@@ -171,34 +184,22 @@ const ExplorePage = () => {
               <TabsContent value="artists" className="m-0 space-y-4">
                 {isLoading ? (
                   <ExploreSkeleton />
-                ) : filteredArtists.length > 0 ? (
+                ) : artists && artists.length > 0 ? (
                   <>
                     <div className="grid grid-cols-2 gap-4">
-                      {filteredArtists
-                        .slice(
-                          (currentPage - 1) * pageSize,
-                          currentPage * pageSize,
-                        )
-                        .map((artist) => (
-                          <NailArtistCard key={artist.id} artist={artist} />
-                        ))}
+                      {paginatedItems.map((artist) => (
+                        <NailArtistCard key={artist.id} artist={artist} />
+                      ))}
                     </div>
 
-                    {/* Pagination for artists */}
-                    {filteredArtists.length > pageSize && (
+                    {artists.length > pageSize && (
                       <div className="pt-6 mt-6 border-t border-slate-100">
                         <MobilePagination
                           currentPage={currentPage}
-                          totalPages={Math.ceil(
-                            filteredArtists.length / pageSize,
-                          )}
+                          totalPages={Math.ceil(artists.length / pageSize)}
                           onPageChange={handlePageChange}
-                          totalItems={filteredArtists.length}
-                          visibleItems={Math.min(
-                            pageSize,
-                            filteredArtists.length -
-                              (currentPage - 1) * pageSize,
-                          )}
+                          totalItems={artists.length}
+                          visibleItems={paginatedItems.length}
                         />
                       </div>
                     )}

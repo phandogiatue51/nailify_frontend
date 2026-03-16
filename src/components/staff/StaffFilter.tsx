@@ -24,7 +24,7 @@ export const StaffFilter = ({
       <div className="relative group">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#E288F9] transition-colors" />
         <Input
-          placeholder="Search by name or email..."
+          placeholder="Tìm kiếm bằng tên hoặc email ..."
           value={filters.SearchTerm}
           onChange={(e) => onFilterChange("SearchTerm", e.target.value)}
           className="pl-11 h-12 rounded-2xl focus-visible:ring-[#E288F9] font-bold transition-all"
@@ -38,7 +38,7 @@ export const StaffFilter = ({
             onChange={(e) => onFilterChange("ShopLocationId", e.target.value)}
             className="w-full h-10 pl-3 pr-8 rounded-xl bg-white border text-xs font-bold text-slate-600 appearance-none focus:outline-none focus:ring-2 focus:ring-[#E288F9]/20"
           >
-            <option value="">All Locations</option>
+            <option value="">Toàn bộ chi nhánh</option>
             {locations.map((loc) => (
               <option key={loc.shopLocationId} value={loc.shopLocationId}>
                 {loc.address}
@@ -62,9 +62,9 @@ export const StaffFilter = ({
             }}
             className="w-full h-10 pl-3 pr-8 rounded-xl bg-white border text-xs font-bold text-slate-600 appearance-none focus:outline-none focus:ring-2 focus:ring-[#E288F9]/20"
           >
-            <option value="">All Status</option>
-            <option value="true">Active Only</option>
-            <option value="false">Inactive Only</option>
+            <option value="">Toàn bộ trạng thái</option>
+            <option value="true">Đang hoạt động</option>
+            <option value="false">Ngừng hoạt động</option>
           </select>
           <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
         </div>
@@ -76,7 +76,7 @@ export const StaffFilter = ({
           className="h-10 px-3 rounded-xl text-[10px] font-black uppercase border border-red-300 tracking-widest text-red-400 hover:text-red-500 hover:bg-red-50"
         >
           <X className="w-3 h-3 mr-1" />
-          Clear
+          Làm mới
         </Button>
       </div>
     </div>

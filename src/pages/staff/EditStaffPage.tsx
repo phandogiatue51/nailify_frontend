@@ -57,8 +57,8 @@ export const EditStaffPage = () => {
   }
 
   return (
-    <div>
-      <div className="flex items-center mb-6">
+    <div className="p-6 bg-slate-50">
+      <div className="flex items-center">
         <Button
           variant="ghost"
           size="icon"
@@ -67,9 +67,7 @@ export const EditStaffPage = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          Edit Member
-        </span>
+
       </div>
 
       <StaffForm

@@ -14,7 +14,7 @@ export const EmptyTabState = ({ title, desc, onAction }) => (
       onClick={onAction}
       className="text-[#E288F9] font-black text-xs uppercase tracking-widest"
     >
-      Get Started
+      Bắt đầu
     </Button>
   </div>
 );

@@ -89,7 +89,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               Giờ vào
             </p>
             <div className="text-xs font-black text-slate-700">
-              <DateDisplay dateString={booking.scheduledStart} showTime />
+              <DateDisplay dateString={booking.scheduledStart} showTime isIcon={false} />
             </div>
           </div>
 
@@ -105,7 +105,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               Giờ ra
             </p>
             <div className="text-xs font-black text-slate-700">
-              <DateDisplay dateString={booking.scheduledEnd} showTime />
+              <DateDisplay dateString={booking.scheduledEnd} showTime isIcon={false} />
             </div>
           </div>
         </div>
@@ -119,75 +119,75 @@ const BookingCard: React.FC<BookingCardProps> = ({
           {/* Row 1: Contextual Actions - Only renders if there's content */}
           {((isShopOwner && [0, 1].includes(booking.status)) ||
             (!isShopOwner && booking.status === 3 && !booking.ratings)) && (
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {isShopOwner && booking.status === 0 && (
-                <div className="flex w-full gap-2 items-center">
-                  <ConfirmationDialog
-                    {...statusConfig.reject}
-                    onConfirm={() => onReject?.(booking.id)}
-                    trigger={
-                      <Button
-                        variant="ghost"
-                        className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
-                      >
-                        Từ chối
-                      </Button>
-                    }
-                  />
-                  <ConfirmationDialog
-                    {...statusConfig.approve}
-                    onConfirm={() => onApprove?.(booking.id)}
-                    trigger={
-                      <Button
-                        variant="ghost"
-                        className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
-                      >
-                        Xác nhận
-                      </Button>
-                    }
-                  />
-                </div>
-              )}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {isShopOwner && booking.status === 0 && (
+                  <div className="flex w-full gap-2 items-center">
+                    <ConfirmationDialog
+                      {...statusConfig.reject}
+                      onConfirm={() => onReject?.(booking.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
+                        >
+                          Từ chối
+                        </Button>
+                      }
+                    />
+                    <ConfirmationDialog
+                      {...statusConfig.approve}
+                      onConfirm={() => onApprove?.(booking.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
+                        >
+                          Xác nhận
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
 
-              {isShopOwner && booking.status === 1 && (
-                <div className="flex w-full gap-2 items-center">
-                  <ConfirmationDialog
-                    {...statusConfig.cancel}
-                    onConfirm={() => onCancel?.(booking.id)}
-                    trigger={
-                      <Button
-                        variant="ghost"
-                        className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
-                      >
-                        Hủy
-                      </Button>
-                    }
-                  />
-                  <ConfirmationDialog
-                    {...statusConfig.complete}
-                    onConfirm={() => onComplete?.(booking.id)}
-                    trigger={
-                      <Button
-                        variant="ghost"
-                        className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
-                      >
-                        Hoàn thành
-                      </Button>
-                    }
-                  />
-                </div>
-              )}
+                {isShopOwner && booking.status === 1 && (
+                  <div className="flex w-full gap-2 items-center">
+                    <ConfirmationDialog
+                      {...statusConfig.cancel}
+                      onConfirm={() => onCancel?.(booking.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          className="flex-1 h-9 rounded-full text-red-400 font-black text-[9px] uppercase tracking-widest border border-red-300 hover:bg-red-500 hover:text-white transition-all"
+                        >
+                          Hủy
+                        </Button>
+                      }
+                    />
+                    <ConfirmationDialog
+                      {...statusConfig.complete}
+                      onConfirm={() => onComplete?.(booking.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          className="flex-1 h-9 rounded-full text-emerald-500 font-black text-[9px] uppercase tracking-widest border border-emerald-300 hover:bg-emerald-500 hover:text-white transition-all"
+                        >
+                          Hoàn thành
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
 
-              {!isShopOwner && booking.status === 3 && !booking.ratings && (
-                <Button
-                  onClick={() => navigate(`/booking/rating/${booking.id}`)}
-                  className="h-12 w-full px-5 rounded-full text-blue-500 font-black text-[9px] uppercase tracking-widest border border-blue-300 hover:bg-blue-100 bg-white"
-                >
-                  Đánh giá trải nghiệm
-                </Button>
-              )}
-            </div>
-          )}
+                {!isShopOwner && booking.status === 3 && !booking.ratings && (
+                  <Button
+                    onClick={() => navigate(`/booking/rating/${booking.id}`)}
+                    className="h-12 w-full px-5 rounded-full text-blue-500 font-black text-[9px] uppercase tracking-widest border border-blue-300 hover:bg-blue-100 bg-white"
+                  >
+                    Đánh giá trải nghiệm
+                  </Button>
+                )}
+              </div>
+            )}
 
           {/* Row 2: Primary Action - Full Width */}
           <Button
