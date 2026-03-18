@@ -1,19 +1,24 @@
 import { useState, useEffect } from "react";
 import { Collection } from "@/types/database";
 import { collectionAPI } from "@/services/api";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
-  Layers,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Building,
   User,
   Loader2,
   AlertCircle,
   Sparkles,
-  ExternalLink,
   Package,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
 interface CollectionDetailModalProps {
   collectionId: string | null;
   open: boolean;
@@ -78,6 +83,13 @@ export const CollectionDetailModal = ({
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl p-0 overflow-hidden border-none !rounded-3xl bg-white shadow-2xl">
+        <VisuallyHidden>
+          <DialogTitle>Details</DialogTitle>
+        </VisuallyHidden>
+
+        <VisuallyHidden>
+          <DialogDescription>Information</DialogDescription>
+        </VisuallyHidden>
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Loader2 className="w-10 h-10 animate-spin text-[#950101]" />
@@ -141,9 +153,7 @@ export const CollectionDetailModal = ({
                   </p>
                   <p className="text-3xl font-black italic text-slate-900">
                     {collection.totalPrice?.toLocaleString() ?? 0}{" "}
-                    <span className="text-sm not-italic text-slate-400">
-                      đ
-                    </span>
+                    <span className="text-sm not-italic text-slate-400">đ</span>
                   </p>
                 </div>
                 <div className="space-y-1 border-l-2 border-slate-200 pl-8">

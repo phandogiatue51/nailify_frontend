@@ -60,7 +60,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
       if (isAdmin) {
         navigate(`admin/blogs/`);
       } else {
-        navigate(`/my-blog`);
+        navigate(`/blog/my-blog`);
       }
       if (onSuccess) onSuccess();
     } catch (error: any) {

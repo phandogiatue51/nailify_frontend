@@ -6,12 +6,15 @@ import { StaffForm } from "@/components/staff/StaffForm";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+
 export const EditStaffPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { locations, isLoading: locationsLoading } = useShopOwnerLocations();
   const { useStaffById, updateStaff } = useStaff();
+  const queryClient = useQueryClient();
 
   const { data: staff, isLoading: staffLoading } = useStaffById(id);
   const [initialData, setInitialData] = useState({});
@@ -38,7 +41,13 @@ export const EditStaffPage = () => {
         formData: formData,
       });
 
+      await queryClient.invalidateQueries({ queryKey: ["staff", id] });
+
       navigate("/staff-management");
+
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["staff-filter"] });
+      }, 100);
     } catch (error) {
       console.error("Failed to update staff:", error);
       toast({
@@ -67,7 +76,6 @@ export const EditStaffPage = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
-
       </div>
 
       <StaffForm

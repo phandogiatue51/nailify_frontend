@@ -1,32 +1,25 @@
 import { useState, useEffect } from "react";
-import { ServiceItem, ComponentType } from "@/types/database";
+import { ServiceItem } from "@/types/database";
 import { serviceItemAPI } from "@/services/api";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
 import { ComponentBadge } from "@/components/badge/ComponentBadge";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   Package,
-  DollarSign,
   Clock,
   Calendar,
   Building,
   User,
   Layers,
-  Edit,
   Loader2,
   AlertCircle,
-  Type,
-  Image as ImageIcon,
-  CheckCircle,
-  XCircle,
   ExternalLink,
   Sparkles,
 } from "lucide-react";
@@ -100,10 +93,16 @@ export const ServiceDetailModal = ({
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-3xl p-0 overflow-hidden border-none !rounded-3xl bg-white shadow-2xl">
+        <VisuallyHidden>
+          <DialogTitle>Details</DialogTitle>
+        </VisuallyHidden>
+
+        <VisuallyHidden>
+          <DialogDescription>Information</DialogDescription>
+        </VisuallyHidden>
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Loader2 className="w-10 h-10 animate-spin text-[#950101]" />
-            
           </div>
         ) : !service ? (
           <div className="text-center py-24 px-12">
@@ -155,9 +154,7 @@ export const ServiceDetailModal = ({
                   </p>
                   <p className="text-4xl font-black italic tracking-tighter text-slate-900">
                     {Number(service.price).toLocaleString()}{" "}
-                    <span className="text-lg not-italic text-slate-400">
-                      đ
-                    </span>
+                    <span className="text-lg not-italic text-slate-400">đ</span>
                   </p>
                 </div>
                 <div className="space-y-1 text-right">

@@ -133,6 +133,11 @@ export const authAPI = {
       method: "POST",
       body: userData,
     }),
+
+  homepage: (orderCode: number) =>
+    apiRequest(`/Auth/homepage/${orderCode}`, {
+      method: "POST",
+    }),
 };
 
 export const profileAPI = {
@@ -931,19 +936,21 @@ export const insightAPI = {
   customer: () => apiRequest(`/Insight/customer`),
 
   shop: (filterParams?: InsightFilters) => {
-    const queryString = filterParams ? buildQuery(filterParams) : '';
+    const queryString = filterParams ? buildQuery(filterParams) : "";
     const url = queryString ? `/Insight/shop?${queryString}` : "/Insight/shop";
     return apiRequest(url);
   },
 
   artist: (filterParams?: InsightFilters) => {
-    const queryString = filterParams ? buildQuery(filterParams) : '';
-    const url = queryString ? `/Insight/artist?${queryString}` : "/Insight/artist";
+    const queryString = filterParams ? buildQuery(filterParams) : "";
+    const url = queryString
+      ? `/Insight/artist?${queryString}`
+      : "/Insight/artist";
     return apiRequest(url);
   },
 
   shopLocation: (id: string, filterParams?: InsightFilters) => {
-    const queryString = filterParams ? buildQuery(filterParams) : '';
+    const queryString = filterParams ? buildQuery(filterParams) : "";
     const url = queryString
       ? `/Insight/shopLocation/${id}?${queryString}`
       : `/Insight/shopLocation/${id}`;
@@ -951,14 +958,13 @@ export const insightAPI = {
   },
 
   shopLocationAuth: (filterParams?: InsightFilters) => {
-    const queryString = filterParams ? buildQuery(filterParams) : '';
+    const queryString = filterParams ? buildQuery(filterParams) : "";
     const url = queryString
       ? `/Insight/shopLocation/auth?${queryString}`
       : "/Insight/shopLocation/auth";
     return apiRequest(url);
   },
 };
-
 
 // In api.ts
 export const buildQuery = (params?: Record<string, any>): string => {

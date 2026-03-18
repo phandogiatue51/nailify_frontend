@@ -90,23 +90,28 @@ export const useShopOwnerCollections = () => {
       });
     },
   });
-
+  
   const deleteCollection = useMutation({
     mutationFn: async (id: string) => {
       return await collectionAPI.deleteCollection(id);
     },
     onSuccess: (data, collectionId) => {
-      toast({
-        description: data.message || "Xóa thành công!",
-        variant: "success",
-        duration: 3000,
-      });
+      // ✅ Update cache FIRST
       queryClient.setQueryData(
         ["shop-owner-collections"],
         (old: Collection[] = []) =>
           old.filter((collection) => collection.id !== collectionId),
       );
+
+      // ✅ Then invalidate to ensure consistency
       queryClient.invalidateQueries({ queryKey: ["shop-owner-collections"] });
+
+      // ✅ Then show toast
+      toast({
+        description: data.message || "Xóa thành công!",
+        variant: "success",
+        duration: 3000,
+      });
     },
     onError: (error: any) => {
       console.error("Error deleting collection:", error);
@@ -117,7 +122,6 @@ export const useShopOwnerCollections = () => {
       });
     },
   });
-
   const getCollectionItems = (collectionId: string) => {
     return [];
   };

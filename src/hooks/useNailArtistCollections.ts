@@ -14,7 +14,10 @@ export const useNailArtistCollections = () => {
         return await collectionAPI.getByArtistAuth();
       } catch (error: any) {
         console.error("Error fetching artist collections:", error);
-        if (error.message?.includes("404") || error.message?.includes("not found")) {
+        if (
+          error.message?.includes("404") ||
+          error.message?.includes("not found")
+        ) {
           return [];
         }
         throw error;
@@ -51,7 +54,13 @@ export const useNailArtistCollections = () => {
 
   // Reuse the same update and delete mutations since endpoints are the same
   const updateCollection = useMutation({
-    mutationFn: async ({ id, formData }: { id: string; formData: FormData }) => {
+    mutationFn: async ({
+      id,
+      formData,
+    }: {
+      id: string;
+      formData: FormData;
+    }) => {
       return await collectionAPI.updateCollection(id, formData);
     },
     onSuccess: (updatedCollection) => {
@@ -85,17 +94,22 @@ export const useNailArtistCollections = () => {
       return await collectionAPI.deleteCollection(id);
     },
     onSuccess: (data, collectionId) => {
-      toast({
-        description: data.message || "Xóa thành công!",
-        variant: "success",
-        duration: 3000,
-      });
+      // ✅ Update cache FIRST
       queryClient.setQueryData(
         ["artist-collections"],
         (old: Collection[] = []) =>
           old.filter((collection) => collection.id !== collectionId),
       );
+
+      // ✅ Then invalidate
       queryClient.invalidateQueries({ queryKey: ["artist-collections"] });
+
+      // ✅ Then show toast
+      toast({
+        description: data.message || "Xóa thành công!",
+        variant: "success",
+        duration: 3000,
+      });
     },
     onError: (error: any) => {
       console.error("Error deleting collection:", error);
@@ -116,7 +130,9 @@ export const useNailArtistCollections = () => {
   };
 };
 
-export const useNailArtistCollectionById = (collectionId: string | undefined) => {
+export const useNailArtistCollectionById = (
+  collectionId: string | undefined,
+) => {
   return useQuery({
     queryKey: ["artist-collection", collectionId],
     queryFn: async () => {

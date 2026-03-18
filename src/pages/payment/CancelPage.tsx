@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { invoiceAPI } from "@/services/api";
-import Header from "@/components/ui/header";
+import MobileLayout from "@/components/layout/MobileLayout";
+import { useAuth } from "@/hooks/use-auth";
 
 export const CancelPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isCancelling, setIsCancelling] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { homepage, loading } = useAuth();
+
   const orderCode = searchParams.get("orderCode");
 
   useEffect(() => {
@@ -26,7 +29,9 @@ export const CancelPage = () => {
         setError(null);
       } catch (error) {
         console.error("Failed to cancel invoice:", error);
-        setError("Không thể hủy hóa đơn. Vui lòng thử lại hoặc liên hệ hỗ trợ.");
+        setError(
+          "Không thể hủy hóa đơn. Vui lòng thử lại hoặc liên hệ hỗ trợ.",
+        );
       } finally {
         setIsCancelling(false);
       }
@@ -35,11 +40,18 @@ export const CancelPage = () => {
     cancelInvoice();
   }, [orderCode]);
 
+  const handleHomepage = async () => {
+    if (orderCode) {
+      await homepage(parseInt(orderCode));
+    } else {
+      navigate("/");
+    }
+  };
+
   // Loading state
   if (isCancelling) {
     return (
-      <div className="min-h-screen bg-white">
-        <Header title="Nailify" />
+      <MobileLayout showNav={false}>
         <div className="px-6 pt-32 flex flex-col items-center text-center">
           <div className="relative mb-8">
             <div className="bg-red-50 p-6 rounded-full">
@@ -52,7 +64,7 @@ export const CancelPage = () => {
           </h1>
 
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-8 max-w-sm">
-            <p className="text-amber-800 font-medium">
+            <p className="text-amber-800 font-medium flex items-center gap-2">
               <TriangleAlert className="h-5 w-5" />
               Vui lòng không chuyển trang
             </p>
@@ -62,20 +74,17 @@ export const CancelPage = () => {
           </div>
 
           {orderCode && (
-            <p className="text-sm text-slate-400">
-              Mã đơn hàng: {orderCode}
-            </p>
+            <p className="text-sm text-slate-400">Mã đơn hàng: {orderCode}</p>
           )}
         </div>
-      </div>
+      </MobileLayout>
     );
   }
 
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-white">
-        <Header title="Nailify" />
+      <MobileLayout showNav={false}>
         <div className="px-6 pt-20 flex flex-col items-center text-center">
           <div className="bg-white p-8 rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white w-full">
             <div className="bg-red-50 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
@@ -99,24 +108,27 @@ export const CancelPage = () => {
 
               <Button
                 variant="ghost"
-                onClick={() => navigate("/")}
+                onClick={handleHomepage}
+                disabled={loading}
                 className="w-full h-12 rounded-2xl text-slate-400 font-black uppercase text-[10px] tracking-widest"
               >
-                <Home className="mr-2 w-3 h-3" />
-                Trở về trang chủ
+                {loading ? (
+                  <Loader2 className="mr-2 w-3 h-3 animate-spin" />
+                ) : (
+                  <Home className="mr-2 w-3 h-3" />
+                )}
+                {loading ? "Đang xử lý..." : "Trở về trang chủ"}
               </Button>
             </div>
           </div>
         </div>
-      </div>
+      </MobileLayout>
     );
   }
 
-  // Success state (your original UI)
+  // Success state
   return (
-    <div className="min-h-screen bg-slate-50/50">
-      <Header title="Nailify" />
-
+    <MobileLayout showNav={false}>
       <div className="px-6 pt-20 flex flex-col items-center text-center">
         <div className="bg-white p-8 rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white w-full">
           <div className="bg-red-50 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6">
@@ -136,16 +148,21 @@ export const CancelPage = () => {
           <div>
             <Button
               variant="outline"
-              onClick={() => navigate("/")}
+              onClick={handleHomepage}
+              disabled={loading}
               className="h-12 rounded-2xl border-slate-200 text-slate-600 font-black uppercase text-[10px] tracking-widest"
             >
-              <Home className="mr-2 w-3 h-3" />
-              Trở về trang chủ
+              {loading ? (
+                <Loader2 className="mr-2 w-3 h-3 animate-spin" />
+              ) : (
+                <Home className="mr-2 w-3 h-3" />
+              )}
+              {loading ? "Đang xử lý..." : "Trở về trang chủ"}
             </Button>
           </div>
         </div>
       </div>
-    </div>
+    </MobileLayout>
   );
 };
 

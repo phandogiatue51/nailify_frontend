@@ -22,16 +22,16 @@ export const StaffCard = ({
     <Card className="group overflow-hidden border shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.06)] transition-all duration-300 rounded-[2rem] bg-white">
       <CardContent className="p-5">
         <div className="grid grid-cols-[auto,1fr] gap-4 mb-4">
-          <div className="rounded-3xl w-24 h-24 flex items-center justify-center text-xl border-2 border-white shadow-sm overflow-hidden">
+          <div className="rounded-3xl flex items-center justify-center text-xl border-2 border-white shadow-sm overflow-hidden">
             {staff.avatarUrl ? (
               <img
                 src={staff.avatarUrl}
-                className="object-cover"
+                className="object-cover  w-24 h-24"
                 alt=""
               />
             ) : (
-              <div className="bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-                <span className="text-2xl font-bold text-white uppercase">
+              <div className="  w-24 h-24 bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+                <span className="text-4xl font-bold text-white uppercase">
                   {staff.fullName?.[0] || "U"}
                 </span>
               </div>

@@ -132,7 +132,7 @@ export const ArtistDetailView = ({
               </div>
             )}
             {artist.artistVerified && (
-              <div className="absolute -top-3 -right-3 bg-[#950101] text-white p-2 rounded-full shadow-xl border-4 border-white">
+              <div className="absolute -top-3 -right-3 bg-emerald-500 text-white p-2 rounded-full shadow-xl border-4 border-white">
                 <CheckCircle className="w-5 h-5" />
               </div>
             )}

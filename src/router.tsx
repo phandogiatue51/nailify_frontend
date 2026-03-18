@@ -104,11 +104,11 @@ export const router = createBrowserRouter(
 
         {
           path: "payments/success",
-          element: withMobileLayout(<SuccessPage />),
+          element: <SuccessPage />,
         },
         {
           path: "payments/cancel",
-          element: withMobileLayout(<CancelPage />),
+          element: <CancelPage />,
         },
 
         {

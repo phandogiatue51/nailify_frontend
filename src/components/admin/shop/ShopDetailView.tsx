@@ -16,6 +16,7 @@ import {
 import { format } from "date-fns";
 import { Profile } from "@/types/database";
 import UserDetailModal from "../user/UserDetailModal";
+import { useToast } from "@/hooks/use-toast";
 interface ShopDetailViewProps {
   shopId: string;
   onShopUpdated?: () => void;
@@ -42,6 +43,7 @@ export const ShopDetailView = ({
   const [owner, setOwner] = useState<Profile | null>(null);
   const [selectedOwnerId, setSelectedOwnerId] = useState<string | null>(null);
   const [shopStats, setShopStats] = useState<BookRateStats | null>(null);
+  const { toast } = useToast();
   const loadShopDetails = async () => {
     if (!shopId) return;
 
@@ -85,11 +87,21 @@ export const ShopDetailView = ({
 
     setVerifying(true);
     try {
-      await shopAPI.verifyShop(shopId);
+      var response = await shopAPI.verifyShop(shopId);
       onShopUpdated?.();
+      toast({
+        description: response.message,
+        variant: "success",
+        duration: 3000,
+      });
       loadShopDetails();
     } catch (error) {
       console.error("Failed to verify shop:", error);
+      toast({
+        description: error?.message,
+        variant: "destructive",
+        duration: 5000,
+      });
     } finally {
       setVerifying(false);
     }

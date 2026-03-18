@@ -30,7 +30,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
         md:shadow-lg md:rounded-[2.5rem] 
         z-10 flex flex-col
       "
-      >
+      > 
         <main className="pb-20">{children}</main>{" "}
         {showNav && !loading && <BottomNav />}
       </div>

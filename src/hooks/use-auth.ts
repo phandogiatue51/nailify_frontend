@@ -94,8 +94,7 @@ export function useAuth() {
   }, []);
 
   useEffect(() => {
-    const token =
-      sessionStorage.getItem("jwtToken");
+    const token = sessionStorage.getItem("jwtToken");
     if (token && !isTokenExpired(token)) {
       const decoded = decodeJWT(token);
       if (decoded) {
@@ -105,10 +104,7 @@ export function useAuth() {
     Promise.resolve().then(() => setLoading(false));
   }, []);
 
-  const login = async (
-    email: string,
-    password: string,
-  ) => {
+  const login = async (email: string, password: string) => {
     if (!isMounted.current) return;
 
     setLoading(true);
@@ -220,8 +216,7 @@ export function useAuth() {
   );
 
   const getAuthHeader = useCallback(() => {
-    const token =
-      sessionStorage.getItem("jwtToken");
+    const token = sessionStorage.getItem("jwtToken");
 
     if (!token) {
       return {};
@@ -236,8 +231,7 @@ export function useAuth() {
   }, []);
 
   const isAuthenticated = useCallback(() => {
-    const token =
-      sessionStorage.getItem("jwtToken");
+    const token = sessionStorage.getItem("jwtToken");
     return !!(token && !isTokenExpired(token));
   }, []);
 
@@ -250,9 +244,48 @@ export function useAuth() {
     [user],
   );
 
+  const homepage = async (orderCode: number) => {
+    if (!isMounted.current) return;
+
+    setLoading(true);
+    try {
+      const response = await authAPI.homepage(orderCode);
+
+      if (!response.token) throw new Error("No token received");
+
+      const storage = sessionStorage;
+      storage.setItem("jwtToken", response.token);
+
+      const decoded = decodeJWT(response.token);
+      if (!decoded) throw new Error("Failed to decode token");
+
+      if (isMounted.current) {
+        setUser(decoded);
+        toast({
+          description: response.message,
+          variant: "success",
+          duration: 3000,
+        });
+        setTimeout(() => {
+          
+          navigate("/");
+        }, 100);
+      }
+
+      return response;
+    } catch (error: any) {
+      throw error;
+    } finally {
+      if (isMounted.current) {
+        setLoading(false);
+      }
+    }
+  };
+
   return {
     user,
     login,
+    homepage,
     signup,
     logout,
     isAuthenticated,

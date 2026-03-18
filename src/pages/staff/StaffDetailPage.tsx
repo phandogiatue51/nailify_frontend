@@ -2,7 +2,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useStaff } from "@/hooks/useStaff";
 import MobileLayout from "@/components/layout/MobileLayout";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
@@ -11,18 +10,15 @@ import {
   Phone,
   MapPin,
   Calendar,
-  ShieldCheck,
   Edit3,
   Power,
 } from "lucide-react";
-import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 export const StaffDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { useStaffById, updateStaffStatus } = useStaff();
+  const { useStaffById } = useStaff();
   const { data: staff, isLoading } = useStaffById(id || "");
-  const { mutateAsync, isPending } = updateStaffStatus;
 
   if (isLoading)
     return (
@@ -152,37 +148,6 @@ export const StaffDetailPage = () => {
             </div>
           </CardContent>
         </Card>
-
-        <ConfirmationDialog
-          onConfirm={() => mutateAsync(id!)}
-          title={staff.isActive ? "Xác nhận vô hiệu hóa" : "Xác nhận kích hoạt"}
-          description={
-            staff.isActive
-              ? `Hành động này sẽ vô hiệu hóa tài khoản nhân viên ${staff.fullName}.`
-              : `Hành động này sẽ kích hoạt lại tài khoản nhân viên ${staff.fullName}.`
-          }
-          confirmText={staff.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
-          cancelText="Quay lại"
-          variant={staff.isActive ? "destructive" : "default"}
-          trigger={
-            <Button
-              disabled={isPending}
-              variant="ghost"
-              className={cn(
-                "flex-1 h-10 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all shadow-sm w-full",
-                staff.isActive
-                  ? "text-red-400 hover:bg-red-100 hover:text-red-500 border border-red-300"
-                  : "text-green-500 hover:bg-green-100 hover:text-green-600 border border-green-300",
-              )}
-            >
-              {isPending
-                ? "Updating..."
-                : staff.isActive
-                  ? "Ngừng hoạt động"
-                  : "Kích hoạt"}
-            </Button>
-          }
-        />
       </div>
     </div>
   );

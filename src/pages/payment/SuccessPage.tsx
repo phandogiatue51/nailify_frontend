@@ -1,23 +1,30 @@
 "use client";
-import { CheckCircle2, Calendar, ArrowRight, Home, Loader2, XCircle, TriangleAlert } from "lucide-react";
+import {
+  CheckCircle2,
+  Calendar,
+  Home,
+  Loader2,
+  XCircle,
+  TriangleAlert,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkoutAPI } from "@/services/api";
-import Header from "@/components/ui/header";
+import MobileLayout from "@/components/layout/MobileLayout";
+import { useAuth } from "@/hooks/use-auth";
 
 export const SuccessPage = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { homepage, loading } = useAuth();
 
   const orderCode = searchParams.get("orderCode");
   const status = searchParams.get("status");
 
   useEffect(() => {
     const processSuccessPayment = async () => {
-      // Don't process if no order code or payment not successful
       if (!orderCode || status !== "PAID") {
         setIsProcessing(false);
         return;
@@ -37,11 +44,16 @@ export const SuccessPage = () => {
     processSuccessPayment();
   }, [orderCode, status]);
 
+  const handleHomepage = async () => {
+    if (orderCode) {
+      await homepage(parseInt(orderCode));
+    }
+  };
+
   // Show loading state while processing
   if (isProcessing) {
     return (
-      <div className="min-h-screen bg-white">
-        <Header title="Nailify" />
+      <MobileLayout showNav={false}>
         <div className="px-6 pt-32 flex flex-col items-center text-center">
           <div className="relative mb-8">
             <div className="bg-emerald-100 p-6 rounded-full">
@@ -54,7 +66,7 @@ export const SuccessPage = () => {
           </h1>
 
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-8 max-w-sm">
-            <p className="text-amber-800 font-medium">
+            <p className="text-amber-800 font-medium flex items-center gap-2">
               <TriangleAlert className="h-5 w-5" />
               Vui lòng không chuyển trang
             </p>
@@ -72,15 +84,14 @@ export const SuccessPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </MobileLayout>
     );
   }
 
   // Show error state if something went wrong
   if (error) {
     return (
-      <div className="min-h-screen bg-white">
-        <Header title="Nailify" />
+      <MobileLayout showNav={false}>
         <div className="px-6 pt-16 flex flex-col items-center text-center">
           <div className="relative mb-8">
             <div className="bg-red-100 p-6 rounded-full">
@@ -95,22 +106,26 @@ export const SuccessPage = () => {
           <p className="text-slate-600 mb-8">{error}</p>
 
           <Button
-            onClick={() => navigate("/")}
-            className="w-full h-14 rounded-full bg-slate-900 text-white font-black uppercase text-xs tracking-widest"
+            variant="ghost"
+            onClick={handleHomepage}
+            disabled={loading}
+            className="w-full h-14 rounded-full text-slate-400 font-black uppercase text-xs tracking-widest"
           >
-            <Home className="mr-2 w-4 h-4" />
-            Trở về trang chủ
+            {loading ? (
+              <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+            ) : (
+              <Home className="mr-2 w-4 h-4" />
+            )}
+            {loading ? "Đang xử lý..." : "Trở về trang chủ"}
           </Button>
         </div>
-      </div>
+      </MobileLayout>
     );
   }
 
-  // Show success state (your original UI)
+  // Show success state
   return (
-    <div className="min-h-screen bg-white">
-      <Header title="Nailify" />
-
+    <MobileLayout showNav={false}>
       <div className="px-6 pt-16 flex flex-col items-center text-center">
         <div className="relative mb-8">
           <div className="absolute inset-0 bg-emerald-100 rounded-full scale-150 animate-ping opacity-20" />
@@ -152,24 +167,21 @@ export const SuccessPage = () => {
 
         <div className="w-full space-y-3">
           <Button
-            onClick={() => navigate("/my-subscription")}
-            className="w-full h-14 rounded-full bg-slate-900 text-white font-black uppercase text-xs tracking-widest hover:bg-slate-800 transition-all"
-          >
-            Xem gói đăng ký của tôi
-            <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
-
-          <Button
             variant="ghost"
-            onClick={() => navigate("/")}
+            onClick={handleHomepage}
+            disabled={loading}
             className="w-full h-14 rounded-full text-slate-400 font-black uppercase text-xs tracking-widest"
           >
-            <Home className="mr-2 w-4 h-4" />
-            Trở về trang chủ
+            {loading ? (
+              <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+            ) : (
+              <Home className="mr-2 w-4 h-4" />
+            )}
+            {loading ? "Đang xử lý..." : "Trở về trang chủ"}
           </Button>
         </div>
       </div>
-    </div>
+    </MobileLayout>
   );
 };
 

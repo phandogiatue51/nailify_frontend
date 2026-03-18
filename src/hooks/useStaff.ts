@@ -101,8 +101,10 @@ export const useStaff = () => {
       return await staffAPI.createStaff(formData);
     },
     onSuccess: (data) => {
+      // ✅ Invalidate ALL staff-filter queries, not just the base
       queryClient.invalidateQueries({ queryKey: ["staff-list"] });
-      queryClient.invalidateQueries({ queryKey: ["staff-filter"] });
+      queryClient.invalidateQueries({ queryKey: ["staff-filter"] }); // This will match ALL keys starting with "staff-filter"
+
       toast({
         description: data.message,
         variant: "success",
@@ -134,7 +136,7 @@ export const useStaff = () => {
       queryClient.setQueryData(["staff", variables.staffId], data);
       queryClient.invalidateQueries({ queryKey: ["staff-list"] });
       queryClient.invalidateQueries({ queryKey: ["current-staff"] });
-      queryClient.invalidateQueries({ queryKey: ["staff-filter"] });
+      queryClient.invalidateQueries({ queryKey: ["staff-filter"] }); // ✅ This will refresh all filtered views
 
       toast({
         description: data.message,
@@ -158,10 +160,7 @@ export const useStaff = () => {
       return await staffAPI.updateStatus(staffId);
     },
     onSuccess: (data, staffId) => {
-      // Update cache with returned staff object
       queryClient.setQueryData(["staff", staffId], data);
-
-      // Refresh lists
       queryClient.invalidateQueries({ queryKey: ["staff-list"] });
       queryClient.invalidateQueries({ queryKey: ["current-staff"] });
       queryClient.invalidateQueries({ queryKey: ["staff-filter"] });

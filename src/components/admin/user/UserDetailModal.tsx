@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { Profile } from "@/types/database";
 import { profileAPI } from "@/services/api";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -107,10 +113,17 @@ export const UserDetailModal = ({
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl p-0 overflow-hidden border-none !rounded-3xl bg-white shadow-2xl">
+        <VisuallyHidden>
+          <DialogTitle>User Details</DialogTitle>
+        </VisuallyHidden>
+        <VisuallyHidden>
+          <DialogDescription>
+            View and manage user account details, status, and information
+          </DialogDescription>
+        </VisuallyHidden>
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Loader2 className="w-10 h-10 animate-spin text-[#950101]" />
-            
           </div>
         ) : !user ? (
           <div className="text-center py-24">
