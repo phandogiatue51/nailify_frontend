@@ -229,7 +229,7 @@ const ShopDetailPage = () => {
             <p className="text-sm text-slate-500 leading-relaxed font-medium italic">
               {shop.description
                 ? `"${shop.description}"`
-                : "Experience the art of luxury nail care."}
+                : "Trải nghiệm đặt lịch nail thông minh."}
             </p>
           </div>
 

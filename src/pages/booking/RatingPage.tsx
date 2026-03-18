@@ -82,7 +82,7 @@ export default function CreateRatingPage() {
               WebkitBackgroundClip: "text",
             }}
           >
-            Rate Experience
+            Đánh Giá Dịch Vụ
           </h1>
         </div>
       </div>
@@ -99,10 +99,10 @@ export default function CreateRatingPage() {
               <Heart className="w-6 h-6 text-[#f988b3] fill-[#f988b3]" />
             </div>
             <h2 className="text-xl font-black uppercase tracking-tight text-slate-800">
-              How was your service?
+              Trải nghiệm của bạn thế nào?
             </h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-              Your feedback helps us improve
+              Góp ý của bạn giúp chúng tôi hoàn thiện hơn
             </p>
           </div>
 
@@ -132,11 +132,11 @@ export default function CreateRatingPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-2">
               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                Share your thoughts (optional)
+                Chia sẻ cảm nhận (không bắt buộc)
               </h3>
             </div>
             <Textarea
-              placeholder="Tell us about the artist, the atmosphere, or your new nails..."
+              placeholder="Chia sẻ về chuyên viên, không gian, hoặc bộ móng mới của bạn..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               className="min-h-[120px] rounded-[1.5rem] border-slate-100 bg-slate-50 focus:bg-white transition-all p-4 text-sm font-medium resize-none"
@@ -149,7 +149,7 @@ export default function CreateRatingPage() {
               className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-xs border-slate-100 text-slate-400"
               onClick={() => navigate("/profile/bookings")}
             >
-              Skip
+              Bỏ qua
             </Button>
             <Button
               className="flex-[2] h-14 rounded-2xl font-black uppercase tracking-widest text-xs text-white shadow-lg active:scale-95 disabled:opacity-50"
@@ -161,7 +161,7 @@ export default function CreateRatingPage() {
               onClick={handleSubmit}
               disabled={createRating.isPending || rating === 0}
             >
-              {createRating.isPending ? "Sending..." : "Submit Review"}
+              {createRating.isPending ? "Đang gửi..." : "Gửi Đánh Giá"}
             </Button>
           </div>
         </div>

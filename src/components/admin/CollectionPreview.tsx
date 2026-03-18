@@ -178,8 +178,7 @@ export const CollectionPreview = ({
                         {collection.name}
                       </h4>
                       <p className="text-xs text-slate-400 font-medium italic line-clamp-2 leading-relaxed">
-                        {collection.description ||
-                          "Collection curated specifically for premium nail experiences."}
+                        {collection.description}
                       </p>
                     </div>
 
