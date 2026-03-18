@@ -67,9 +67,9 @@ const DateTimeSelection = () => {
 
   const timeSlots = useMemo(() => {
     return generateTimeSlots({
-      openingTime: locationSettings?.openingTime,
-      closingTime: locationSettings?.closingTime,
-      bufferMinutes: locationSettings?.bufferMinutes,
+      openingTime: locationSettings?.openingTime ?? "9:00",
+      closingTime: locationSettings?.closingTime ?? "17:00",
+      bufferMinutes: locationSettings?.bufferMinutes ?? 15,
     });
   }, [
     locationSettings?.openingTime,
@@ -87,6 +87,13 @@ const DateTimeSelection = () => {
         selectedDate ? new Date(selectedDate) : undefined,
       );
 
+  console.log("Artist Bookings:", {
+    isArtistBooking,
+    selectedDate,
+    bookings,
+    bookingsLoading,
+  });
+
   const calculatedDuration = selectedCollection
     ? selectedCollection.estimatedDuration ||
       selectedCollection.calculatedDuration ||
@@ -97,14 +104,27 @@ const DateTimeSelection = () => {
       );
 
   const isSlotBusy = (slotTimeStr: string, bookings: any[]) => {
-    const maxCapacity = isArtistBooking
-      ? 1
-      : locationSettings?.maxConcurrentBookings || 1;
-    const buffer = locationSettings?.bufferMinutes || 0;
-
     const [hours, minutes] = slotTimeStr.split(":").map(Number);
     const slotDate = new Date(selectedDateObj);
     slotDate.setHours(hours, minutes, 0, 0);
+
+    // For artist bookings - check if THIS artist is busy
+    if (isArtistBooking) {
+      // Check if artist has ANY booking at this time
+      const hasOverlap = bookings.some((booking) => {
+        const start = new Date(booking.scheduledStart);
+        const end = new Date(booking.scheduledEnd);
+
+        // Check if slot overlaps with booking
+        return slotDate >= start && slotDate < end;
+      });
+
+      return hasOverlap; // Artist is busy if there's any overlap
+    }
+
+    // For location bookings - check capacity
+    const maxCapacity = locationSettings?.maxConcurrentBookings || 1;
+    const buffer = locationSettings?.bufferMinutes || 15;
 
     const overlappingCount = bookings.filter((booking) => {
       const start = new Date(booking.scheduledStart);
@@ -244,11 +264,11 @@ const DateTimeSelection = () => {
                       )}
                     >
                       {slot}
-                        {busy && (
-                      <span className="text-[8px] uppercase absolute bottom-1">
-                        Bận
-                      </span>
-                    )}
+                      {busy && (
+                        <span className="text-[8px] uppercase absolute bottom-1">
+                          Bận
+                        </span>
+                      )}
                       {!canComplete && (
                         <span className="text-[10px]">(đóng cửa)</span>
                       )}

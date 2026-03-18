@@ -364,7 +364,7 @@ export const BookingAPI = {
 
   getAvailableByArtist: (date?: Date) => {
     const url = date
-      ? `/Booking/artist/available/?date=${date.toISOString()}`
+      ? `/Booking/artist/available?date=${date.toISOString()}`
       : `/Booking/artist/available`;
     return apiRequest(url);
   },

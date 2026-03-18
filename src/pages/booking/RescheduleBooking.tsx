@@ -59,7 +59,7 @@ const RescheduleBooking = () => {
     const slotStart = new Date(selectedDateObj);
     slotStart.setHours(hours, minutes, 0, 0);
 
-    const buffer = locationData?.bufferMinutes || 0;
+    const buffer = locationData?.bufferMinutes || 15;
 
     const overlappingBookings = conflicts.filter((b: any) => {
       if (b.id === id) return false;
@@ -77,9 +77,9 @@ const RescheduleBooking = () => {
 
   const timeSlots = useMemo(() => {
     return generateTimeSlots({
-      openingTime: locationData?.openingTime,
-      closingTime: locationData?.closingTime,
-      bufferMinutes: locationData?.bufferMinutes,
+      openingTime: locationData?.openingTime ?? "9:00",
+      closingTime: locationData?.closingTime ?? "17:00",
+      bufferMinutes: locationData?.bufferMinutes ?? 15,
     });
   }, [
     locationData?.openingTime,

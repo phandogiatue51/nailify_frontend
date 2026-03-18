@@ -17,7 +17,7 @@ export const useNailArtist = () => {
     queryFn: async () => {
       try {
         const data = await artistAPI.getByAuth();
-        return data || null; 
+        return data || null;
       } catch (error: any) {
         if (
           error.message?.includes("404") ||
@@ -28,6 +28,9 @@ export const useNailArtist = () => {
         throw error;
       }
     },
+
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   const createArtist = useMutation({

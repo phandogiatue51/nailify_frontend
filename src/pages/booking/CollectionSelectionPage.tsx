@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "@/components/auth/AuthProvider";
-import { useAllCustomerCollections } from "@/hooks/useCustomer";
+import { useAllCustomerCollections, useCollections } from "@/hooks/useCustomer";
 import { useQuery } from "@tanstack/react-query";
 import { tagAPI } from "@/services/api";
 import { TagDto } from "@/types/type";
@@ -70,8 +70,7 @@ const CollectionSelectionPage = () => {
   }, [user, debouncedSearch, selectedTags]);
 
   // Fetch collections
-  const { data: collections = [], isLoading } =
-    useAllCustomerCollections(filterParams);
+  const { data: collections = [], isLoading } = useCollections(filterParams);
 
   // Handle tag selection
   const toggleTag = (tagId: string) => {

@@ -185,7 +185,8 @@ export const useBookings = () => {
           throw new Error("Invalid booking type");
       }
     },
-    onSuccess: (data) => {
+    onSuccess: (data, params) => {
+      // ✅ Now params is available!
       toast({
         description: data.message || "Đặt lịch thành công!",
         variant: "success",
@@ -199,6 +200,36 @@ export const useBookings = () => {
         queryClient.invalidateQueries({ queryKey: ["shop-auth-bookings"] });
       } else if (user?.role === 2) {
         queryClient.invalidateQueries({ queryKey: ["artist-auth-bookings"] });
+      }
+
+      // ✅ Invalidate location and artist availability queries
+      if (params.shopLocationId) {
+        queryClient.invalidateQueries({
+          queryKey: ["location-bookings", params.shopLocationId],
+        });
+        // Also invalidate with date
+        if (params.bookingDate) {
+          const dateObj = new Date(params.bookingDate);
+          queryClient.invalidateQueries({
+            queryKey: [
+              "location-bookings",
+              params.shopLocationId,
+              dateObj.toISOString(),
+            ],
+          });
+        }
+      }
+
+      if (params.nailArtistId) {
+        queryClient.invalidateQueries({
+          queryKey: ["artist-bookings"],
+        });
+        if (params.bookingDate) {
+          const dateObj = new Date(params.bookingDate);
+          queryClient.invalidateQueries({
+            queryKey: ["artist-bookings", dateObj.toISOString()],
+          });
+        }
       }
 
       // Also invalidate the specific booking if ID exists
@@ -498,7 +529,7 @@ export const useBookings = () => {
     return useQuery({
       queryKey: ["artist-bookings", isoDate],
       queryFn: async () => {
-        return await BookingAPI.getAvailableByArtist(
+        return await BookingAPI.getByArtistAuth(
           isoDate ? new Date(isoDate) : undefined,
         );
       },

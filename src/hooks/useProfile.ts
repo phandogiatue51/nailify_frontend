@@ -2,13 +2,14 @@ import { useState, useCallback, useEffect } from "react";
 import { profileAPI } from "@/services/api";
 import { Profile } from "@/types/database";
 import { useToast } from "./use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function useProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-
+  const queryClient = useQueryClient();
   const fetchProfile = useCallback(async (forceRefresh = false) => {
     // Don't fetch if already loading
     if (loading && !forceRefresh) return profile;
@@ -81,6 +82,8 @@ export function useProfile() {
           variant: "success",
           duration: 3000,
         });
+
+        queryClient.invalidateQueries({ queryKey: ["my-artist"] });
 
         const updatedProfile = await profileAPI.getProfile();
         setProfile(updatedProfile);

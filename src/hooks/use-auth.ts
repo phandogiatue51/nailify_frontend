@@ -261,13 +261,7 @@ export function useAuth() {
 
       if (isMounted.current) {
         setUser(decoded);
-        toast({
-          description: response.message,
-          variant: "success",
-          duration: 3000,
-        });
         setTimeout(() => {
-          
           navigate("/");
         }, 100);
       }

@@ -173,7 +173,6 @@ export const useAllCustomerCollections = (
   filterParams?: CollectionFilterDto,
   options?: { enabled?: boolean },
 ) => {
-
   return useQuery({
     queryKey: ["all-customer-collections", filterParams],
     queryFn: async () => {
@@ -192,9 +191,31 @@ export const useAllCustomerCollections = (
   });
 };
 
+export const useCollections = (
+  filterParams?: CollectionFilterDto,
+  options?: { enabled?: boolean },
+) => {
+  return useQuery({
+    queryKey: ["all-customer-collections", filterParams],
+    queryFn: async () => {
+      try {
+        const response = await collectionAPI.adminFilter(filterParams);
+        if (Array.isArray(response)) {
+          return response;
+        }
+
+        return [];
+      } catch (error: any) {
+        return [];
+      }
+    },
+    enabled: options?.enabled ?? true,
+  });
+};
+
 export const useFilteredArtists = (
   filterParams: ArtistFilterDto,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) => {
   return useQuery({
     queryKey: ["filtered-shops", filterParams],
