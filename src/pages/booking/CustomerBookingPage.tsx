@@ -11,6 +11,8 @@ import { Loader2, ArrowLeft } from "lucide-react";
 
 import { ServiceSummary } from "@/components/booking/ServiceSummary";
 import { LocationStep } from "@/components/booking/LocationStep";
+import { AddOnsDrawer } from "@/components/booking/AddOnsDrawer";
+import { ServiceItem } from "@/types/database";
 
 const CustomerBookingPage = () => {
   const { shopId: paramShopId, artistId: paramArtistId } = useParams<{
@@ -37,7 +39,12 @@ const CustomerBookingPage = () => {
   const customerName = locationState.state?.customerName || "";
   const customerPhone = locationState.state?.customerPhone || "";
   const customerAddress = locationState.state?.customerAddress || "";
-  const selectedItems = locationState.state?.selectedItems || [];
+  
+  // Convert selectedItems to state
+  const [selectedItems, setSelectedItems] = useState<ServiceItem[]>(
+    locationState.state?.selectedItems || []
+  );
+  
   const selectedCollection = locationState.state?.selectedCollection;
 
   useEffect(() => {
@@ -95,12 +102,22 @@ const CustomerBookingPage = () => {
         ) : (
           <div className="p-4 space-y-6">
             {isArtistBooking && (
-              <ServiceSummary
-                selectedItems={selectedItems}
-                selectedCollection={selectedCollection}
-                shopLocationId={null}
-                nailArtistId={nailArtistId}
-              />
+              <div className="relative">
+                <ServiceSummary
+                  selectedItems={selectedItems}
+                  selectedCollection={selectedCollection}
+                  shopLocationId={null}
+                  nailArtistId={nailArtistId}
+                />
+                {selectedCollection && (
+                  <AddOnsDrawer
+                    shopId={shopId}
+                    nailArtistId={nailArtistId}
+                    selectedItems={selectedItems}
+                    onAddItems={setSelectedItems}
+                  />
+                )}
+              </div>
             )}
 
             {isShopBooking && (
@@ -113,12 +130,22 @@ const CustomerBookingPage = () => {
             )}
 
             {isShopBooking && selectedLocation && (
-              <ServiceSummary
-                selectedItems={selectedItems}
-                selectedCollection={selectedCollection}
-                shopLocationId={selectedLocation}
-                nailArtistId={null}
-              />
+              <div className="relative">
+                <ServiceSummary
+                  selectedItems={selectedItems}
+                  selectedCollection={selectedCollection}
+                  shopLocationId={selectedLocation}
+                  nailArtistId={null}
+                />
+                {selectedCollection && (
+                  <AddOnsDrawer
+                    shopId={shopId}
+                    nailArtistId={null}
+                    selectedItems={selectedItems}
+                    onAddItems={setSelectedItems}
+                  />
+                )}
+              </div>
             )}
 
             <div className="sticky bottom-0 left-0 right-0 p-4 text-center">

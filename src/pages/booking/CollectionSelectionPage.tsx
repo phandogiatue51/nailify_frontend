@@ -1,24 +1,24 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "@/components/auth/AuthProvider";
-import { useAllCustomerCollections, useCollections } from "@/hooks/useCustomer";
+import {
+  useCollections,
+  useAllCustomerService,
+} from "@/hooks/useCustomer";
 import { useQuery } from "@tanstack/react-query";
 import { tagAPI } from "@/services/api";
 import { TagDto } from "@/types/type";
-import { TagCategory } from "@/types/filter";
-import { CollectionFilterDto } from "@/types/filter";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import CollectionCard from "@/components/collection/CollectionCard";
-import { Loader2, Search, X, ArrowLeft } from "lucide-react";
+  CollectionFilterDto,
+  ServiceItemFilterDto,
+} from "@/types/filter";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import BookingFilter from "@/components/booking/BookingFilter";
+import GuestCollectionTab from "@/components/booking/GuestCollectionTab";
+import GuestServiceTab from "@/components/booking/GuestServiceTab";
+import { ServiceItem } from "@/types/database";
 
 const CollectionSelectionPage = () => {
   const navigate = useNavigate();
@@ -27,6 +27,9 @@ const CollectionSelectionPage = () => {
 
   // Get customer info from location state
   const { customerProfile } = location.state || {};
+
+  // Tab state
+  const [activeTab, setActiveTab] = useState("collections");
 
   // Filter states
   const [searchName, setSearchName] = useState("");
@@ -47,11 +50,10 @@ const CollectionSelectionPage = () => {
     return () => clearTimeout(timer);
   }, [searchName]);
 
-  // Build filter params based on user role
-  const filterParams = useMemo(() => {
+  // Build filter params for collections
+  const collectionFilterParams = useMemo(() => {
     const params: CollectionFilterDto = {};
 
-    // Add owner filter based on user role
     if (user?.role === 1 && user.shopId) {
       params.ShopId = user.shopId;
     } else if (user?.role === 4 && user.nailArtistId) {
@@ -69,8 +71,29 @@ const CollectionSelectionPage = () => {
     return Object.keys(params).length > 0 ? params : undefined;
   }, [user, debouncedSearch, selectedTags]);
 
-  // Fetch collections
-  const { data: collections = [], isLoading } = useCollections(filterParams);
+  // Build filter params for services
+  const serviceFilterParams = useMemo(() => {
+    const params: ServiceItemFilterDto = {};
+
+    if (user?.role === 1 && user.shopId) {
+      params.ShopId = user.shopId;
+    } else if (user?.role === 4 && user.nailArtistId) {
+      params.NailArtistId = user.nailArtistId;
+    }
+
+    if (debouncedSearch) {
+      params.SearchTerm = debouncedSearch;
+    }
+
+    // Note: ServiceItemFilterDto currently doesn't support TagIds
+    // but TagSelector is shared. If service doesn't use tags, it will just show all with current name search.
+
+    return Object.keys(params).length > 0 ? params : undefined;
+  }, [user, debouncedSearch]);
+
+  // Fetch data
+  const { data: collections = [], isLoading: collectionsLoading } = useCollections(collectionFilterParams);
+  const { data: services = [], isLoading: servicesLoading } = useAllCustomerService(serviceFilterParams);
 
   // Handle tag selection
   const toggleTag = (tagId: string) => {
@@ -96,6 +119,28 @@ const CollectionSelectionPage = () => {
       ...existingState,
       selectedCollection: collection,
       collectionId: collection.id,
+      selectedItems: [], // Clear items if collection is selected
+    };
+
+    if (user?.role === 1 || user?.role === 3) {
+      bookingState.shopId = user.shopId;
+      bookingState.type = "shop";
+    } else if (user?.role === 4) {
+      bookingState.nailArtistId = user.nailArtistId;
+      bookingState.type = "artist";
+    }
+
+    navigate("/customer-book", { state: bookingState });
+  };
+
+  const handleSelectService = (service: ServiceItem) => {
+    const existingState = location.state || {};
+
+    const bookingState: any = {
+      ...existingState,
+      selectedCollection: null,
+      collectionId: null,
+      selectedItems: [service],
     };
 
     if (user?.role === 1 || user?.role === 3) {
@@ -124,7 +169,7 @@ const CollectionSelectionPage = () => {
             WebkitBackgroundClip: "text",
           }}
         >
-          Chọn set Nail
+          Chọn dịch vụ / collection
         </h1>
       </div>
 
@@ -138,122 +183,43 @@ const CollectionSelectionPage = () => {
       )}
 
       <div className="p-4 space-y-4">
-        {/* Filters */}
-        <div className="space-y-3">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input
-              type="text"
-              placeholder="Tìm kiếm set nail ..."
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)}
-              className="pl-9 pr-4 py-2 w-full bg-white border-slate-200 rounded-lg"
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="collections">Set Nail</TabsTrigger>
+            <TabsTrigger value="services">Dịch vụ lẻ</TabsTrigger>
+          </TabsList>
+
+          <div className="mb-4">
+            <BookingFilter
+              searchName={searchName}
+              setSearchName={setSearchName}
+              selectedTags={selectedTags}
+              toggleTag={toggleTag}
+              allTags={allTags}
+              clearFilters={clearFilters}
+              placeholder={activeTab === "collections" ? "Tìm kiếm set nail ..." : "Tìm kiếm dịch vụ ..."}
             />
           </div>
 
-          {/* Tags Filter */}
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="bg-white border-slate-200 flex-1 justify-between"
-                >
-                  <span>Lọc theo phân loại</span>
-                  {selectedTags.length > 0 && (
-                    <Badge variant="secondary" className="ml-2">
-                      {selectedTags.length}
-                    </Badge>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto">
-                {allTags.map((tag) => (
-                  <DropdownMenuCheckboxItem
-                    key={tag.id}
-                    checked={selectedTags.includes(tag.id)}
-                    onCheckedChange={() => toggleTag(tag.id)}
-                  >
-                    <div className="flex flex-col">
-                      <span>{tag.name}</span>
-                      <span className="text-xs text-slate-500">
-                        {TagCategory[tag.category]}
-                      </span>
-                    </div>
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <TabsContent value="collections" className="mt-0">
+            <GuestCollectionTab
+              collections={collections}
+              isLoading={collectionsLoading}
+              onSelect={handleSelectCollection}
+              activeFilterCount={activeFilterCount}
+            />
+          </TabsContent>
 
-            {activeFilterCount > 0 && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={clearFilters}
-                className="shrink-0"
-                title="Clear all filters"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-
-          {/* Selected Tags Display */}
-          {selectedTags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {selectedTags.map((tagId) => {
-                const tag = allTags.find((t) => t.id === tagId);
-                return tag ? (
-                  <Badge
-                    key={tagId}
-                    variant="secondary"
-                    className="flex items-center gap-1 px-3 py-1"
-                  >
-                    {tag.name}
-                    <button
-                      onClick={() => toggleTag(tagId)}
-                      className="ml-1 hover:text-slate-700"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ) : null;
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* Collections Grid */}
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-[#E288F9]" />
-          </div>
-        ) : collections.length > 0 ? (
-          <>
-            <div className="grid grid-cols-2 gap-3">
-              {collections.map((collection) => (
-                <div
-                  key={collection.id}
-                  className="cursor-pointer transform active:scale-95 transition-transform"
-                  onClick={() => handleSelectCollection(collection)}
-                >
-                  <CollectionCard collection={collection} />
-                </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-slate-500">
-                {activeFilterCount > 0
-                  ? "Không có set nail phù hợp"
-                  : "Không có set nail"}
-              </p>
-            </CardContent>
-          </Card>
-        )}
+          <TabsContent value="services" className="mt-0">
+            <GuestServiceTab
+              services={services}
+              isLoading={servicesLoading}
+              onSelect={handleSelectService}
+              activeFilterCount={activeFilterCount}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
