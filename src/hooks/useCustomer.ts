@@ -6,7 +6,11 @@ import {
   artistAPI,
 } from "@/services/api";
 import { ServiceItem, ComponentType } from "@/types/database";
-import { ArtistFilterDto, CollectionFilterDto } from "@/types/filter";
+import {
+  ArtistFilterDto,
+  CollectionFilterDto,
+  ServiceItemFilterDto,
+} from "@/types/filter";
 
 export const useCustomerShops = (options?: { enabled?: boolean }) => {
   return useQuery({
@@ -55,7 +59,11 @@ export const useCustomerArtistById = (artistId: string | undefined) => {
   });
 };
 
-export const useCustomerServiceItems = (shopId?: string, artistId?: string) => {
+export const useCustomerServiceItems = (
+  shopId?: string,
+  artistId?: string,
+  options?: { enabled?: boolean },
+) => {
   const { data: serviceItems = [], isLoading } = useQuery<ServiceItem[]>({
     queryKey: ["customer-service-items", shopId, artistId],
     queryFn: async () => {
@@ -76,7 +84,7 @@ export const useCustomerServiceItems = (shopId?: string, artistId?: string) => {
       }
       return [];
     },
-    enabled: !!shopId || !!artistId,
+    enabled: (!!shopId || !!artistId) && (options?.enabled ?? true),
   });
 
   const groupedItems = serviceItems.reduce(
@@ -154,12 +162,15 @@ export const useCustomerCollectionById = (collectionId: string | undefined) => {
   });
 };
 
-export const useAllCustomerServiceItems = (options?: { enabled?: boolean }) => {
+export const useAllCustomerServiceItems = (
+  filterParams?: ServiceItemFilterDto,
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
-    queryKey: ["all-customer-service-items"],
+    queryKey: ["all-customer-service-items", filterParams],
     queryFn: async () => {
       try {
-        return await serviceItemAPI.getAll();
+        return await serviceItemAPI.customerFilter(filterParams || {});
       } catch (error: any) {
         console.error("Error fetching all service items:", error);
         return [];
@@ -169,11 +180,12 @@ export const useAllCustomerServiceItems = (options?: { enabled?: boolean }) => {
   });
 };
 
+export const useAllCustomerService = useAllCustomerServiceItems;
+
 export const useAllCustomerCollections = (
   filterParams?: CollectionFilterDto,
   options?: { enabled?: boolean },
 ) => {
-
   return useQuery({
     queryKey: ["all-customer-collections", filterParams],
     queryFn: async () => {
@@ -192,9 +204,31 @@ export const useAllCustomerCollections = (
   });
 };
 
+export const useCollections = (
+  filterParams?: CollectionFilterDto,
+  options?: { enabled?: boolean },
+) => {
+  return useQuery({
+    queryKey: ["all-customer-collections", filterParams],
+    queryFn: async () => {
+      try {
+        const response = await collectionAPI.adminFilter(filterParams);
+        if (Array.isArray(response)) {
+          return response;
+        }
+
+        return [];
+      } catch (error: any) {
+        return [];
+      }
+    },
+    enabled: options?.enabled ?? true,
+  });
+};
+
 export const useFilteredArtists = (
   filterParams: ArtistFilterDto,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) => {
   return useQuery({
     queryKey: ["filtered-shops", filterParams],

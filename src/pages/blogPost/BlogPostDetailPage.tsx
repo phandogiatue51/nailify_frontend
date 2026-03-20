@@ -139,11 +139,14 @@ export const BlogPostDetailPage = () => {
           {/* Like Button & Glass-morphism Picker */}
           <div className="relative" ref={reactionRef}>
             <button
-              onClick={() => {
-                const reactionTypeToSend = myReaction ? myReaction.type : 0;
-                handleReaction(reactionTypeToSend);
+              onClick={(e) => {
+                e.stopPropagation();
+                if (myReaction) {
+                  handleReaction(myReaction.type);
+                } else {
+                  setShowReactions(!showReactions);
+                }
               }}
-              onMouseEnter={() => setShowReactions(true)}
               className={cn(
                 "w-full py-5 rounded-[1.5rem] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-sm",
                 myReaction
@@ -158,11 +161,14 @@ export const BlogPostDetailPage = () => {
               )}
               {myReaction
                 ? reactionOptions.find((r) => r.type === myReaction.type)?.label
-                : "React"}
+                : "Thích"}
             </button>
 
             {showReactions && (
-              <div className="absolute bottom-full left-0 mb-4 p-2 bg-white/90 backdrop-blur-md rounded-full shadow-2xl border border-white flex gap-2 animate-in fade-in slide-in-from-bottom-3 z-50">
+              <div 
+                className="absolute bottom-full left-0 mb-4 p-2 bg-white/90 backdrop-blur-md rounded-full shadow-2xl border border-white flex gap-2 animate-in fade-in slide-in-from-bottom-3 z-50"
+                onMouseLeave={() => setShowReactions(false)}
+              >
                 {reactionOptions.map((reaction) => (
                   <button
                     key={reaction.type}

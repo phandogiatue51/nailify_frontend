@@ -71,7 +71,7 @@ const CollectionDetail: React.FC<CollectionDetailProps> = ({ collection }) => {
         </div>
       ) : (
         <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
-          <div className="w-full h-full object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+          <div className="w-full h-full rounded-[3rem] object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
             <span className="text-4xl font-bold text-white uppercase">
               {collection.name?.[0] || "U"}
             </span>

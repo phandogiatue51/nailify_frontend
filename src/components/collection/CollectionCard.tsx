@@ -78,16 +78,16 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
           </div>
         )}
 
-        <div className="relative aspect-square bg-slate-50 overflow-hidden">
+        <div className="relative bg-slate-50 overflow-hidden">
           {collection.imageUrl ? (
             <img
               src={collection.imageUrl}
               alt={collection.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-24 object-cover transition-transform duration-500 group-hover:scale-110"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-              <span className="text-5xl font-bold text-white uppercase">
+            <div className="w-full h-24 bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+              <span className="text-3xl font-bold text-white uppercase">
                 {collection.name?.[0] || "U"}
               </span>
             </div>

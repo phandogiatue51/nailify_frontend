@@ -11,6 +11,8 @@ import { Loader2, ArrowLeft } from "lucide-react";
 
 import { ServiceSummary } from "@/components/booking/ServiceSummary";
 import { LocationStep } from "@/components/booking/LocationStep";
+import { AddOnsDrawer } from "@/components/booking/AddOnsDrawer";
+import { ServiceItem } from "@/types/database";
 
 const CustomerBookingPage = () => {
   const { shopId: paramShopId, artistId: paramArtistId } = useParams<{
@@ -37,9 +39,28 @@ const CustomerBookingPage = () => {
   const customerName = locationState.state?.customerName || "";
   const customerPhone = locationState.state?.customerPhone || "";
   const customerAddress = locationState.state?.customerAddress || "";
-  const selectedItems = locationState.state?.selectedItems || [];
-  const selectedCollection = locationState.state?.selectedCollection;
 
+  // Initialize selectedItems from location state
+  const [selectedItems, setSelectedItems] = useState<ServiceItem[]>(
+    locationState.state?.selectedItems || []
+  );
+  const [selectedCollection, setSelectedCollection] = useState<any>(
+    locationState.state?.selectedCollection || null
+  );
+
+  // Update state when location state changes (when coming back from next step)
+  useEffect(() => {
+    if (locationState.state) {
+      if (locationState.state.selectedItems) {
+        setSelectedItems(locationState.state.selectedItems);
+      }
+      if (locationState.state.selectedCollection) {
+        setSelectedCollection(locationState.state.selectedCollection);
+      }
+    }
+  }, [locationState.state]);
+
+  // Auto-select first location for shop bookings
   useEffect(() => {
     if (isShopBooking && locations.length > 0 && !selectedLocation) {
       setSelectedLocation(locations[0].shopLocationId);
@@ -48,7 +69,7 @@ const CustomerBookingPage = () => {
 
   const handleNext = () => {
     if (isShopBooking && !selectedLocation) {
-      alert("Please select a location");
+      alert("Vui lòng chọn địa điểm");
       return;
     }
 
@@ -69,74 +90,79 @@ const CustomerBookingPage = () => {
   };
 
   const isLoading = locationsLoading;
+
   return (
-    <div>
-      <div className="min-h-screen bg-slate-50">
-        <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <h1
-            className="font-black tracking-tight uppercase text-xl bg-clip-text text-transparent pb-1"
-            style={{
-              backgroundImage:
-                "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
-              WebkitBackgroundClip: "text",
-            }}
-          >
-            {isArtistBooking ? "Đặt lịch với thợ Nail" : "Đặt lịch với cửa hàng"}
-          </h1>
+    <div className="min-h-screen bg-slate-50">
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+        <h1
+          className="font-black tracking-tight uppercase text-xl bg-clip-text text-transparent pb-1"
+          style={{
+            backgroundImage:
+              "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+            WebkitBackgroundClip: "text",
+          }}
+        >
+          {isArtistBooking ? "Đặt lịch với thợ Nail" : "Đặt lịch với cửa hàng"}
+        </h1>
+      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-[#E288F9]" />
         </div>
+      ) : (
+        <div className="p-4 space-y-6 pb-24">
+          {/* Location Step (Shop only) */}
+          {isShopBooking && (
+            <LocationStep
+              locations={locations}
+              selectedLocation={selectedLocation}
+              onSelectLocation={setSelectedLocation}
+              isLoading={locationsLoading}
+            />
+          )}
 
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin" />
-          </div>
-        ) : (
-          <div className="p-4 space-y-6">
-            {isArtistBooking && (
-              <ServiceSummary
-                selectedItems={selectedItems}
-                selectedCollection={selectedCollection}
-                shopLocationId={null}
-                nailArtistId={nailArtistId}
-              />
-            )}
-
-            {isShopBooking && (
-              <LocationStep
-                locations={locations}
-                selectedLocation={selectedLocation}
-                onSelectLocation={setSelectedLocation}
-                isLoading={locationsLoading}
-              />
-            )}
-
-            {isShopBooking && selectedLocation && (
+          {/* Service Summary - Always show */}
+          {((isShopBooking && selectedLocation) || isArtistBooking) && (
+            <div className="space-y-4">
               <ServiceSummary
                 selectedItems={selectedItems}
                 selectedCollection={selectedCollection}
                 shopLocationId={selectedLocation}
-                nailArtistId={null}
+                nailArtistId={nailArtistId}
               />
-            )}
 
-            <div className="sticky bottom-0 left-0 right-0 p-4 text-center">
-              <Button
-                onClick={handleNext}
-                style={{
-                  background:
-                    "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
-                  border: "none",
-                }}
-                className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
-              >
-                Tiếp theo: Chọn ngày & giờ
-              </Button>
+              {/* Add Ons Drawer - Always show */}
+              <AddOnsDrawer
+                shopId={shopId}
+                nailArtistId={nailArtistId}
+                selectedItems={selectedItems}
+                onAddItems={setSelectedItems}
+              />
             </div>
+          )}
+
+          {/* Next Button */}
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg pb-20">
+            <Button
+              onClick={handleNext}
+              disabled={isShopBooking && !selectedLocation}
+              className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-sm shadow-lg"
+              style={{
+                background:
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                border: "none",
+              }}
+            >
+              Tiếp theo: Chọn ngày & giờ
+            </Button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

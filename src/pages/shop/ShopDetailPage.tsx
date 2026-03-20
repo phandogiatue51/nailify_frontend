@@ -183,7 +183,7 @@ const ShopDetailPage = () => {
           <div className="flex justify-between items-start">
             <div className="space-y-3">
               <div className="space-y-1">
-                <h1 className="text-3xl font-black tracking-tight text-slate-900 leading-none">
+                <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-none">
                   {shop.name}
                 </h1>
               </div>
@@ -196,11 +196,11 @@ const ShopDetailPage = () => {
                 shopRating && (
                   <div className="inline-flex items-center gap-1.5 bg-amber-50/50 px-3 py-1 rounded-full border border-amber-100/50">
                     <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    <span className="text-md font-black text-slate-700">
+                    <span className="text-sm font-medium text-slate-700">
                       {shopRating.averageRating.toFixed(1)}
                     </span>
-                    <span className="text-sm font-bold text-slate-400 ml-0.5">
-                      ({shopRating.totalRatings} lượt đánh giá)
+                    <span className="text-sm font-medium text-slate-400 ml-0.5">
+                      ({shopRating.totalRatings})
                     </span>
                   </div>
                 )
@@ -225,7 +225,7 @@ const ShopDetailPage = () => {
             </div>
           </div>
 
-          <div className="border-t border-slate-50 mb-6">
+          <div className="border-t border-slate-50 mb-4 mt-2">
             <p className="text-sm text-slate-500 leading-relaxed font-medium italic">
               {shop.description
                 ? `"${shop.description}"`
@@ -246,7 +246,7 @@ const ShopDetailPage = () => {
       <div className="px-4 mt-6">
         <Card className="overflow-hidden border-0 shadow-lg rounded-3xl">
           <CardContent className="p-6">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#950101] to-[#ffcfe9] flex items-center justify-center">
                 <Wand2 className="w-6 h-6 text-white" />
               </div>
@@ -258,19 +258,20 @@ const ShopDetailPage = () => {
                   Tự tạo mẫu móng thiết kế của riêng bạn
                 </p>
               </div>
-              <Button
-                onClick={() => navigate(`/shop/${shopId}/custom`)}
-                size="sm"
-                className="font-black tracking-tight uppercase rounded-[2rem]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
-                  border: "none",
-                }}
-              >
-                Thiết Kế Ngay
-              </Button>
+
             </div>
+            <Button
+              onClick={() => navigate(`/shop/${shopId}/custom`)}
+              size="sm"
+              className="font-black tracking-tight uppercase rounded-[2rem] w-full"
+              style={{
+                background:
+                  "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+                border: "none",
+              }}
+            >
+              Thiết Kế Ngay
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -377,7 +378,7 @@ const ShopDetailPage = () => {
               onClick={() => navigate(`/shop/${shopId}/custom`)}
               className="w-full h-12 rounded-2xl bg-[#950101] text-white font-black uppercase tracking-widest text-[10px]"
             >
-              <Wand2 className="w-4 h-4 mr-2" /> Bắt Đầu Thiết Kế Riêng
+              <Wand2 className="w-4 h-4 mr-2" /> Bắt Đầu Thiết Kế
             </Button>
           </div>
         )}

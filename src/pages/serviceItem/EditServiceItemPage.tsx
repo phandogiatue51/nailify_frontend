@@ -76,7 +76,7 @@ const EditServiceItemPage = () => {
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#950101]">
               Phòng Tinh Chỉnh
             </span>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
               Chỉnh sửa {componentLabels[item.componentType]}
             </h1>
           </div>

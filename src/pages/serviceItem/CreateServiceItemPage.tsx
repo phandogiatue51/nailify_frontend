@@ -68,7 +68,7 @@ const CreateServiceItemPage = () => {
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D81B60]">
               Kiến Tạo Dịch Vụ
             </span>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
               Thêm {componentLabels[componentType]}
             </h1>
           </div>

@@ -91,8 +91,8 @@ const EditCollectionPage = () => {
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#950101]">
               Chế Độ Quản Lý
             </span>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
-              Chỉnh Sửa Bộ Sưu Tập
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+              Chỉnh Sửa Set Nail
             </h1>
           </div>
         </div>

@@ -331,7 +331,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({
       <Button
         type="submit"
         disabled={isLoading || uploading || !name}
-        className="w-full h-14 rounded-full uppercase bg-gradient-to-r from-[#950101] via-[#D81B60] to-[#E288F9] hover:opacity-90 shadow-xl shadow-pink-100 text-white font-black text-lg transition-all active:scale-[0.98]"
+        className="w-full h-14 rounded-full uppercase bg-gradient-to-r from-[#950101] via-[#D81B60] to-[#E288F9] hover:opacity-90 shadow-xl shadow-pink-100 text-white font-black text-md transition-all active:scale-[0.98]"
       >
         {isLoading || uploading ? (
           <Loader2 className="w-5 h-5 animate-spin" />

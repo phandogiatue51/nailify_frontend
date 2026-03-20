@@ -17,6 +17,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { artistAPI, profileAPI } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
+import { cn } from "@/lib/utils";
+import { ServiceSummary } from "@/components/booking/ServiceSummary";
+import { ProviderInfoCard } from "@/components/booking/ProviderInfoCard";
+import { CustomerInfoCard } from "@/components/booking/CustomerInfoCard";
 
 const ConfirmBooking = () => {
   const location = useLocation();
@@ -68,18 +72,11 @@ const ConfirmBooking = () => {
     profile: profile?.fullName,
   });
 
-  const calculatedPrice = selectedCollection
-    ? selectedCollection.totalPrice || 0
-    : selectedItems.reduce((sum, item) => sum + Number(item.price), 0);
+  const calculatedPrice = (selectedCollection?.totalPrice || 0) +
+    selectedItems.reduce((sum, item) => sum + Number(item.price), 0);
 
-  const calculatedDuration = selectedCollection
-    ? selectedCollection.estimatedDuration ||
-      selectedCollection.calculatedDuration ||
-      0
-    : selectedItems.reduce(
-        (sum, item) => sum + (item.estimatedDuration || 0),
-        0,
-      );
+  const calculatedDuration = (selectedCollection?.estimatedDuration || selectedCollection?.calculatedDuration || 0) +
+    selectedItems.reduce((sum, item) => sum + (item.estimatedDuration || 0), 0);
 
   const { createBooking } = useBookings();
 
@@ -186,58 +183,12 @@ const ConfirmBooking = () => {
       </div>
 
       <div className="p-4 space-y-6">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Package className="w-5 h-5 text-primary" />
-              <h2 className="font-black uppercase tracking-tight">
-                Dịch vụ đã chọn
-              </h2>
-            </div>
-
-            {selectedCollection ? (
-              <div className="space-y-3">
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-3 mb-2">
-                    {selectedCollection.imageUrl ? (
-                      <img
-                        src={selectedCollection.imageUrl}
-                        alt={selectedCollection.name}
-                        className="w-16 h-16 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 rounded-lg object-cover bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
-                        <span className="text-xl font-bold text-white uppercase">
-                          {selectedCollection.name?.[0] || "U"}
-                        </span>
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="font-semibold">
-                        {selectedCollection.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">Set Nail</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : selectedItems.length > 0 ? (
-              <div className="space-y-2">
-                {selectedItems.map((item: any) => (
-                  <div
-                    key={item.id}
-                    className="flex justify-between py-2 border-b text-md font-bold text-slate-500"
-                  >
-                    <span>{item.name}</span>
-                    <span>{item.price?.toLocaleString()} đ</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">Không có dịch vụ</p>
-            )}
-          </CardContent>
-        </Card>
+        <ServiceSummary
+          selectedItems={selectedItems}
+          selectedCollection={selectedCollection}
+          shopLocationId={selectedLocation}
+          nailArtistId={nailArtistId}
+        />
 
         {/* Date & Time */}
         <Card>
@@ -261,89 +212,20 @@ const ConfirmBooking = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-4">
-              {isArtistBooking ? (
-                <Flower className="w-5 h-5 text-primary" />
-              ) : (
-                <MapPin className="w-5 h-5 text-primary" />
-              )}
-              <h2 className="text-md font-black uppercase tracking-tight">
-                {isArtistBooking ? "Thông tin thợ Nail" : "Thông tin cửa hàng"}
-              </h2>
-            </div>
+        <ProviderInfoCard
+          isArtistBooking={isArtistBooking}
+          artist={artist}
+          locationObj={selectedLocationObj}
+        />
 
-            {isArtistBooking ? (
-              <div className="flex items-start gap-4">
-                <div>
-                  <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
-                    {artist?.fullName}
-                  </p>
-                  <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                    {artist?.phone ?? "Không có số điện thoại"}
-                  </p>
-                </div>
-              </div>
-            ) : selectedLocationObj ? (
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-xl font-black text-slate-900 tracking-tighter uppercase">
-                    {selectedLocationObj.shopName}
-                  </h2>
-                  <div className="flex items-start gap-2 mt-2">
-                    <p className="text-md font-bold text-slate-500">
-                      {selectedLocationObj.address}, {selectedLocationObj.city}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 pt-2 text-center">
-                  <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p className="text-sm font-black uppercase text-slate-400 mb-1">
-                      Mở cửa
-                    </p>
-                    <p className="text-sm font-bold text-slate-700">
-                      {selectedLocationObj.openingTime}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p className="text-sm font-black uppercase text-slate-400 mb-1">
-                      Đóng cửa
-                    </p>
-                    <p className="text-sm font-bold text-slate-700">
-                      {selectedLocationObj.closingTime}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <User className="w-5 h-5 text-primary" />
-              <h2 className="text-md font-black uppercase tracking-tight">
-                {isCustomer ? "Thông tin của bạn" : "Thông tin khách hàng"}
-              </h2>
-            </div>
-            <div className="flex items-start gap-4">
-              <div>
-                <p className="font-black text-slate-900 uppercase tracking-tighter text-lg">
-                  {profile?.fullName || customerName}
-                </p>
-                <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                  {profile?.phone || customerPhone || ""}
-                </p>
-                <p className="text-sm font-bold text-slate-400 flex items-center gap-1 mt-1">
-                  {profile?.address || customerAddress || ""}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Customer Info */}
+        <CustomerInfoCard
+          isCustomer={isCustomer}
+          profile={profile}
+          customerName={customerName}
+          customerPhone={customerPhone}
+          customerAddress={customerAddress}
+        />
 
         {/* Notes */}
         {notes && (

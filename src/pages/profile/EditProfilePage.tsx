@@ -3,7 +3,7 @@
 import { ProfileForm } from "@/components/auth/ProfileForm";
 import { useProfile } from "@/hooks/useProfile";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const EditProfilePage = () => {
