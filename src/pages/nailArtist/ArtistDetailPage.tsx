@@ -242,7 +242,7 @@ const ArtistDetailPage = () => {
         <Card className="overflow-hidden border-0 shadow-2xl shadow-[#950101]/10 bg-white rounded-[2rem] relative">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFCFE9]/30 blur-3xl rounded-full -mr-16 -mt-16" />
           <CardContent className="p-6 relative z-10">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mb-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#950101] to-[#D81B60] flex items-center justify-center shadow-lg shadow-[#950101]/20 shrink-0">
                 <Sparkles className="w-7 h-7 text-white" />
               </div>
@@ -251,20 +251,20 @@ const ArtistDetailPage = () => {
                   Bạn có ý tưởng riêng?
                 </h3>
                 <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
-                  Yêu cầu thiết kế độc bản
+                  Hãy tự thiết kế bộ móng của riêng bạn.
                 </p>
               </div>
-              <Button
-                onClick={() => navigate(`/artist/${id}/custom`)}
-                className="h-10 px-6 font-black tracking-widest uppercase text-[10px] rounded-full text-white transition-all active:scale-95 shadow-md shadow-[#950101]/20 border-none"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #950101 0%, #D81B60 100%)",
-                }}
-              >
-                Gửi Yêu Cầu
-              </Button>
             </div>
+            <Button
+              onClick={() => navigate(`/artist/${id}/custom`)}
+              className="h-10 w-full px-6 font-black tracking-widest uppercase text-[10px] rounded-full text-white transition-all active:scale-95 shadow-md shadow-[#950101]/20 border-none"
+              style={{
+                background:
+                  "linear-gradient(135deg, #950101 0%, #D81B60 100%)",
+              }}
+            >
+              Bắt Đầu Thiết Kế
+            </Button>
           </CardContent>
         </Card>
 

@@ -2,22 +2,31 @@ import { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useBookings } from "@/hooks/useBookings";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExistingBookings } from "@/components/booking/ExistingBookings";
 import { useAuth } from "@/hooks/use-auth";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { DateScrollPicker } from "@/components/booking/DateScrollPickerProps";
 import { useShopOwnerLocationById } from "@/hooks/useLocation";
 import { generateTimeSlots } from "@/components/ui/timeSlots";
+import { TimeSlotSelector } from "@/components/booking/TimeSlotSelectorProps";
+import {
+  isSlotBusy,
+  canCompleteBeforeClose,
+  isSlotInPast,
+  getSlotStatus
+} from "@/components/booking/bookingAvailability";
+import {
+  calculateTotalDuration
+} from "@/components/booking/bookingCalculations";
 
 const DateTimeSelection = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const {
-    selectedItems,
+    selectedItems = [],
     selectedCollection,
     shopId,
     nailArtistId,
@@ -31,12 +40,15 @@ const DateTimeSelection = () => {
 
   const isArtistBooking = !!nailArtistId;
   const { user } = useAuth();
-  const isShopOwner = user?.role !== 0;
+  const isShopOwner = user?.role !== 0 && user?.role !== 2; // Not customer
 
   const [selectedDateObj, setSelectedDateObj] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const { data: locationSettings } = useShopOwnerLocationById(selectedLocation);
+
+  // Calculate total duration
+  const calculatedDuration = calculateTotalDuration(selectedCollection, selectedItems);
 
   // Update selectedDate when selectedDateObj changes
   useEffect(() => {
@@ -78,94 +90,48 @@ const DateTimeSelection = () => {
   ]);
 
   // Fetch bookings
-  const { data: bookings = [], isLoading: bookingsLoading } = isArtistBooking
-    ? useBookings().useArtistBookings(
-        selectedDate ? new Date(selectedDate) : undefined,
-      )
-    : useBookings().useLocationBookings(
-        selectedLocation,
-        selectedDate ? new Date(selectedDate) : undefined,
-      );
+  const artistBookingsQuery = useBookings().useArtistBookings(
+    isArtistBooking && selectedDate ? new Date(selectedDate) : undefined
+  );
+  const locationBookingsQuery = useBookings().useLocationBookings(
+    !isArtistBooking && selectedLocation && selectedDate ? selectedLocation : undefined,
+    !isArtistBooking && selectedDate ? new Date(selectedDate) : undefined
+  );
 
-  console.log("Artist Bookings:", {
-    isArtistBooking,
-    selectedDate,
-    bookings,
-    bookingsLoading,
-  });
+  const bookings = isArtistBooking
+    ? artistBookingsQuery.data || []
+    : locationBookingsQuery.data || [];
 
-  const calculatedDuration = selectedCollection
-    ? selectedCollection.estimatedDuration ||
-      selectedCollection.calculatedDuration ||
-      0
-    : selectedItems.reduce(
-        (sum, item) => sum + (item.estimatedDuration || 0),
-        0,
-      );
+  const bookingsLoading = isArtistBooking
+    ? artistBookingsQuery.isLoading
+    : locationBookingsQuery.isLoading;
 
-  const isSlotBusy = (slotTimeStr: string, bookings: any[]) => {
-    const [hours, minutes] = slotTimeStr.split(":").map(Number);
-    const slotDate = new Date(selectedDateObj);
-    slotDate.setHours(hours, minutes, 0, 0);
-
-    // For artist bookings - check if THIS artist is busy
-    if (isArtistBooking) {
-      // Check if artist has ANY booking at this time
-      const hasOverlap = bookings.some((booking) => {
-        const start = new Date(booking.scheduledStart);
-        const end = new Date(booking.scheduledEnd);
-
-        // Check if slot overlaps with booking
-        return slotDate >= start && slotDate < end;
-      });
-
-      return hasOverlap; // Artist is busy if there's any overlap
-    }
-
-    // For location bookings - check capacity
-    const maxCapacity = locationSettings?.maxConcurrentBookings || 1;
-    const buffer = locationSettings?.bufferMinutes || 15;
-
-    const overlappingCount = bookings.filter((booking) => {
-      const start = new Date(booking.scheduledStart);
-      const end = new Date(
-        start.getTime() + (booking.durationMinutes + buffer) * 60000,
-      );
-
-      return slotDate >= start && slotDate < end;
-    }).length;
-
-    return overlappingCount >= maxCapacity;
+  // Wrap helper functions for TimeSlotSelector
+  const isSlotBusyWrapper = (slot: string, bookingsList: any[]) => {
+    return isSlotBusy({
+      slotTimeStr: slot,
+      selectedDate: selectedDateObj,
+      bookings: bookingsList,
+      isArtistBooking,
+      locationSettings,
+    });
   };
 
-  // Check if slot can complete before closing
-  const canCompleteBeforeClose = (slotTimeStr: string) => {
-    if (!locationSettings?.closingTime) return true;
-
-    const [slotHour, slotMinute] = slotTimeStr.split(":").map(Number);
-    const [closeHour, closeMinute] = locationSettings.closingTime
-      .split(":")
-      .map(Number);
-
-    const slotStartMinutes = slotHour * 60 + slotMinute;
-    const closeMinutes = closeHour * 60 + closeMinute;
-    const totalDuration =
-      calculatedDuration + (locationSettings?.bufferMinutes || 0);
-
-    return slotStartMinutes + totalDuration <= closeMinutes;
+  const canCompleteBeforeCloseWrapper = (slot: string) => {
+    return canCompleteBeforeClose(
+      slot,
+      locationSettings?.closingTime,
+      calculatedDuration,
+      locationSettings?.bufferMinutes || 0
+    );
   };
 
-  // Check if slot is in the past (for today only)
-  const isSlotInPast = (slotTimeStr: string) => {
-    const [hours, minutes] = slotTimeStr.split(":").map(Number);
-    const slotDate = new Date(selectedDateObj);
-    slotDate.setHours(hours, minutes, 0, 0);
+  const isSlotInPastWrapper = (slot: string) => {
+    return isSlotInPast(slot, selectedDateObj);
+  };
 
-    const now = new Date();
-    const isToday =
-      format(selectedDateObj, "yyyy-MM-dd") === format(now, "yyyy-MM-dd");
-
-    return isToday && slotDate < now;
+  const handleSelectTime = (time: string) => {
+    setSelectedTime(time);
   };
 
   const handleNext = () => {
@@ -221,81 +187,19 @@ const DateTimeSelection = () => {
         </Card>
 
         {selectedDate && (
-          <Card className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-red-50 rounded-lg">
-                    <Clock className="w-5 h-5 text-[#950101]" />
-                  </div>
-                  <h2 className="text-sm font-black uppercase tracking-tight">
-                    Chọn thời gian
-                  </h2>
-                </div>
-              </div>
-
-              <div className="space-y-8">
-                {[
-                  { label: "Sáng", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) < 11) },
-                  { label: "Trưa", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 11 && parseInt(s.split(":")[0]) < 14) },
-                  { label: "Chiều", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 14 && parseInt(s.split(":")[0]) < 18) },
-                  { label: "Tối", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 18) },
-                ].map(({ label, slots }) => slots.length > 0 && (
-                  <div key={label} className="space-y-4">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                      <div className="h-px flex-1 bg-slate-100" />
-                      {label}
-                      <div className="h-px flex-1 bg-slate-100" />
-                    </h3>
-                    <div className="grid grid-cols-4 gap-2">
-                      {slots.map((slot) => {
-                        const busy = isSlotBusy(slot, bookings);
-                        const inPast = isSlotInPast(slot);
-                        const canComplete = canCompleteBeforeClose(slot);
-                        const isSelected = selectedTime === slot;
-
-                        const disabled = (busy || inPast || !canComplete) && !isShopOwner;
-
-                        return (
-                          <button
-                            key={slot}
-                            disabled={disabled}
-                            onClick={() => setSelectedTime(slot)}
-                            className={cn(
-                              "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
-                              isSelected
-                                ? "bg-gradient-to-r from-[#950101] to-[#ffcfe9] text-white scale-95"
-                                : busy
-                                  ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
-                                  : inPast
-                                    ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
-                                    : !canComplete
-                                      ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
-                                      : "bg-white border-slate-100 border text-slate-600 hover:border-slate-200",
-                            )}
-                          >
-                            {slot}
-                            {busy && (
-                              <span className="text-[8px] uppercase absolute bottom-1">
-                                Bận
-                              </span>
-                            )}
-                            {!canComplete && (
-                              <span className="text-[10px]">(đóng cửa)</span>
-                            )}
-                            {inPast && <span className="text-[10px]">(đã qua)</span>}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <TimeSlotSelector
+            timeSlots={timeSlots}
+            selectedTime={selectedTime}
+            onSelectTime={handleSelectTime}
+            bookings={bookings}
+            isShopOwner={isShopOwner}
+            canCompleteBeforeClose={canCompleteBeforeCloseWrapper}
+            isSlotBusy={isSlotBusyWrapper}
+            isSlotInPast={isSlotInPastWrapper}
+          />
         )}
 
-        {isShopOwner && (
+        {isShopOwner && bookings.length > 0 && (
           <div className="mt-4">
             <ExistingBookings
               bookings={bookings}
@@ -306,7 +210,7 @@ const DateTimeSelection = () => {
         )}
       </div>
 
-      <div className="sticky bottom-0 left-0 right-0 p-4 text-center">
+      <div className="sticky bottom-0 left-0 right-0 p-4">
         <Button
           onClick={handleNext}
           disabled={!selectedDate || !selectedTime}

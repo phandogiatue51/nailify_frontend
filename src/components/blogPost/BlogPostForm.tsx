@@ -146,7 +146,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full bg-slate-50 border-none rounded-2xl p-4 text-lg font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-[#950101]/5 transition-all"
+            className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-[#950101]/5 transition-all"
             placeholder="Đặt một cái tên thật ấn tượng..."
           />
         </div>
@@ -158,7 +158,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full bg-slate-50 border-none rounded-[2rem] p-6 h-48 text-slate-700 leading-relaxed placeholder:text-slate-300 focus:ring-2 focus:ring-[#950101]/5 transition-all resize-none"
+            className="w-full bg-slate-50 text-sm border-none rounded-[2rem] p-6 h-48 text-slate-700 leading-relaxed placeholder:text-slate-300 focus:ring-2 focus:ring-[#950101]/5 transition-all resize-none"
             placeholder="Viết nội dung bài viết tại đây..."
             required
           />
@@ -241,7 +241,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-5 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.3em] text-white transition-all active:scale-[0.98] shadow-2xl shadow-[#950101]/30 disabled:grayscale disabled:opacity-50"
+          className="w-full py-5 rounded-[1.5rem] font-black text-sm uppercase tracking-[0.3em] text-white transition-all active:scale-[0.98] shadow-2xl shadow-[#950101]/30 disabled:grayscale disabled:opacity-50"
           style={{
             background:
               "linear-gradient(135deg, #950101 0%, #D81B60 50%, #3D0101 100%)",

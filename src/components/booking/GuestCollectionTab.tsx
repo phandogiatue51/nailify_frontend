@@ -1,12 +1,14 @@
 import CollectionCard from "@/components/collection/CollectionCard";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface GuestCollectionTabProps {
   collections: any[];
   isLoading: boolean;
   onSelect: (collection: any) => void;
   activeFilterCount: number;
+  selectedCollectionId?: string;
 }
 
 const GuestCollectionTab = ({
@@ -14,6 +16,7 @@ const GuestCollectionTab = ({
   isLoading,
   onSelect,
   activeFilterCount,
+  selectedCollectionId,
 }: GuestCollectionTabProps) => {
   if (isLoading) {
     return (
@@ -42,7 +45,10 @@ const GuestCollectionTab = ({
       {collections.map((collection) => (
         <div
           key={collection.id}
-          className="cursor-pointer transform active:scale-95 transition-transform"
+          className={cn(
+            "cursor-pointer transform active:scale-95 transition-all",
+            selectedCollectionId === collection.id && "ring-2 ring-[#E288F9] ring-offset-2 rounded-2xl"
+          )}
           onClick={() => onSelect(collection)}
         >
           <CollectionCard collection={collection} />

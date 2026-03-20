@@ -119,7 +119,7 @@ export const MyBlogPage = () => {
       <div className="mb-4 flex justify-center">
         <Button
           onClick={() => navigate(`/blog/create/`)}
-          className="group relative overflow-hidden font-black tracking-[0.1em] uppercase text-sm rounded-[1.5rem] w-1/2 max-w-md h-14 transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-[#950101]/20 border-none"
+          className="group relative overflow-hidden font-black tracking-[0.1em] uppercase text-sm rounded-[1.5rem] w-1/2 max-w-md h-10 transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-[#950101]/20 border-none"
           style={{
             background:
               "linear-gradient(135deg, #950101 0%, #D81B60 50%, #3D0101 100%)",

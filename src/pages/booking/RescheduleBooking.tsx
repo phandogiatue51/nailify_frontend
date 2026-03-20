@@ -6,20 +6,26 @@ import { ArrowLeft, Clock, AlertCircle, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import { DateScrollPicker } from "@/components/booking/DateScrollPickerProps";
 import { useShopOwnerLocationById } from "@/hooks/useLocation";
 import { useAuth } from "@/hooks/use-auth";
 import { ExistingBookings } from "@/components/booking/ExistingBookings";
-import { useQueryClient } from "@tanstack/react-query"; // Add this import
+import { useQueryClient } from "@tanstack/react-query";
 import { generateTimeSlots } from "@/components/ui/timeSlots";
+import { TimeSlotSelector } from "@/components/booking/TimeSlotSelectorProps";
+import {
+  isSlotBusy,
+  canCompleteBeforeClose,
+  isSlotInPast,
+} from "@/components/booking/bookingAvailability";
+import { calculateTotalDuration } from "@/components/booking/bookingCalculations";
 
 const RescheduleBooking = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
-  const queryClient = useQueryClient(); // Add queryClient
+  const queryClient = useQueryClient();
 
   const {
     useBookingById,
@@ -27,13 +33,22 @@ const RescheduleBooking = () => {
     useLocationBookings,
     useArtistBookings,
   } = useBookings();
+
   const { data: booking, isLoading } = useBookingById(id);
   const updateMutation = updateBooking;
   const isShopOwner = user?.role === 1 || user?.role === 3 || user?.role === 4;
+  const isArtistBooking = !!booking?.nailArtistId;
 
   const [selectedDateObj, setSelectedDateObj] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get booking items and collection
+  const selectedItems = booking?.items || [];
+  const selectedCollection = booking?.collection;
+
+  // Calculate total duration for the booking
+  const calculatedDuration = calculateTotalDuration(selectedCollection, selectedItems);
 
   useEffect(() => {
     if (booking) {
@@ -44,37 +59,14 @@ const RescheduleBooking = () => {
   }, [booking]);
 
   const selectedDateStr = format(selectedDateObj, "yyyy-MM-dd");
-  const { data: locationData } = useShopOwnerLocationById(
-    booking?.shopLocationId,
-  );
+  const { data: locationData } = useShopOwnerLocationById(booking?.shopLocationId);
+
   const { data: conflicts = [], isLoading: conflictsLoading } =
     booking?.shopLocationId
       ? useLocationBookings(booking.shopLocationId, selectedDateObj)
       : useArtistBookings(selectedDateObj);
 
-  const maxCapacity = locationData?.maxConcurrentBookings || 1;
-
-  const isSlotBusy = (slotTimeStr: string) => {
-    const [hours, minutes] = slotTimeStr.split(":").map(Number);
-    const slotStart = new Date(selectedDateObj);
-    slotStart.setHours(hours, minutes, 0, 0);
-
-    const buffer = locationData?.bufferMinutes || 15;
-
-    const overlappingBookings = conflicts.filter((b: any) => {
-      if (b.id === id) return false;
-
-      const bStart = new Date(b.scheduledStart);
-      const bEnd = new Date(
-        bStart.getTime() + (b.durationMinutes + buffer) * 60000,
-      );
-
-      return slotStart >= bStart && slotStart < bEnd;
-    });
-
-    return overlappingBookings.length >= maxCapacity;
-  };
-
+  // Generate time slots based on location settings
   const timeSlots = useMemo(() => {
     return generateTimeSlots({
       openingTime: locationData?.openingTime ?? "9:00",
@@ -87,16 +79,35 @@ const RescheduleBooking = () => {
     locationData?.bufferMinutes,
   ]);
 
-  const isSlotInPast = (slotTimeStr: string) => {
-    const [hours, minutes] = slotTimeStr.split(":").map(Number);
-    const slotDate = new Date(selectedDateObj);
-    slotDate.setHours(hours, minutes, 0, 0);
+  // Wrap helper functions for TimeSlotSelector
+  const isSlotBusyWrapper = (slot: string, bookingsList: any[]) => {
+    return isSlotBusy({
+      slotTimeStr: slot,
+      selectedDate: selectedDateObj,
+      bookings: bookingsList,
+      isArtistBooking,
+      locationSettings: {
+        maxConcurrentBookings: locationData?.maxConcurrentBookings,
+        bufferMinutes: locationData?.bufferMinutes,
+      },
+    });
+  };
 
-    const now = new Date();
-    const isToday =
-      format(selectedDateObj, "yyyy-MM-dd") === format(now, "yyyy-MM-dd");
+  const canCompleteBeforeCloseWrapper = (slot: string) => {
+    return canCompleteBeforeClose(
+      slot,
+      locationData?.closingTime,
+      calculatedDuration,
+      locationData?.bufferMinutes || 0
+    );
+  };
 
-    return isToday && slotDate < now;
+  const isSlotInPastWrapper = (slot: string) => {
+    return isSlotInPast(slot, selectedDateObj);
+  };
+
+  const handleSelectTime = (time: string) => {
+    setSelectedTime(time);
   };
 
   const handleReschedule = async () => {
@@ -126,19 +137,25 @@ const RescheduleBooking = () => {
 
       navigate(`/booking/detail/${booking.id}`, { state: { success: true } });
     } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to reschedule booking",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center font-black uppercase text-slate-400">
         Loading...
       </div>
     );
+  }
 
-  if (!booking)
+  if (!booking) {
     return (
       <div className="min-h-screen p-6 flex flex-col items-center justify-center text-center gap-4">
         <AlertCircle className="w-12 h-12 text-rose-400" />
@@ -154,6 +171,7 @@ const RescheduleBooking = () => {
         </Button>
       </div>
     );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -181,7 +199,8 @@ const RescheduleBooking = () => {
         </div>
       </div>
 
-      <div className="p-4 space-y-6">
+      <div className="p-4 space-y-6 pb-24">
+        {/* Current Booking Card */}
         <div className="rounded-[2rem] p-6 shadow-xl shadow-pink-100 bg-gradient-to-br from-[#950101] to-[#FFCFE9] text-white">
           <h3 className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">
             Lịch hẹn hiện tại
@@ -189,16 +208,19 @@ const RescheduleBooking = () => {
           <div className="flex justify-between items-end">
             <div>
               <p className="text-xl font-black tracking-tighter uppercase">
-                {format(new Date(booking.scheduledStart), "MMM do  h:mm a")}
+                {format(new Date(booking.scheduledStart), "MMM do, h:mm a")}
               </p>
               <p className="text-xs font-bold opacity-90 italic">
-                {booking.collectionName || "Mẫu thiết kế riêng"}
+                {booking.collectionName || selectedItems.length > 0
+                  ? `${selectedItems.length} dịch vụ`
+                  : "Mẫu thiết kế riêng"}
               </p>
             </div>
             <Calendar className="w-8 h-8 opacity-20" />
           </div>
         </div>
 
+        {/* Date Picker */}
         <Card className="border-none shadow-sm rounded-[2.5rem] bg-white overflow-hidden">
           <CardContent className="p-4">
             <DateScrollPicker
@@ -208,82 +230,30 @@ const RescheduleBooking = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm rounded-[2.5rem] bg-white overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 bg-red-50 rounded-xl">
-                <Clock className="w-5 h-5 text-[#950101]" />
-              </div>
-              <h2 className="text-sm font-black uppercase tracking-tight text-slate-700">
-                Chọn giờ mới
-              </h2>
-            </div>
+        {/* Time Slot Selector */}
+        {selectedDateStr && (
+          <TimeSlotSelector
+            timeSlots={timeSlots}
+            selectedTime={selectedTime}
+            onSelectTime={handleSelectTime}
+            bookings={conflicts}
+            isShopOwner={isShopOwner}
+            canCompleteBeforeClose={canCompleteBeforeCloseWrapper}
+            isSlotBusy={isSlotBusyWrapper}
+            isSlotInPast={isSlotInPastWrapper}
+          />
+        )}
 
-            <div className="space-y-8">
-              {[
-                { label: "Sáng", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) < 11) },
-                { label: "Trưa", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 11 && parseInt(s.split(":")[0]) < 14) },
-                { label: "Chiều", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 14 && parseInt(s.split(":")[0]) < 18) },
-                { label: "Tối", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 18) },
-              ].map(({ label, slots }) => slots.length > 0 && (
-                <div key={label} className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                    <div className="h-px flex-1 bg-slate-100" />
-                    {label}
-                    <div className="h-px flex-1 bg-slate-100" />
-                  </h3>
-                  <div className="grid grid-cols-4 gap-2">
-                    {slots.map((slot) => {
-                      const busy = isSlotBusy(slot);
-                      const isSelected = selectedTime === slot;
-                      const inPast = isSlotInPast(slot);
-
-                      const disabled = (busy || inPast) && !isShopOwner;
-
-                      return (
-                        <button
-                          key={slot}
-                          disabled={disabled}
-                          onClick={() => setSelectedTime(slot)}
-                          className={cn(
-                            "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
-                            isSelected
-                              ? "bg-gradient-to-r from-[#950101] to-[#ffcfe9] text-white scale-95"
-                              : busy
-                                ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
-                                : inPast
-                                  ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
-                                  : "bg-white border-slate-100 border text-slate-600 hover:border-slate-200",
-                          )}
-                        >
-                          {slot}
-                          {busy && (
-                            <span className="text-[8px] uppercase absolute bottom-1">
-                              Bận
-                            </span>
-                          )}
-                          {inPast && <span className="text-[10px]">(đã qua)</span>}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {isShopOwner &&
-          selectedDateStr &&
-          (booking.shopLocationId || booking.nailArtistId) && (
-            <div className="mt-4 px-2">
-              <ExistingBookings
-                bookings={conflicts}
-                isLoading={conflictsLoading}
-                isShopOwner={isShopOwner}
-              />
-            </div>
-          )}
+        {/* Existing Bookings for Shop Owners */}
+        {isShopOwner && selectedDateStr && (booking.shopLocationId || booking.nailArtistId) && conflicts.length > 0 && (
+          <div className="mt-4 px-2">
+            <ExistingBookings
+              bookings={conflicts}
+              isLoading={conflictsLoading}
+              isShopOwner={isShopOwner}
+            />
+          </div>
+        )}
       </div>
 
       {/* Action Bar */}
