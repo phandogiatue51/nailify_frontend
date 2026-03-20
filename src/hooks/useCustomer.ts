@@ -204,6 +204,24 @@ export const useAllCustomerCollections = (
   });
 };
 
+export const useServiceItems = (
+  filterParams?: ServiceItemFilterDto,
+  options?: { enabled?: boolean },
+) => {
+  return useQuery({
+    queryKey: ["all-customer-service-items", filterParams],
+    queryFn: async () => {
+      try {
+        return await serviceItemAPI.adminFilter(filterParams || {});
+      } catch (error: any) {
+        console.error("Error fetching all service items:", error);
+        return [];
+      }
+    },
+    enabled: options?.enabled ?? true,
+  });
+};
+
 export const useCollections = (
   filterParams?: CollectionFilterDto,
   options?: { enabled?: boolean },

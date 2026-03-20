@@ -4,14 +4,12 @@ import { useAuthContext } from "@/components/auth/AuthProvider";
 import {
   useCollections,
   useAllCustomerService,
+  useServiceItems,
 } from "@/hooks/useCustomer";
 import { useQuery } from "@tanstack/react-query";
 import { tagAPI } from "@/services/api";
 import { TagDto } from "@/types/type";
-import {
-  CollectionFilterDto,
-  ServiceItemFilterDto,
-} from "@/types/filter";
+import { CollectionFilterDto, ServiceItemFilterDto } from "@/types/filter";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MapPin, Phone, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,11 +26,12 @@ const CollectionSelectionPage = () => {
 
   // Get customer info from location state
   const state = location.state || {};
-  const customerProfile = state.customerProfile ||
+  const customerProfile =
+    state.customerProfile ||
     (state.customerName && {
       fullName: state.customerName,
       phone: state.customerPhone,
-      address: state.customerAddress || '',
+      address: state.customerAddress || "",
     });
 
   // Tab state
@@ -104,8 +103,10 @@ const CollectionSelectionPage = () => {
   }, [user, debouncedSearch, selectedTags]);
 
   // Fetch data
-  const { data: collections = [], isLoading: collectionsLoading } = useCollections(collectionFilterParams);
-  const { data: services = [], isLoading: servicesLoading } = useAllCustomerService(serviceFilterParams);
+  const { data: collections = [], isLoading: collectionsLoading } =
+    useCollections(collectionFilterParams);
+  const { data: services = [], isLoading: servicesLoading } =
+    useServiceItems(serviceFilterParams);
 
   // Handle tag selection
   const toggleTag = (tagId: string) => {
@@ -130,27 +131,33 @@ const CollectionSelectionPage = () => {
   };
 
   const handleSelectService = (service: ServiceItem) => {
-    console.log('🖱️ Service clicked:', service.name);
-    setSelectedServices(prev => {
-      const isSelected = prev.find(s => s.id === service.id);
+    console.log("🖱️ Service clicked:", service.name);
+    setSelectedServices((prev) => {
+      const isSelected = prev.find((s) => s.id === service.id);
       let newSelected;
       if (isSelected) {
-        newSelected = prev.filter(s => s.id !== service.id);
-        console.log('❌ Removed service. New count:', newSelected.length);
+        newSelected = prev.filter((s) => s.id !== service.id);
+        console.log("❌ Removed service. New count:", newSelected.length);
       } else {
         newSelected = [...prev, service];
-        console.log('✅ Added service. New count:', newSelected.length);
+        console.log("✅ Added service. New count:", newSelected.length);
       }
-      console.log('Current selected services:', newSelected.map(s => s.name));
+      console.log(
+        "Current selected services:",
+        newSelected.map((s) => s.name),
+      );
       return newSelected;
     });
   };
 
   const handleConfirm = () => {
-    console.log('🎯 CONFIRM BUTTON CLICKED');
-    console.log('selectedCollection:', selectedCollection?.name);
-    console.log('selectedServices:', selectedServices.map(s => s.name));
-    console.log('selectedServices count:', selectedServices.length);
+    console.log("🎯 CONFIRM BUTTON CLICKED");
+    console.log("selectedCollection:", selectedCollection?.name);
+    console.log(
+      "selectedServices:",
+      selectedServices.map((s) => s.name),
+    );
+    console.log("selectedServices count:", selectedServices.length);
 
     const existingState = location.state || {};
 
@@ -161,7 +168,10 @@ const CollectionSelectionPage = () => {
       selectedItems: selectedServices,
     };
 
-    console.log('📤 Navigating with bookingState.selectedItems:', bookingState.selectedItems.map(s => s.name));
+    console.log(
+      "📤 Navigating with bookingState.selectedItems:",
+      bookingState.selectedItems.map((s) => s.name),
+    );
 
     if (user?.role === 1 || user?.role === 3) {
       bookingState.shopId = user.shopId;
@@ -174,7 +184,8 @@ const CollectionSelectionPage = () => {
     navigate("/customer-book", { state: bookingState });
   };
 
-  const totalSelectedItems = (selectedCollection ? 1 : 0) + selectedServices.length;
+  const totalSelectedItems =
+    (selectedCollection ? 1 : 0) + selectedServices.length;
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -207,8 +218,11 @@ const CollectionSelectionPage = () => {
                 Set: {selectedCollection.name}
               </span>
             )}
-            {selectedServices.map(service => (
-              <span key={service.id} className="inline-flex items-center px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-xs">
+            {selectedServices.map((service) => (
+              <span
+                key={service.id}
+                className="inline-flex items-center px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-xs"
+              >
                 {service.name}
               </span>
             ))}
@@ -232,7 +246,11 @@ const CollectionSelectionPage = () => {
               toggleTag={toggleTag}
               allTags={allTags}
               clearFilters={clearFilters}
-              placeholder={activeTab === "collections" ? "Tìm kiếm set nail ..." : "Tìm kiếm dịch vụ ..."}
+              placeholder={
+                activeTab === "collections"
+                  ? "Tìm kiếm set nail ..."
+                  : "Tìm kiếm dịch vụ ..."
+              }
             />
           </div>
 
@@ -252,7 +270,7 @@ const CollectionSelectionPage = () => {
               isLoading={servicesLoading}
               onSelect={handleSelectService}
               activeFilterCount={activeFilterCount}
-              selectedItemIds={selectedServices.map(s => s.id!)}
+              selectedItemIds={selectedServices.map((s) => s.id!)}
             />
           </TabsContent>
         </Tabs>
