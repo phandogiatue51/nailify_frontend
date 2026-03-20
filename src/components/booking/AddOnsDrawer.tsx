@@ -10,7 +10,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { useAllCustomerService } from "@/hooks/useCustomer";
+import { useAllCustomerService, useServiceItems } from "@/hooks/useCustomer";
 import { ServiceItem } from "@/types/database";
 import { ServiceItemFilterDto } from "@/types/filter";
 import { Plus, Check, Loader2, X } from "lucide-react";
@@ -41,7 +41,10 @@ export const AddOnsDrawer = ({
   }, [shopId, nailArtistId]);
 
   // Fetch services only when open
-  const { data: serviceItems = [], isLoading } = useAllCustomerService(serviceFilterParams, { enabled: open });
+  const { data: serviceItems = [], isLoading } = useServiceItems(
+    serviceFilterParams,
+    { enabled: open },
+  );
 
   const handleOpen = () => {
     setLocalSelection([...selectedItems]);
@@ -79,7 +82,9 @@ export const AddOnsDrawer = ({
       <DrawerContent className="max-h-[85vh]">
         <div className="mx-auto w-full max-w-lg">
           <DrawerHeader>
-            <DrawerTitle className="text-2xl font-black uppercase text-center">Dịch vụ đi kèm</DrawerTitle>
+            <DrawerTitle className="text-2xl font-black uppercase text-center">
+              Dịch vụ đi kèm
+            </DrawerTitle>
             <DrawerDescription className="text-center italic">
               Chọn thêm các dịch vụ lẻ để hoàn thiện bộ Nail của bạn
             </DrawerDescription>
@@ -92,7 +97,9 @@ export const AddOnsDrawer = ({
               </div>
             ) : serviceItems.length > 0 ? (
               serviceItems.map((item) => {
-                const isSelected = !!localSelection.find((i) => i.id === item.id);
+                const isSelected = !!localSelection.find(
+                  (i) => i.id === item.id,
+                );
                 return (
                   <div
                     key={item.id}
@@ -101,7 +108,7 @@ export const AddOnsDrawer = ({
                       "flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer",
                       isSelected
                         ? "border-[#E288F9] bg-[#E288F9]/5 shadow-sm"
-                        : "border-slate-100 bg-white hover:border-slate-200"
+                        : "border-slate-100 bg-white hover:border-slate-200",
                     )}
                   >
                     <div className="flex-1">
@@ -115,25 +122,34 @@ export const AddOnsDrawer = ({
                         </span>
                       </div>
                     </div>
-                    <div className={cn(
-                      "w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all",
-                      isSelected
-                        ? "bg-[#E288F9] border-[#E288F9] text-white"
-                        : "border-slate-200 text-transparent"
-                    )}>
+                    <div
+                      className={cn(
+                        "w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all",
+                        isSelected
+                          ? "bg-[#E288F9] border-[#E288F9] text-white"
+                          : "border-slate-200 text-transparent",
+                      )}
+                    >
                       <Check className="w-4 h-4" />
                     </div>
                   </div>
                 );
               })
             ) : (
-              <p className="text-center text-slate-500 py-8 italic">Không có dịch vụ đi kèm</p>
+              <p className="text-center text-slate-500 py-8 italic">
+                Không có dịch vụ đi kèm
+              </p>
             )}
           </div>
 
           <DrawerFooter className="flex-row gap-3 pt-2 pb-6">
             <DrawerClose asChild>
-              <Button variant="outline" className="flex-1 rounded-xl h-12 font-bold">Hủy</Button>
+              <Button
+                variant="outline"
+                className="flex-1 rounded-xl h-12 font-bold"
+              >
+                Hủy
+              </Button>
             </DrawerClose>
             <Button
               className="flex-1 rounded-xl h-12 font-bold bg-[#E288F9] hover:bg-[#d477eb]"
