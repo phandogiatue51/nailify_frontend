@@ -102,16 +102,16 @@ const CustomerBookingPage = () => {
         ) : (
           <div className="p-4 space-y-6">
             {isArtistBooking && (
-              <div className="relative">
+              <div className="space-y-4">
                 <ServiceSummary
                   selectedItems={selectedItems}
                   selectedCollection={selectedCollection}
                   shopLocationId={null}
                   nailArtistId={nailArtistId}
                 />
+                
                 {selectedCollection && (
                   <AddOnsDrawer
-                    shopId={shopId}
                     nailArtistId={nailArtistId}
                     selectedItems={selectedItems}
                     onAddItems={setSelectedItems}
@@ -130,17 +130,17 @@ const CustomerBookingPage = () => {
             )}
 
             {isShopBooking && selectedLocation && (
-              <div className="relative">
+              <div className="space-y-4">
                 <ServiceSummary
                   selectedItems={selectedItems}
                   selectedCollection={selectedCollection}
                   shopLocationId={selectedLocation}
                   nailArtistId={null}
                 />
+                
                 {selectedCollection && (
                   <AddOnsDrawer
                     shopId={shopId}
-                    nailArtistId={null}
                     selectedItems={selectedItems}
                     onAddItems={setSelectedItems}
                   />

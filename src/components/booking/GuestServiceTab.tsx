@@ -8,6 +8,7 @@ interface GuestServiceTabProps {
   isLoading: boolean;
   onSelect: (service: ServiceItem) => void;
   activeFilterCount: number;
+  selectedItemIds?: string[];
 }
 
 const GuestServiceTab = ({
@@ -15,6 +16,7 @@ const GuestServiceTab = ({
   isLoading,
   onSelect,
   activeFilterCount,
+  selectedItemIds = [],
 }: GuestServiceTabProps) => {
   if (isLoading) {
     return (
@@ -45,7 +47,11 @@ const GuestServiceTab = ({
           key={service.id}
           className="cursor-pointer transform active:scale-95 transition-transform"
         >
-          <ServiceItemCard item={service} onSelect={onSelect} />
+          <ServiceItemCard 
+            item={service} 
+            onSelect={onSelect} 
+            selected={selectedItemIds.includes(service.id!)}
+          />
         </div>
       ))}
     </div>

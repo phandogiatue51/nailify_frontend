@@ -67,6 +67,7 @@ export interface ServiceItemFilterDto {
   SearchTerm?: string;
   IsActive?: boolean;
   ComponentType?: ComponentType;
+  TagIds?: string[];
 }
 
 export interface CollectionFilterDto {

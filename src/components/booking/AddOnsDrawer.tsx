@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -10,8 +10,9 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { useCustomerServiceItems } from "@/hooks/useCustomer";
+import { useAllCustomerService } from "@/hooks/useCustomer";
 import { ServiceItem } from "@/types/database";
+import { ServiceItemFilterDto } from "@/types/filter";
 import { Plus, Check, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,16 @@ export const AddOnsDrawer = ({
   const [open, setOpen] = useState(false);
   const [localSelection, setLocalSelection] = useState<ServiceItem[]>([]);
 
-  const { serviceItems = [], isLoading } = useCustomerServiceItems(shopId, nailArtistId, { enabled: open });
+  // Configure filters based on shop or artist
+  const serviceFilterParams = useMemo(() => {
+    const params: ServiceItemFilterDto = {};
+    if (shopId) params.ShopId = shopId;
+    if (nailArtistId) params.NailArtistId = nailArtistId;
+    return params;
+  }, [shopId, nailArtistId]);
+
+  // Fetch services only when open
+  const { data: serviceItems = [], isLoading } = useAllCustomerService(serviceFilterParams, { enabled: open });
 
   const handleOpen = () => {
     setLocalSelection([...selectedItems]);
@@ -39,11 +49,14 @@ export const AddOnsDrawer = ({
   };
 
   const toggleItem = (item: ServiceItem) => {
-    setLocalSelection((prev) =>
-      prev.find((i) => i.id === item.id)
-        ? prev.filter((i) => i.id !== item.id)
-        : [...prev, item]
-    );
+    setLocalSelection((prev) => {
+      const isSelected = prev.find((i) => i.id === item.id);
+      if (isSelected) {
+        return prev.filter((i) => i.id !== item.id);
+      } else {
+        return [...prev, item];
+      }
+    });
   };
 
   const handleConfirm = () => {

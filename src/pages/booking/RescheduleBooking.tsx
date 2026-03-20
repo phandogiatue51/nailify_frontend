@@ -219,40 +219,56 @@ const RescheduleBooking = () => {
               </h2>
             </div>
 
-            <div className="grid grid-cols-4 gap-2">
-              {timeSlots.map((slot) => {
-                const busy = isSlotBusy(slot);
-                const isSelected = selectedTime === slot;
-                const inPast = isSlotInPast(slot);
+            <div className="space-y-8">
+              {[
+                { label: "Sáng", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) < 11) },
+                { label: "Trưa", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 11 && parseInt(s.split(":")[0]) < 14) },
+                { label: "Chiều", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 14 && parseInt(s.split(":")[0]) < 18) },
+                { label: "Tối", slots: timeSlots.filter(s => parseInt(s.split(":")[0]) >= 18) },
+              ].map(({ label, slots }) => slots.length > 0 && (
+                <div key={label} className="space-y-4">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                    <div className="h-px flex-1 bg-slate-100" />
+                    {label}
+                    <div className="h-px flex-1 bg-slate-100" />
+                  </h3>
+                  <div className="grid grid-cols-4 gap-2">
+                    {slots.map((slot) => {
+                      const busy = isSlotBusy(slot);
+                      const isSelected = selectedTime === slot;
+                      const inPast = isSlotInPast(slot);
 
-                const disabled = (busy || inPast) && !isShopOwner;
+                      const disabled = (busy || inPast) && !isShopOwner;
 
-                return (
-                  <button
-                    key={slot}
-                    disabled={disabled}
-                    onClick={() => setSelectedTime(slot)}
-                    className={cn(
-                      "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
-                      isSelected
-                        ? "bg-gradient-to-r from-[#950101] to-[#ffcfe9] text-white scale-95"
-                        : busy
-                          ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
-                          : inPast
-                            ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
-                            : "bg-white border-slate-50 text-slate-600 hover:border-slate-200",
-                    )}
-                  >
-                    {slot}
-                    {busy && (
-                      <span className="text-[8px] uppercase absolute bottom-1">
-                        Bận
-                      </span>
-                    )}
-                    {inPast && <span className="text-[10px]">(đã qua)</span>}
-                  </button>
-                );
-              })}
+                      return (
+                        <button
+                          key={slot}
+                          disabled={disabled}
+                          onClick={() => setSelectedTime(slot)}
+                          className={cn(
+                            "relative py-4 rounded-2xl text-xs font-black transition-all flex flex-col items-center justify-center",
+                            isSelected
+                              ? "bg-gradient-to-r from-[#950101] to-[#ffcfe9] text-white scale-95"
+                              : busy
+                                ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
+                                : inPast
+                                  ? "bg-slate-50 border-transparent text-slate-200 cursor-not-allowed"
+                                  : "bg-white border-slate-100 border text-slate-600 hover:border-slate-200",
+                          )}
+                        >
+                          {slot}
+                          {busy && (
+                            <span className="text-[8px] uppercase absolute bottom-1">
+                              Bận
+                            </span>
+                          )}
+                          {inPast && <span className="text-[10px]">(đã qua)</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>

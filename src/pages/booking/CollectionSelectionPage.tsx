@@ -71,6 +71,9 @@ const CollectionSelectionPage = () => {
     return Object.keys(params).length > 0 ? params : undefined;
   }, [user, debouncedSearch, selectedTags]);
 
+  // Selection state for multiple services
+  const [tempSelectedServices, setTempSelectedServices] = useState<ServiceItem[]>([]);
+
   // Build filter params for services
   const serviceFilterParams = useMemo(() => {
     const params: ServiceItemFilterDto = {};
@@ -85,11 +88,12 @@ const CollectionSelectionPage = () => {
       params.SearchTerm = debouncedSearch;
     }
 
-    // Note: ServiceItemFilterDto currently doesn't support TagIds
-    // but TagSelector is shared. If service doesn't use tags, it will just show all with current name search.
+    if (selectedTags.length > 0) {
+      params.TagIds = selectedTags;
+    }
 
     return Object.keys(params).length > 0 ? params : undefined;
-  }, [user, debouncedSearch]);
+  }, [user, debouncedSearch, selectedTags]);
 
   // Fetch data
   const { data: collections = [], isLoading: collectionsLoading } = useCollections(collectionFilterParams);
@@ -134,13 +138,26 @@ const CollectionSelectionPage = () => {
   };
 
   const handleSelectService = (service: ServiceItem) => {
+    setTempSelectedServices(prev => {
+      const isSelected = prev.find(s => s.id === service.id);
+      if (isSelected) {
+        return prev.filter(s => s.id !== service.id);
+      } else {
+        return [...prev, service];
+      }
+    });
+  };
+
+  const handleConfirmServices = () => {
+    if (tempSelectedServices.length === 0) return;
+
     const existingState = location.state || {};
 
     const bookingState: any = {
       ...existingState,
       selectedCollection: null,
       collectionId: null,
-      selectedItems: [service],
+      selectedItems: tempSelectedServices,
     };
 
     if (user?.role === 1 || user?.role === 3) {
@@ -155,9 +172,9 @@ const CollectionSelectionPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center gap-3">
+      <div className="sticky top-0 z-20 bg-white border-b px-4 py-3 flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -182,7 +199,7 @@ const CollectionSelectionPage = () => {
         </div>
       )}
 
-      <div className="p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
@@ -217,10 +234,27 @@ const CollectionSelectionPage = () => {
               isLoading={servicesLoading}
               onSelect={handleSelectService}
               activeFilterCount={activeFilterCount}
+              selectedItemIds={tempSelectedServices.map(s => s.id!)}
             />
           </TabsContent>
         </Tabs>
       </div>
+
+      {activeTab === "services" && tempSelectedServices.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t z-30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+          <Button
+            onClick={handleConfirmServices}
+            style={{
+              background:
+                "linear-gradient(135deg, #950101 0%, #D81B60 50%, #FFCFE9 100%)",
+              border: "none",
+            }}
+            className="font-black tracking-tight uppercase text-lg rounded-[2rem] w-full h-12"
+          >
+            Đã chọn {tempSelectedServices.length} dịch vụ: Tiếp theo
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
