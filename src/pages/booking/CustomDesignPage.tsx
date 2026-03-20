@@ -171,7 +171,7 @@ export const CustomDesignPage = () => {
       </div>
 
       {/* 2. Main Content: 2-Column Grid */}
-      <div className="flex-1 p-4 pb-32">
+      <div className="flex-1 p-4">
         {allItems.length > 0 ? (
           <div className="grid grid-cols-2 gap-4">
             {allItems.map((item: ServiceItem) => {

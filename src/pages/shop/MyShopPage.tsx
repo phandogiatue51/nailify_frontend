@@ -102,7 +102,7 @@ const MyShopPage = () => {
       <div className="p-4 space-y-6 bg-slate-50/30 min-h-screen">
         <header className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-900">
+            <h1 className="text-2xl font-black tracking-tight text-slate-900">
               {myShop.name}
             </h1>
             <p className="text-slate-500 text-sm font-medium">

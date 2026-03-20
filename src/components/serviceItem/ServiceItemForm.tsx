@@ -244,7 +244,7 @@ const ServiceItemForm: React.FC<ServiceItemFormProps> = ({
       <Button
         type="submit"
         disabled={isLoading || uploading || !name || !price}
-        className="w-full h-14 uppercase rounded-2xl bg-gradient-to-r from-[#950101] via-[#D81B60] to-[#E288F9] hover:opacity-90 shadow-xl shadow-pink-100 text-lg text-white font-black transition-all active:scale-[0.98] mt-4"
+        className="w-full h-14 uppercase rounded-2xl bg-gradient-to-r from-[#950101] via-[#D81B60] to-[#E288F9] hover:opacity-90 shadow-xl shadow-pink-100 text-md text-white font-black transition-all active:scale-[0.98] mt-4"
       >
         {isLoading || uploading ? (
           <Loader2 className="w-5 h-5 animate-spin" />

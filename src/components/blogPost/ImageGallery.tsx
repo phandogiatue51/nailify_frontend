@@ -18,7 +18,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         <img
           src={images[0]}
           alt="Gallery"
-          className="w-full h-auto object-cover rounded-xl cursor-pointer"
+          className="w-full h-48 object-cover rounded-xl cursor-pointer"
           onClick={() => setSelectedIndex(0)}
         />
       )}
@@ -42,7 +42,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           <img
             src={images[0]}
             alt="Gallery 0"
-            className="h-64 w-full object-cover rounded-xl cursor-pointer"
+            className="h-48 w-full object-cover rounded-xl cursor-pointer"
             onClick={() => setSelectedIndex(0)}
           />
           <div className="flex flex-col gap-2">

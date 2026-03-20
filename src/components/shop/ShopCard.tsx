@@ -44,12 +44,6 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
         <div className="flex items-center gap-2">
           <h3 className="font-black text-lg">{shop.name}</h3>
         </div>
-
-        {shop.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-            {shop.description}
-          </p>
-        )}
       </CardContent>
     </Card>
   );

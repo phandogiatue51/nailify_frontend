@@ -75,15 +75,15 @@ const ServiceItemCard: React.FC<ServiceItemCardProps> = ({
           </div>
         )}
 
-        <div className="relative aspect-square bg-slate-100 overflow-hidden">
+        <div className="relative bg-slate-100 overflow-hidden">
           {item.imageUrl ? (
             <img
               src={item.imageUrl}
               alt={item.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-24 object-cover transition-transform duration-500 group-hover:scale-110"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
+            <div className="w-full h-24 bg-gradient-to-br from-[#950101] to-[#FFCFE9] flex items-center justify-center">
               <span className="text-5xl font-bold text-white uppercase">
                 {item.name?.[0] || "U"}
               </span>

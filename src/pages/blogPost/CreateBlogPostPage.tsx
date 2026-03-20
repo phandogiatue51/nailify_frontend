@@ -24,7 +24,7 @@ export const CreateBlogPostPage = () => {
 
       <div className="max-w-2xl mx-auto px-6">
         <header className="mb-10 text-center">
-          <h1 className="text-4xl font-black text-slate-900 leading-tight tracking-tight uppercase italic">
+          <h1 className="text-2xl font-black text-slate-900 leading-tight tracking-tight uppercase italic">
             Thêm <span className="not-italic">Bài viết</span>
           </h1>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">

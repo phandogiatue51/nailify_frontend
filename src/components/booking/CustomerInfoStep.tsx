@@ -24,13 +24,13 @@ export const CustomerInfoStep = ({
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-4">
           <User className="w-5 h-5 text-primary" />
-          <h2 className="font-semibold">Your Information</h2>
+          <h2 className="font-semibold">Thông tin khách hàng</h2>
         </div>
 
         <div className="space-y-3">
           <div>
             <label className="block text-sm font-medium mb-1">
-              Full Name *
+              Họ và tên *
             </label>
             <input
               type="text"
@@ -43,7 +43,7 @@ export const CustomerInfoStep = ({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
-              Phone Number *
+              Số điện thoại *
             </label>
             <input
               type="tel"
@@ -56,7 +56,7 @@ export const CustomerInfoStep = ({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
-              Address (Optional)
+              Địa chỉ (tùy chọn)
             </label>
             <textarea
               value={customerAddress}
