@@ -6,8 +6,6 @@
 
 [build.environment]
   NODE_VERSION = "18"
-[build.environment]
-  NODE_VERSION = "18"
   NPM_VERSION = "10"
 
 # Define different environment contexts
