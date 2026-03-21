@@ -30,22 +30,37 @@ const CustomerBookingPage = () => {
     !!nailArtistId || searchParams.get("type") === "artist";
   const isShopBooking = !!shopId || searchParams.get("type") === "shop";
 
+  const STORAGE_KEY = "nailify_booking_state";
+
+  const savedState = ((): any => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  })();
+
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [notes] = useState<string>("");
   const { data: locations = [], isLoading: locationsLoading } =
     useLocationsByShop(shopId);
 
-  const customerProfileId = locationState.state?.customerProfileId || null;
-  const customerName = locationState.state?.customerName || "";
-  const customerPhone = locationState.state?.customerPhone || "";
-  const customerAddress = locationState.state?.customerAddress || "";
+  const customerProfileId =
+    locationState.state?.customerProfileId || savedState.customerProfileId || null;
+  const customerName =
+    locationState.state?.customerName || savedState.customerName || "";
+  const customerPhone =
+    locationState.state?.customerPhone || savedState.customerPhone || "";
+  const customerAddress =
+    locationState.state?.customerAddress || savedState.customerAddress || "";
 
-  // Initialize selectedItems from location state
+  // Initialize selectedItems from location state or session storage
   const [selectedItems, setSelectedItems] = useState<ServiceItem[]>(
-    locationState.state?.selectedItems || []
+    locationState.state?.selectedItems || savedState.selectedItems || []
   );
   const [selectedCollection, setSelectedCollection] = useState<any>(
-    locationState.state?.selectedCollection || null
+    locationState.state?.selectedCollection || savedState.selectedCollection || null
   );
 
   // Update state when location state changes (when coming back from next step)
@@ -59,6 +74,36 @@ const CustomerBookingPage = () => {
       }
     }
   }, [locationState.state]);
+
+  // Persist service-selection state for robust navigation flow
+  useEffect(() => {
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        selectedItems,
+        selectedCollection,
+        shopId,
+        nailArtistId,
+        selectedLocation,
+        customerProfileId,
+        customerName,
+        customerPhone,
+        customerAddress,
+        notes,
+      }),
+    );
+  }, [
+    selectedItems,
+    selectedCollection,
+    shopId,
+    nailArtistId,
+    selectedLocation,
+    customerProfileId,
+    customerName,
+    customerPhone,
+    customerAddress,
+    notes,
+  ]);
 
   // Auto-select first location for shop bookings
   useEffect(() => {

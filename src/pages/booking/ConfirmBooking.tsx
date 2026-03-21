@@ -21,10 +21,21 @@ import { cn } from "@/lib/utils";
 import { ServiceSummary } from "@/components/booking/ServiceSummary";
 import { ProviderInfoCard } from "@/components/booking/ProviderInfoCard";
 import { CustomerInfoCard } from "@/components/booking/CustomerInfoCard";
+import { useEffect } from "react";
 
 const ConfirmBooking = () => {
+  const STORAGE_KEY = "nailify_booking_state";
   const location = useLocation();
   const navigate = useNavigate();
+
+  const persistedBooking = ((): any => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  })();
 
   const {
     selectedItems = [],
@@ -38,7 +49,27 @@ const ConfirmBooking = () => {
     customerPhone,
     customerAddress,
     notes,
-  } = location.state || {};
+  } = location.state || persistedBooking || {};
+
+  useEffect(() => {
+    if (
+      !selectedDate ||
+      !selectedTime ||
+      (selectedItems.length === 0 && !selectedCollection)
+    ) {
+      console.warn(
+        "Incomplete booking state on ConfirmBooking, redirecting to customer-book",
+      );
+      navigate("/customer-book", { state: persistedBooking });
+    }
+  }, [
+    selectedDate,
+    selectedTime,
+    selectedItems.length,
+    selectedCollection,
+    navigate,
+    persistedBooking,
+  ]);
 
   const { user } = useAuth();
   const isArtistBooking = !!nailArtistId;

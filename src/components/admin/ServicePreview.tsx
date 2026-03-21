@@ -23,7 +23,7 @@ export const ServicePreview = ({
   shopId,
   artistId,
   compact = false,
-  title = "Services",
+  title = "Các dịch vụ",
 }: ServicePreviewProps) => {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(false);

@@ -28,7 +28,7 @@ export const CollectionPreview = ({
   shopId,
   artistId,
   compact = false,
-  title = "Collections",
+  title = "Các bộ sưu tập",
 }: CollectionPreviewProps) => {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(false);

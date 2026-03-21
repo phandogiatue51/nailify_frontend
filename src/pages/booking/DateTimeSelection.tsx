@@ -25,6 +25,16 @@ const DateTimeSelection = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const STORAGE_KEY = "nailify_booking_state";
+  const persistedBooking = ((): any => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  })();
+
   const {
     selectedItems = [],
     selectedCollection,
@@ -36,7 +46,15 @@ const DateTimeSelection = () => {
     customerPhone,
     customerAddress,
     notes,
-  } = location.state || {};
+  } = location.state || persistedBooking || {};
+
+  useEffect(() => {
+    if (!location.state || !location.state.selectedItems) {
+      if (!selectedItems.length && !selectedCollection) {
+        navigate("/customer-book", { state: persistedBooking });
+      }
+    }
+  }, [location.state, selectedItems, selectedCollection, navigate, persistedBooking]);
 
   const isArtistBooking = !!nailArtistId;
   const { user } = useAuth();
@@ -133,6 +151,39 @@ const DateTimeSelection = () => {
   const handleSelectTime = (time: string) => {
     setSelectedTime(time);
   };
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        selectedItems,
+        selectedCollection,
+        shopId,
+        nailArtistId,
+        selectedLocation,
+        customerProfileId,
+        customerName,
+        customerPhone,
+        customerAddress,
+        notes,
+        selectedDate,
+        selectedTime,
+      }),
+    );
+  }, [
+    selectedItems,
+    selectedCollection,
+    shopId,
+    nailArtistId,
+    selectedLocation,
+    customerProfileId,
+    customerName,
+    customerPhone,
+    customerAddress,
+    notes,
+    selectedDate,
+    selectedTime,
+  ]);
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
