@@ -51,6 +51,7 @@ const apiRequest = async <T = any>(
   const config: RequestInit = {
     method: options.method || "GET",
     headers,
+    credentials: 'include',
     ...options,
   };
 
